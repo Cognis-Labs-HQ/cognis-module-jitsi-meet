@@ -1,0 +1,149 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+
+const ROOT = process.cwd();
+
+function readJitsiApiBundle() {
+    const apiDir = resolve(ROOT, "api");
+    return readdirSync(apiDir)
+        .filter((entry) => entry.endsWith(".js"))
+        .sort()
+        .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
+        .join("\n");
+}
+
+test('jitsi bootstrap uses scoped lifecycle registrations', () => {
+  const bootstrapSource = readFileSync(resolve(ROOT, 'bootstrap.js'), 'utf8');
+
+  assert.match(bootstrapSource, /ctx\.contributePublicCapability\(/);
+  assert.match(bootstrapSource, /ctx\.registerFlow\(flow\)/);
+  assert.match(bootstrapSource, /if \(!ctx\.flow\.exists\(flow\.id\)\)/);
+  assert.match(bootstrapSource, /stages: \['resolve-providers', 'resolve-panels', 'compose-surface'\]/);
+  assert.match(bootstrapSource, /stages: \['validate-request', 'provision-session', 'finalize-join'\]/);
+  assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
+});
+
+test("jitsi API registers configured CSP origins through auth capability", () => {
+    const indexSource = readFileSync(
+        resolve(ROOT, "api/index.js"),
+        "utf8",
+    );
+    const bundleSource = readJitsiApiBundle();
+
+    assert.match(indexSource, /auth:registerPageScriptOrigins/);
+    assert.match(
+        bundleSource,
+        /registerConfiguredJitsiOrigin\(registerScriptOrigins, saved\)/,
+    );
+    assert.match(indexSource, /ctx\.getCapability\("auth:requireAuth"\)/);
+});
+
+test("jitsi resolves guest access through the Share gateway contract", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/index.js"),
+        "utf8",
+    );
+    assert.match(source, /ctx\.getCapability\(\s*"share:resolveGuestAccess"/);
+    assert.match(source, /resourceType: "meeting"/);
+    assert.match(source, /const legacyMeetingAccess/);
+    assert.match(source, /legacyMeetingAccess\?\.authorized === true/);
+});
+
+test("meeting share guests receive the Jitsi meeting password", () => {
+    const source = readJitsiApiBundle();
+
+    assert.match(
+        source,
+        /if \(shareGuestAccess\.isGuest\)[\s\S]*meetingPassword:\s*meeting\.meetingPassword/,
+    );
+});
+
+test("jitsi authorizes its scoped guest chat through a neutral Messages contract", () => {
+    const source = readJitsiApiBundle();
+
+    assert.match(source, /social:messages:registerExternalRoomAuthorizer/);
+    assert.match(source, /getMeetingByChatRoomId\(roomId\)/);
+    assert.match(source, /requiredCapability/);
+});
+
+test("participant-free meetings delete their identity and shares when closed", () => {
+    const source = readJitsiApiBundle();
+
+    assert.match(
+        source,
+        /const participantlessMeeting = resolved\.participants\.every/,
+    );
+    assert.match(source, /deleteResourceShares\?\.\(/);
+    assert.match(source, /await store\.deleteMeeting\(resolved\.meeting\.id\)/);
+    assert.match(source, /async deleteMeeting\(meetingId\)/);
+});
+
+test("jitsi API logs stored CSP origin registration failures", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/index.js"),
+        "utf8",
+    );
+
+    assert.match(source, /Failed to register stored Jitsi CSP origin/);
+    assert.match(source, /operation: "register_stored_jitsi_origin"/);
+});
+
+test("jitsi participant lookup delegates follow filtering to profile search", () => {
+    const source = readJitsiApiBundle();
+
+    assert.match(source, /includeHidden = hasMinRole\(claims\.role, "admin"\)/);
+    assert.match(source, /profileStore\.searchProfiles\(query, 50, \{/);
+    assert.match(source, /followingAccountId: claims\.sub/);
+    assert.match(source, /candidateHandles: activeParticipantHandles/);
+    assert.match(source, /activeParticipantHandles\.length > 0/);
+    assert.match(source, /avatarKey: profile\.avatarKey \?\? null/);
+});
+
+test("jitsi meeting notifications target authenticated account ids", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/index.js"),
+        "utf8",
+    );
+
+    assert.match(source, /recipientUsername: recipient\.accountId/);
+    assert.match(source, /profileStore\s*\.getProfile\(recipientUsername\)/);
+    assert.match(source, /resolve_meeting_notification_recipient/);
+});
+
+test("jitsi meeting creation resolves hidden participants only for admins", () => {
+    const apiSource = readJitsiApiBundle();
+    const accessSource = readFileSync(
+        resolve(ROOT, "api/reuse/meeting-access.js"),
+        "utf8",
+    );
+
+    assert.match(
+        accessSource,
+        /if \(!includeHidden && profile\.visibility === "hidden"\) continue/,
+    );
+    assert.match(
+        apiSource,
+        /\{ includeHidden: hasMinRole\(claims\.role, "admin"\) \}/,
+    );
+});
+
+test("jitsi meetings API exposes current events query endpoint", () => {
+    const apiSource = readFileSync(
+        resolve(ROOT, "api/index.js"),
+        "utf8",
+    );
+    const routesSource = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
+
+    assert.match(apiSource, /calendar:listCalendars/);
+    assert.match(apiSource, /calendar:listEvents/);
+    assert.match(
+        routesSource,
+        /\/api\/v1\/modules\/jitsi-meet\/events\/current/,
+    );
+    assert.match(routesSource, /ownership must be one of all, own, or invited/);
+});
