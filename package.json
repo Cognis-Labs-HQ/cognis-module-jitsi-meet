@@ -1,0 +1,9 @@
+{
+    "name": "@cognis/module-jitsi-meet",
+    "version": "1.4.54",
+    "private": false,
+    "type": "module",
+    "scripts": {
+        "test": "node --test api/tests/*.test.js ui/tests/*.test.js"
+    }
+}
