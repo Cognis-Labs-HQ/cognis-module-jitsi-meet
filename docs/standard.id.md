@@ -7,7 +7,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 ## Fitur
 
 - URL instans Jitsi yang dapat dikonfigurasi dan prefix URI opsional (Administrasi → Komponen)
-- Halaman `/meeting` dengan:
+- Rute aplikasi `/meetings` dan `/meeting` dengan:
     - area rapat/overlay
     - pemilihan peserta dan drag-and-drop
     - handoff URL chat ke adapter Messages
@@ -15,6 +15,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Akses API dibatasi peserta berdasarkan username
 - Otorisasi peserta fallback classroom saat `classroom_id` diisi
 - Pemantauan rapat aktif di Administrasi → Meetings
+- Persyaratan runtime eksplisit `auth:requireAuth` dan `ui:profileAvatarRenderer` agar Cognis memuat penyedia autentikasi dan avatar sebelum halaman rapat
 
 ## Catatan Keamanan
 

@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.54",
+    "version": "1.4.56",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -39,12 +39,15 @@
         "0da92508-63fa-53ed-918c-e6f08692a382",
         "062a74f5-5699-52fb-98a3-63ec6538bdfc"
     ],
+    "requiresCapabilities": [
+        "auth:requireAuth",
+        "ui:profileAvatarRenderer"
+    ],
     "summary": "Secure video meetings integrated with Cognis.",
     "description": "Create, join, moderate, and share Jitsi meetings from Cognis.",
     "categories": [
         "Collaboration"
     ],
-    "recommended": true,
     "license": "AGPL-3.0-or-later",
     "repository": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet",
     "assets": {
@@ -69,7 +72,7 @@
         },
         {
             "path": "README.md",
-            "sha256": "0ddee647f1bdd6ded46a7fe0e544c3a359d51e59f9dbc864b844f612bdb6884f"
+            "sha256": "b8ef5fde876076aef86915229abf503aabbc77cc4f3a32733e26a4005bf4c11d"
         },
         {
             "path": "api/admin-meetings-routes.js",
@@ -81,7 +84,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "b7a485228326ff746e32c8c1ee28f36e3e5dadf7bb3b9ccb950c8c8e838b5e71"
+            "sha256": "36a3db82cfaab0e5b04ac13b2389b2ec671e708599fca59cd88b90974253fc8e"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
@@ -157,11 +160,11 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "d1ddcb96c82c4c45704b3c8480a244c43adc09b9b697c37e203e8898f6a0c107"
+            "sha256": "4a3ac07ff82ca84902f46430dd61a5001fdb9fdac31522be2632c07d90ec7556"
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "085817bf1cbc20f478d397b069d3fe65d370d98b51904e1bd7959a1ee8e0756b"
+            "sha256": "3b3627578a655ec771eb02d116a14c8b03ff2d16831a81a265450060082d8da9"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -201,27 +204,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "fdd0d15ccdf5eaf939627c24a9015396092c8a913ee59ddc0347f57246c22f04"
+            "sha256": "af14bd63f56215f2d4442a68daa72f38e477027e14b649812ec97d981a4c6751"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "02c9d9af714248de103f0784024250ddd59340fb9ba9a66de74bae2951360c01"
+            "sha256": "c94e8c35e31335edd1553944a2ced3acd1c5a047e21ab6a258ff3602423df40c"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "43adc93dcc48f83d2b11c3d7bb45dedc52ff1d76db5d94e44921c10f61bf2324"
+            "sha256": "b950e67b6609cf42d5692a60bc5f13709c4811531f82071259c78f536c585e96"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "37657c7e82358dbddc5ff0225e7acfa5a900ea5cf122d477840114b2d1d540a9"
+            "sha256": "c64ea67394f42927c8eeb17acf6742728fbb64bf4a5c1a6c03ab018d8b6b50fe"
         },
         {
             "path": "package-lock.json",
-            "sha256": "af6cc2d9a0ef07687f4b34780303c8bdf65dcd992d6059235c7d0ef909072b5e"
+            "sha256": "a4077df7af06381316bb739ce09c848a8033cea293533478c275cdec4812aaab"
         },
         {
             "path": "package.json",
-            "sha256": "b61aa4e1d2eb2c9885514ee08fd1104ae0e0951435fed70f69689c94b46ee510"
+            "sha256": "0343626efdd1801a3521258831fa75966177ac788ceec7af39603652e3819ceb"
         },
         {
             "path": "routes.json",

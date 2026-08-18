@@ -111,21 +111,34 @@ export function registerUi(ctx) {
     ctx.registerStaticDir("", moduleUiRoot);
     ctx.registerNavbarPlugin({
         scriptUrl: "/static/modules/jitsi-meet/navbar.js",
-    });
-    ctx.registerSpaRoute({
-        id: "module-jitsi-meet-meetings",
-        pattern: "^/meetings$",
-        base: "/meetings",
-        scriptUrl: "/static/modules/jitsi-meet/app.js",
-        stylesheets: [
-            "/static/styles/page-builder.css",
-            "/static/styles/reuse/layout.css",
-            "/static/styles/reuse/page-sections.css",
-            ...sharedStylesheetUrls,
-            "/static/modules/jitsi-meet/jitsi-meet.css",
-        ],
         access: { minRole: "user" },
     });
+    const meetingsStylesheets = [
+        "/static/styles/page-builder.css",
+        "/static/styles/reuse/layout.css",
+        "/static/styles/reuse/page-sections.css",
+        ...sharedStylesheetUrls,
+        "/static/modules/jitsi-meet/jitsi-meet.css",
+    ];
+    for (const route of [
+        {
+            id: "module-jitsi-meet-meetings",
+            pattern: "^/meetings$",
+            base: "/meetings",
+        },
+        {
+            id: "module-jitsi-meet-meeting",
+            pattern: "^/meeting$",
+            base: "/meeting",
+        },
+    ]) {
+        ctx.registerSpaRoute({
+            ...route,
+            scriptUrl: "/static/modules/jitsi-meet/app.js",
+            stylesheets: meetingsStylesheets,
+            access: { minRole: "user" },
+        });
+    }
     ctx.registerAdminSection({
         id: "module-jitsi-meet-meetings",
         label: "Meetings",

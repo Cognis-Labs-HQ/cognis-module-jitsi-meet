@@ -7,7 +7,7 @@ Jitsi Meet モジュールは、参加者選択、ミーティング URL 再利�
 ## 機能
 
 - Jitsi インスタンス URL と任意の URI プレフィックス設定（管理 → コンポーネント）
-- `/meeting` ページ:
+- `/meetings` および `/meeting` アプリケーションルート:
     - ミーティング表示領域/オーバーレイ
     - 参加者選択とドラッグ＆ドロップ
     - Messages アダプターへのチャット URL 連携
@@ -15,6 +15,7 @@ Jitsi Meet モジュールは、参加者選択、ミーティング URL 再利�
 - ユーザー名ベースの参加者限定 API アクセス
 - `classroom_id` 設定時の Classroom 参加者フォールバック認可
 - 管理 → Meetings でのアクティブミーティング監視
+- Cognis がミーティングページより前に認証プロバイダーとアバタープロバイダーを読み込むための明示的な `auth:requireAuth` および `ui:profileAvatarRenderer` ランタイム要件
 
 ## セキュリティノート
 

@@ -4,11 +4,11 @@ This repository contains the external Jitsi Meet module for Cognis. It provides 
 
 ## Installation
 
-Add this repository through **Modules → Module Sources** in Cognis, install the module, review its requested capabilities and dependencies, and then enable it separately. Configure the Jitsi instance URL from the module's Administration controls.
+Add this repository through **Modules → Module Sources** in Cognis, install the module, review its requested capabilities and dependencies, and then enable it separately. Enabling registers the `/meetings` and `/meeting` application routes, the Meetings navigation entry, administration section, static browser assets, APIs, capabilities, and flow hooks. Disabling removes those scoped contributions. Configure the Jitsi instance URL from the module's Administration controls.
 
 ## Capabilities and dependencies
 
-The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its UUID-based requirements are listed in `manifest.json`; no Cognis internal package or source-tree import is required.
+The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its UUID-based component dependencies and narrower `auth:requireAuth` and `ui:profileAvatarRenderer` runtime capability requirements are declared separately in `manifest.json`, allowing Cognis to preload the avatar provider before mounting the meetings UI. No Cognis internal package or source-tree import is required.
 
 ## Development
 
