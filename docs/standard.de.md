@@ -15,6 +15,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmera
 - Teilnehmergebundene API-Zugriffe per Benutzername
 - Classroom-Fallback-Autorisierung, wenn `classroom_id` gesetzt ist
 - Live-Meeting-Überwachung in Administration → Meetings
+- Explizite Laufzeitanforderungen `auth:requireAuth` und `ui:profileAvatarRenderer`, damit Cognis Authentifizierungs- und Avatar-Anbieter vor der Meeting-Seite lädt
 
 ## Sicherheitshinweise
 

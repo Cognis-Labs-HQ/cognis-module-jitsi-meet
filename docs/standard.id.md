@@ -15,6 +15,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Akses API dibatasi peserta berdasarkan username
 - Otorisasi peserta fallback classroom saat `classroom_id` diisi
 - Pemantauan rapat aktif di Administrasi → Meetings
+- Persyaratan runtime eksplisit `auth:requireAuth` dan `ui:profileAvatarRenderer` agar Cognis memuat penyedia autentikasi dan avatar sebelum halaman rapat
 
 ## Catatan Keamanan
 

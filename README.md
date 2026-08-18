@@ -8,7 +8,7 @@ Add this repository through **Modules → Module Sources** in Cognis, install th
 
 ## Capabilities and dependencies
 
-The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its UUID-based requirements are listed in `manifest.json`; no Cognis internal package or source-tree import is required.
+The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its UUID-based component dependencies and narrower `auth:requireAuth` and `ui:profileAvatarRenderer` runtime capability requirements are declared separately in `manifest.json`, allowing Cognis to preload the avatar provider before mounting the meetings UI. No Cognis internal package or source-tree import is required.
 
 ## Development
 
