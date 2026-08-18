@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.56",
+    "version": "1.4.57",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -52,8 +52,8 @@
     "repository": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet",
     "assets": {
         "screenshots": [],
-        "icon": "assets/icon.svg",
-        "banner": "assets/banner.svg"
+        "icon": "assets/icon.png",
+        "banner": "assets/banner.png"
     },
     "tags": [
         "video",
@@ -187,12 +187,12 @@
             "sha256": "e7afa76cf37e221cfb702d5d8213b8e23da7f7cef47a1e745b3615b9124f95b4"
         },
         {
-            "path": "assets/banner.svg",
-            "sha256": "564d634e4fe37d99122b9275541f166c816b875a1eef751e2835131f6fae7b6d"
+            "path": "assets/banner.png",
+            "sha256": "74d0495a81716969576bdce4bbc9cebaa8170fc23b59c9db383d3f2b9288337f"
         },
         {
-            "path": "assets/icon.svg",
-            "sha256": "1f6dcd81c1c85c824c98fe3bc36aa839debbb6e0e7e03095e9258aff3f3c6ac4"
+            "path": "assets/icon.png",
+            "sha256": "08592031926c321f935d1b65d9113ba36b5a6421dd00e4cbf5d0514fb9843680"
         },
         {
             "path": "bootstrap.js",
