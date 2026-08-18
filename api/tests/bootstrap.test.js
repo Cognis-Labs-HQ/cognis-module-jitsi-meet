@@ -93,6 +93,10 @@ function createScopedRuntime() {
       hookCount: hooks.length,
       routeCount: routes.length,
       uiContributionCount: uiContributions.length,
+      uiContributions: uiContributions.map(({ type, contribution }) => ({
+        type,
+        contribution,
+      })),
     }),
   };
 }
@@ -110,6 +114,17 @@ test('jitsi bootstrap is removable and repeatable across lifecycle cycles', () =
   ]);
   assert.ok(firstEnabledSnapshot.routeCount > 0);
   assert.ok(firstEnabledSnapshot.uiContributionCount > 0);
+  assert.deepEqual(
+    firstEnabledSnapshot.uiContributions
+      .filter(({ type }) => type === 'spa')
+      .map(({ contribution }) => contribution.base),
+    ['/meetings', '/meeting'],
+  );
+  assert.deepEqual(
+    firstEnabledSnapshot.uiContributions.find(({ type }) => type === 'navbar')
+      .contribution.access,
+    { minRole: 'user' },
+  );
   assert.ok(firstEnabledSnapshot.hookCount > 0);
 
   firstDispose();

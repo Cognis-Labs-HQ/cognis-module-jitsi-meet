@@ -7,7 +7,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 ## Features
 
 - Configurable Jitsi instance URL and optional URI prefix (Administration → Components)
-- `/meeting` page with:
+- `/meetings` and `/meeting` application routes with:
     - meeting stage/overlay
     - participant selection and drag-and-drop
     - chat URL handoff to Messages adapter
