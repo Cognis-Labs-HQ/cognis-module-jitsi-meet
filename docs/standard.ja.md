@@ -15,7 +15,7 @@ Jitsi Meet モジュールは、参加者選択、ミーティング URL 再利�
 - ユーザー名ベースの参加者限定 API アクセス
 - `classroom_id` 設定時の Classroom 参加者フォールバック認可
 - 管理 → Meetings でのアクティブミーティング監視
-- Cognis がミーティングページより前に認証プロバイダーとアバタープロバイダーを読み込むための明示的な `auth:requireAuth` および `ui:profileAvatarRenderer` ランタイム要件
+- 固定ゲートウェイ依存を持たず、ミーティングページが実際に使用するプロバイダーだけを Cognis が検証する、`auth:requireAuth` および `ui:profileAvatarRenderer` のケイパビリティベースのランタイム要件
 
 ## セキュリティノート
 

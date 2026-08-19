@@ -5,15 +5,16 @@ import { join, resolve } from "node:path";
 
 const ROOT = process.cwd();
 
-test("jitsi manifest declares the runtime capabilities its UI consumes", () => {
-    const manifest = JSON.parse(
-        readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
-    );
+test('jitsi manifest declares only the runtime capabilities its UI consumes', () => {
+  const manifest = JSON.parse(
+    readFileSync(resolve(ROOT, 'manifest.json'), 'utf8'),
+  );
 
-    assert.deepEqual(manifest.requiresCapabilities, [
-        "auth:requireAuth",
-        "ui:profileAvatarRenderer",
-    ]);
+  assert.deepEqual(manifest.requiresCapabilities, [
+    'auth:requireAuth',
+    'ui:profileAvatarRenderer',
+  ]);
+  assert.deepEqual(manifest.requires, []);
 });
 
 function readJitsiApiBundle() {
