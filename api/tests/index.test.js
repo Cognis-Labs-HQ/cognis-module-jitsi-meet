@@ -5,7 +5,7 @@ import { join, resolve } from "node:path";
 
 const ROOT = process.cwd();
 
-test('jitsi manifest declares only the runtime capabilities its UI consumes', () => {
+test('jitsi manifest declares its supplied capabilities and dependencies', () => {
   const manifest = JSON.parse(
     readFileSync(resolve(ROOT, 'manifest.json'), 'utf8'),
   );
@@ -14,7 +14,17 @@ test('jitsi manifest declares only the runtime capabilities its UI consumes', ()
     'auth:requireAuth',
     'ui:profileAvatarRenderer',
   ]);
-  assert.deepEqual(manifest.requires, []);
+  assert.deepEqual(manifest.capabilities, [
+    'meeting:video',
+    'meeting:chat',
+    'meeting:moderation',
+  ]);
+  assert.deepEqual(manifest.requires, [
+    'e8732526-8976-54ef-828b-ed0dfe21bd9e',
+    '4387fae9-26dd-5a80-84b2-e5f4833b7fb9',
+    '0da92508-63fa-53ed-918c-e6f08692a382',
+    '062a74f5-5699-52fb-98a3-63ec6538bdfc',
+  ]);
 });
 
 function readJitsiApiBundle() {
