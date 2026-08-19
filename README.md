@@ -8,7 +8,7 @@ Add this repository through **Modules → Module Sources** in Cognis, install th
 
 ## Capabilities and dependencies
 
-The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. It has no hard UUID-based gateway dependencies; its `auth:requireAuth` and `ui:profileAvatarRenderer` runtime capability requirements are declared in `manifest.json`, allowing Cognis to validate the available providers without blocking enablement on unrelated gateways. No Cognis internal package or source-tree import is required.
+The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its manifest declares UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, alongside the narrower `auth:requireAuth` and `ui:profileAvatarRenderer` runtime capability requirements. No Cognis internal package or source-tree import is required.
 
 ## Development
 

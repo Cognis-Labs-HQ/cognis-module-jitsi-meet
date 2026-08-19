@@ -15,7 +15,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - Participant-gated API access by username
 - Classroom fallback participant authorization when `classroom_id` is set
 - Active meeting monitoring section in Administration → Meetings
-- Capability-based `auth:requireAuth` and `ui:profileAvatarRenderer` runtime requirements, with no hard gateway dependency, so Cognis validates the providers actually used by the meeting page
+- UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, plus capability-based `auth:requireAuth` and `ui:profileAvatarRenderer` runtime requirements
 
 ## Security Notes
 
