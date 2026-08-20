@@ -1,4 +1,4 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
+import { configureApiLogger, logApiFallback } from "./reuse/log-fallback.js";
 import path from "node:path";
 import { registerMeetingRoutes } from "./meetings-routes.js";
 import { registerMeetingConfigRoutes } from "./config-routes.js";
@@ -147,6 +147,7 @@ export function registerUi(ctx) {
 }
 
 export function registerApiRoutes(router, ctx) {
+    configureApiLogger(ctx.log);
     const requireAuth = ctx.getCapability("auth:requireAuth");
     if (typeof requireAuth !== "function") {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
@@ -272,6 +273,7 @@ export function registerApiRoutes(router, ctx) {
             requireAuth,
             router,
             sendJson,
+            log: ctx.log,
             unavailable: true,
         });
         for (const routePath of [
@@ -460,6 +462,7 @@ export function registerApiRoutes(router, ctx) {
         requireAuth,
         router,
         sendJson,
+        log,
         messagesUiResources,
     });
 

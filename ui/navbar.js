@@ -1,3 +1,4 @@
+import { logUi } from "./reuse/feedback.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { createI18n } from "/static/reuse/i18n.js";
 
@@ -32,11 +33,15 @@ async function syncMeetingLink() {
         }
         link.removeAttribute("hidden");
     } catch (error) {
-        console.error("[jitsi-meet] failed to synchronize meeting navigation", {
-            component: "jitsi-meet-module",
-            operation: "sync_meeting_navigation",
-            error: error instanceof Error ? error.message : String(error),
-        });
+        void logUi(
+            "error",
+            "[jitsi-meet] failed to synchronize meeting navigation",
+            {
+                component: "jitsi-meet-module",
+                operation: "sync_meeting_navigation",
+                error: error instanceof Error ? error.message : String(error),
+            },
+        );
         link.setAttribute("hidden", "");
     }
 }

@@ -1,3 +1,4 @@
+import { logUi } from "./reuse/feedback.js";
 import { readJsonWithFallback } from "./reuse/json-response.js";
 import {
     filesClient,
@@ -30,7 +31,8 @@ export async function loadMessageUiResources() {
             "/api/v1/modules/jitsi-meet/ui-resources",
         );
         if (!response.ok) {
-            console.warn(
+            void logUi(
+                "warn",
                 "[jitsi-meet] message UI resources unavailable; using fallback resources",
                 {
                     component: "jitsi-meet-module",
@@ -80,7 +82,8 @@ export async function loadMessageUiResources() {
                     : null,
         };
     } catch (error) {
-        console.warn(
+        void logUi(
+            "warn",
             "[jitsi-meet] failed to load message UI resources; using fallback resources",
             {
                 component: "jitsi-meet-module",
@@ -135,7 +138,7 @@ export async function loadMessageReactionsController(
         await reactionsController.loadEmojiUsage?.();
         return reactionsController;
     } catch (error) {
-        console.error("[jitsi-meet] failed to load message reactions", {
+        void logUi("error", "[jitsi-meet] failed to load message reactions", {
             component: "jitsi-meet-module",
             operation: "load_message_reactions",
             error: error instanceof Error ? error.message : String(error),
@@ -208,7 +211,8 @@ async function fetchShareGuestProfile() {
         shareButtonModule =
             await import("/static/gateways/share/ui/reuse/share-button.js");
     } catch (error) {
-        console.error(
+        void logUi(
+            "error",
             "[jitsi-meet] failed to load share guest profile support",
             {
                 component: "jitsi-meet-module",

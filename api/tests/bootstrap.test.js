@@ -33,6 +33,7 @@ function createScopedRuntime() {
             scope.routes.push(record);
         };
         const ctx = {
+            log: () => undefined,
             moduleRoot: "/external-modules/jitsi-meet",
             getCapability: (capabilityId) => capabilities.get(capabilityId),
             contributePublicCapability(capabilityId, value) {

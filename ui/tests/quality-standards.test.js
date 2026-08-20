@@ -86,3 +86,32 @@ test("browser code uses host clients for gateway-owned data", () => {
         assert.doesNotMatch(source, /\/api\/v1\/(?:social|files|share)\//);
     }
 });
+
+test("browser feedback uses host capabilities", () => {
+    const feedbackSource = readFileSync(
+        resolve(ROOT, "ui/reuse/feedback.js"),
+        "utf8",
+    );
+    for (const capabilityName of [
+        "ui:log",
+        "ui:showToast",
+        "ui:openErrorPopup",
+    ]) {
+        assert.match(feedbackSource, new RegExp(`"${capabilityName}"`));
+    }
+
+    for (const file of [
+        "app.js",
+        "jitsi-chat.js",
+        "jitsi-helpers.js",
+        "jitsi-preflight.js",
+        "meeting-embed.js",
+        "navbar.js",
+        "share-button.js",
+        "reuse/json-response.js",
+    ]) {
+        const source = readFileSync(resolve(ROOT, "ui", file), "utf8");
+        assert.doesNotMatch(source, /console\.(?:error|warn|info|log)\(/);
+        assert.doesNotMatch(source, /\/static\/reuse\/toast\.js/);
+    }
+});

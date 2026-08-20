@@ -1,6 +1,7 @@
+import { logUi } from "./reuse/feedback.js";
 import { readJsonWithFallback } from "./reuse/json-response.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     HEARTBEAT_INTERVAL_MS,
@@ -376,7 +377,8 @@ export function createPreflightHandlers({
             try {
                 return apiInstance.isParticipantModerator() === true;
             } catch (error) {
-                console.warn(
+                void logUi(
+                    "warn",
                     "[jitsi-meet] failed to check Jitsi moderator status",
                     {
                         component: "jitsi-meet-module",
@@ -408,7 +410,8 @@ export function createPreflightHandlers({
         try {
             staleApi?.dispose?.();
         } catch (error) {
-            console.warn(
+            void logUi(
+                "warn",
                 "[jitsi-meet] failed to dispose stale meeting session",
                 {
                     component: "jitsi-meet-module",
@@ -422,7 +425,8 @@ export function createPreflightHandlers({
         void callbacks
             .joinMeeting()
             .catch((error) => {
-                console.error(
+                void logUi(
+                    "error",
                     "[jitsi-meet] failed to recover meeting session",
                     {
                         component: "jitsi-meet-module",

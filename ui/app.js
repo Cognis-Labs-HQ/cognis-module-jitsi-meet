@@ -1,3 +1,4 @@
+import { logUi, openErrorPopup } from "./reuse/feedback.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
@@ -5,7 +6,7 @@ import { createPageComposer } from "/static/reuse/page-composer/index.js";
 import { registerSearchIndex } from "/static/reuse/search-util/popup.js";
 import { mountWhenDirect } from "/static/reuse/page-entry.js";
 import { openSearchPopup } from "/static/reuse/search-util/popup.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     getShareContext,
@@ -986,10 +987,11 @@ await mountWhenDirect(async (root) => {
     const mountController = new AbortController();
     await mount(root, { signal: mountController.signal });
 }).catch((error) => {
-    console.error("[jitsi-meet] page mount failed", {
+    void logUi("error", "[jitsi-meet] page mount failed", {
         component: "jitsi-meet-module",
         operation: "mount_meetings_page",
         fatal: true,
         error: error instanceof Error ? error.message : String(error),
     });
+    void openErrorPopup({ error });
 });

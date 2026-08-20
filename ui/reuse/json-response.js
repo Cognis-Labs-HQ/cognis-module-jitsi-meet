@@ -1,3 +1,4 @@
+import { logUi } from "./feedback.js";
 /**
  * Parses JSON responses while recording an intentional fallback.
  *
@@ -17,7 +18,7 @@ export async function readJsonWithFallback(response, fallbackValue, operation) {
     try {
         return await response.json();
     } catch (error) {
-        console.error("[jitsi-meet] failed to parse JSON response", {
+        void logUi("error", "[jitsi-meet] failed to parse JSON response", {
             component: "jitsi-meet-module",
             operation,
             error: error instanceof Error ? error.message : String(error),
@@ -42,7 +43,7 @@ export async function resolveUiFallback(
     try {
         return await operationPromise;
     } catch (error) {
-        console.error("[jitsi-meet] asynchronous UI operation failed", {
+        void logUi("error", "[jitsi-meet] asynchronous UI operation failed", {
             component: "jitsi-meet-module",
             operation,
             error: error instanceof Error ? error.message : String(error),

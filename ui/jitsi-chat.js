@@ -1,8 +1,9 @@
+import { logUi } from "./reuse/feedback.js";
 import { readJsonWithFallback } from "./reuse/json-response.js";
 import { messagesClient } from "./reuse/gateway-clients.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { renderMarkdown } from "/static/reuse/markdown-renderer.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { formatTime } from "/static/reuse/timestamp.js";
 import { bytesToHex, hexToBytes } from "/static/reuse/crypto-utils.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
@@ -58,7 +59,7 @@ export function createChatHandlers({
             );
             return new TextDecoder().decode(decrypted);
         } catch (error) {
-            console.error("[jitsi-meet] failed to decrypt chat message", {
+            void logUi("error", "[jitsi-meet] failed to decrypt chat message", {
                 component: "jitsi-meet-module",
                 operation: "decrypt_chat_message",
                 error: error instanceof Error ? error.message : String(error),
@@ -330,7 +331,8 @@ export function createChatHandlers({
     async function activatePrivateChatForParticipant(username) {
         const normalizedUsername = normalizeUsername(username);
         if (!normalizedUsername) {
-            console.warn(
+            void logUi(
+                "warn",
                 "[jitsi-meet] invalid participant username for private chat",
                 {
                     component: "jitsi-meet-module",
@@ -362,16 +364,20 @@ export function createChatHandlers({
                 errorCode === "forbidden"
                     ? "module.jitsi_meet.chat.private_open_forbidden"
                     : "module.jitsi_meet.chat.private_open_unavailable";
-            console.error("[jitsi-meet] failed to open private chat room", {
-                operation: "open_private_chat",
-                targetUsername: normalizedUsername,
-                status: response.status,
-                errorCode,
-                errorMessage:
-                    typeof payload?.error?.message === "string"
-                        ? payload.error.message
-                        : null,
-            });
+            void logUi(
+                "error",
+                "[jitsi-meet] failed to open private chat room",
+                {
+                    operation: "open_private_chat",
+                    targetUsername: normalizedUsername,
+                    status: response.status,
+                    errorCode,
+                    errorMessage:
+                        typeof payload?.error?.message === "string"
+                            ? payload.error.message
+                            : null,
+                },
+            );
             showToast(i18n.t(errorMessageKey), {
                 variant: "error",
             });
@@ -384,7 +390,8 @@ export function createChatHandlers({
         );
         const roomId = normalizeChatRoomId(payload?.data?.id);
         if (!roomId) {
-            console.error(
+            void logUi(
+                "error",
                 "[jitsi-meet] private chat room response missing room id",
                 {
                     operation: "open_private_chat",

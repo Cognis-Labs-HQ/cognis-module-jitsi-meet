@@ -1,3 +1,4 @@
+import { logUi } from "./reuse/feedback.js";
 import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "./constants.js";
 import {
     resolveUrlOrigin,
@@ -70,7 +71,7 @@ export function buildMeetingJoinUrl(meetingUrl, profile) {
         parsed.hash = hashParams.toString();
         return parsed.toString();
     } catch (error) {
-        console.error("[jitsi-meet] failed to build meeting join URL", {
+        void logUi("error", "[jitsi-meet] failed to build meeting join URL", {
             component: "jitsi-meet-module",
             operation: "build_meeting_join_url",
             error: error instanceof Error ? error.message : String(error),
