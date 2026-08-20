@@ -7,3 +7,7 @@ Repository contribution instructions now include the applicable architecture, se
 ## Standalone scope
 
 Monorepo-only directory, Docker, gateway, adapter, Study, and central registry rules are explicitly excluded while their relevant architectural principles remain in force.
+
+## Repository compliance
+
+JavaScript formatting now follows the shared indentation and quoting rules, authenticated routes authorize callers before initializing persistence, and list APIs no longer impose undeclared server-side result caps. Intentional fallbacks are logged with structured context, and meeting session identifiers now require Web Crypto.

@@ -4,9 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { bootstrapModule } from '../../bootstrap.js';
 
 function createScopedRuntime() {
-  const capabilities = new Map([
-    ['auth:requireAuth', () => null],
-  ]);
+  const capabilities = new Map([['auth:requireAuth', () => null]]);
   const flows = new Set([
     'bootstrap-platform',
     'mint-share-token',
@@ -76,7 +74,8 @@ function createScopedRuntime() {
       }
       for (const flowId of scope.flows) flows.delete(flowId);
       for (const record of scope.hooks) hooks.splice(hooks.indexOf(record), 1);
-      for (const record of scope.routes) routes.splice(routes.indexOf(record), 1);
+      for (const record of scope.routes)
+        routes.splice(routes.indexOf(record), 1);
       for (const record of scope.uiContributions) {
         uiContributions.splice(uiContributions.indexOf(record), 1);
       }
@@ -86,9 +85,7 @@ function createScopedRuntime() {
   return {
     enable,
     snapshot: () => ({
-      contributedCapability: capabilities.has(
-        'meetings:isProviderAvailable',
-      ),
+      contributedCapability: capabilities.has('meetings:isProviderAvailable'),
       createdFlows: ['construct-meetings-ui', 'create-meeting'].filter(
         (flowId) => flows.has(flowId),
       ),

@@ -1,14 +1,15 @@
-import { readJson } from "./reuse/http.js";
-import { resolveRequesterUsername } from "./reuse/requester.js";
-import { resolveStore } from "./reuse/store-runtime.js";
+import { logApiFallback } from './reuse/log-fallback.js';
+import { readJson } from './reuse/http.js';
+import { resolveRequesterUsername } from './reuse/requester.js';
+import { resolveStore } from './reuse/store-runtime.js';
 
 function sendJson(res, status, payload) {
-    res.writeHead(status, { "content-type": "application/json" });
-    res.end(JSON.stringify(payload));
+  res.writeHead(status, { 'content-type': 'application/json' });
+  res.end(JSON.stringify(payload));
 }
 
 function sendError(res, status, code, message) {
-    sendJson(res, status, { error: { code, message } });
+  sendJson(res, status, { error: { code, message } });
 }
 
 /**
@@ -23,247 +24,235 @@ function sendError(res, status, code, message) {
  * @returns {string | null}
  */
 function resolveExpiry(hoursValue) {
-    if (
-        hoursValue === null ||
-        hoursValue === undefined ||
-        String(hoursValue).trim() === ""
-    ) {
-        return "";
-    }
-    const parsed = Number(hoursValue);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-        return null;
-    }
-    return new Date(Date.now() + parsed * 60 * 60 * 1000).toISOString();
+  if (
+    hoursValue === null ||
+    hoursValue === undefined ||
+    String(hoursValue).trim() === ''
+  ) {
+    return '';
+  }
+  const parsed = Number(hoursValue);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+  return new Date(Date.now() + parsed * 60 * 60 * 1000).toISOString();
 }
 
 async function requireOwnedMeeting({
-    meetingId,
-    claims,
-    profileStore,
-    store,
-    res,
+  meetingId,
+  claims,
+  profileStore,
+  store,
+  res,
 }) {
-    const meeting = await store.getMeetingById(meetingId);
-    if (!meeting) {
-        sendError(res, 404, "not_found", "Meeting not found.");
-        return null;
-    }
-    const requesterUsername = await resolveRequesterUsername(
-        profileStore,
-        claims.sub,
-    ).catch(() => "");
-    const participantUsernames = requesterUsername
-        ? await store.listParticipants(meeting.id)
-        : [];
-    const hasMeetingAccess =
-        requesterUsername &&
-        (requesterUsername === meeting.createdBy ||
-            participantUsernames.includes(requesterUsername));
-    if (!hasMeetingAccess) {
-        sendError(
-            res,
-            403,
-            "forbidden",
-            "Only current meeting participants may share this meeting.",
-        );
-        return null;
-    }
-    return meeting;
+  const meeting = await store.getMeetingById(meetingId);
+  if (!meeting) {
+    sendError(res, 404, 'not_found', 'Meeting not found.');
+    return null;
+  }
+  const requesterUsername = await resolveRequesterUsername(
+    profileStore,
+    claims.sub,
+  ).catch((error) => logApiFallback(error, 'share_routes_fallback', ''));
+  const participantUsernames = requesterUsername
+    ? await store.listParticipants(meeting.id)
+    : [];
+  const hasMeetingAccess =
+    requesterUsername &&
+    (requesterUsername === meeting.createdBy ||
+      participantUsernames.includes(requesterUsername));
+  if (!hasMeetingAccess) {
+    sendError(
+      res,
+      403,
+      'forbidden',
+      'Only current meeting participants may share this meeting.',
+    );
+    return null;
+  }
+  return meeting;
 }
 
 export function registerMeetingShareRoutes({
-    router,
-    ctx,
-    requireAuth,
-    profileStore,
+  router,
+  ctx,
+  requireAuth,
+  profileStore,
 }) {
-    const dbExecutor = ctx.getCapability("db:executor");
-    const log = ctx.getCapability("logging:log");
-    const systemCtx = ctx.getCapability("system:ctx");
-    const listSharesByResource = ctx.getCapability("share:listByResource");
-    if (
-        !dbExecutor ||
-        !profileStore ||
-        !systemCtx ||
-        typeof listSharesByResource !== "function"
-    ) {
-        router.get(
-            "/api/v1/modules/jitsi-meet/share",
-            async (_req, res) => {
-                sendError(
-                    res,
-                    503,
-                    "service_unavailable",
-                    "Share capabilities are unavailable.",
-                );
-            },
-            { access: { minRole: "user" } },
+  const dbExecutor = ctx.getCapability('db:executor');
+  const log = ctx.getCapability('logging:log');
+  const systemCtx = ctx.getCapability('system:ctx');
+  const listSharesByResource = ctx.getCapability('share:listByResource');
+  if (
+    !dbExecutor ||
+    !profileStore ||
+    !systemCtx ||
+    typeof listSharesByResource !== 'function'
+  ) {
+    router.get(
+      '/api/v1/modules/jitsi-meet/share',
+      async (_req, res) => {
+        sendError(
+          res,
+          503,
+          'service_unavailable',
+          'Share capabilities are unavailable.',
         );
-        router.post(
-            "/api/v1/modules/jitsi-meet/share",
-            async (_req, res) => {
-                sendError(
-                    res,
-                    503,
-                    "service_unavailable",
-                    "Share capabilities are unavailable.",
-                );
-            },
-            { access: { minRole: "user" } },
+      },
+      { access: { minRole: 'user' } },
+    );
+    router.post(
+      '/api/v1/modules/jitsi-meet/share',
+      async (_req, res) => {
+        sendError(
+          res,
+          503,
+          'service_unavailable',
+          'Share capabilities are unavailable.',
         );
-        router.post(
-            "/api/v1/modules/jitsi-meet/share/delete",
-            async (_req, res) => {
-                sendError(
-                    res,
-                    503,
-                    "service_unavailable",
-                    "Share capabilities are unavailable.",
-                );
-            },
-            { access: { minRole: "user" } },
+      },
+      { access: { minRole: 'user' } },
+    );
+    router.post(
+      '/api/v1/modules/jitsi-meet/share/delete',
+      async (_req, res) => {
+        sendError(
+          res,
+          503,
+          'service_unavailable',
+          'Share capabilities are unavailable.',
+        );
+      },
+      { access: { minRole: 'user' } },
+    );
+    return;
+  }
+
+  const store = resolveStore(dbExecutor, log);
+
+  router.get(
+    '/api/v1/modules/jitsi-meet/share',
+    async (req, res) => {
+      const claims = requireAuth(req, res, 'user');
+      if (!claims) return;
+      await store.ensureSchema();
+      const url = new URL(req.url, 'http://localhost');
+      const meetingId = String(url.searchParams.get('meetingId') ?? '').trim();
+      if (!meetingId) {
+        sendError(res, 400, 'bad_request', 'meetingId is required.');
+        return;
+      }
+      const meeting = await requireOwnedMeeting({
+        meetingId,
+        claims,
+        profileStore,
+        store,
+        res,
+      });
+      if (!meeting) return;
+      const shares = await listSharesByResource({
+        resourceType: 'meeting',
+        resourceId: meeting.id,
+      });
+      sendJson(res, 200, { data: shares });
+    },
+    { access: { minRole: 'user' } },
+  );
+
+  router.post(
+    '/api/v1/modules/jitsi-meet/share',
+    async (req, res) => {
+      const claims = requireAuth(req, res, 'user');
+      if (!claims) return;
+      await store.ensureSchema();
+      const body = await readJson(req);
+      const meetingId = String(body.meetingId ?? '').trim();
+      if (!meetingId) {
+        sendError(res, 400, 'bad_request', 'meetingId is required.');
+        return;
+      }
+      const meeting = await requireOwnedMeeting({
+        meetingId,
+        claims,
+        profileStore,
+        store,
+        res,
+      });
+      if (!meeting) return;
+      const expiresAt = resolveExpiry(body.expiresInHours);
+      if (expiresAt === null) {
+        sendError(
+          res,
+          400,
+          'bad_request',
+          'expiresInHours must be a positive number.',
         );
         return;
-    }
+      }
+      const flowResult = await systemCtx.flow.run('mint-share-token', {
+        claims,
+        ownerAccountId: claims.sub,
+        resourceType: 'meeting',
+        resourceId: meeting.id,
+        label: typeof body.label === 'string' ? body.label : '',
+        grantedCapabilities: [
+          'meeting:join',
+          'participants:read',
+          'chat:read',
+          'chat:write',
+        ],
+        expiresAt,
+      });
+      const issued = flowResult.stageResults['issue-token']?.[0];
+      if (!issued?.minted) {
+        sendError(res, 403, 'forbidden', 'Share token could not be created.');
+        return;
+      }
+      sendJson(res, 200, { data: issued.shareRecord ?? null });
+    },
+    { access: { minRole: 'user' } },
+  );
 
-    const store = resolveStore(dbExecutor, log);
-
-    router.get(
-        "/api/v1/modules/jitsi-meet/share",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "user");
-            if (!claims) return;
-            await store.ensureSchema();
-            const url = new URL(req.url, "http://localhost");
-            const meetingId = String(
-                url.searchParams.get("meetingId") ?? "",
-            ).trim();
-            if (!meetingId) {
-                sendError(res, 400, "bad_request", "meetingId is required.");
-                return;
-            }
-            const meeting = await requireOwnedMeeting({
-                meetingId,
-                claims,
-                profileStore,
-                store,
-                res,
-            });
-            if (!meeting) return;
-            const shares = await listSharesByResource({
-                resourceType: "meeting",
-                resourceId: meeting.id,
-            });
-            sendJson(res, 200, { data: shares });
-        },
-        { access: { minRole: "user" } },
-    );
-
-    router.post(
-        "/api/v1/modules/jitsi-meet/share",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "user");
-            if (!claims) return;
-            await store.ensureSchema();
-            const body = await readJson(req);
-            const meetingId = String(body.meetingId ?? "").trim();
-            if (!meetingId) {
-                sendError(res, 400, "bad_request", "meetingId is required.");
-                return;
-            }
-            const meeting = await requireOwnedMeeting({
-                meetingId,
-                claims,
-                profileStore,
-                store,
-                res,
-            });
-            if (!meeting) return;
-            const expiresAt = resolveExpiry(body.expiresInHours);
-            if (expiresAt === null) {
-                sendError(
-                    res,
-                    400,
-                    "bad_request",
-                    "expiresInHours must be a positive number.",
-                );
-                return;
-            }
-            const flowResult = await systemCtx.flow.run("mint-share-token", {
-                claims,
-                ownerAccountId: claims.sub,
-                resourceType: "meeting",
-                resourceId: meeting.id,
-                label: typeof body.label === "string" ? body.label : "",
-                grantedCapabilities: [
-                    "meeting:join",
-                    "participants:read",
-                    "chat:read",
-                    "chat:write",
-                ],
-                expiresAt,
-            });
-            const issued = flowResult.stageResults["issue-token"]?.[0];
-            if (!issued?.minted) {
-                sendError(
-                    res,
-                    403,
-                    "forbidden",
-                    "Share token could not be created.",
-                );
-                return;
-            }
-            sendJson(res, 200, { data: issued.shareRecord ?? null });
-        },
-        { access: { minRole: "user" } },
-    );
-
-    router.post(
-        "/api/v1/modules/jitsi-meet/share/delete",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "user");
-            if (!claims) return;
-            await store.ensureSchema();
-            const body = await readJson(req);
-            const meetingId = String(body.meetingId ?? "").trim();
-            const shareId = String(body.shareId ?? "").trim();
-            if (!meetingId || !shareId) {
-                sendError(
-                    res,
-                    400,
-                    "bad_request",
-                    "meetingId and shareId are required.",
-                );
-                return;
-            }
-            const meeting = await requireOwnedMeeting({
-                meetingId,
-                claims,
-                profileStore,
-                store,
-                res,
-            });
-            if (!meeting) return;
-            const flowResult = await systemCtx.flow.run("revoke-share-token", {
-                claims,
-                shareId,
-                ownerAccountId: claims.sub,
-                resourceType: "meeting",
-                resourceId: meeting.id,
-            });
-            const deleted = flowResult.stageResults["delete-token"]?.[0];
-            if (!deleted?.revoked) {
-                sendError(
-                    res,
-                    403,
-                    "forbidden",
-                    "Share token could not be revoked.",
-                );
-                return;
-            }
-            sendJson(res, 200, { data: { deleted: true } });
-        },
-        { access: { minRole: "user" } },
-    );
+  router.post(
+    '/api/v1/modules/jitsi-meet/share/delete',
+    async (req, res) => {
+      const claims = requireAuth(req, res, 'user');
+      if (!claims) return;
+      await store.ensureSchema();
+      const body = await readJson(req);
+      const meetingId = String(body.meetingId ?? '').trim();
+      const shareId = String(body.shareId ?? '').trim();
+      if (!meetingId || !shareId) {
+        sendError(
+          res,
+          400,
+          'bad_request',
+          'meetingId and shareId are required.',
+        );
+        return;
+      }
+      const meeting = await requireOwnedMeeting({
+        meetingId,
+        claims,
+        profileStore,
+        store,
+        res,
+      });
+      if (!meeting) return;
+      const flowResult = await systemCtx.flow.run('revoke-share-token', {
+        claims,
+        shareId,
+        ownerAccountId: claims.sub,
+        resourceType: 'meeting',
+        resourceId: meeting.id,
+      });
+      const deleted = flowResult.stageResults['delete-token']?.[0];
+      if (!deleted?.revoked) {
+        sendError(res, 403, 'forbidden', 'Share token could not be revoked.');
+        return;
+      }
+      sendJson(res, 200, { data: { deleted: true } });
+    },
+    { access: { minRole: 'user' } },
+  );
 }

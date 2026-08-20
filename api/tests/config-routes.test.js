@@ -15,6 +15,7 @@ function createResponse() {
 
 test('config endpoint polls and persists the module-owned configuration', async () => {
   const handlers = {};
+  const operations = [];
   let config = { instanceUrl: 'https://meet.example.test', meetingPrefix: '' };
   registerMeetingConfigRoutes({
     router: {
@@ -26,14 +27,17 @@ test('config endpoint polls and persists the module-owned configuration', async 
       },
     },
     store: {
-      ensureSchema: async () => {},
+      ensureSchema: async () => operations.push('ensure_schema'),
       getConfig: async () => config,
       saveConfig: async (values) => {
         config = values;
         return config;
       },
     },
-    requireAuth: (_request, _response, role) => ({ sub: 'admin', role }),
+    requireAuth: (_request, _response, role) => {
+      operations.push(`authorize_${role}`);
+      return { sub: 'admin', role };
+    },
     readJson: async () => ({
       instanceUrl: 'https://broken.example.test',
       meetingPrefix: ' Team Room ',
@@ -58,4 +62,5 @@ test('config endpoint polls and persists the module-owned configuration', async 
     instanceUrl: 'https://broken.example.test',
     meetingPrefix: 'team-room',
   });
+  assert.deepEqual(operations.slice(-2), ['authorize_admin', 'ensure_schema']);
 });

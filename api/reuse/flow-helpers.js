@@ -6,9 +6,9 @@
  * @returns {unknown | null}
  */
 export function getFirstStageResult(stageResults, stageId) {
-    const results = stageResults?.[stageId];
-    if (!Array.isArray(results)) return null;
-    return results[0] ?? null;
+  const results = stageResults?.[stageId];
+  if (!Array.isArray(results)) return null;
+  return results[0] ?? null;
 }
 
 /**
@@ -20,7 +20,7 @@ export function getFirstStageResult(stageResults, stageId) {
  * @returns {unknown | null}
  */
 export function getFirstMatchingStageResult(stageResults, stageId, predicate) {
-    const results = stageResults?.[stageId];
-    if (!Array.isArray(results)) return null;
-    return results.find((result) => predicate(result)) ?? null;
+  const results = stageResults?.[stageId];
+  if (!Array.isArray(results)) return null;
+  return results.find((result) => predicate(result)) ?? null;
 }

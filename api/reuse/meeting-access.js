@@ -1,9 +1,7 @@
-import { normalizeHandleKey } from "./normalize-handle.js";
-import {
-    hasShareCapability,
-    resolveShareGuestId,
-} from "./share-guest.js";
-import { resolveRequesterUsername } from "./requester.js";
+import { logApiFallback } from './log-fallback.js';
+import { normalizeHandleKey } from './normalize-handle.js';
+import { hasShareCapability, resolveShareGuestId } from './share-guest.js';
+import { resolveRequesterUsername } from './requester.js';
 
 /**
  * Derives the synthetic presence username used to track a share guest's
@@ -18,58 +16,60 @@ import { resolveRequesterUsername } from "./requester.js";
  *   claims do not resolve to a share guest.
  */
 export function resolveShareGuestPresenceUsername(claims) {
-    const shareGuestId = resolveShareGuestId(claims);
-    return shareGuestId ? `guest:${shareGuestId}` : "";
+  const shareGuestId = resolveShareGuestId(claims);
+  return shareGuestId ? `guest:${shareGuestId}` : '';
 }
 
 export async function resolveShareGuestMeetingAccess({
-    claims,
-    meetingId,
-    getShareTokenById,
-    requiredCapability = "",
+  claims,
+  meetingId,
+  getShareTokenById,
+  requiredCapability = '',
 }) {
-    const shareGuestId = resolveShareGuestId(claims);
-    if (!shareGuestId) {
-        return { isGuest: false, allowed: false, tokenRecord: null };
-    }
-    if (typeof getShareTokenById !== "function") {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const tokenRecord = await getShareTokenById(shareGuestId).catch(() => null);
-    if (!tokenRecord) {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const matchesMeeting =
-        tokenRecord.resourceType === "meeting" &&
-        tokenRecord.resourceId === meetingId;
-    if (!matchesMeeting) {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const allowed = hasShareCapability(tokenRecord, requiredCapability);
-    return {
-        isGuest: true,
-        allowed,
-        tokenRecord: allowed ? tokenRecord : null,
-    };
+  const shareGuestId = resolveShareGuestId(claims);
+  if (!shareGuestId) {
+    return { isGuest: false, allowed: false, tokenRecord: null };
+  }
+  if (typeof getShareTokenById !== 'function') {
+    return { isGuest: true, allowed: false, tokenRecord: null };
+  }
+  const tokenRecord = await getShareTokenById(shareGuestId).catch((error) =>
+    logApiFallback(error, 'meeting_access_fallback', null),
+  );
+  if (!tokenRecord) {
+    return { isGuest: true, allowed: false, tokenRecord: null };
+  }
+  const matchesMeeting =
+    tokenRecord.resourceType === 'meeting' &&
+    tokenRecord.resourceId === meetingId;
+  if (!matchesMeeting) {
+    return { isGuest: true, allowed: false, tokenRecord: null };
+  }
+  const allowed = hasShareCapability(tokenRecord, requiredCapability);
+  return {
+    isGuest: true,
+    allowed,
+    tokenRecord: allowed ? tokenRecord : null,
+  };
 }
 
 export async function resolveRequestedParticipants(
-    profileStore,
-    requestedHandles,
-    { includeHidden = false } = {},
+  profileStore,
+  requestedHandles,
+  { includeHidden = false } = {},
 ) {
-    const usernames = [];
-    for (const candidate of Array.isArray(requestedHandles)
-        ? requestedHandles
-        : []) {
-        const normalizedHandle = normalizeHandleKey(candidate);
-        if (!normalizedHandle) continue;
-        const profile = await profileStore.getProfileByHandle(normalizedHandle);
-        if (!profile?.handle) continue;
-        if (!includeHidden && profile.visibility === "hidden") continue;
-        usernames.push(normalizeHandleKey(profile.handle));
-    }
-    return usernames;
+  const usernames = [];
+  for (const candidate of Array.isArray(requestedHandles)
+    ? requestedHandles
+    : []) {
+    const normalizedHandle = normalizeHandleKey(candidate);
+    if (!normalizedHandle) continue;
+    const profile = await profileStore.getProfileByHandle(normalizedHandle);
+    if (!profile?.handle) continue;
+    if (!includeHidden && profile.visibility === 'hidden') continue;
+    usernames.push(normalizeHandleKey(profile.handle));
+  }
+  return usernames;
 }
 
 /**
@@ -83,174 +83,173 @@ export async function resolveRequestedParticipants(
  * @returns {Promise<string[]>}
  */
 export async function filterUsernamesForGuestVisibility(
-    profileStore,
-    usernames,
+  profileStore,
+  usernames,
 ) {
-    const visibleUsernames = [];
-    for (const candidate of Array.isArray(usernames) ? usernames : []) {
-        const normalizedHandle = normalizeHandleKey(candidate);
-        if (!normalizedHandle) continue;
-        const profile = await profileStore
-            .getProfileByHandle(normalizedHandle)
-            .catch(() => null);
-        if (profile?.visibility === "community") {
-            visibleUsernames.push(normalizedHandle);
-        }
+  const visibleUsernames = [];
+  for (const candidate of Array.isArray(usernames) ? usernames : []) {
+    const normalizedHandle = normalizeHandleKey(candidate);
+    if (!normalizedHandle) continue;
+    const profile = await profileStore
+      .getProfileByHandle(normalizedHandle)
+      .catch((error) => logApiFallback(error, 'meeting_access_fallback', null));
+    if (profile?.visibility === 'community') {
+      visibleUsernames.push(normalizedHandle);
     }
-    return visibleUsernames;
+  }
+  return visibleUsernames;
 }
 
 export async function canAccessMeeting({
-    store,
-    meeting,
-    username,
-    listClassroomParticipantHandles,
-    profileStore = null,
-    requesterAccountId = "",
-    resolveShareUserAccess = null,
+  store,
+  meeting,
+  username,
+  listClassroomParticipantHandles,
+  profileStore = null,
+  requesterAccountId = '',
+  resolveShareUserAccess = null,
 }) {
-    const directParticipants = await store.listParticipants(meeting.id);
-    const normalizedRequesterAccountId = normalizeHandleKey(requesterAccountId);
-    let requesterMatchesParticipantAccount = directParticipants.includes(
-        normalizedRequesterAccountId,
-    );
-    if (profileStore && requesterAccountId) {
-        const possibleBlockingUsers = Array.from(
-            new Set([meeting.createdBy, ...directParticipants]),
-        ).filter(Boolean);
-        for (const handle of possibleBlockingUsers) {
-            const profile = await profileStore
-                .getProfileByHandle(handle)
-                .catch(() => null);
-            if (
-                profile?.accountId &&
-                profile.accountId !== requesterAccountId &&
-                (await profileStore.isBlocked(
-                    profile.accountId,
-                    requesterAccountId,
-                ))
-            ) {
-                return false;
-            }
-            if (
-                directParticipants.includes(handle) &&
-                profile?.accountId === requesterAccountId
-            ) {
-                requesterMatchesParticipantAccount = true;
-            }
-        }
-    }
-    if (
-        directParticipants.includes(username) ||
-        requesterMatchesParticipantAccount
-    ) {
-        return true;
-    }
-    if (typeof resolveShareUserAccess === "function" && requesterAccountId) {
-        const shareAccess = await resolveShareUserAccess({
-            accountId: requesterAccountId,
-            resourceType: "meeting",
-            resourceId: meeting.id,
-            requiredCapability: "meeting:join",
-        }).catch(() => null);
-        if (shareAccess?.authorized) return true;
-    }
-    if (!meeting.classroomId) {
+  const directParticipants = await store.listParticipants(meeting.id);
+  const normalizedRequesterAccountId = normalizeHandleKey(requesterAccountId);
+  let requesterMatchesParticipantAccount = directParticipants.includes(
+    normalizedRequesterAccountId,
+  );
+  if (profileStore && requesterAccountId) {
+    const possibleBlockingUsers = Array.from(
+      new Set([meeting.createdBy, ...directParticipants]),
+    ).filter(Boolean);
+    for (const handle of possibleBlockingUsers) {
+      const profile = await profileStore
+        .getProfileByHandle(handle)
+        .catch((error) =>
+          logApiFallback(error, 'meeting_access_fallback', null),
+        );
+      if (
+        profile?.accountId &&
+        profile.accountId !== requesterAccountId &&
+        (await profileStore.isBlocked(profile.accountId, requesterAccountId))
+      ) {
         return false;
+      }
+      if (
+        directParticipants.includes(handle) &&
+        profile?.accountId === requesterAccountId
+      ) {
+        requesterMatchesParticipantAccount = true;
+      }
     }
-    const classroomUsernames = await listClassroomParticipantHandles({
-        classId: meeting.classroomId,
-    });
-    return classroomUsernames.includes(username);
+  }
+  if (
+    directParticipants.includes(username) ||
+    requesterMatchesParticipantAccount
+  ) {
+    return true;
+  }
+  if (typeof resolveShareUserAccess === 'function' && requesterAccountId) {
+    const shareAccess = await resolveShareUserAccess({
+      accountId: requesterAccountId,
+      resourceType: 'meeting',
+      resourceId: meeting.id,
+      requiredCapability: 'meeting:join',
+    }).catch((error) => logApiFallback(error, 'meeting_access_fallback', null));
+    if (shareAccess?.authorized) return true;
+  }
+  if (!meeting.classroomId) {
+    return false;
+  }
+  const classroomUsernames = await listClassroomParticipantHandles({
+    classId: meeting.classroomId,
+  });
+  return classroomUsernames.includes(username);
 }
 
 export async function resolveMeetingPayloadOrReject({
-    body,
-    profileStore,
-    store,
-    claims,
-    sendError,
-    res,
-    listClassroomParticipantHandles,
-    resolveShareUserAccess = null,
+  body,
+  profileStore,
+  store,
+  claims,
+  sendError,
+  res,
+  listClassroomParticipantHandles,
+  resolveShareUserAccess = null,
 }) {
-    const requesterUsername = await resolveRequesterUsername(
-        profileStore,
-        claims.sub,
-    ).catch((error) => {
-        sendError(res, 409, "profile_required", error.message);
-        return null;
-    });
-    if (!requesterUsername) return null;
-    const meetingId = String(body.meetingId ?? "").trim();
-    if (!meetingId) {
-        sendError(res, 400, "bad_request", "meetingId is required.");
-        return null;
-    }
-    const meeting = await store.getMeetingById(meetingId);
-    if (!meeting) {
-        sendError(res, 404, "not_found", "Meeting not found.");
-        return null;
-    }
-    const authorized = await canAccessMeeting({
-        store,
-        meeting,
-        username: requesterUsername,
-        listClassroomParticipantHandles,
-        profileStore,
-        requesterAccountId: claims.sub,
-        resolveShareUserAccess,
-    });
-    if (!authorized) {
-        sendError(
-            res,
-            403,
-            "forbidden",
-            "You are not listed as an allowed meeting participant.",
-        );
-        return null;
-    }
-    const participants = await store.listParticipants(meeting.id);
-    if (
-        typeof resolveShareUserAccess === "function" &&
-        !participants.includes(requesterUsername)
-    ) {
-        const shareAccess = await resolveShareUserAccess({
-            accountId: claims.sub,
-            resourceType: "meeting",
-            resourceId: meeting.id,
-            requiredCapability: "meeting:join",
-        }).catch(() => null);
-        if (shareAccess?.authorized) participants.push(requesterUsername);
-    }
-    const state = await store.getMeetingState(meeting.id);
-    return {
-        meeting,
-        participants,
-        state,
-        requesterUsername,
-    };
+  const requesterUsername = await resolveRequesterUsername(
+    profileStore,
+    claims.sub,
+  ).catch((error) => {
+    sendError(res, 409, 'profile_required', error.message);
+    return null;
+  });
+  if (!requesterUsername) return null;
+  const meetingId = String(body.meetingId ?? '').trim();
+  if (!meetingId) {
+    sendError(res, 400, 'bad_request', 'meetingId is required.');
+    return null;
+  }
+  const meeting = await store.getMeetingById(meetingId);
+  if (!meeting) {
+    sendError(res, 404, 'not_found', 'Meeting not found.');
+    return null;
+  }
+  const authorized = await canAccessMeeting({
+    store,
+    meeting,
+    username: requesterUsername,
+    listClassroomParticipantHandles,
+    profileStore,
+    requesterAccountId: claims.sub,
+    resolveShareUserAccess,
+  });
+  if (!authorized) {
+    sendError(
+      res,
+      403,
+      'forbidden',
+      'You are not listed as an allowed meeting participant.',
+    );
+    return null;
+  }
+  const participants = await store.listParticipants(meeting.id);
+  if (
+    typeof resolveShareUserAccess === 'function' &&
+    !participants.includes(requesterUsername)
+  ) {
+    const shareAccess = await resolveShareUserAccess({
+      accountId: claims.sub,
+      resourceType: 'meeting',
+      resourceId: meeting.id,
+      requiredCapability: 'meeting:join',
+    }).catch((error) => logApiFallback(error, 'meeting_access_fallback', null));
+    if (shareAccess?.authorized) participants.push(requesterUsername);
+  }
+  const state = await store.getMeetingState(meeting.id);
+  return {
+    meeting,
+    participants,
+    state,
+    requesterUsername,
+  };
 }
 
 export async function createMeetingPayload({
-    store,
-    meeting,
-    state,
-    participants,
-    requesterUsername,
+  store,
+  meeting,
+  state,
+  participants,
+  requesterUsername,
+  chatUrl,
+  requiresReclaim,
+  meetingPassword = '',
+}) {
+  return store.buildMeetingPayload(meeting, participants, state, {
     chatUrl,
     requiresReclaim,
-    meetingPassword = "",
-}) {
-    return store.buildMeetingPayload(meeting, participants, state, {
-        chatUrl,
-        requiresReclaim,
-        meetingPassword,
-        canAuthenticate:
-            store.canCurrentUserInitiateAuth(state, requesterUsername) === true,
-        waitingForAuthentication:
-            state.authRequired &&
-            !state.authCompletedAt &&
-            !store.canCurrentUserInitiateAuth(state, requesterUsername),
-    });
+    meetingPassword,
+    canAuthenticate:
+      store.canCurrentUserInitiateAuth(state, requesterUsername) === true,
+    waitingForAuthentication:
+      state.authRequired &&
+      !state.authCompletedAt &&
+      !store.canCurrentUserInitiateAuth(state, requesterUsername),
+  });
 }
