@@ -118,7 +118,7 @@ npm test
 git diff --check
 ```
 
-Use two-space indentation, single quotes in JavaScript, and trailing commas for multiline arrays and objects. Avoid tabs and trailing whitespace. Never wrap imports in `try`/`catch`.
+Use four-space indentation, double quotes in JavaScript, and trailing commas for multiline arrays and objects. Avoid tabs and trailing whitespace. Never wrap imports in `try`/`catch`.
 
 TypeScript exports require explicit return types. Avoid `any`; when it is genuinely unavoidable, document the technical reason.
 

@@ -10,4 +10,4 @@ Regeln, die ausschließlich Verzeichnisse, Docker, Gateways, Adapter, Study und 
 
 ## Repository-Konformität
 
-Die JavaScript-Formatierung folgt nun den gemeinsamen Einrückungs- und Anführungszeichenregeln, authentifizierte Routen autorisieren Aufrufende vor der Initialisierung der Persistenz und Listen-APIs erzwingen keine nicht deklarierten serverseitigen Ergebnisgrenzen mehr. Beabsichtigte Rückfallpfade werden mit strukturiertem Kontext protokolliert und Meeting-Sitzungskennungen erfordern nun Web Crypto.
+Die JavaScript-Formatierung folgt nun der Cognis-Prettier-Konfiguration mit vier Leerzeichen, authentifizierte Routen autorisieren Aufrufende vor der Initialisierung der Persistenz und Listen-APIs erzwingen keine nicht deklarierten serverseitigen Ergebnisgrenzen mehr. Die Cognis-Prüfungen für Formatierung, Lesbarkeit und mehrdeutige Namen laufen nun lokal. Beabsichtigte Rückfallpfade werden mit strukturiertem Kontext protokolliert und Meeting-Sitzungskennungen erfordern Web Crypto.

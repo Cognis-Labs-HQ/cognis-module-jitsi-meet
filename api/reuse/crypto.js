@@ -23,12 +23,12 @@
  * @module api/reuse/crypto
  */
 
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes } from "node:crypto";
 
-const ENCRYPT_ALG = 'AES-GCM';
+const ENCRYPT_ALG = "AES-GCM";
 const IV_BYTES = 12;
 const KEY_BITS = 256;
-const HKDF_SALT = new TextEncoder().encode('cognis-data-v1');
+const HKDF_SALT = new TextEncoder().encode("cognis-data-v1");
 
 /**
  * Per-process random fallback used when DATA_ENCRYPTION_KEY is unset.
@@ -49,10 +49,10 @@ const HKDF_SALT = new TextEncoder().encode('cognis-data-v1');
 let processFallbackSecret = null;
 
 function getOrCreateFallbackSecret() {
-  if (!processFallbackSecret) {
-    processFallbackSecret = randomBytes(32).toString('hex');
-  }
-  return processFallbackSecret;
+    if (!processFallbackSecret) {
+        processFallbackSecret = randomBytes(32).toString("hex");
+    }
+    return processFallbackSecret;
 }
 
 /**
@@ -60,7 +60,7 @@ function getOrCreateFallbackSecret() {
  * @returns Lowercase hex-encoded SHA-256 digest.
  */
 export function sha256Of(content) {
-  return createHash('sha256').update(content, 'utf8').digest('hex');
+    return createHash("sha256").update(content, "utf8").digest("hex");
 }
 
 /**
@@ -70,7 +70,7 @@ export function sha256Of(content) {
  * bootstrap, for example, throws in production when this is empty).
  */
 export function getDataEncryptionKey() {
-  return process.env.DATA_ENCRYPTION_KEY ?? '';
+    return process.env.DATA_ENCRYPTION_KEY ?? "";
 }
 
 /**
@@ -86,32 +86,32 @@ export function getDataEncryptionKey() {
  * @returns A non-extractable CryptoKey for encrypt/decrypt operations.
  */
 export async function deriveScopedKey(scope, serverSecret) {
-  const subtle = globalThis.crypto.subtle;
-  const enc = new TextEncoder();
-  const effectiveSecret =
-    serverSecret.length > 0 ? serverSecret : getOrCreateFallbackSecret();
-  const keyMaterial = enc.encode(effectiveSecret);
+    const subtle = globalThis.crypto.subtle;
+    const enc = new TextEncoder();
+    const effectiveSecret =
+        serverSecret.length > 0 ? serverSecret : getOrCreateFallbackSecret();
+    const keyMaterial = enc.encode(effectiveSecret);
 
-  const baseKey = await subtle.importKey(
-    'raw',
-    keyMaterial,
-    { name: 'HKDF' },
-    false,
-    ['deriveKey'],
-  );
+    const baseKey = await subtle.importKey(
+        "raw",
+        keyMaterial,
+        { name: "HKDF" },
+        false,
+        ["deriveKey"],
+    );
 
-  return subtle.deriveKey(
-    {
-      name: 'HKDF',
-      hash: 'SHA-256',
-      salt: HKDF_SALT,
-      info: enc.encode(scope),
-    },
-    baseKey,
-    { name: ENCRYPT_ALG, length: KEY_BITS },
-    false,
-    ['encrypt', 'decrypt'],
-  );
+    return subtle.deriveKey(
+        {
+            name: "HKDF",
+            hash: "SHA-256",
+            salt: HKDF_SALT,
+            info: enc.encode(scope),
+        },
+        baseKey,
+        { name: ENCRYPT_ALG, length: KEY_BITS },
+        false,
+        ["encrypt", "decrypt"],
+    );
 }
 
 /**
@@ -122,19 +122,19 @@ export async function deriveScopedKey(scope, serverSecret) {
  * @returns Hex-encoded IV and ciphertext (including the GCM authentication tag).
  */
 export async function encryptPayload(key, plaintext) {
-  const subtle = globalThis.crypto.subtle;
-  const initVector = globalThis.crypto.getRandomValues(
-    new Uint8Array(IV_BYTES),
-  );
-  const encrypted = await subtle.encrypt(
-    { name: ENCRYPT_ALG, iv: initVector },
-    key,
-    new TextEncoder().encode(plaintext),
-  );
-  return {
-    iv: Buffer.from(initVector).toString('hex'),
-    ciphertext: Buffer.from(encrypted).toString('hex'),
-  };
+    const subtle = globalThis.crypto.subtle;
+    const initVector = globalThis.crypto.getRandomValues(
+        new Uint8Array(IV_BYTES),
+    );
+    const encrypted = await subtle.encrypt(
+        { name: ENCRYPT_ALG, iv: initVector },
+        key,
+        new TextEncoder().encode(plaintext),
+    );
+    return {
+        iv: Buffer.from(initVector).toString("hex"),
+        ciphertext: Buffer.from(encrypted).toString("hex"),
+    };
 }
 
 /**
@@ -147,11 +147,11 @@ export async function encryptPayload(key, plaintext) {
  * @throws If the key, IV, or ciphertext does not match (authentication failure).
  */
 export async function decryptPayload(key, iv, ciphertext) {
-  const subtle = globalThis.crypto.subtle;
-  const decrypted = await subtle.decrypt(
-    { name: ENCRYPT_ALG, iv: Buffer.from(iv, 'hex') },
-    key,
-    Buffer.from(ciphertext, 'hex'),
-  );
-  return new TextDecoder().decode(decrypted);
+    const subtle = globalThis.crypto.subtle;
+    const decrypted = await subtle.decrypt(
+        { name: ENCRYPT_ALG, iv: Buffer.from(iv, "hex") },
+        key,
+        Buffer.from(ciphertext, "hex"),
+    );
+    return new TextDecoder().decode(decrypted);
 }

@@ -1,14 +1,14 @@
-import { logApiFallback } from './reuse/log-fallback.js';
-import { resolveStore } from './reuse/store-runtime.js';
-import { resolveRequesterUsername } from './reuse/requester.js';
+import { logApiFallback } from "./reuse/log-fallback.js";
+import { resolveStore } from "./reuse/store-runtime.js";
+import { resolveRequesterUsername } from "./reuse/requester.js";
 import {
-  getFirstMatchingStageResult,
-  getFirstStageResult,
-} from './reuse/flow-helpers.js';
+    getFirstMatchingStageResult,
+    getFirstStageResult,
+} from "./reuse/flow-helpers.js";
 import {
-  resolveMessagesUiResources,
-  resolveSharedMessagesStylesheetUrls,
-} from './ui-resources.js';
+    resolveMessagesUiResources,
+    resolveSharedMessagesStylesheetUrls,
+} from "./ui-resources.js";
 
 /**
  * Determines whether an already-authenticated requester (identified by
@@ -24,377 +24,393 @@ import {
  * @returns {Promise<boolean>}
  */
 async function requesterHasDirectMeetingAccess(
-  ctx,
-  requesterClaims,
-  meetingId,
+    ctx,
+    requesterClaims,
+    meetingId,
 ) {
-  const dbExecutor = ctx.getCapability('db:executor');
-  const profileStore = ctx.getCapability('social:profileStore');
-  const log = ctx.getCapability('logging:log');
-  if (!dbExecutor || !profileStore || !meetingId) {
-    return false;
-  }
-  const store = resolveStore(dbExecutor, log);
-  await store.ensureSchema();
-  const requesterUsername = await resolveRequesterUsername(
-    profileStore,
-    String(requesterClaims?.sub ?? ''),
-  ).catch((error) => logApiFallback(error, 'share_hooks_fallback', ''));
-  if (!requesterUsername) {
-    return false;
-  }
-  const meeting = await store.getMeetingById(meetingId);
-  if (!meeting) {
-    return false;
-  }
-  if (requesterUsername === meeting.createdBy) {
-    return true;
-  }
-  const participants = await store
-    .listParticipants(meeting.id)
-    .catch((error) => logApiFallback(error, 'share_hooks_fallback', []));
-  return participants.includes(requesterUsername);
+    const dbExecutor = ctx.getCapability("db:executor");
+    const profileStore = ctx.getCapability("social:profileStore");
+    const log = ctx.getCapability("logging:log");
+    if (!dbExecutor || !profileStore || !meetingId) {
+        return false;
+    }
+    const store = resolveStore(dbExecutor, log);
+    await store.ensureSchema();
+    const requesterUsername = await resolveRequesterUsername(
+        profileStore,
+        String(requesterClaims?.sub ?? ""),
+    ).catch((error) => logApiFallback(error, "share_hooks_fallback", ""));
+    if (!requesterUsername) {
+        return false;
+    }
+    const meeting = await store.getMeetingById(meetingId);
+    if (!meeting) {
+        return false;
+    }
+    if (requesterUsername === meeting.createdBy) {
+        return true;
+    }
+    const participants = await store
+        .listParticipants(meeting.id)
+        .catch((error) => logApiFallback(error, "share_hooks_fallback", []));
+    return participants.includes(requesterUsername);
 }
 
 async function resolveMeetingRequesterAccess({
-  store,
-  profileStore,
-  requesterAccountId,
-  meeting,
-}) {
-  const requesterUsername = await resolveRequesterUsername(
+    store,
     profileStore,
     requesterAccountId,
-  ).catch((error) => logApiFallback(error, 'share_hooks_fallback', ''));
-  if (!requesterUsername) {
-    return { isParticipant: false };
-  }
-  const participantUsernames = await store
-    .listParticipants(meeting.id)
-    .catch((error) => logApiFallback(error, 'share_hooks_fallback', []));
-  return {
-    isParticipant:
-      requesterUsername === meeting.createdBy ||
-      participantUsernames.includes(requesterUsername),
-  };
+    meeting,
+}) {
+    const requesterUsername = await resolveRequesterUsername(
+        profileStore,
+        requesterAccountId,
+    ).catch((error) => logApiFallback(error, "share_hooks_fallback", ""));
+    if (!requesterUsername) {
+        return { isParticipant: false };
+    }
+    const participantUsernames = await store
+        .listParticipants(meeting.id)
+        .catch((error) => logApiFallback(error, "share_hooks_fallback", []));
+    return {
+        isParticipant:
+            requesterUsername === meeting.createdBy ||
+            participantUsernames.includes(requesterUsername),
+    };
 }
 
 export function registerShareFlowHooks(ctx) {
-  if (
-    !ctx.flow.exists('mint-share-token') ||
-    !ctx.flow.exists('resolve-share-token')
-  ) {
-    return;
-  }
+    if (
+        !ctx.flow.exists("mint-share-token") ||
+        !ctx.flow.exists("resolve-share-token")
+    ) {
+        return;
+    }
 
-  if (ctx.flow.exists('resolve-share-approval-targets')) {
+    if (ctx.flow.exists("resolve-share-approval-targets")) {
+        ctx.flow.extend(
+            "resolve-share-approval-targets",
+            "resolve-targets",
+            { id: "jitsi-meet:resolve-meeting-share-approval-targets" },
+            async (stageCtx) => {
+                const input = stageCtx.input ?? {};
+                if (String(input.resourceType ?? "") !== "meeting") {
+                    return null;
+                }
+                const dbExecutor = ctx.getCapability("db:executor");
+                const profileStore = ctx.getCapability("social:profileStore");
+                const log = ctx.getCapability("logging:log");
+                if (!dbExecutor || !profileStore) {
+                    return { targetAccountIds: [] };
+                }
+                const store = resolveStore(dbExecutor, log);
+                await store.ensureSchema();
+                const meeting = await store.getMeetingById(
+                    String(input.resourceId ?? ""),
+                );
+                if (!meeting) {
+                    return { targetAccountIds: [] };
+                }
+                const usernames = await store.listParticipants(meeting.id);
+                const presenceEntries = await store.listPresence(meeting.id);
+                const activeUsernames = new Set(
+                    store
+                        .filterCurrentPresenceEntries(presenceEntries)
+                        .map((entry) => entry.username),
+                );
+                const presentParticipants = usernames.filter((username) =>
+                    activeUsernames.has(username),
+                );
+                const requesterAccountId = String(
+                    input.requesterAccountId ?? "",
+                );
+                const profiles = await Promise.all(
+                    presentParticipants.map((username) =>
+                        profileStore
+                            .getProfileByHandle(username)
+                            .catch((error) =>
+                                logApiFallback(
+                                    error,
+                                    "share_hooks_fallback",
+                                    null,
+                                ),
+                            ),
+                    ),
+                );
+                const targetAccountIds = profiles
+                    .map((profile) => profile?.accountId ?? "")
+                    .filter(
+                        (accountId) =>
+                            Boolean(accountId) &&
+                            accountId !== requesterAccountId,
+                    );
+                const requesterProfile = await profileStore
+                    .getProfile(requesterAccountId)
+                    .catch((error) =>
+                        logApiFallback(error, "share_hooks_fallback", null),
+                    );
+                return {
+                    targetAccountIds,
+                    requesterDisplayName:
+                        requesterProfile?.displayName ??
+                        requesterProfile?.handle ??
+                        requesterAccountId,
+                };
+            },
+        );
+    }
+
     ctx.flow.extend(
-      'resolve-share-approval-targets',
-      'resolve-targets',
-      { id: 'jitsi-meet:resolve-meeting-share-approval-targets' },
-      async (stageCtx) => {
-        const input = stageCtx.input ?? {};
-        if (String(input.resourceType ?? '') !== 'meeting') {
-          return null;
-        }
-        const dbExecutor = ctx.getCapability('db:executor');
-        const profileStore = ctx.getCapability('social:profileStore');
-        const log = ctx.getCapability('logging:log');
-        if (!dbExecutor || !profileStore) {
-          return { targetAccountIds: [] };
-        }
-        const store = resolveStore(dbExecutor, log);
-        await store.ensureSchema();
-        const meeting = await store.getMeetingById(
-          String(input.resourceId ?? ''),
-        );
-        if (!meeting) {
-          return { targetAccountIds: [] };
-        }
-        const usernames = await store.listParticipants(meeting.id);
-        const presenceEntries = await store.listPresence(meeting.id);
-        const activeUsernames = new Set(
-          store
-            .filterCurrentPresenceEntries(presenceEntries)
-            .map((entry) => entry.username),
-        );
-        const presentParticipants = usernames.filter((username) =>
-          activeUsernames.has(username),
-        );
-        const requesterAccountId = String(input.requesterAccountId ?? '');
-        const profiles = await Promise.all(
-          presentParticipants.map((username) =>
-            profileStore
-              .getProfileByHandle(username)
-              .catch((error) =>
-                logApiFallback(error, 'share_hooks_fallback', null),
-              ),
-          ),
-        );
-        const targetAccountIds = profiles
-          .map((profile) => profile?.accountId ?? '')
-          .filter(
-            (accountId) =>
-              Boolean(accountId) && accountId !== requesterAccountId,
-          );
-        const requesterProfile = await profileStore
-          .getProfile(requesterAccountId)
-          .catch((error) =>
-            logApiFallback(error, 'share_hooks_fallback', null),
-          );
-        return {
-          targetAccountIds,
-          requesterDisplayName:
-            requesterProfile?.displayName ??
-            requesterProfile?.handle ??
-            requesterAccountId,
-        };
-      },
-    );
-  }
-
-  ctx.flow.extend(
-    'mint-share-token',
-    'validate-resource',
-    { id: 'jitsi-meet:validate-meeting-share-resource' },
-    async (stageCtx) => {
-      const input = stageCtx.input ?? {};
-      if (String(input.resourceType ?? '') !== 'meeting') {
-        return { valid: false, reason: 'unsupported_resource_type' };
-      }
-      const dbExecutor = ctx.getCapability('db:executor');
-      const profileStore = ctx.getCapability('social:profileStore');
-      const log = ctx.getCapability('logging:log');
-      if (!dbExecutor || !profileStore) {
-        return { valid: false, reason: 'dependencies_unavailable' };
-      }
-      const store = resolveStore(dbExecutor, log);
-      await store.ensureSchema();
-      const meeting = await store.getMeetingById(
-        String(input.resourceId ?? ''),
-      );
-      if (!meeting) {
-        return { valid: false, reason: 'resource_not_found' };
-      }
-      const requesterAccess = await resolveMeetingRequesterAccess({
-        store,
-        profileStore,
-        requesterAccountId: String(
-          input.claims?.sub ?? input.ownerAccountId ?? '',
-        ),
-        meeting,
-      });
-      if (!requesterAccess.isParticipant) {
-        return { valid: false, reason: 'forbidden' };
-      }
-      const state = await store.getMeetingState(meeting.id);
-      return {
-        valid: true,
-        resourceType: 'meeting',
-        resourceId: meeting.id,
-        ownerAccountId: String(input.claims?.sub ?? input.ownerAccountId ?? ''),
-        meetingInstanceId: state.instanceId,
-      };
-    },
-  );
-
-  ctx.flow.extend(
-    'mint-share-token',
-    'authorize-minter',
-    { id: 'jitsi-meet:authorize-meeting-share-minter' },
-    async (stageCtx) => {
-      const resourceResult = getFirstMatchingStageResult(
-        stageCtx.stageResults,
-        'validate-resource',
-        (result) =>
-          result?.valid === true && result?.resourceType === 'meeting',
-      );
-      if (!resourceResult?.valid) {
-        return {
-          authorized: false,
-          reason: resourceResult?.reason ?? 'invalid_resource',
-        };
-      }
-      return {
-        authorized: true,
-        ownerAccountId: resourceResult.ownerAccountId,
-        meetingInstanceId: resourceResult.meetingInstanceId,
-      };
-    },
-  );
-
-  ctx.flow.extend(
-    'resolve-share-token',
-    'resolve-resource',
-    { id: 'jitsi-meet:resolve-meeting-share-resource' },
-    async (stageCtx) => {
-      const tokenResult = getFirstStageResult(
-        stageCtx.stageResults,
-        'validate-token',
-      );
-      const tokenRecord = tokenResult?.tokenRecord ?? null;
-      if (!tokenResult?.valid || tokenRecord?.resourceType !== 'meeting') {
-        return { resolved: false, reason: 'unsupported_resource_type' };
-      }
-      const dbExecutor = ctx.getCapability('db:executor');
-      const profileStore = ctx.getCapability('social:profileStore');
-      const log = ctx.getCapability('logging:log');
-      if (!dbExecutor || !profileStore) {
-        return { resolved: false, reason: 'dependencies_unavailable' };
-      }
-      const store = resolveStore(dbExecutor, log);
-      await store.ensureSchema();
-      const meeting = await store.getMeetingById(
-        String(tokenRecord.resourceId ?? ''),
-      );
-      if (!meeting) {
-        return { resolved: false, reason: 'resource_not_found' };
-      }
-      const [storedState, activeMeetings] = await Promise.all([
-        store.getMeetingState(meeting.id),
-        store.listActiveMeetings(),
-      ]);
-      const state = activeMeetings.some(
-        (activeMeeting) => activeMeeting.id === meeting.id,
-      )
-        ? { ...storedState, endedAt: null }
-        : storedState;
-      const ownerProfile = await profileStore
-        .getProfileByHandle(meeting.createdBy)
-        .catch((error) => logApiFallback(error, 'share_hooks_fallback', null));
-      return {
-        resolved: true,
-        resourceType: 'meeting',
-        resourceId: meeting.id,
-        payload: {
-          meetingId: meeting.id,
-          chatRoomId: meeting.chatRoomId,
-          title: meeting.meetingName,
-          scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
-          duration: null,
-          hostDisplayName:
-            ownerProfile?.displayName ??
-            ownerProfile?.handle ??
-            meeting.createdBy,
-          joinUrl:
-            Array.isArray(tokenRecord.grantedCapabilities) &&
-            tokenRecord.grantedCapabilities.includes('meeting:join')
-              ? meeting.meetingUrl
-              : null,
-          endedAt: state.endedAt,
-          instanceId: state.instanceId,
+        "mint-share-token",
+        "validate-resource",
+        { id: "jitsi-meet:validate-meeting-share-resource" },
+        async (stageCtx) => {
+            const input = stageCtx.input ?? {};
+            if (String(input.resourceType ?? "") !== "meeting") {
+                return { valid: false, reason: "unsupported_resource_type" };
+            }
+            const dbExecutor = ctx.getCapability("db:executor");
+            const profileStore = ctx.getCapability("social:profileStore");
+            const log = ctx.getCapability("logging:log");
+            if (!dbExecutor || !profileStore) {
+                return { valid: false, reason: "dependencies_unavailable" };
+            }
+            const store = resolveStore(dbExecutor, log);
+            await store.ensureSchema();
+            const meeting = await store.getMeetingById(
+                String(input.resourceId ?? ""),
+            );
+            if (!meeting) {
+                return { valid: false, reason: "resource_not_found" };
+            }
+            const requesterAccess = await resolveMeetingRequesterAccess({
+                store,
+                profileStore,
+                requesterAccountId: String(
+                    input.claims?.sub ?? input.ownerAccountId ?? "",
+                ),
+                meeting,
+            });
+            if (!requesterAccess.isParticipant) {
+                return { valid: false, reason: "forbidden" };
+            }
+            const state = await store.getMeetingState(meeting.id);
+            return {
+                valid: true,
+                resourceType: "meeting",
+                resourceId: meeting.id,
+                ownerAccountId: String(
+                    input.claims?.sub ?? input.ownerAccountId ?? "",
+                ),
+                meetingInstanceId: state.instanceId,
+            };
         },
-      };
-    },
-  );
-
-  ctx.flow.extend(
-    'resolve-share-token',
-    'check-access',
-    { id: 'jitsi-meet:check-meeting-share-access' },
-    async (stageCtx) => {
-      const resourceResult = getFirstMatchingStageResult(
-        stageCtx.stageResults,
-        'resolve-resource',
-        (result) =>
-          result?.resolved === true && result?.resourceType === 'meeting',
-      );
-      if (!resourceResult?.resolved) {
-        return {
-          allowed: false,
-          reason: resourceResult?.reason ?? 'resource_not_found',
-        };
-      }
-      const requesterClaims = stageCtx.input?.requesterClaims;
-      if (requesterClaims?.sub) {
-        const hasDirectAccess = await requesterHasDirectMeetingAccess(
-          ctx,
-          requesterClaims,
-          resourceResult.resourceId,
-        );
-        if (hasDirectAccess) {
-          return { allowed: true, directAccess: true };
-        }
-      }
-      return { allowed: true };
-    },
-  );
-
-  if (ctx.flow.exists('construct-share-page')) {
-    ctx.flow.extend(
-      'construct-share-page',
-      'resolve-resource-renderer',
-      { id: 'jitsi-meet:share-renderer' },
-      (stageCtx) => {
-        const input = stageCtx.input ?? {};
-        if (String(input.resourceType ?? '') !== 'meeting') {
-          return null;
-        }
-        return {
-          mountScriptUrl: '/static/modules/jitsi-meet/app.js',
-          stringsBaseUrl: ['/static/modules/jitsi-meet/languages'],
-          stylesheetUrls: [
-            '/static/styles/page-builder.css',
-            '/static/styles/reuse/layout.css',
-            '/static/styles/reuse/page-sections.css',
-            ...resolveSharedMessagesStylesheetUrls(
-              resolveMessagesUiResources(ctx),
-            ),
-            '/static/modules/jitsi-meet/jitsi-meet.css',
-          ],
-        };
-      },
     );
-  }
 
-  if (ctx.flow.exists('revoke-share-token')) {
     ctx.flow.extend(
-      'revoke-share-token',
-      'authorize-revocation',
-      { id: 'jitsi-meet:authorize-share-revocation' },
-      async (stageCtx) => {
-        const input = stageCtx.input ?? {};
-        if (String(input.resourceType ?? '') !== 'meeting') {
-          return {
-            authorized: false,
-            reason: 'unsupported_resource_type',
-          };
-        }
-        const dbExecutor = ctx.getCapability('db:executor');
-        const profileStore = ctx.getCapability('social:profileStore');
-        const log = ctx.getCapability('logging:log');
-        if (!dbExecutor || !profileStore) {
-          return {
-            authorized: false,
-            reason: 'dependencies_unavailable',
-          };
-        }
-        const store = resolveStore(dbExecutor, log);
-        await store.ensureSchema();
-        const meeting = await store.getMeetingById(
-          String(input.resourceId ?? ''),
-        );
-        if (!meeting) {
-          return { authorized: false, reason: 'resource_not_found' };
-        }
-        const requesterAccess = await resolveMeetingRequesterAccess({
-          store,
-          profileStore,
-          requesterAccountId: String(
-            input.claims?.sub ?? input.ownerAccountId ?? '',
-          ),
-          meeting,
-        });
-        if (!requesterAccess.isParticipant) {
-          return { authorized: false, reason: 'forbidden' };
-        }
-        return {
-          authorized: true,
-          shareId: String(input.shareId ?? ''),
-          resourceType: 'meeting',
-          resourceId: meeting.id,
-        };
-      },
+        "mint-share-token",
+        "authorize-minter",
+        { id: "jitsi-meet:authorize-meeting-share-minter" },
+        async (stageCtx) => {
+            const resourceResult = getFirstMatchingStageResult(
+                stageCtx.stageResults,
+                "validate-resource",
+                (result) =>
+                    result?.valid === true &&
+                    result?.resourceType === "meeting",
+            );
+            if (!resourceResult?.valid) {
+                return {
+                    authorized: false,
+                    reason: resourceResult?.reason ?? "invalid_resource",
+                };
+            }
+            return {
+                authorized: true,
+                ownerAccountId: resourceResult.ownerAccountId,
+                meetingInstanceId: resourceResult.meetingInstanceId,
+            };
+        },
     );
-  }
+
+    ctx.flow.extend(
+        "resolve-share-token",
+        "resolve-resource",
+        { id: "jitsi-meet:resolve-meeting-share-resource" },
+        async (stageCtx) => {
+            const tokenResult = getFirstStageResult(
+                stageCtx.stageResults,
+                "validate-token",
+            );
+            const tokenRecord = tokenResult?.tokenRecord ?? null;
+            if (
+                !tokenResult?.valid ||
+                tokenRecord?.resourceType !== "meeting"
+            ) {
+                return { resolved: false, reason: "unsupported_resource_type" };
+            }
+            const dbExecutor = ctx.getCapability("db:executor");
+            const profileStore = ctx.getCapability("social:profileStore");
+            const log = ctx.getCapability("logging:log");
+            if (!dbExecutor || !profileStore) {
+                return { resolved: false, reason: "dependencies_unavailable" };
+            }
+            const store = resolveStore(dbExecutor, log);
+            await store.ensureSchema();
+            const meeting = await store.getMeetingById(
+                String(tokenRecord.resourceId ?? ""),
+            );
+            if (!meeting) {
+                return { resolved: false, reason: "resource_not_found" };
+            }
+            const [storedState, activeMeetings] = await Promise.all([
+                store.getMeetingState(meeting.id),
+                store.listActiveMeetings(),
+            ]);
+            const state = activeMeetings.some(
+                (activeMeeting) => activeMeeting.id === meeting.id,
+            )
+                ? { ...storedState, endedAt: null }
+                : storedState;
+            const ownerProfile = await profileStore
+                .getProfileByHandle(meeting.createdBy)
+                .catch((error) =>
+                    logApiFallback(error, "share_hooks_fallback", null),
+                );
+            return {
+                resolved: true,
+                resourceType: "meeting",
+                resourceId: meeting.id,
+                payload: {
+                    meetingId: meeting.id,
+                    chatRoomId: meeting.chatRoomId,
+                    title: meeting.meetingName,
+                    scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
+                    duration: null,
+                    hostDisplayName:
+                        ownerProfile?.displayName ??
+                        ownerProfile?.handle ??
+                        meeting.createdBy,
+                    joinUrl:
+                        Array.isArray(tokenRecord.grantedCapabilities) &&
+                        tokenRecord.grantedCapabilities.includes("meeting:join")
+                            ? meeting.meetingUrl
+                            : null,
+                    endedAt: state.endedAt,
+                    instanceId: state.instanceId,
+                },
+            };
+        },
+    );
+
+    ctx.flow.extend(
+        "resolve-share-token",
+        "check-access",
+        { id: "jitsi-meet:check-meeting-share-access" },
+        async (stageCtx) => {
+            const resourceResult = getFirstMatchingStageResult(
+                stageCtx.stageResults,
+                "resolve-resource",
+                (result) =>
+                    result?.resolved === true &&
+                    result?.resourceType === "meeting",
+            );
+            if (!resourceResult?.resolved) {
+                return {
+                    allowed: false,
+                    reason: resourceResult?.reason ?? "resource_not_found",
+                };
+            }
+            const requesterClaims = stageCtx.input?.requesterClaims;
+            if (requesterClaims?.sub) {
+                const hasDirectAccess = await requesterHasDirectMeetingAccess(
+                    ctx,
+                    requesterClaims,
+                    resourceResult.resourceId,
+                );
+                if (hasDirectAccess) {
+                    return { allowed: true, directAccess: true };
+                }
+            }
+            return { allowed: true };
+        },
+    );
+
+    if (ctx.flow.exists("construct-share-page")) {
+        ctx.flow.extend(
+            "construct-share-page",
+            "resolve-resource-renderer",
+            { id: "jitsi-meet:share-renderer" },
+            (stageCtx) => {
+                const input = stageCtx.input ?? {};
+                if (String(input.resourceType ?? "") !== "meeting") {
+                    return null;
+                }
+                return {
+                    mountScriptUrl: "/static/modules/jitsi-meet/app.js",
+                    stringsBaseUrl: ["/static/modules/jitsi-meet/languages"],
+                    stylesheetUrls: [
+                        "/static/styles/page-builder.css",
+                        "/static/styles/reuse/layout.css",
+                        "/static/styles/reuse/page-sections.css",
+                        ...resolveSharedMessagesStylesheetUrls(
+                            resolveMessagesUiResources(ctx),
+                        ),
+                        "/static/modules/jitsi-meet/jitsi-meet.css",
+                    ],
+                };
+            },
+        );
+    }
+
+    if (ctx.flow.exists("revoke-share-token")) {
+        ctx.flow.extend(
+            "revoke-share-token",
+            "authorize-revocation",
+            { id: "jitsi-meet:authorize-share-revocation" },
+            async (stageCtx) => {
+                const input = stageCtx.input ?? {};
+                if (String(input.resourceType ?? "") !== "meeting") {
+                    return {
+                        authorized: false,
+                        reason: "unsupported_resource_type",
+                    };
+                }
+                const dbExecutor = ctx.getCapability("db:executor");
+                const profileStore = ctx.getCapability("social:profileStore");
+                const log = ctx.getCapability("logging:log");
+                if (!dbExecutor || !profileStore) {
+                    return {
+                        authorized: false,
+                        reason: "dependencies_unavailable",
+                    };
+                }
+                const store = resolveStore(dbExecutor, log);
+                await store.ensureSchema();
+                const meeting = await store.getMeetingById(
+                    String(input.resourceId ?? ""),
+                );
+                if (!meeting) {
+                    return { authorized: false, reason: "resource_not_found" };
+                }
+                const requesterAccess = await resolveMeetingRequesterAccess({
+                    store,
+                    profileStore,
+                    requesterAccountId: String(
+                        input.claims?.sub ?? input.ownerAccountId ?? "",
+                    ),
+                    meeting,
+                });
+                if (!requesterAccess.isParticipant) {
+                    return { authorized: false, reason: "forbidden" };
+                }
+                return {
+                    authorized: true,
+                    shareId: String(input.shareId ?? ""),
+                    resourceType: "meeting",
+                    resourceId: meeting.id,
+                };
+            },
+        );
+    }
 }

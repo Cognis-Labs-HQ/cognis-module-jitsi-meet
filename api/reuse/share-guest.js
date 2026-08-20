@@ -1,4 +1,4 @@
-import { logApiFallback } from './log-fallback.js';
+import { logApiFallback } from "./log-fallback.js";
 /**
  * Extracts the share token ID from a share-guest subject claim. Guest
  * subjects are encoded as `share:<shareId>` or `share:<shareId>:<guestId>`.
@@ -7,11 +7,13 @@ import { logApiFallback } from './log-fallback.js';
  * @returns {string}
  */
 export function resolveShareGuestId(claims) {
-  const subject = String(claims?.sub ?? '').trim();
-  if (!subject.startsWith('share:')) return '';
-  const remainder = subject.slice('share:'.length).trim();
-  const separatorIndex = remainder.indexOf(':');
-  return separatorIndex === -1 ? remainder : remainder.slice(0, separatorIndex);
+    const subject = String(claims?.sub ?? "").trim();
+    if (!subject.startsWith("share:")) return "";
+    const remainder = subject.slice("share:".length).trim();
+    const separatorIndex = remainder.indexOf(":");
+    return separatorIndex === -1
+        ? remainder
+        : remainder.slice(0, separatorIndex);
 }
 
 /**
@@ -23,12 +25,12 @@ export function resolveShareGuestId(claims) {
  * @returns {string}
  */
 export function resolveShareGuestSessionId(claims) {
-  const subject = String(claims?.sub ?? '').trim();
-  if (!subject.startsWith('share:')) return '';
-  const remainder = subject.slice('share:'.length).trim();
-  const separatorIndex = remainder.indexOf(':');
-  if (separatorIndex === -1) return '';
-  return remainder.slice(separatorIndex + 1).trim();
+    const subject = String(claims?.sub ?? "").trim();
+    if (!subject.startsWith("share:")) return "";
+    const remainder = subject.slice("share:".length).trim();
+    const separatorIndex = remainder.indexOf(":");
+    if (separatorIndex === -1) return "";
+    return remainder.slice(separatorIndex + 1).trim();
 }
 
 /**
@@ -39,11 +41,11 @@ export function resolveShareGuestSessionId(claims) {
  * @returns {boolean}
  */
 export function hasShareCapability(tokenRecord, requiredCapability) {
-  if (!requiredCapability) return true;
-  const grantedCapabilities = Array.isArray(tokenRecord?.grantedCapabilities)
-    ? tokenRecord.grantedCapabilities
-    : [];
-  return grantedCapabilities.includes(requiredCapability);
+    if (!requiredCapability) return true;
+    const grantedCapabilities = Array.isArray(tokenRecord?.grantedCapabilities)
+        ? tokenRecord.grantedCapabilities
+        : [];
+    return grantedCapabilities.includes(requiredCapability);
 }
 
 /**
@@ -60,37 +62,37 @@ export function hasShareCapability(tokenRecord, requiredCapability) {
  * @returns {Promise<{ shareGuest: boolean, authorized: boolean, username?: string, displayName?: string }>}
  */
 export async function resolveShareGuestAccess({
-  claims,
-  resourceType,
-  resourceId,
-  requiredCapability = '',
-  getTokenById,
-  getGuestProfile,
+    claims,
+    resourceType,
+    resourceId,
+    requiredCapability = "",
+    getTokenById,
+    getGuestProfile,
 } = {}) {
-  const shareId = resolveShareGuestId(claims);
-  if (!shareId) return { shareGuest: false, authorized: false };
-  if (typeof getTokenById !== 'function') {
-    return { shareGuest: true, authorized: false };
-  }
-  const token = await getTokenById(shareId);
-  const authorized = Boolean(
-    token?.resourceType === resourceType &&
-      token?.resourceId === resourceId &&
-      hasShareCapability(token, requiredCapability),
-  );
-  if (!authorized) return { shareGuest: true, authorized: false };
-  const guestSessionId = resolveShareGuestSessionId(claims);
-  const guestProfile =
-    guestSessionId && typeof getGuestProfile === 'function'
-      ? await getGuestProfile(guestSessionId).catch((error) =>
-          logApiFallback(error, 'share_guest_fallback', null),
-        )
-      : null;
-  const displayName = String(guestProfile?.displayName ?? '').trim();
-  return {
-    shareGuest: true,
-    authorized: true,
-    username: `guest:${guestSessionId || shareId}`,
-    displayName: displayName || `Guest ${guestSessionId || shareId}`,
-  };
+    const shareId = resolveShareGuestId(claims);
+    if (!shareId) return { shareGuest: false, authorized: false };
+    if (typeof getTokenById !== "function") {
+        return { shareGuest: true, authorized: false };
+    }
+    const token = await getTokenById(shareId);
+    const authorized = Boolean(
+        token?.resourceType === resourceType &&
+        token?.resourceId === resourceId &&
+        hasShareCapability(token, requiredCapability),
+    );
+    if (!authorized) return { shareGuest: true, authorized: false };
+    const guestSessionId = resolveShareGuestSessionId(claims);
+    const guestProfile =
+        guestSessionId && typeof getGuestProfile === "function"
+            ? await getGuestProfile(guestSessionId).catch((error) =>
+                  logApiFallback(error, "share_guest_fallback", null),
+              )
+            : null;
+    const displayName = String(guestProfile?.displayName ?? "").trim();
+    return {
+        shareGuest: true,
+        authorized: true,
+        username: `guest:${guestSessionId || shareId}`,
+        displayName: displayName || `Guest ${guestSessionId || shareId}`,
+    };
 }

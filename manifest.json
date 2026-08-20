@@ -2,14 +2,10 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.64",
+    "version": "1.4.65",
     "class": "extension",
     "coreApiVersion": "v1",
-    "capabilities": [
-        "meeting:video",
-        "meeting:chat",
-        "meeting:moderation"
-    ],
+    "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
     "entrypoints": {
         "bootstrap": "./bootstrap.js",
         "api": "./api/index.js",
@@ -50,15 +46,10 @@
         "0da92508-63fa-53ed-918c-e6f08692a382",
         "062a74f5-5699-52fb-98a3-63ec6538bdfc"
     ],
-    "requiresCapabilities": [
-        "auth:requireAuth",
-        "ui:profileAvatarRenderer"
-    ],
+    "requiresCapabilities": ["auth:requireAuth", "ui:profileAvatarRenderer"],
     "summary": "Secure video meetings integrated with Cognis.",
     "description": "Create, join, moderate, and share Jitsi meetings from Cognis.",
-    "categories": [
-        "Collaboration"
-    ],
+    "categories": ["Collaboration"],
     "license": "AGPL-3.0-or-later",
     "repository": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet",
     "assets": {
@@ -66,10 +57,7 @@
         "icon": "assets/icon.png",
         "banner": "assets/banner.png"
     },
-    "tags": [
-        "video",
-        "meetings"
-    ],
+    "tags": ["video", "meetings"],
     "homepage": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet#readme",
     "support": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/issues",
     "files": [
@@ -78,8 +66,16 @@
             "sha256": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97"
         },
         {
+            "path": ".prettierignore",
+            "sha256": "ebebb0fe677b8152cac2b29c7d7ef39d41527ab1a14b935df9c8f6f6e66ec936"
+        },
+        {
+            "path": ".prettierrc",
+            "sha256": "fa9273146be8edfd6bbddaff9d0654effb7b4cd67c6163b67e971195d796ead3"
+        },
+        {
             "path": "AGENTS.md",
-            "sha256": "a03f434d694a09e01429ff3f098db722e4ea5a21fd20072228410b7ef8f325dd"
+            "sha256": "97d812e4f1b3ded56a59679a25d060cf702472b3975850988a5d6ac1a00b340e"
         },
         {
             "path": "LICENSE",
@@ -95,123 +91,123 @@
         },
         {
             "path": "api/admin-meetings-routes.js",
-            "sha256": "ac1d0eea5a3f2000fe6eb36157f930adc0f95bb09ec29b1aee35b99fc7a2a12c"
+            "sha256": "d72cb564d3ea4e5b457fcc01c66feb5f4ffd9164aed07b2edd1b942f02701b24"
         },
         {
             "path": "api/config-routes.js",
-            "sha256": "cdf36bd58af8799e221cbb7f5cea3860517350df761ddf165cac2a8abcb425ef"
+            "sha256": "ea68df3b3741b7c922b9e814dc61e26c0c8e36ed37fd83a65fd16dc6834c30b2"
         },
         {
             "path": "api/index.js",
-            "sha256": "cb9b89031300b3fcd04d0dc0e544caaab2206ca926669716b41456b2559ae67e"
+            "sha256": "a26bd3f6e89e7617636a08a565c9639f979a4bbbb26bfc7369902ab20b5731ac"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "a0f5d8675d5745543ce4aa50310eebc819a058f9c6ad83cfe8529820a1dfaa7e"
+            "sha256": "747773016c27874792f636fce4780f3c8c3ad6a42cbeb4d7e068d9cf10d745c7"
         },
         {
             "path": "api/meeting-values.js",
-            "sha256": "3303b8f813f534cb3af9821c79423c6d142ec4e56da577e9f75d8b1667492553"
+            "sha256": "d714c881c679e6878bfc79a357dd07dc63a0451655f8f45d0e519305d9ac1b54"
         },
         {
             "path": "api/meetings-routes.js",
-            "sha256": "95a5782810e4bff219670100073d539e5dcbc03ee6bd701388e6e8494651ff61"
+            "sha256": "8aa9c67680aec3792fa2904d3ebdc2a3ef66cdbb4d6e8966452456102c8b410f"
         },
         {
             "path": "api/participant-routes.js",
-            "sha256": "6e2d4131512d52d0a0109822c6bb59bcd1af3cbd2dbd3e64b3545f18cd05a15e"
+            "sha256": "587edf82d347329a13555a2a31701b042f3172069b1335f59680a404616a70e7"
         },
         {
             "path": "api/reuse/crypto.js",
-            "sha256": "85819de58873ba2eb26431d133589de7f25576d482fce80029b53d13fc64e20f"
+            "sha256": "2c2b9ab1d83b84f5900510fd5d49a8832294a20447d8b331b6f5cd93c77e6f99"
         },
         {
             "path": "api/reuse/flow-helpers.js",
-            "sha256": "01524092dab964c8addaffad5a45e43a35c1cae7011b34e0e6f82c69e920aac7"
+            "sha256": "2d294e46f61661b0a25c8c4697486e24b5f6012902c905a54830ee0ba63400d8"
         },
         {
             "path": "api/reuse/http-liveness.js",
-            "sha256": "9e7f268993fdd63bcc5323998581ee22b02b384200206fcdb592ac214cdc8ebe"
+            "sha256": "42d0f21c509932fc37ffca0fa32d0bd8041472c4bb00a36d32e12f366ca9e761"
         },
         {
             "path": "api/reuse/http.js",
-            "sha256": "9eea4104a934adcd49a45c1ddcf1217196bce43dd8458a4668a0afdf22f9714b"
+            "sha256": "7a95ad5b291e338074d2b1279562d6d8fd76f9d40cc54121f3f501cf671d36d8"
         },
         {
             "path": "api/reuse/log-fallback.js",
-            "sha256": "ff70024b8c5858d51a1ad6fc4cad541c3eab50d7c511c3afb272050f3cc6443e"
+            "sha256": "130350f0195a4f86bc5ec0bb8324b7229533867ea4f222d83bd91d15e0d918ad"
         },
         {
             "path": "api/reuse/meeting-access.js",
-            "sha256": "743cecc707e18ce042c83f0fa8d772d25e9deef7e88c7c741ba3909cbff32e60"
+            "sha256": "bc806393ce2563bbb6bede712442b14744537dd3c945f263c1c356c9c4d75ced"
         },
         {
             "path": "api/reuse/normalize-handle.js",
-            "sha256": "0973ec9e125d74fbe9ac2d60b68e3574818bc4300ceaf64e61087a38e7d60141"
+            "sha256": "4dd899f32ebe7ea8ac938c47cddea2415621ebbfab9c81add22eddac3b2c9885"
         },
         {
             "path": "api/reuse/requester.js",
-            "sha256": "947522ce9d97b4c0f12f4ea647c7405ba38d6ab896825418a7fa9bcd23695a7d"
+            "sha256": "3c941bea67a12769057e42d5aecb634dfc071652e6e6c129782384a4fd264d39"
         },
         {
             "path": "api/reuse/share-guest.js",
-            "sha256": "f650aefb59309c76b8c212210e9345836ed3d80ddb0e6f38653d01086f003d1b"
+            "sha256": "8c646ed993e870305d808860402ed393d3e93c4cfdb9cb19b29271b931854c32"
         },
         {
             "path": "api/reuse/store-runtime.js",
-            "sha256": "e33a677566e2861b32d85e86d55eaf283cdfde4dbefe87cf3c5b25455cace2b0"
+            "sha256": "c7c1c07c7ec6fd0beecc6164ee716df11c78bf0959d12c83102c8a1c462910ee"
         },
         {
             "path": "api/reuse/timestamp.js",
-            "sha256": "700e8f3e586f55a9549418bc013781e0be70ccd318e77a34609e168a7445c7f7"
+            "sha256": "eb29a8032d33f474b6ccf22a87eda84a876502524b164b775b2a94c897b70f5f"
         },
         {
             "path": "api/reuse/url-parts.js",
-            "sha256": "1106a21c7b23e804ca38aa02bbbc3dce4f0caae29a42e55fa65df9218ce38bac"
+            "sha256": "edd3d641759438b0474656da76d2c72e06168a77f5992c9eae822e1ef903a1e2"
         },
         {
             "path": "api/share-hooks.js",
-            "sha256": "5da5a57bfdaf576c6cdd9e732f45235e8aebd34ceb01cb861a57a7a2816f2de5"
+            "sha256": "22ec1eac258c070a57174ecc31cd9dd664f4fcc4464b3a6e9a86b8942c14872c"
         },
         {
             "path": "api/share-routes.js",
-            "sha256": "ce18433f7e5212e95cb95d3793bb75c8bf87ebfc270c3ad353872277ab524162"
+            "sha256": "84506e6fe4da214aa25678a6a00cb4dd98a66a72e65b141ec4e7dc66ccf36b91"
         },
         {
             "path": "api/store.js",
-            "sha256": "19121b4eb216bcb6fb77dea2711774388531b07b81ecc63ae6c396925a45f41c"
+            "sha256": "be37afe03ef7cb7b3f356aade97f7f740b9095558342476dfcc7b0d98b30de23"
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "f0b9662059e52b114cd7fcb7ed46d1ee15c461fcdaec5f80cb52e1de22fb0506"
+            "sha256": "88a2ee0fbc82505b3e586444fcb57d59902dd8d47a436f2d89990b6e8064dd1b"
         },
         {
             "path": "api/tests/config-routes.test.js",
-            "sha256": "0ff2c76e16fd6bd846fb5566be40fb88d84f9805b8fd4e23a43084447b728793"
+            "sha256": "12f48438ba7b2209f114b51a82e2148a2363d0080622a58837c37ccc6cffabd2"
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "893778e1bb8a18f2383319077a6f43f163d687cac0446e4e0bc0d1461d759bec"
+            "sha256": "89b17ec27a2e955b8cd282849466cec73738928f56ed3505f93b5b091bea3eab"
         },
         {
             "path": "api/tests/meeting-access.test.js",
-            "sha256": "bccc03dc06671ea2a2a32cdb04f503c54a541e9ffbc1a40348d40e878bca1672"
+            "sha256": "aed490a549be52cd1ae7b315a18c258b7a5c52c4d6d2cea8ddf4c634883b691a"
         },
         {
             "path": "api/tests/participant-routes.test.js",
-            "sha256": "4949bd33e363bcc5d99a8be604ac0d455c05c2bbdb7d97a486d6196dc88938ea"
+            "sha256": "46e120bb7eb813e71ae6842bb433b6a819ae4f82986ddb9d6a09ff117d8f8abd"
         },
         {
             "path": "api/tests/share-hooks.test.js",
-            "sha256": "78f79cdd2cf70232fa94c7a12b1772794d890921839a5ab20d2db7d4933ac2cb"
+            "sha256": "b4f3c52c263c7955ebe286a93bb3075370608b22c05c51c548adcfa53240940c"
         },
         {
             "path": "api/tests/store.test.js",
-            "sha256": "a36b40e2f1656ab2b0ebc8023faf3b47555166447d71282cfd75912be0b65ac6"
+            "sha256": "8f6a8ad1f73a7f48fc95b2469ba8a3477d61aaf0ec39e7cde091dc505c67d256"
         },
         {
             "path": "api/ui-resources.js",
-            "sha256": "7d29263cf762793db14af203129eb4bf3c211dff6f68d010bdbb08606c4a7853"
+            "sha256": "e3079a5dc48866e79008c58b8b33994ff193b317902f457786666413ca9b4887"
         },
         {
             "path": "assets/banner.png",
@@ -223,27 +219,27 @@
         },
         {
             "path": "bootstrap.js",
-            "sha256": "f861d7f788160d48ac9a2ad0aab1f59e4fa6505f01e3d56a15a3602f7ba6c2e4"
+            "sha256": "b6dde8c6b5fd301a33ddb21aec44971e6b25d1618d3d871d98b9bdb5fb6fa64b"
         },
         {
             "path": "cli/index.js",
-            "sha256": "88405526adc89237b20db49e5b5ca3fbbc6669a429a2045f7b335af67fd09400"
+            "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
         },
         {
             "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
-            "sha256": "93818e5677f8bd8ac31a47bcf9f15bbd1fa9a5135630f4317d99977095ceb521"
+            "sha256": "02c3b672f5a88339f0570f87548631949655fc3b230c68c8841682432d1c57ef"
         },
         {
             "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
-            "sha256": "15a0dc749869b7493f96961b4a25f5b4569196298621882128b4cd73cb0d17f3"
+            "sha256": "c92d2d924c794d63d7b418c27621b42b4989683e74f8872a587d38b1f5dccd82"
         },
         {
             "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
-            "sha256": "277ab06d619c6edb673716e8fadd054be5357dab34280d53c8f0460818dadaab"
+            "sha256": "32bc152bd4c86573c1bdae63ed3284d195e06bb9cc0815708abad349bbbdf20e"
         },
         {
             "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
-            "sha256": "709a0878475be4bef3163b26951221a1d85ba002abdffd7ec2ea01c36a69cf80"
+            "sha256": "60c6375351639208eb4277f3a04927d7ecbf5b7e58711e6e17863c78a5a50589"
         },
         {
             "path": "docs/standard.de.md",
@@ -263,27 +259,35 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "614fedcc0968fc571364e48cd9cad2440036c4c143478b78308d061f2524c6e9"
+            "sha256": "f451122826dc2fabc63cd13ab9ca94b15c7bfb7125f1aae505c15cec5241f3c0"
         },
         {
             "path": "package.json",
-            "sha256": "fa64ae24d557e03ecb6dfd403a34598a9548ee81d6d83422f41cedb2810ac48a"
+            "sha256": "8449c89a76b5c7f590ad7a69fbda0712ad1643c0d5638b723d17d23280da0bfa"
         },
         {
             "path": "routes.json",
             "sha256": "06e2daafd99ef2b12a8f8532e35f3d4b832c63faeab592e822bc2bbe4d40a7df"
         },
         {
+            "path": "tooling/scripts/lint-placeholder.mjs",
+            "sha256": "c869f4af45abd4f82500f836d5e50af93b9988a56283477ae45bd0aa45f47fd1"
+        },
+        {
+            "path": "tooling/scripts/lint-readable.mjs",
+            "sha256": "b27753e5f1b62aa52c1791841530b3aa2569b2f1d33887a227823b8b1c9d90f3"
+        },
+        {
             "path": "ui/admin-meetings-section.js",
-            "sha256": "c528107a3a9526f83a99cad50363174b62a09f15e1f6c3d42b7a229eca02d8f3"
+            "sha256": "74a2303545499dccaff6343142b16670dee1e24e9ace66465a8602a4d48d5eb0"
         },
         {
             "path": "ui/app.js",
-            "sha256": "343351f4a319b50cd0658c7dba3996eca8e7759fceef4d9d0c3184d075966274"
+            "sha256": "e252def0ee947847c39a5d4678944dab15c0385d875530dc57141bbbc05ebe8f"
         },
         {
             "path": "ui/constants.js",
-            "sha256": "7fea54bb140d0be8b6ecda9787f84cf82bf8a0c45c2d7de1f6867f66bbebdd3a"
+            "sha256": "ad15c9f1ebbe87bc3fbf1c142ddeaaa600d5d35a3f206d2a0381cb17cd35e649"
         },
         {
             "path": "ui/index.html",
@@ -291,15 +295,15 @@
         },
         {
             "path": "ui/jitsi-chat.js",
-            "sha256": "cb5a08f5d3c214e11c48449db4ab44857d3133b7dedbf1d289ccc0692c08c952"
+            "sha256": "6f1250321fc1d442c70c2aa49132a32734d6c0ce4f2ccbec3e49842201b52b44"
         },
         {
             "path": "ui/jitsi-embed.js",
-            "sha256": "4aa11c982d3ce2645d1eccf8f9af73f15124c46252e420bda59f9b9f4854f4e8"
+            "sha256": "700dded37876166e81b48bf77e5ce895858e49fbdb8fcd29a3fe1972dd66468f"
         },
         {
             "path": "ui/jitsi-helpers.js",
-            "sha256": "b177df3954d67af91bb8d5ca212c39653d6fd9dc1fefcb32010f9bea701a181d"
+            "sha256": "6426d510c29afb6768ba5c5b49a54f89927c40edcd466a732fba5755129ff8f4"
         },
         {
             "path": "ui/jitsi-meet.css",
@@ -307,15 +311,15 @@
         },
         {
             "path": "ui/jitsi-meetings.js",
-            "sha256": "5e59f0ae9efd96fa10f5d7dd665421b47f894d71f134630959e73ce455fbd790"
+            "sha256": "6db9d497a56ddd2997ab35783b8d8f227a351e410e3bfb460174743572876363"
         },
         {
             "path": "ui/jitsi-mount-utils.js",
-            "sha256": "71902fb7790942a9b6fd6b4fa0516b481c9eb3d195c0e1007ee51a830634b40a"
+            "sha256": "4e7ddfb11695591f5af023b03a4c2c3d3e113b885aabbd8d370678d89734883e"
         },
         {
             "path": "ui/jitsi-preflight.js",
-            "sha256": "0a6f3c46c77af9a765a1b206dd7a9c934a66dabc94ab01f89da3d30912e392fd"
+            "sha256": "9f52998b022f0b867e5b71a01224e16f2db21f4771fa4216f42c47fcb7683a65"
         },
         {
             "path": "ui/languages/de/strings.xml",
@@ -335,51 +339,55 @@
         },
         {
             "path": "ui/markup.js",
-            "sha256": "b715097a8d50fa1485a879cc527cc41fc2031e05be66a6576b1a90a0334fdeef"
+            "sha256": "a3f4ba47f2355fd6c520b94e4ab8c841f8c25ce8ad2f3398cb4f6eadc1b62636"
         },
         {
             "path": "ui/meeting-embed.js",
-            "sha256": "07c9e4326fe80bade871f3a0bdf992868048d0fe4db21acebe8692c1be48400e"
+            "sha256": "29d5df613e60165a528b2806af771d8db540dc869c6c8288b8704caf8b006be5"
         },
         {
             "path": "ui/navbar.js",
-            "sha256": "c0c4fff0fe18e32ad877fc7352343514cf7833402b1888921345003eb4e1c405"
+            "sha256": "c57aa5656ae032079e37fb77843377e5d5aaf1367329b4b3d0429ee61fd8eb35"
         },
         {
             "path": "ui/page-elements.js",
-            "sha256": "b9d363321f1cb0f0522301872bb86f360771db30496906871cac4c707894671a"
+            "sha256": "85843fc174cfc48fe1f93658457add3c715b750dfb27bc21cb43b5ede7d2ab55"
         },
         {
             "path": "ui/reuse/json-response.js",
-            "sha256": "6ef26d2c27b029deeca34fa0bac5d733a4723e401badb8e3fa0d0719e08cc006"
+            "sha256": "b7368d09c776279860d58a02fcd68775bc9d565e09bda18620a439a297c5fa04"
         },
         {
             "path": "ui/session.js",
-            "sha256": "72499be39d178a8fff7709590ea567ebda0f244e3d7e1a7abf96cf638318e14f"
+            "sha256": "28ab9919a02ef6c213f7f8a7f124643a6454d1f6f1529b11be87aa02dab393fb"
         },
         {
             "path": "ui/share-adapter.js",
-            "sha256": "52fba5bc3f439254c6d2b3e28106d59b161a877180cbfbf35a5148073e50522f"
+            "sha256": "3df6f112f982a169cea2f40c1a8cec4224763d88ebe7db02dbacdb1a6b39a6d0"
         },
         {
             "path": "ui/share-button.js",
-            "sha256": "649cb61d44667840f6e729a18f02e81e2a69863a3022ac19ed5da1f7c7bd20c1"
+            "sha256": "3f0884083ea2fe9e815a116991f1567122c2a97ebcfca10d696eec82f023147f"
         },
         {
             "path": "ui/share-renderer.js",
-            "sha256": "be02c031e78ee089dabdc5cbab24842e7a386ca0935e1ed828211bfa3d6bdea2"
+            "sha256": "4ed170ac8806a76d708531941b23367fdedf6f93768395ba4418e914f0a23898"
         },
         {
             "path": "ui/styles/meetings.css",
             "sha256": "aa16a372f3304b442a40e64b615b99591eaf37c919ab055fb9c9862cff194cd3"
         },
         {
+            "path": "ui/tests/ambiguous-names.test.js",
+            "sha256": "f4460f195479d81aa42c8e81a2b10d7e395dc81b34ef5da904afaddddaca391e"
+        },
+        {
             "path": "ui/tests/regression.test.js",
-            "sha256": "cdd1824c06a467dae53fac7530962c97dba992ce6eeeb4eecd6593d9f225bacf"
+            "sha256": "0f0136f0b37cc792d31f2032865a8aa9de8d86de23edab61a83aed11175b95d2"
         },
         {
             "path": "ui/tests/session.test.js",
-            "sha256": "4e1fbca0535c244b6f8143c3c211ea75b6e4b6cefb36e73cee0c7151a8a290e8"
+            "sha256": "dd060b27f4fc007bd44d65b675f5e562151781dc29839041b4174275f8d1faf9"
         }
     ]
 }

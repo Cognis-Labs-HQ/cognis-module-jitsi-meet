@@ -14,16 +14,16 @@
  * @returns {Promise<unknown>}
  */
 export async function readJsonWithFallback(response, fallbackValue, operation) {
-  try {
-    return await response.json();
-  } catch (error) {
-    console.error('[jitsi-meet] failed to parse JSON response', {
-      component: 'jitsi-meet-module',
-      operation,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    return fallbackValue;
-  }
+    try {
+        return await response.json();
+    } catch (error) {
+        console.error("[jitsi-meet] failed to parse JSON response", {
+            component: "jitsi-meet-module",
+            operation,
+            error: error instanceof Error ? error.message : String(error),
+        });
+        return fallbackValue;
+    }
 }
 
 /**
@@ -35,18 +35,18 @@ export async function readJsonWithFallback(response, fallbackValue, operation) {
  * @returns {Promise<unknown>}
  */
 export async function resolveUiFallback(
-  operationPromise,
-  fallbackValue,
-  operation,
+    operationPromise,
+    fallbackValue,
+    operation,
 ) {
-  try {
-    return await operationPromise;
-  } catch (error) {
-    console.error('[jitsi-meet] asynchronous UI operation failed', {
-      component: 'jitsi-meet-module',
-      operation,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    return fallbackValue;
-  }
+    try {
+        return await operationPromise;
+    } catch (error) {
+        console.error("[jitsi-meet] asynchronous UI operation failed", {
+            component: "jitsi-meet-module",
+            operation,
+            error: error instanceof Error ? error.message : String(error),
+        });
+        return fallbackValue;
+    }
 }

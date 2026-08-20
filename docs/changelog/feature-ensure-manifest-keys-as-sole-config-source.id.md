@@ -10,4 +10,4 @@ Aturan yang hanya berlaku untuk direktori, Docker, gateway, adaptor, Study, dan 
 
 ## Kepatuhan repositori
 
-Pemformatan JavaScript kini mengikuti aturan indentasi dan tanda kutip bersama, rute terautentikasi mengotorisasi pemanggil sebelum menginisialisasi persistensi, dan API daftar tidak lagi memberlakukan batas hasil sisi server yang tidak dideklarasikan. Jalur fallback yang disengaja dicatat dengan konteks terstruktur, dan pengenal sesi rapat kini mewajibkan Web Crypto.
+Pemformatan JavaScript kini mengikuti konfigurasi Prettier Cognis dengan empat spasi, rute terautentikasi mengotorisasi pemanggil sebelum menginisialisasi persistensi, dan API daftar tidak lagi memberlakukan batas hasil sisi server yang tidak dideklarasikan. Pemeriksaan format, keterbacaan, dan nama ambigu Cognis kini berjalan secara lokal. Jalur fallback yang disengaja dicatat dengan konteks terstruktur, dan pengenal sesi rapat mewajibkan Web Crypto.
