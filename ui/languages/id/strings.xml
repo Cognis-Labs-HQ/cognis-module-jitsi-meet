@@ -108,4 +108,8 @@
   <string name="module.jitsi_meet.keyring_request_process">rapat {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">Masukkan kata sandi rapat.</string>
   <string name="module.jitsi_meet.keyring_invalid">Kata sandi rapat yang tersimpan tidak valid. Masukkan kata sandi saat ini.</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">URL Instans Jitsi Meet</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">URL HTTPS deployment Jitsi Meet yang digunakan untuk menyelenggarakan rapat.</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">Awalan URI Rapat</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Awalan opsional yang ditambahkan ke nama ruang rapat Jitsi yang dibuat.</string>
 </resources>

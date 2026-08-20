@@ -1,4 +1,9 @@
 import { readJsonWithFallback } from "./reuse/json-response.js";
+import {
+    filesClient,
+    profileClient,
+    shareClient,
+} from "./reuse/gateway-clients.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
@@ -89,12 +94,7 @@ export async function loadMessageUiResources() {
 
 function buildFileUrl(namespaceId, objectKey) {
     if (!namespaceId || !objectKey) return "";
-    return `${window.location.origin}/api/v1/files/${encodeURIComponent(
-        namespaceId,
-    )}/${String(objectKey)
-        .split("/")
-        .map((part) => encodeURIComponent(part))
-        .join("/")}`;
+    return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
 }
 
 export function ensureStylesheetLoaded(stylesheetUrl) {
@@ -166,7 +166,7 @@ export function resolveMeetingChatRoomId(meeting) {
 export async function fetchCurrentProfile() {
     const guestProfile = await fetchShareGuestProfile();
     if (guestProfile) return guestProfile;
-    const response = await apiFetch("/api/v1/social/profile");
+    const response = await profileClient().getCurrentProfile();
     if (!response.ok) return null;
     const payload = await readJsonWithFallback(
         response,
@@ -189,7 +189,7 @@ export async function fetchCurrentProfile() {
     );
     return {
         handle,
-        displayName: displayName || handle || "Cognis User",
+        displayName: displayName || handle,
         email,
         avatarKey: avatarKey ?? null,
         avatarUrl,
@@ -224,7 +224,7 @@ async function fetchShareGuestProfile() {
     if (!shareButtonModule.isViewingAsGuest()) {
         return null;
     }
-    const response = await apiFetch("/api/v1/share/guest-profile");
+    const response = await shareClient().getGuestProfile();
     if (!response.ok) return null;
     const payload = await readJsonWithFallback(
         response,
@@ -233,7 +233,7 @@ async function fetchShareGuestProfile() {
     );
     const profile = payload?.data;
     if (!profile) return null;
-    const displayName = String(profile.displayName ?? "Guest").trim();
+    const displayName = String(profile.displayName ?? "").trim();
     const avatarKey =
         typeof profile.avatarKey === "string" ? profile.avatarKey.trim() : "";
     const messageUiResources = await loadMessageUiResources();
@@ -243,7 +243,7 @@ async function fetchShareGuestProfile() {
     );
     return {
         handle: "",
-        displayName: displayName || "Guest",
+        displayName,
         email: "",
         avatarKey: avatarKey || null,
         avatarUrl,

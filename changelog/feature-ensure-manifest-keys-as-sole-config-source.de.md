@@ -15,3 +15,7 @@ Die JavaScript-Formatierung folgt nun der Cognis-Prettier-Konfiguration mit vier
 ## Trennung der Versionshinweise
 
 Modul-Changelogs liegen nun außerhalb von `docs/`, damit die Cognis-Dokumentationserkennung Versionshinweise nicht als Moduldokumentation darstellt.
+
+## Lokalisierte Einstellungsdaten
+
+Manifest-Einstellungen verweisen nun auf übersetzte Modultexte, die über die Sprachressourcen-URL des Moduls bereitgestellt werden. Browsercode nutzt vom Host bereitgestellte Gateway-Clients, und aus Cognis übernommene Qualitätsprüfungen erzwingen Formatierungsumfang, Lokalisierungsparität, Titelschreibweise und Komponententrennung.

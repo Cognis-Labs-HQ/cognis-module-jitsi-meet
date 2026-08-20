@@ -15,3 +15,7 @@ Pemformatan JavaScript kini mengikuti konfigurasi Prettier Cognis dengan empat s
 ## Pemisahan catatan rilis
 
 Changelog modul kini berada di luar `docs/` agar penemuan dokumentasi Cognis tidak menampilkan catatan rilis sebagai dokumentasi modul.
+
+## Metadata pengaturan lokal
+
+Preferensi manifes kini merujuk ke teks modul terjemahan yang disediakan melalui URL sumber daya bahasa modul. Kode browser menggunakan klien gateway yang disediakan host, dan pengujian kualitas yang diadaptasi dari Cognis menegakkan cakupan pemformatan, kesetaraan pelokalan, kapitalisasi judul, dan isolasi komponen.

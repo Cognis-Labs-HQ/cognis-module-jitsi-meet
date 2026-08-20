@@ -80,6 +80,8 @@ Use consequence-based button classes: `btn-cancel` for potentially destructive a
 
 Resolve all user-facing text through module-owned XML language resources. Namespace module keys as `module.jitsi_meet.*`, keep keys lowercase ASCII with dots, hyphens, and underscores, and preserve German, English, Indonesian, and Japanese parity. Translate values in each locale rather than copying English. Route user-facing timestamps through the host timestamp capability and respect the user's font and theme preferences.
 
+This is a strict requirement: never hardcode English UI-facing content, including manifest preference labels and descriptions. Manifest UI metadata must reference module localization keys and expose `ui.stringsBaseUrl` so Cognis can load the matching XML resources.
+
 Use flat host `ui.reuse.*` keys for generic cross-component labels instead of duplicating basic phrases in the module namespace. English label-style page titles and section headings use Title Case. Keep documentation H1 titles at or below 30 characters, prefer language-suffixed Markdown files, and resolve documentation by language before falling back.
 
 Use the host toast capability for transient feedback. Do not use `alert`, `confirm`, or `prompt`, and do not write result messages directly into arbitrary DOM nodes. Use decision popups only when deliberate user input is required.

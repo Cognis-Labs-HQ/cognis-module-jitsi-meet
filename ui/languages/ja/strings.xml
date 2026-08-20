@@ -108,4 +108,8 @@
   <string name="module.jitsi_meet.keyring_request_process">会議 {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">会議パスワードを入力してください。</string>
   <string name="module.jitsi_meet.keyring_invalid">保存された会議パスワードが無効です。現在のパスワードを入力してください。</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Meet インスタンス URL</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">会議の開催に使用する Jitsi Meet 環境の HTTPS URL。</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">会議 URI プレフィックス</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">生成される Jitsi 会議室名に追加する任意のプレフィックス。</string>
 </resources>

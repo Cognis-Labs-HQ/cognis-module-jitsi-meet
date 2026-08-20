@@ -15,3 +15,7 @@ JavaScript formatting now follows Cognis' four-space Prettier configuration, aut
 ## Release note isolation
 
 Module changelogs now live outside `docs/` so Cognis documentation discovery does not present release notes as module documentation.
+
+## Localized settings metadata
+
+Manifest preferences now reference translated module strings exposed through the module language resource URL. Browser code consumes host-supplied gateway clients, and Cognis-derived quality tests enforce formatting scope, localization parity, title casing, and component isolation.

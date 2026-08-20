@@ -1,4 +1,5 @@
 import { readJsonWithFallback } from "./reuse/json-response.js";
+import { messagesClient } from "./reuse/gateway-clients.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { renderMarkdown } from "/static/reuse/markdown-renderer.js";
 import { showToast } from "/static/reuse/toast.js";
@@ -26,7 +27,6 @@ export function createChatHandlers({
     root,
     state,
     i18n,
-    apiFetch,
     messageReactions,
     loadChatRoomKey,
 }) {
@@ -100,7 +100,7 @@ export function createChatHandlers({
                     String(message?.senderDisplayName ?? "").trim() ||
                     String(message?.senderHandle ?? "").trim() ||
                     String(message?.senderId ?? "").trim() ||
-                    "Unknown";
+                    i18n.t("ui.reuse.unknown");
                 const createdAt = String(message?.createdAt ?? "").trim();
                 const safeTime = formatTime(createdAt, "");
                 const body = renderMarkdown(
@@ -254,13 +254,10 @@ export function createChatHandlers({
             clearNativeChatThread();
             return;
         }
-        const response = await apiFetch(
-            `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages`,
-            {
-                accessToken: state.shareAccessToken || undefined,
-                suppressAccessDeniedEvent: true,
-            },
-        );
+        const response = await messagesClient().listRoomMessages(roomId, {
+            accessToken: state.shareAccessToken || undefined,
+            suppressAccessDeniedEvent: true,
+        });
         if (!response.ok) {
             setNativeChatReady(false);
             clearNativeChatThread();
@@ -349,11 +346,8 @@ export function createChatHandlers({
             );
             return;
         }
-        const response = await apiFetch("/api/v1/social/messages/rooms", {
-            method: "POST",
-            body: JSON.stringify({
-                handles: [normalizedUsername],
-            }),
+        const response = await messagesClient().openPrivateRoom({
+            handles: [normalizedUsername],
         });
         if (!response.ok) {
             const payload = await readJsonWithFallback(

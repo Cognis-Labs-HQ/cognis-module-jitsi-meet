@@ -12,6 +12,7 @@ import {
     ensureFullAccountSession,
 } from "/static/reuse/auth-session.js";
 import { ensureSessionId } from "./session.js";
+import { messagesClient } from "./reuse/gateway-clients.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "./meeting-embed.js";
 import { createMeetingPageElements } from "./page-elements.js";
 import {
@@ -234,7 +235,6 @@ export async function mount(
         root,
         state,
         i18n,
-        apiFetch,
         messageReactions,
         loadChatRoomKey: chatLoadingModule?.loadChatRoomKey,
     });
@@ -892,17 +892,11 @@ export async function mount(
                         messageText,
                         roomKey,
                     );
-                    const response = await apiFetch(
-                        `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages`,
+                    const response = await messagesClient().sendRoomMessage(
+                        roomId,
                         {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                ...encrypted,
-                                contentType: "text/plain",
-                            }),
+                            ...encrypted,
+                            contentType: "text/plain",
                             accessToken: state.shareAccessToken || undefined,
                             suppressAccessDeniedEvent: true,
                         },

@@ -108,10 +108,7 @@ test("meeting link chat uses scoped message APIs without requesting room metadat
     const chatSource = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
 
     assert.doesNotMatch(chatSource, /loadMeetingChatParticipants/);
-    assert.match(
-        chatSource,
-        /rooms\/\$\{encodeURIComponent\(roomId\)\}\/messages`/,
-    );
+    assert.match(chatSource, /messagesClient\(\)\.listRoomMessages\(roomId/);
     assert.match(chatSource, /payload\.data[\s\S]*\.slice\(0, 50\)/);
 });
 
@@ -378,7 +375,7 @@ test("meetings mini chat supports participant private-chat switching and return-
     assert.match(appSource, /if \(!state\.meeting\?\.id\) return \[\];/);
     assert.match(appSource, /strip\.hidden = entries\.length === 0;/);
     assert.match(appSource, /state\.lastMeetingParticipants = \[\];/);
-    assert.match(appSource, /\/api\/v1\/social\/messages\/rooms/);
+    assert.match(appSource, /messagesClient\(\)\.openPrivateRoom\(/);
     assert.match(cssSource, /\.jitsi-chat-participant-strip/);
     assert.match(cssSource, /overflow-y: hidden;/);
     assert.match(

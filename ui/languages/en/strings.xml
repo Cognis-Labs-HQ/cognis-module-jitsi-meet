@@ -108,4 +108,8 @@
   <string name="module.jitsi_meet.keyring_request_process">meeting {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">Enter the meeting password.</string>
   <string name="module.jitsi_meet.keyring_invalid">The stored meeting password is invalid. Enter the current password.</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Meet Instance URL</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">HTTPS URL of the Jitsi Meet deployment used to host meetings.</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">Meeting URI Prefix</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Optional prefix added to generated Jitsi meeting room names.</string>
 </resources>

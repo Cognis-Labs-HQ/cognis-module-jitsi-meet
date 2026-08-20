@@ -108,4 +108,8 @@
   <string name="module.jitsi_meet.keyring_request_process">Besprechung {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">Gib das Besprechungspasswort ein.</string>
   <string name="module.jitsi_meet.keyring_invalid">Das gespeicherte Besprechungspasswort ist ungültig. Gib das aktuelle Passwort ein.</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">URL der Jitsi-Meet-Instanz</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">HTTPS-URL der Jitsi-Meet-Bereitstellung, auf der Besprechungen gehostet werden.</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">Besprechungs-URI-Präfix</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Optionales Präfix für automatisch erzeugte Jitsi-Besprechungsraumnamen.</string>
 </resources>
