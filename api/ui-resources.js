@@ -78,6 +78,7 @@ export function registerJitsiUiResourcesRoute({
     requireAuth,
     router,
     sendJson,
+    log,
     messagesUiResources = null,
     unavailable = false,
 }) {
@@ -90,13 +91,12 @@ export function registerJitsiUiResourcesRoute({
                     ? buildUnavailableJitsiUiResourcesPayload()
                     : buildJitsiUiResourcesPayload(messagesUiResources),
             });
-        } catch {
-            console.error(
-                "[jitsi-meet-module] failed to build UI resources payload",
-                {
-                    operation: "build_ui_resources_payload",
-                },
-            );
+        } catch (error) {
+            log?.("error", "Failed to build Jitsi UI resources payload.", {
+                component: "module:jitsi-meet",
+                operation: "build_ui_resources_payload",
+                error: error instanceof Error ? error.message : String(error),
+            });
             sendJson(res, 500, {
                 error: {
                     code: "ui_resources_unavailable",

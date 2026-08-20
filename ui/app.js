@@ -1,3 +1,5 @@
+import { logUi, openErrorPopup } from "./reuse/feedback.js";
+import { messagesClient } from "./reuse/gateway-clients.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
@@ -5,7 +7,7 @@ import { createPageComposer } from "/static/reuse/page-composer/index.js";
 import { registerSearchIndex } from "/static/reuse/search-util/popup.js";
 import { mountWhenDirect } from "/static/reuse/page-entry.js";
 import { openSearchPopup } from "/static/reuse/search-util/popup.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     getShareContext,
@@ -47,10 +49,6 @@ const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
     toggleReaction: async () => undefined,
 });
 /**
- * Mounts the Meetings page inside the dashboard shell and wires all runtime
- * interactions (participant selection, meeting lifecycle polling, and chat
- * embed updates). The optional AbortSignal is used by the SPA router to clean
- * up timers and event listeners when users navigate away.
  *
  * Guest link shares receive a limited shell, while signed-in user-share
  * recipients retain the full account page structure. Both share modes suppress
@@ -892,17 +890,11 @@ export async function mount(
                         messageText,
                         roomKey,
                     );
-                    const response = await apiFetch(
-                        `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages`,
+                    const response = await messagesClient().sendRoomMessage(
+                        roomId,
                         {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                ...encrypted,
-                                contentType: "text/plain",
-                            }),
+                            ...encrypted,
+                            contentType: "text/plain",
                             accessToken: state.shareAccessToken || undefined,
                             suppressAccessDeniedEvent: true,
                         },
@@ -992,5 +984,11 @@ await mountWhenDirect(async (root) => {
     const mountController = new AbortController();
     await mount(root, { signal: mountController.signal });
 }).catch((error) => {
-    console.error(error);
+    void logUi("error", "Jitsi Meet page mount failed.", {
+        component: "module:jitsi-meet",
+        operation: "mount_meetings_page",
+        fatal: true,
+        error: error instanceof Error ? error.message : String(error),
+    });
+    void openErrorPopup({ error });
 });

@@ -1,5 +1,6 @@
+import { logUi } from "./reuse/feedback.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     HEARTBEAT_INTERVAL_MS,
@@ -363,7 +364,8 @@ export function createPreflightHandlers({
             try {
                 return apiInstance.isParticipantModerator() === true;
             } catch (error) {
-                console.warn(
+                void logUi(
+                    "warn",
                     "[jitsi-meet] failed to check Jitsi moderator status:",
                     error,
                 );
@@ -388,7 +390,8 @@ export function createPreflightHandlers({
         try {
             staleApi?.dispose?.();
         } catch (error) {
-            console.warn(
+            void logUi(
+                "warn",
                 "[jitsi-meet] failed to dispose stale meeting session during recovery:",
                 error,
             );

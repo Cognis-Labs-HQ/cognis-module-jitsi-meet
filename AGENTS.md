@@ -90,7 +90,7 @@ npm test
 git diff --check
 ```
 
-Use two-space indentation, single quotes in JavaScript, and trailing commas for multiline arrays and objects. Avoid tabs and trailing whitespace. Never wrap imports in `try`/`catch`.
+Use the repository Prettier configuration: four-space indentation, double quotes in JavaScript, and trailing commas for multiline arrays and objects. Avoid tabs and trailing whitespace. Never wrap imports in `try`/`catch`.
 
 Every behavior change requires appropriate tests, logging, and documentation. Keep documentation variants synchronized. Do not add AI reasoning, session notes, or process commentary to product-facing files.
 

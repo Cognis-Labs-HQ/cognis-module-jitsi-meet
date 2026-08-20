@@ -38,12 +38,12 @@ export function registerMeetingConfigRoutes({
         { access: { minRole: "user" }, allowWhenDisabled: true },
     );
 
-    router.post(
+    router.put(
         "/api/v1/modules/jitsi-meet/config",
         async (req, res) => {
-            await store.ensureSchema();
             const claims = requireAuth(req, res, "admin");
             if (!claims) return;
+            await store.ensureSchema();
             const body = await readJson(req);
             const instanceUrl = normalizeHttpUrl(body.instanceUrl);
             if (!instanceUrl) {

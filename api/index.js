@@ -6,10 +6,7 @@ import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
 import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
-import {
-    normalizeHttpUrl,
-    resolveExternalBaseUrl,
-} from "./reuse/url-parts.js";
+import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
 import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { isModeratorRole, normalizeMeetingPrefix } from "./meeting-values.js";
 import {
@@ -235,6 +232,9 @@ export function registerApiRoutes(router, ctx) {
         router.get("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
             unavailablePayload(res);
         });
+        router.put("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
+            unavailablePayload(res);
+        });
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
             async (_req, res) => {
@@ -271,10 +271,10 @@ export function registerApiRoutes(router, ctx) {
             requireAuth,
             router,
             sendJson,
+            log: ctx.log,
             unavailable: true,
         });
         for (const routePath of [
-            "/api/v1/modules/jitsi-meet/config",
             "/api/v1/modules/jitsi-meet/meetings/create",
             "/api/v1/modules/jitsi-meet/meetings/get",
             "/api/v1/modules/jitsi-meet/meetings/preflight",
@@ -460,6 +460,7 @@ export function registerApiRoutes(router, ctx) {
         requireAuth,
         router,
         sendJson,
+        log,
         messagesUiResources,
     });
 

@@ -3,12 +3,7 @@ import { uiCtx } from "/static/reuse/ui-ctx.js";
 /**
  * Wires the Jitsi Meet "share meeting" button.
  *
- * The button element itself is created by the Share gateway's client
- * capability (`mountShareButton`), not by this module, so the Share gateway
- * remains the sole authority over share buttons: if the Share gateway is
- * disabled its static asset is never served, the dynamic import below fails,
- * and no share button (and therefore no share flow) is ever created for
- * this meeting.
+ * The button is contributed only when the Share popup capability is active.
  */
 
 export async function openMeetingSharePopup({
@@ -17,12 +12,20 @@ export async function openMeetingSharePopup({
     deferAloneParticipantPrompt,
 }) {
     if (!state.meeting?.id || !state.jitsiConferenceJoined) return;
-    const openShareLinksPopup = uiCtx.capabilities.get("share:openLinksPopup");
-    if (typeof openShareLinksPopup !== "function") return;
-    const { buildShareCallbacks } = await import("./share-adapter.js");
+    const openSharePopup = uiCtx.capabilities.get("share:openPopup");
+    if (typeof openSharePopup !== "function") return;
     deferAloneParticipantPrompt?.();
     try {
-        await openShareLinksPopup({
+        await openSharePopup({
+            resourceType: "meeting",
+            resourceId: state.meeting.id,
+            contentUrl: `/meetings?meetingId=${encodeURIComponent(state.meeting.id)}&start=1`,
+            grantedCapabilities: [
+                "meeting:join",
+                "participants:read",
+                "chat:read",
+                "chat:write",
+            ],
             allowedMethodIds: ["link"],
             supportsReadOnly: false,
             title: i18n.t("module.jitsi_meet.share.popup_title"),
@@ -73,7 +76,6 @@ export async function openMeetingSharePopup({
                 copyFailed: i18n.t("module.jitsi_meet.share.copy_failed"),
                 deleteFailed: i18n.t("module.jitsi_meet.share.delete_failed"),
             },
-            ...buildShareCallbacks(state.meeting.id),
         });
     } finally {
         deferAloneParticipantPrompt?.();
@@ -99,32 +101,24 @@ export async function bindShareButton({
         return;
     }
 
-    let shareButtonModule;
-    try {
-        shareButtonModule =
-            await import("/static/gateways/share/ui/reuse/share-button.js");
-    } catch {
-        // Share gateway unavailable — no share button is created.
-        return;
-    }
+    const openSharePopup = uiCtx.capabilities.get("share:openPopup");
+    if (typeof openSharePopup !== "function") return;
 
-    if (typeof shareButtonModule?.mountShareButton !== "function") {
-        return;
-    }
-
-    const shareButton = shareButtonModule.mountShareButton({
-        container: shareButtonSlot,
-        label: i18n.t("module.jitsi_meet.share.button"),
-        id: "share-resource-btn",
-        signal,
-        onClick: () =>
+    const shareButton = document.createElement("button");
+    shareButton.type = "button";
+    shareButton.id = "share-resource-btn";
+    shareButton.className = "btn-confirm";
+    shareButton.textContent = i18n.t("module.jitsi_meet.share.button");
+    shareButton.disabled = !state.jitsiConferenceJoined;
+    shareButton.addEventListener(
+        "click",
+        () =>
             openMeetingSharePopup({
                 state,
                 i18n,
                 deferAloneParticipantPrompt,
             }),
-    });
-    if (shareButton instanceof HTMLButtonElement) {
-        shareButton.disabled = !state.jitsiConferenceJoined;
-    }
+        { signal },
+    );
+    shareButtonSlot.appendChild(shareButton);
 }

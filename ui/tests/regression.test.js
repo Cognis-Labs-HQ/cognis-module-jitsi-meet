@@ -25,10 +25,7 @@ function readJitsiApiBundle() {
 }
 
 test("meeting chat polling respects cancelled keyring access", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/jitsi-chat.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
     assert.match(source, /keyring:isAccessSuppressed/);
     assert.match(
         source,
@@ -37,10 +34,7 @@ test("meeting chat polling respects cancelled keyring access", () => {
 });
 
 test("meeting share joins use the scoped guest access token", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/jitsi-embed.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/jitsi-embed.js"), "utf8");
     assert.match(
         source,
         /meetings\/join[\s\S]*accessToken:\s*state\.shareAccessToken \|\| undefined/,
@@ -99,14 +93,8 @@ test("new meetings can start with an empty participant stage and prompt for a li
 });
 
 test("meeting link guests derive participants from the scoped meeting payload", () => {
-    const chatSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-chat.js"),
-        "utf8",
-    );
-    const appSource = readFileSync(
-        resolve(ROOT, "ui/app.js"),
-        "utf8",
-    );
+    const chatSource = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
+    const appSource = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
     assert.match(
         chatSource,
         /state\.shareAccessToken && state\.chatParticipantEntries\.length > 0/,
@@ -117,23 +105,14 @@ test("meeting link guests derive participants from the scoped meeting payload", 
 });
 
 test("meeting link chat uses scoped message APIs without requesting room metadata", () => {
-    const chatSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-chat.js"),
-        "utf8",
-    );
+    const chatSource = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
 
     assert.doesNotMatch(chatSource, /loadMeetingChatParticipants/);
-    assert.match(
-        chatSource,
-        /rooms\/\$\{encodeURIComponent\(roomId\)\}\/messages\?limit=50/,
-    );
+    assert.match(chatSource, /messagesClient\(\)\.listRoomMessages\(roomId/);
 });
 
 test("meeting link guests can join without participant-card data", () => {
-    const appSource = readFileSync(
-        resolve(ROOT, "ui/app.js"),
-        "utf8",
-    );
+    const appSource = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
     const meetingSource = readFileSync(
         resolve(ROOT, "ui/jitsi-meetings.js"),
         "utf8",
@@ -146,10 +125,7 @@ test("meeting link guests can join without participant-card data", () => {
 });
 
 test("meetings search popup adds confirmed users directly to meeting participants", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/app.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
     assert.match(
         source,
         /onSelectMultiple:\s*\(results\)\s*=>[\s\S]*addParticipant\(participantEntry\)/,
@@ -166,10 +142,7 @@ test("meetings search popup adds confirmed users directly to meeting participant
 
 test("jitsi participant avatars reuse social avatar hydration and hide staged avatars while active", () => {
     const source = readJitsiUiBundle();
-    const cssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /buildProfileAvatarMarkup/);
     assert.match(source, /handleProfileAvatarError/);
     assert.match(source, /hydrateProfileAvatars/);
@@ -192,10 +165,7 @@ test("jitsi meeting group chats include the meeting date in their title", () => 
 });
 
 test("jitsi chat loads room keys through the messages adapter loading flow", () => {
-    const chatSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-chat.js"),
-        "utf8",
-    );
+    const chatSource = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
     const resourcesSource = readFileSync(
         resolve(ROOT, "api/ui-resources.js"),
         "utf8",
@@ -209,10 +179,7 @@ test("jitsi chat loads room keys through the messages adapter loading flow", () 
 });
 
 test("jitsi meeting window has light-theme overlay overrides", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /body\[data-theme="light"\] \.jitsi-overlay\s*\{/);
     assert.match(source, /body\[data-theme="light"\] \.jitsi-spinner\s*\{/);
     assert.match(
@@ -315,10 +282,7 @@ test("jitsi meetings lock participants and block navigation while meeting is act
 
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {
     const source = readJitsiUiBundle();
-    const cssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /async function resetMeetingState\(\s*\{/);
     assert.match(source, /resetParticipantSelection\(\);/);
     assert.doesNotMatch(source, /jitsi-chat-hint/);
@@ -366,10 +330,7 @@ test("meetings UI recovers a live session after composer edit rerenders the ifra
 });
 
 test("reclaim session button uses success outline styling", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/markup.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     assert.match(source, /id="jitsi-reclaim-btn" class="btn-confirm"/);
 });
 
@@ -383,14 +344,8 @@ test("meetings mini chat sends on Enter and hides explicit send button", () => {
 
 test("meetings mini chat supports participant private-chat switching and return-to-meeting action", () => {
     const appSource = readJitsiUiBundle();
-    const markupSource = readFileSync(
-        resolve(ROOT, "ui/markup.js"),
-        "utf8",
-    );
-    const cssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     const stringsSource = readFileSync(
         resolve(ROOT, "ui/languages/en/strings.xml"),
         "utf8",
@@ -407,7 +362,7 @@ test("meetings mini chat supports participant private-chat switching and return-
     assert.match(appSource, /if \(!state\.meeting\?\.id\) return \[\];/);
     assert.match(appSource, /strip\.hidden = entries\.length === 0;/);
     assert.match(appSource, /state\.lastMeetingParticipants = \[\];/);
-    assert.match(appSource, /\/api\/v1\/social\/messages\/rooms/);
+    assert.match(appSource, /messagesClient\(\)\.openPrivateRoom\(/);
     assert.match(cssSource, /\.jitsi-chat-participant-strip/);
     assert.match(cssSource, /overflow-y: hidden;/);
     assert.match(
@@ -449,10 +404,7 @@ test("meetings session state polling handles closed meetings and distinct leave 
 });
 
 test("meeting state polling ignores responses after meeting teardown", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/jitsi-preflight.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/jitsi-preflight.js"), "utf8");
 
     assert.match(source, /const meetingId = state\.meeting\?\.id/);
     assert.match(source, /if \(state\.meeting\?\.id !== meetingId\) return/);
@@ -480,10 +432,7 @@ test("jitsi API resets ended meetings and reports meetingClosed from presence up
 
 test("meetings UI prompts a participant who becomes alone before leaving", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(
-        resolve(ROOT, "ui/markup.js"),
-        "utf8",
-    );
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     const constantsSource = readFileSync(
         resolve(ROOT, "ui/constants.js"),
         "utf8",
@@ -701,10 +650,7 @@ test("administration meetings section labels active and upcoming tables", () => 
 
 test("meetings UI renders active meetings panel and deep-link join support", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(
-        resolve(ROOT, "ui/markup.js"),
-        "utf8",
-    );
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     const embedSource = readFileSync(
         resolve(ROOT, "ui/meeting-embed.js"),
         "utf8",
@@ -753,10 +699,7 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
 
 test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => {
     const appSource = readJitsiUiBundle();
-    const cssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(appSource, /jitsi-theme-sync/);
     assert.doesNotMatch(appSource, /applyJitsiWindowTheme/);
     assert.match(appSource, /const syncJitsiTheme = \(event\) =>/);
@@ -787,10 +730,7 @@ test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => 
 });
 
 test("jitsi API exposes user active meetings endpoint", () => {
-    const indexSource = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const meetingsRoutesSource = readFileSync(
         resolve(ROOT, "api/meetings-routes.js"),
         "utf8",
@@ -811,24 +751,19 @@ test("jitsi API exposes user active meetings endpoint", () => {
 });
 
 test("jitsi opts into composer DOM parking for its stateful iframe", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/app.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
     assert.match(source, /enableDomParking: true/);
 });
 
 test("meeting shares use the Cognis route and skip account setup", () => {
-    const appSource = readFileSync(
-        resolve(ROOT, "ui/app.js"),
+    const appSource = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
+    const shareButtonSource = readFileSync(
+        resolve(ROOT, "ui/share-button.js"),
         "utf8",
     );
-    const adapterSource = readFileSync(
-        resolve(ROOT, "ui/share-adapter.js"),
-        "utf8",
-    );
-    assert.match(adapterSource, /contentUrl: `\/meetings\?meetingId=/);
-    assert.match(adapterSource, /&start=1`/);
+    assert.match(shareButtonSource, /share:openPopup/);
+    assert.match(shareButtonSource, /contentUrl: `\/meetings\?meetingId=/);
+    assert.match(shareButtonSource, /&start=1`/);
     assert.match(
         appSource,
         /accessToken: state\.shareAccessToken \|\| undefined/,
@@ -856,10 +791,7 @@ test("active link-shared meetings ignore a stale closed state", () => {
 });
 
 test("direct-account SPA shares mount the full Meetings page", () => {
-    const appSource = readFileSync(
-        resolve(ROOT, "ui/app.js"),
-        "utf8",
-    );
+    const appSource = readFileSync(resolve(ROOT, "ui/app.js"), "utf8");
     assert.match(
         appSource,
         /inShareView =\s*shareContext !== null &&\s*shareContext\?\.directAccess !== true/,
@@ -867,14 +799,22 @@ test("direct-account SPA shares mount the full Meetings page", () => {
 });
 
 test("meeting routes and standalone shell load shared layout styles", () => {
-    const apiSource = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
-    const shellSource = readFileSync(
-        resolve(ROOT, "ui/index.html"),
-        "utf8",
-    );
+    const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const shellSource = readFileSync(resolve(ROOT, "ui/index.html"), "utf8");
     assert.match(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.match(shellSource, /\/static\/styles\/reuse\/layout\.css/);
+});
+
+test("Jitsi UI uses host logging and feedback capabilities", () => {
+    const feedbackSource = readFileSync(
+        resolve(ROOT, "ui/reuse/feedback.js"),
+        "utf8",
+    );
+    assert.match(feedbackSource, /ui:log/);
+    assert.match(feedbackSource, /ui:showToast/);
+    assert.match(feedbackSource, /ui:openErrorPopup/);
+
+    const bundleSource = readJitsiUiBundle();
+    assert.doesNotMatch(bundleSource, /console\.(?:error|warn)\(/);
+    assert.doesNotMatch(bundleSource, /\/static\/reuse\/toast\.js/);
 });

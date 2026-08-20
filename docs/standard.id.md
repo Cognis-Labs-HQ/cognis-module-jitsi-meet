@@ -1,12 +1,10 @@
 # Modul Jitsi Meet
 
-## Ringkasan
-
 Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan peserta, penggunaan ulang URL rapat, pengambilalihan sesi, dan penggunaan ulang ruang chat dari adapter Messages.
 
-## Fitur
+## Contoh Penggunaan
 
-- URL instans Jitsi yang dapat dikonfigurasi dan prefix URI opsional, tersedia melalui pengaturan modul terpasang dan kontrol Administrasi
+- URL instans Jitsi dan prefiks URI opsional yang ditampilkan Cognis dari manifes dan disimpan oleh endpoint konfigurasi milik modul
 - Rute aplikasi `/meetings` dan `/meeting` dengan:
     - area rapat/overlay
     - pemilihan peserta dan drag-and-drop
@@ -17,14 +15,14 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Pemantauan rapat aktif di Administrasi → Meetings
 - Dependensi berbasis UUID pada gateway Social, adapter Profile, gateway Share, dan adapter Messages, serta persyaratan runtime berbasis kapabilitas `auth:requireAuth` dan `ui:profileAvatarRenderer`
 
-## Catatan Keamanan
+## Spesifikasi Teknis
 
 - Panggilan API memerlukan access token Cognis yang valid.
 - Detail rapat hanya diberikan ke peserta yang diizinkan.
 - Password rapat dibuat untuk setiap catatan rapat.
 - Reclaim sesi memungkinkan pengguna memutus sesi aktif sebelumnya.
 
-## Kontrak Standar Emas
+### Kontrak Integrasi
 
 - `bootstrap.js` adalah satu-satunya entrypoint modul yang dipakai platform.
 - ctx bootstrap adalah satu-satunya bus integrasi modul ini (rute API, registrasi UI, kapabilitas, serta wiring CLI/DB di masa depan).

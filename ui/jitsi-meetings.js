@@ -1,6 +1,6 @@
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
-import { showToast } from "/static/reuse/toast.js";
+import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "./constants.js";
 import { normalizeMeetingId } from "./jitsi-helpers.js";
