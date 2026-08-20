@@ -12,6 +12,7 @@ test('jitsi manifest declares its supplied capabilities and dependencies', () =>
 
   assert.deepEqual(manifest.requiresCapabilities, [
     'auth:requireAuth',
+    'preferences:store',
     'ui:profileAvatarRenderer',
   ]);
   assert.deepEqual(manifest.capabilities, [
@@ -52,13 +53,8 @@ test("jitsi API registers configured CSP origins through auth capability", () =>
         resolve(ROOT, "api/index.js"),
         "utf8",
     );
-    const bundleSource = readJitsiApiBundle();
-
     assert.match(indexSource, /auth:registerPageScriptOrigins/);
-    assert.match(
-        bundleSource,
-        /registerConfiguredJitsiOrigin\(registerScriptOrigins, saved\)/,
-    );
+    assert.match(indexSource, /registerConfiguredJitsiOrigin\(registerScriptOrigins, config\)/);
     assert.match(indexSource, /ctx\.getCapability\("auth:requireAuth"\)/);
 });
 
@@ -102,14 +98,14 @@ test("participant-free meetings delete their identity and shares when closed", (
     assert.match(source, /async deleteMeeting\(meetingId\)/);
 });
 
-test("jitsi API logs stored CSP origin registration failures", () => {
+test("jitsi API reads configuration from the Cognis preference capability", () => {
     const source = readFileSync(
         resolve(ROOT, "api/index.js"),
         "utf8",
     );
 
-    assert.match(source, /Failed to register stored Jitsi CSP origin/);
-    assert.match(source, /operation: "register_stored_jitsi_origin"/);
+    assert.match(source, /ctx\.getCapability\('preferences:store'\)/);
+    assert.doesNotMatch(source, /store\.getConfig\(\)/);
 });
 
 test("jitsi participant lookup delegates follow filtering to profile search", () => {

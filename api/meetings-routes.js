@@ -17,6 +17,7 @@ export function registerMeetingRoutes({
     checkHttpLiveness,
     LIVELINESS_TIMEOUT_MS,
     resolveShareGuestMeetingAccess,
+    resolveModuleConfig,
 }) {
     const parseDateTime = (value) => {
         const parsed = new Date(String(value ?? ""));
@@ -451,7 +452,7 @@ export function registerMeetingRoutes({
             await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            const config = await store.getConfig();
+            const config = await resolveModuleConfig(claims.sub);
             if (!config.instanceUrl) {
                 sendError(
                     res,

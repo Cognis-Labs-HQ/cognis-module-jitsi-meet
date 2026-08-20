@@ -6,7 +6,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 
 ## Features
 
-- Configurable Jitsi instance URL and optional URI prefix, exposed through the installed module settings and Administration controls
+- Configurable Jitsi instance URL and optional URI prefix, read exclusively from the installed module settings rendered by Cognis
 - `/meetings` and `/meeting` application routes with:
     - meeting stage/overlay
     - participant selection and drag-and-drop

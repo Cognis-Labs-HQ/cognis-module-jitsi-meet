@@ -22,6 +22,7 @@ export function registerMeetingLifecycleRoutes({
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
     deleteResourceShares,
+    resolveModuleConfig,
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
@@ -61,7 +62,7 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
-            const config = await store.getConfig();
+            const config = await resolveModuleConfig(claims.sub);
             if (!config.instanceUrl) {
                 sendError(
                     res,

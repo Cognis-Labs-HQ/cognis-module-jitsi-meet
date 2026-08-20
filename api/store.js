@@ -66,21 +66,6 @@ export class JitsiMeetStore {
 
     async ensureSchema() {
         await this.db.ensureTable({
-            name: "jitsi_module_config",
-            columns: [
-                { name: "id", type: "text", primaryKey: true },
-                { name: "instance_url", type: "text" },
-                { name: "meeting_prefix", type: "text" },
-                {
-                    name: "updated_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-            ],
-        });
-
-        await this.db.ensureTable({
             name: "jitsi_meetings",
             columns: [
                 { name: "id", type: "text", primaryKey: true },
@@ -217,71 +202,6 @@ export class JitsiMeetStore {
         }
     }
 
-    async getConfig() {
-        const result = await this.db.executeCommand({
-            option: "SELECT",
-            table: "jitsi_module_config",
-            where: [{ column: "id", value: "default" }],
-            limit: 1,
-        });
-        const row = result.rows?.[0];
-        return {
-            instanceUrl: row?.instance_url ? String(row.instance_url) : "",
-            meetingPrefix: row?.meeting_prefix
-                ? String(row.meeting_prefix)
-                : "",
-            updatedAt: readDbTimestampValue(row?.updated_at),
-        };
-    }
-
-    async saveConfig({ instanceUrl, meetingPrefix }) {
-        const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
-        const normalizedPrefix = normalizeMeetingPrefix(meetingPrefix);
-        const previousConfig = await this.getConfig();
-        const updatedAt = new Date().toISOString();
-        const instanceChanged = Boolean(
-            previousConfig.instanceUrl &&
-            previousConfig.instanceUrl !== normalizedInstanceUrl,
-        );
-
-        await this.db.transaction(async (executor) => {
-            if (instanceChanged) {
-                for (const table of [
-                    "jitsi_meeting_presence",
-                    "jitsi_meeting_state",
-                    "jitsi_meeting_participants",
-                    "jitsi_meetings",
-                ]) {
-                    await executor.executeCommand({
-                        option: "DELETE",
-                        table,
-                    });
-                }
-            }
-            await executor.executeCommand({
-                option: "INSERT",
-                table: "jitsi_module_config",
-                values: {
-                    id: "default",
-                    instance_url: normalizedInstanceUrl,
-                    meeting_prefix: normalizedPrefix,
-                    updated_at: updatedAt,
-                },
-                conflict: {
-                    action: "update",
-                    target: ["id"],
-                },
-            });
-        });
-
-        return {
-            instanceUrl: normalizedInstanceUrl ?? "",
-            meetingPrefix: normalizedPrefix,
-            updatedAt,
-            invalidatedMeetings: instanceChanged,
-        };
-    }
-
     async getMeetingById(meetingId) {
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -415,15 +335,23 @@ export class JitsiMeetStore {
             normalizedClassroomId,
         );
         if (existing) {
+            const configuredOriginChanged =
+                extractUrlOrigin(existing.meetingUrl) !== normalizedInstanceUrl;
+            const currentRoomSlug = extractUrlPathSlug(existing.meetingUrl);
+            const configuredMeetingUrl = configuredOriginChanged
+                ? `${normalizedInstanceUrl}/${currentRoomSlug}`
+                : existing.meetingUrl;
             const normalizedChatRoomId = chatRoomId ?? null;
             if (
-                normalizedChatRoomId &&
-                existing.chatRoomId !== normalizedChatRoomId
+                configuredOriginChanged ||
+                (normalizedChatRoomId &&
+                    existing.chatRoomId !== normalizedChatRoomId)
             ) {
                 await this.db.executeCommand({
                     option: "UPDATE",
                     table: "jitsi_meetings",
                     set: {
+                        meeting_url: configuredMeetingUrl,
                         chat_room_id: normalizedChatRoomId,
                         updated_at: new Date().toISOString(),
                     },
@@ -432,6 +360,7 @@ export class JitsiMeetStore {
             }
             return {
                 ...(existing ?? {}),
+                meetingUrl: configuredMeetingUrl,
                 chatRoomId: normalizedChatRoomId ?? existing.chatRoomId,
                 reused: true,
             };
