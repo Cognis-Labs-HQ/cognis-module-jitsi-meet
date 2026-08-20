@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.65",
+    "version": "1.4.66",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -75,7 +75,7 @@
         },
         {
             "path": "AGENTS.md",
-            "sha256": "97d812e4f1b3ded56a59679a25d060cf702472b3975850988a5d6ac1a00b340e"
+            "sha256": "f974ad82931bf1e69a2bf89f60d443b50ad2d9e813f3cf418add9301a2e3ef8f"
         },
         {
             "path": "LICENSE",
@@ -222,24 +222,24 @@
             "sha256": "b6dde8c6b5fd301a33ddb21aec44971e6b25d1618d3d871d98b9bdb5fb6fa64b"
         },
         {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
+            "sha256": "3df7d5de4449166e48ffc75d817098cdca5c8d6a0464fea03855ab70e81c432d"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
+            "sha256": "9111dd8fd3cf9fdcf2092ab70533b0928d7e23920ed091ae105ff995d87c48bd"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
+            "sha256": "ded8ce980486a8fd315f91822ab6653a331dcc0137d76b0e62c16aea226e2c24"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
+            "sha256": "20c5ac0c9ed0c26909ae00a50b0d2c72dfb5a6c3bb05115be94e641d8762f4c1"
+        },
+        {
             "path": "cli/index.js",
             "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
-        },
-        {
-            "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
-            "sha256": "02c3b672f5a88339f0570f87548631949655fc3b230c68c8841682432d1c57ef"
-        },
-        {
-            "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
-            "sha256": "c92d2d924c794d63d7b418c27621b42b4989683e74f8872a587d38b1f5dccd82"
-        },
-        {
-            "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
-            "sha256": "32bc152bd4c86573c1bdae63ed3284d195e06bb9cc0815708abad349bbbdf20e"
-        },
-        {
-            "path": "docs/changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
-            "sha256": "60c6375351639208eb4277f3a04927d7ecbf5b7e58711e6e17863c78a5a50589"
         },
         {
             "path": "docs/standard.de.md",
@@ -259,11 +259,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "f451122826dc2fabc63cd13ab9ca94b15c7bfb7125f1aae505c15cec5241f3c0"
+            "sha256": "0755a99949653c7ffc528fdb30d57be8fb6ac0d21714bfdc374113aed708dd2c"
         },
         {
             "path": "package.json",
-            "sha256": "8449c89a76b5c7f590ad7a69fbda0712ad1643c0d5638b723d17d23280da0bfa"
+            "sha256": "e541b3dcf81e5023661552514dd5483b45cdf99e3adf321b7d232908edd6b254"
         },
         {
             "path": "routes.json",

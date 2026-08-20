@@ -124,7 +124,7 @@ TypeScript exports require explicit return types. Avoid `any`; when it is genuin
 
 Every behavior change requires appropriate tests, logging, and documentation. Keep documentation variants synchronized. Do not add AI reasoning, session notes, or process commentary to product-facing files.
 
-All module changes require a synchronized version bump. Changelog entries belong under `docs/changelog/`, with matching German, English, Indonesian, and Japanese files named `<branch-name>.<lang>.md`. Each entry uses an H1 release title of at most 30 characters, one H2 per summarized change point, and translated detail text. Existing changelog entries are immutable except for factual corrections; never introduce a monolithic changelog.
+All module changes require a synchronized version bump. Changelog entries belong under root `changelog/` so Cognis documentation discovery cannot treat release notes as module documentation, with matching German, English, Indonesian, and Japanese files named `<branch-name>.<lang>.md`. Each entry uses an H1 release title of at most 30 characters, one H2 per summarized change point, and translated detail text. Existing changelog entries are immutable except for factual corrections; never introduce a monolithic changelog.
 
 After a version update, run `npm ci --ignore-scripts`. Any future `@cognis/*` package dependency must use a flexible tested-ceiling range in the form `<=<tested-version>` rather than an exact pin. Missing, disabled, or newer-than-tested declared dependencies must surface as component errors instead of being hidden by fallback behavior.
 

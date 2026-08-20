@@ -11,3 +11,7 @@ Aturan yang hanya berlaku untuk direktori, Docker, gateway, adaptor, Study, dan 
 ## Kepatuhan repositori
 
 Pemformatan JavaScript kini mengikuti konfigurasi Prettier Cognis dengan empat spasi, rute terautentikasi mengotorisasi pemanggil sebelum menginisialisasi persistensi, dan API daftar tidak lagi memberlakukan batas hasil sisi server yang tidak dideklarasikan. Pemeriksaan format, keterbacaan, dan nama ambigu Cognis kini berjalan secara lokal. Jalur fallback yang disengaja dicatat dengan konteks terstruktur, dan pengenal sesi rapat mewajibkan Web Crypto.
+
+## Pemisahan catatan rilis
+
+Changelog modul kini berada di luar `docs/` agar penemuan dokumentasi Cognis tidak menampilkan catatan rilis sebagai dokumentasi modul.

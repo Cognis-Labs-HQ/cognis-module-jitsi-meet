@@ -11,3 +11,7 @@ Monorepo-only directory, Docker, gateway, adapter, Study, and central registry r
 ## Repository compliance
 
 JavaScript formatting now follows Cognis' four-space Prettier configuration, authenticated routes authorize callers before initializing persistence, and list APIs no longer impose undeclared server-side result caps. The Cognis formatting, readability, and ambiguous-name checks now run locally. Intentional fallbacks are logged with structured context, and meeting session identifiers require Web Crypto.
+
+## Release note isolation
+
+Module changelogs now live outside `docs/` so Cognis documentation discovery does not present release notes as module documentation.
