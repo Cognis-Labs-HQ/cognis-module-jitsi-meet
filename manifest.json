@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.62",
+    "version": "1.4.63",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -75,7 +75,7 @@
     "files": [
         {
             "path": "AGENTS.md",
-            "sha256": "f5e8d057e1202e122d389a787417d7e85e450f80e603e276d0a86244dc43d3fa"
+            "sha256": "a03f434d694a09e01429ff3f098db722e4ea5a21fd20072228410b7ef8f325dd"
         },
         {
             "path": "LICENSE",
@@ -218,6 +218,22 @@
             "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
         },
         {
+            "path": "docs/changelog/work.de.md",
+            "sha256": "b72bc4e58216a5ad9fb8d93f58aa8d87e227e3acb38aedc656d4948385872d56"
+        },
+        {
+            "path": "docs/changelog/work.en.md",
+            "sha256": "897921adc15c8f9e0e820231f857eb0eda2ae2e42671472b1abd424cb7807606"
+        },
+        {
+            "path": "docs/changelog/work.id.md",
+            "sha256": "1b01b51fe99b818fb14628ea21219f7f90c52b31652541fea9e2bfe548f9a270"
+        },
+        {
+            "path": "docs/changelog/work.ja.md",
+            "sha256": "93ab0ffc369b2d39545f9480160e4843541d5b0bce9f3aa5df2701d2ffff4175"
+        },
+        {
             "path": "docs/standard.de.md",
             "sha256": "db58a8609e6804536120a4442d4bc8b213e9e5f392e64fb63ecf61278a5d7c95"
         },
@@ -235,11 +251,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "1ac85420cdbf528df13fdab4c8aa752544f88b8e712c8dabae96d19a776a1b30"
+            "sha256": "62d62dfc9cb7db23eafe8d00fbec677e46b5e2c35bc1cef126b2355fbe488c52"
         },
         {
             "path": "package.json",
-            "sha256": "9d7dae3803ec62a243709269ab71c056ac61e9d586ba555720c8d156a9489993"
+            "sha256": "0314bb1c4023df377ee441a18600a2c749d364b2aef598753ca7eed771bcd928"
         },
         {
             "path": "routes.json",
