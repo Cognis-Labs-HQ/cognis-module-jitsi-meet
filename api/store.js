@@ -755,6 +755,7 @@ export class JitsiMeetStore {
             option: "SELECT",
             table: "jitsi_meetings",
             orderBy: [{ column: "updated_at", direction: "DESC" }],
+            limit: 200,
         });
         const rows = meetingsResult.rows ?? [];
         const mappedMeetings = await Promise.all(
@@ -870,6 +871,7 @@ export class JitsiMeetStore {
             option: "SELECT",
             table: "jitsi_meetings",
             orderBy: [{ column: "scheduled_at", direction: "ASC" }],
+            limit: 100,
         });
         const rows = meetingsResult.rows ?? [];
         const mappedMeetings = await Promise.all(

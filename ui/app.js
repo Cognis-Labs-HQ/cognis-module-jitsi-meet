@@ -13,7 +13,6 @@ import {
     ensureFullAccountSession,
 } from "/static/reuse/auth-session.js";
 import { ensureSessionId } from "./session.js";
-import { messagesClient } from "./reuse/gateway-clients.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "./meeting-embed.js";
 import { createMeetingPageElements } from "./page-elements.js";
 import {
@@ -236,6 +235,7 @@ export async function mount(
         root,
         state,
         i18n,
+        apiFetch,
         messageReactions,
         loadChatRoomKey: chatLoadingModule?.loadChatRoomKey,
     });
@@ -893,11 +893,17 @@ export async function mount(
                         messageText,
                         roomKey,
                     );
-                    const response = await messagesClient().sendRoomMessage(
-                        roomId,
+                    const response = await apiFetch(
+                        `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages`,
                         {
-                            ...encrypted,
-                            contentType: "text/plain",
+                            method: "POST",
+                            headers: {
+                                "content-type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                ...encrypted,
+                                contentType: "text/plain",
+                            }),
                             accessToken: state.shareAccessToken || undefined,
                             suppressAccessDeniedEvent: true,
                         },
@@ -987,8 +993,8 @@ await mountWhenDirect(async (root) => {
     const mountController = new AbortController();
     await mount(root, { signal: mountController.signal });
 }).catch((error) => {
-    void logUi("error", "[jitsi-meet] page mount failed", {
-        component: "jitsi-meet-module",
+    void logUi("error", "Jitsi Meet page mount failed.", {
+        component: "module:jitsi-meet",
         operation: "mount_meetings_page",
         fatal: true,
         error: error instanceof Error ? error.message : String(error),

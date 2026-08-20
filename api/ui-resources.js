@@ -92,7 +92,8 @@ export function registerJitsiUiResourcesRoute({
                     : buildJitsiUiResourcesPayload(messagesUiResources),
             });
         } catch (error) {
-            log("error", "Failed to build UI resources payload.", {
+            log?.("error", "Failed to build Jitsi UI resources payload.", {
+                component: "module:jitsi-meet",
                 operation: "build_ui_resources_payload",
                 error: error instanceof Error ? error.message : String(error),
             });

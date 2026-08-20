@@ -57,7 +57,7 @@ test("meeting participant search preserves follow filtering and omits the curren
     assert.deepEqual(searchCalls, [
         {
             query: "ali",
-            limit: undefined,
+            limit: 50,
             options: {
                 includeHidden: false,
                 requesterAccountId: "bob-account",

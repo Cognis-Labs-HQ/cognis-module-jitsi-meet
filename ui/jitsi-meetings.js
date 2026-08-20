@@ -1,7 +1,3 @@
-import {
-    readJsonWithFallback,
-    resolveUiFallback,
-} from "./reuse/json-response.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { showToast } from "./reuse/feedback.js";
@@ -96,11 +92,7 @@ export function createMeetingHandlers({
 
     async function switchAwayFromActiveMeeting() {
         if (!utils.isMeetingActive()) return;
-        await resolveUiFallback(
-            callbacks.keepPresenceAlive(false),
-            undefined,
-            "leave_active_meeting",
-        );
+        await callbacks.keepPresenceAlive(false).catch(() => undefined);
         utils.clearTimers();
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
@@ -154,11 +146,9 @@ export function createMeetingHandlers({
         );
         if (!getResponse.ok) {
             state.meeting = null;
-            const errorPayload = await readJsonWithFallback(
-                getResponse,
-                { error: null },
-                "load_meeting_error",
-            );
+            const errorPayload = await getResponse
+                .json()
+                .catch(() => ({ error: null }));
             utils.updateOverlay({
                 message: i18n.t(
                     getResponse.status === 404 ||
@@ -182,11 +172,9 @@ export function createMeetingHandlers({
             }
             return;
         }
-        const meetingPayload = await readJsonWithFallback(
-            getResponse,
-            { data: null },
-            "load_meeting",
-        );
+        const meetingPayload = await getResponse
+            .json()
+            .catch(() => ({ data: null }));
         if (
             !meetingPayload?.data?.id ||
             (autoStart && meetingPayload?.data?.state?.endedAt)
@@ -280,11 +268,7 @@ export function createMeetingHandlers({
             renderActiveMeetings();
             return;
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: [] },
-            "load_active_meetings",
-        );
+        const payload = await response.json().catch(() => ({ data: [] }));
         state.activeMeetings = Array.isArray(payload?.data) ? payload.data : [];
         renderActiveMeetings();
         const requestedMeetingId = resolveRequested
@@ -344,11 +328,7 @@ export function createMeetingHandlers({
         skipPresenceUpdate = false,
     } = {}) {
         if (!skipPresenceUpdate) {
-            await resolveUiFallback(
-                callbacks.keepPresenceAlive(false),
-                undefined,
-                "reset_meeting_presence",
-            );
+            await callbacks.keepPresenceAlive(false).catch(() => undefined);
         }
         utils.clearTimers();
         closeMeetingEmbed();
@@ -386,13 +366,11 @@ export function createMeetingHandlers({
         honorMeetingClosed = true,
         reportTerminated = false,
     }) {
-        const leaveState = await resolveUiFallback(
-            callbacks.keepPresenceAlive(false, {
+        const leaveState = await callbacks
+            .keepPresenceAlive(false, {
                 terminated: reportTerminated,
-            }),
-            null,
-            "leave_meeting_presence",
-        );
+            })
+            .catch(() => null);
         const overlayMessageKey =
             forceClosedOverlay ||
             (honorMeetingClosed && leaveState?.meetingClosed)

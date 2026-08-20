@@ -1,4 +1,3 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import {
@@ -39,7 +38,7 @@ async function requesterHasDirectMeetingAccess(
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
         String(requesterClaims?.sub ?? ""),
-    ).catch((error) => logApiFallback(error, "share_hooks_fallback", ""));
+    ).catch(() => "");
     if (!requesterUsername) {
         return false;
     }
@@ -52,7 +51,7 @@ async function requesterHasDirectMeetingAccess(
     }
     const participants = await store
         .listParticipants(meeting.id)
-        .catch((error) => logApiFallback(error, "share_hooks_fallback", []));
+        .catch(() => []);
     return participants.includes(requesterUsername);
 }
 
@@ -65,13 +64,13 @@ async function resolveMeetingRequesterAccess({
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
         requesterAccountId,
-    ).catch((error) => logApiFallback(error, "share_hooks_fallback", ""));
+    ).catch(() => "");
     if (!requesterUsername) {
         return { isParticipant: false };
     }
     const participantUsernames = await store
         .listParticipants(meeting.id)
-        .catch((error) => logApiFallback(error, "share_hooks_fallback", []));
+        .catch(() => []);
     return {
         isParticipant:
             requesterUsername === meeting.createdBy ||
@@ -128,13 +127,7 @@ export function registerShareFlowHooks(ctx) {
                     presentParticipants.map((username) =>
                         profileStore
                             .getProfileByHandle(username)
-                            .catch((error) =>
-                                logApiFallback(
-                                    error,
-                                    "share_hooks_fallback",
-                                    null,
-                                ),
-                            ),
+                            .catch(() => null),
                     ),
                 );
                 const targetAccountIds = profiles
@@ -146,9 +139,7 @@ export function registerShareFlowHooks(ctx) {
                     );
                 const requesterProfile = await profileStore
                     .getProfile(requesterAccountId)
-                    .catch((error) =>
-                        logApiFallback(error, "share_hooks_fallback", null),
-                    );
+                    .catch(() => null);
                 return {
                     targetAccountIds,
                     requesterDisplayName:
@@ -274,9 +265,7 @@ export function registerShareFlowHooks(ctx) {
                 : storedState;
             const ownerProfile = await profileStore
                 .getProfileByHandle(meeting.createdBy)
-                .catch((error) =>
-                    logApiFallback(error, "share_hooks_fallback", null),
-                );
+                .catch(() => null);
             return {
                 resolved: true,
                 resourceType: "meeting",

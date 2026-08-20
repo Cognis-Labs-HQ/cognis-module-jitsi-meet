@@ -403,11 +403,9 @@ export function createEmbedHandlers({
             return;
         }
 
-        const createPayload = await readJsonWithFallback(
-            createResponse,
-            { data: null },
-            "create_meeting",
-        );
+        const createPayload = await createResponse
+            .json()
+            .catch(() => ({ data: null }));
         state.meeting = createPayload?.data;
         state.promptShareOnJoin =
             Boolean(state.meeting?.id) && selected.length === 0;

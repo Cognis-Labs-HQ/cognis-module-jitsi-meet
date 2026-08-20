@@ -1,4 +1,3 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
 import { randomUUID } from "node:crypto";
 
 export function registerMeetingLifecycleRoutes({
@@ -27,9 +26,9 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
 
             const body = await readJson(req);
             const requesterUsername = await resolveRequesterUsername(
@@ -85,13 +84,7 @@ export function registerMeetingLifecycleRoutes({
                     // with only the creator as a real member — otherwise
                     // share-link guests can never be granted chat access.
                     allowSingleMember: true,
-                }).catch((error) =>
-                    logApiFallback(
-                        error,
-                        "meeting_lifecycle_routes_fallback",
-                        null,
-                    ),
-                );
+                }).catch(() => null);
             }
 
             const meeting = await store.createMeeting({
@@ -148,9 +141,9 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/password/acknowledge",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const resolved = await resolveMeetingPayload({
                 body,
@@ -174,9 +167,9 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/join",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const meetingId = String(body.meetingId ?? "").trim();
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
@@ -348,9 +341,9 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/chat-room-summary",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const chatRoomId = String(body.chatRoomId ?? "").trim();
             if (!chatRoomId) {
@@ -432,9 +425,9 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/presence",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
                 claims,

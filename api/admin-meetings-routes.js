@@ -1,4 +1,3 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
 export function registerAdminMeetingRoutes({
     router,
     store,
@@ -13,13 +12,7 @@ export function registerAdminMeetingRoutes({
                 const profile = createdBy
                     ? await profileStore
                           .getProfileByHandle(createdBy)
-                          .catch((error) =>
-                              logApiFallback(
-                                  error,
-                                  "admin_meetings_routes_fallback",
-                                  null,
-                              ),
-                          )
+                          .catch(() => null)
                     : null;
                 return {
                     ...meeting,
@@ -33,9 +26,9 @@ export function registerAdminMeetingRoutes({
     router.get(
         "/api/v1/modules/jitsi-meet/admin/meetings",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "admin");
             if (!claims) return;
-            await store.ensureSchema();
             const meetings = await store.listActiveMeetings();
             sendJson(res, 200, { data: meetings });
         },
@@ -45,9 +38,9 @@ export function registerAdminMeetingRoutes({
     router.get(
         "/api/v1/modules/jitsi-meet/admin/meetings/upcoming",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "admin");
             if (!claims) return;
-            await store.ensureSchema();
             const meetings = await withCreatorProfiles(
                 await store.listUpcomingMeetings(),
             );

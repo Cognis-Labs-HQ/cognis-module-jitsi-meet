@@ -1,10 +1,4 @@
 import { logUi } from "./reuse/feedback.js";
-import { readJsonWithFallback } from "./reuse/json-response.js";
-import {
-    filesClient,
-    profileClient,
-    shareClient,
-} from "./reuse/gateway-clients.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
@@ -31,22 +25,16 @@ export async function loadMessageUiResources() {
             "/api/v1/modules/jitsi-meet/ui-resources",
         );
         if (!response.ok) {
-            void logUi(
-                "warn",
+            void logUi("warn",
                 "[jitsi-meet] message UI resources unavailable; using fallback resources",
                 {
-                    component: "jitsi-meet-module",
                     operation: "load_message_ui_resources",
                     status: response.status,
                 },
             );
             return FALLBACK_MESSAGE_UI_RESOURCES;
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: null },
-            "load_meeting_resource",
-        );
+        const payload = await response.json().catch(() => ({ data: null }));
         const responseData = payload?.data ?? {};
         const languageBaseUrls = Array.isArray(responseData.languageBaseUrls)
             ? responseData.languageBaseUrls.filter(
@@ -81,15 +69,10 @@ export async function loadMessageUiResources() {
                     ? responseData.profileFileNamespace
                     : null,
         };
-    } catch (error) {
-        void logUi(
-            "warn",
+    } catch {
+        void logUi("warn",
             "[jitsi-meet] failed to load message UI resources; using fallback resources",
-            {
-                component: "jitsi-meet-module",
-                operation: "load_message_ui_resources",
-                error: error instanceof Error ? error.message : String(error),
-            },
+            { operation: "load_message_ui_resources" },
         );
         return FALLBACK_MESSAGE_UI_RESOURCES;
     }
@@ -97,7 +80,12 @@ export async function loadMessageUiResources() {
 
 function buildFileUrl(namespaceId, objectKey) {
     if (!namespaceId || !objectKey) return "";
-    return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
+    return `${window.location.origin}/api/v1/files/${encodeURIComponent(
+        namespaceId,
+    )}/${String(objectKey)
+        .split("/")
+        .map((part) => encodeURIComponent(part))
+        .join("/")}`;
 }
 
 export function ensureStylesheetLoaded(stylesheetUrl) {
@@ -137,12 +125,7 @@ export async function loadMessageReactionsController(
             });
         await reactionsController.loadEmojiUsage?.();
         return reactionsController;
-    } catch (error) {
-        void logUi("error", "[jitsi-meet] failed to load message reactions", {
-            component: "jitsi-meet-module",
-            operation: "load_message_reactions",
-            error: error instanceof Error ? error.message : String(error),
-        });
+    } catch {
         return null;
     }
 }
@@ -169,13 +152,9 @@ export function resolveMeetingChatRoomId(meeting) {
 export async function fetchCurrentProfile() {
     const guestProfile = await fetchShareGuestProfile();
     if (guestProfile) return guestProfile;
-    const response = await profileClient().getCurrentProfile();
+    const response = await apiFetch("/api/v1/social/profile");
     if (!response.ok) return null;
-    const payload = await readJsonWithFallback(
-        response,
-        { data: null },
-        "load_meeting_resource",
-    );
+    const payload = await response.json().catch(() => ({ data: null }));
     const profile = payload?.data;
     if (!profile) return null;
     const handle = normalizeUsername(profile.handle ?? "");
@@ -192,7 +171,7 @@ export async function fetchCurrentProfile() {
     );
     return {
         handle,
-        displayName: displayName || handle,
+        displayName: displayName || handle || "Cognis User",
         email,
         avatarKey: avatarKey ?? null,
         avatarUrl,
@@ -210,16 +189,7 @@ async function fetchShareGuestProfile() {
     try {
         shareButtonModule =
             await import("/static/gateways/share/ui/reuse/share-button.js");
-    } catch (error) {
-        void logUi(
-            "error",
-            "[jitsi-meet] failed to load share guest profile support",
-            {
-                component: "jitsi-meet-module",
-                operation: "load_share_guest_profile_support",
-                error: error instanceof Error ? error.message : String(error),
-            },
-        );
+    } catch {
         return null;
     }
     if (typeof shareButtonModule?.isViewingAsGuest !== "function") {
@@ -228,16 +198,12 @@ async function fetchShareGuestProfile() {
     if (!shareButtonModule.isViewingAsGuest()) {
         return null;
     }
-    const response = await shareClient().getGuestProfile();
+    const response = await apiFetch("/api/v1/share/guest-profile");
     if (!response.ok) return null;
-    const payload = await readJsonWithFallback(
-        response,
-        { data: null },
-        "load_meeting_resource",
-    );
+    const payload = await response.json().catch(() => ({ data: null }));
     const profile = payload?.data;
     if (!profile) return null;
-    const displayName = String(profile.displayName ?? "").trim();
+    const displayName = String(profile.displayName ?? "Guest").trim();
     const avatarKey =
         typeof profile.avatarKey === "string" ? profile.avatarKey.trim() : "";
     const messageUiResources = await loadMessageUiResources();
@@ -247,7 +213,7 @@ async function fetchShareGuestProfile() {
     );
     return {
         handle: "",
-        displayName,
+        displayName: displayName || "Guest",
         email: "",
         avatarKey: avatarKey || null,
         avatarUrl,
@@ -321,10 +287,6 @@ export async function fetchParticipants(query) {
         `/api/v1/modules/jitsi-meet/participants?q=${encodeURIComponent(query)}`,
     );
     if (!response.ok) return [];
-    const payload = await readJsonWithFallback(
-        response,
-        { data: [] },
-        "load_meeting_resources",
-    );
+    const payload = await response.json().catch(() => ({ data: [] }));
     return Array.isArray(payload?.data) ? payload.data : [];
 }

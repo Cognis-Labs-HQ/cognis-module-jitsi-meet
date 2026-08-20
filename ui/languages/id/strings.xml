@@ -59,6 +59,10 @@
   <string name="module.jitsi_meet.participants.selected">Peserta Rapat</string>
   <string name="module.jitsi_meet.participants.none">Tidak ada peserta untuk ditampilkan.</string>
   <string name="module.jitsi_meet.participants.add_selected">Tambahkan yang Dipilih</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">URL Instans Jitsi</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">Masukkan URL dasar lengkap dari deployment Jitsi kamu.</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">Prefix URI Rapat Opsional</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Prefix path opsional yang dipakai saat membuat URL rapat.</string>
   <string name="module.jitsi_meet.admin.meetings.heading">Rapat</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">Aktivitas Rapat Realtime</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">Rapat Aktif</string>
@@ -108,8 +112,4 @@
   <string name="module.jitsi_meet.keyring_request_process">rapat {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">Masukkan kata sandi rapat.</string>
   <string name="module.jitsi_meet.keyring_invalid">Kata sandi rapat yang tersimpan tidak valid. Masukkan kata sandi saat ini.</string>
-  <string name="module.jitsi_meet.admin.config.instance_url">URL Instans Jitsi Meet</string>
-  <string name="module.jitsi_meet.admin.config.instance_url_description">URL HTTPS deployment Jitsi Meet yang digunakan untuk menyelenggarakan rapat.</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">Awalan URI Rapat</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Awalan opsional yang ditambahkan ke nama ruang rapat Jitsi yang dibuat.</string>
 </resources>

@@ -59,6 +59,10 @@
   <string name="module.jitsi_meet.participants.selected">ミーティング参加者</string>
   <string name="module.jitsi_meet.participants.none">表示できる参加者がいません。</string>
   <string name="module.jitsi_meet.participants.add_selected">選択を追加</string>
+  <string name="module.jitsi_meet.admin.config.instance_url">Jitsi インスタンス URL</string>
+  <string name="module.jitsi_meet.admin.config.instance_url_description">Jitsi デプロイのベース URL を完全な形式で入力してください。</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix">任意のミーティング URI プレフィックス</string>
+  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">ミーティング URL 生成時に使う任意のパスプレフィックスです。</string>
   <string name="module.jitsi_meet.admin.meetings.heading">ミーティング</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">リアルタイム ミーティング状況</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">アクティブなミーティング</string>
@@ -108,8 +112,4 @@
   <string name="module.jitsi_meet.keyring_request_process">会議 {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">会議パスワードを入力してください。</string>
   <string name="module.jitsi_meet.keyring_invalid">保存された会議パスワードが無効です。現在のパスワードを入力してください。</string>
-  <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Meet インスタンス URL</string>
-  <string name="module.jitsi_meet.admin.config.instance_url_description">会議の開催に使用する Jitsi Meet 環境の HTTPS URL。</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">会議 URI プレフィックス</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">生成される Jitsi 会議室名に追加する任意のプレフィックス。</string>
 </resources>

@@ -1,4 +1,3 @@
-import { logApiFallback } from "./log-fallback.js";
 /**
  * Extracts the share token ID from a share-guest subject claim. Guest
  * subjects are encoded as `share:<shareId>` or `share:<shareId>:<guestId>`.
@@ -84,9 +83,7 @@ export async function resolveShareGuestAccess({
     const guestSessionId = resolveShareGuestSessionId(claims);
     const guestProfile =
         guestSessionId && typeof getGuestProfile === "function"
-            ? await getGuestProfile(guestSessionId).catch((error) =>
-                  logApiFallback(error, "share_guest_fallback", null),
-              )
+            ? await getGuestProfile(guestSessionId).catch(() => null)
             : null;
     const displayName = String(guestProfile?.displayName ?? "").trim();
     return {

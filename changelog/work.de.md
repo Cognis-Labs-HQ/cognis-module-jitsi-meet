@@ -1,5 +1,5 @@
-# Host-Rückmeldungen
+# Moduleinstellungen
 
-## Protokollierung und Hinweise
+## Vom Kern dargestellte Konfiguration
 
-Browserfehler verwenden nun die Cognis-Fähigkeit `ui:log`, vorübergehende Hinweise `ui:showToast` und schwerwiegende Fehler beim Seitenaufbau öffnen über `ui:openErrorPopup` den Fehlerberichtsdialog des Hosts. Server-Rückfallpfade verwenden jetzt die modulgebundene Funktion `ctx.log`.
+Cognis stellt nun die im Manifest deklarierten Einstellungen dar und tauscht Werte über den moduleigenen GET- und PUT-Konfigurationsendpunkt aus. Browser-Protokollierung, Hinweise und schwerwiegende Fehlerberichte verwenden die Host-Fähigkeiten.

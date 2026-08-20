@@ -40,15 +40,11 @@ export function registerMeetingParticipantRoutes({
             }
             const query = (requestUrl.searchParams.get("q") ?? "").trim();
             const includeHidden = hasMinRole(claims.role, "admin");
-            const candidates = await profileStore.searchProfiles(
-                query,
-                undefined,
-                {
-                    includeHidden,
-                    requesterAccountId: claims.sub,
-                    followingAccountId: claims.sub,
-                },
-            );
+            const candidates = await profileStore.searchProfiles(query, 50, {
+                includeHidden,
+                requesterAccountId: claims.sub,
+                followingAccountId: claims.sub,
+            });
             const results = candidates
                 .filter((profile) => profile.accountId !== claims.sub)
                 .map((profile) => ({

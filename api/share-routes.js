@@ -1,4 +1,3 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
 import { readJson } from "./reuse/http.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { resolveStore } from "./reuse/store-runtime.js";
@@ -53,7 +52,7 @@ async function requireOwnedMeeting({
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
         claims.sub,
-    ).catch((error) => logApiFallback(error, "share_routes_fallback", ""));
+    ).catch(() => "");
     const participantUsernames = requesterUsername
         ? await store.listParticipants(meeting.id)
         : [];

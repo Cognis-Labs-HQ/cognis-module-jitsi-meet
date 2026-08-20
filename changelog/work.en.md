@@ -1,5 +1,5 @@
-# Host Feedback
+# Module Settings
 
-## Logging and feedback
+## Core-rendered configuration
 
-Browser failures now use Cognis' `ui:log` capability, transient notices use `ui:showToast`, and fatal page-mount failures open the host error-report popup through `ui:openErrorPopup`. Server fallbacks now use the module-scoped `ctx.log` function.
+Cognis now renders the manifest-declared settings and exchanges values with the module-owned GET and PUT config endpoint. Browser logging, toasts, and fatal error reporting use the host capabilities.

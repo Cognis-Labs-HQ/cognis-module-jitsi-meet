@@ -1,4 +1,3 @@
-import { logUi } from "./reuse/feedback.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 
 /**
@@ -104,16 +103,8 @@ export async function bindShareButton({
     try {
         shareButtonModule =
             await import("/static/gateways/share/ui/reuse/share-button.js");
-    } catch (error) {
-        void logUi(
-            "error",
-            "[jitsi-meet] failed to load the Share button capability",
-            {
-                component: "jitsi-meet-module",
-                operation: "load_share_button",
-                error: error instanceof Error ? error.message : String(error),
-            },
-        );
+    } catch {
+        // Share gateway unavailable — no share button is created.
         return;
     }
 

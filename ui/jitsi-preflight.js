@@ -1,5 +1,4 @@
 import { logUi } from "./reuse/feedback.js";
-import { readJsonWithFallback } from "./reuse/json-response.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { showToast } from "./reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
@@ -53,11 +52,7 @@ export function createPreflightHandlers({
             }
             return false;
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: null },
-            "load_meeting_preflight",
-        );
+        const payload = await response.json().catch(() => ({ data: null }));
         state.preflightNeedsConfig = false;
         const isAlive = payload?.data?.alive === true;
         if (!isAlive) {
@@ -203,11 +198,7 @@ export function createPreflightHandlers({
             },
         );
         if (!response.ok) return;
-        const payload = await readJsonWithFallback(
-            response,
-            { data: null },
-            "load_meeting_preflight",
-        );
+        const payload = await response.json().catch(() => ({ data: null }));
         const latestState = payload?.data?.state;
         if (!latestState) return;
         if (latestState.endedAt) {
@@ -276,11 +267,7 @@ export function createPreflightHandlers({
             },
         );
         if (!response.ok) return null;
-        const payload = await readJsonWithFallback(
-            response,
-            { data: null },
-            "load_meeting_preflight",
-        );
+        const payload = await response.json().catch(() => ({ data: null }));
         return payload?.data ?? null;
     }
 
@@ -377,17 +364,9 @@ export function createPreflightHandlers({
             try {
                 return apiInstance.isParticipantModerator() === true;
             } catch (error) {
-                void logUi(
-                    "warn",
-                    "[jitsi-meet] failed to check Jitsi moderator status",
-                    {
-                        component: "jitsi-meet-module",
-                        operation: "check_jitsi_moderator_status",
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    },
+                void logUi("warn",
+                    "[jitsi-meet] failed to check Jitsi moderator status:",
+                    error,
                 );
                 return false;
             }
@@ -410,33 +389,15 @@ export function createPreflightHandlers({
         try {
             staleApi?.dispose?.();
         } catch (error) {
-            void logUi(
-                "warn",
-                "[jitsi-meet] failed to dispose stale meeting session",
-                {
-                    component: "jitsi-meet-module",
-                    operation: "dispose_stale_meeting_session",
-                    error:
-                        error instanceof Error ? error.message : String(error),
-                },
+            void logUi("warn",
+                "[jitsi-meet] failed to dispose stale meeting session during recovery:",
+                error,
             );
         }
         state.recoveringMeetingSession = true;
         void callbacks
             .joinMeeting()
-            .catch((error) => {
-                void logUi(
-                    "error",
-                    "[jitsi-meet] failed to recover meeting session",
-                    {
-                        component: "jitsi-meet-module",
-                        operation: "recover_meeting_session",
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    },
-                );
+            .catch(() => {
                 showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                     variant: "error",
                 });

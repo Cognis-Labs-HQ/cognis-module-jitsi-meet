@@ -120,11 +120,7 @@ class MeetingExecutor {
 function createFlowHarness(executor, profileStore = createProfileStore()) {
     const stageOrder = {
         "mint-share-token": ["validate-resource", "authorize-minter"],
-        "resolve-share-token": [
-            "validate-token",
-            "resolve-resource",
-            "check-access",
-        ],
+        "resolve-share-token": ["validate-token", "resolve-resource", "check-access"],
         "revoke-share-token": ["authorize-revocation"],
         "resolve-share-approval-targets": ["resolve-targets"],
     };

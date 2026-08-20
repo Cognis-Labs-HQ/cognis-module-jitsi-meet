@@ -1,5 +1,5 @@
-# Umpan Balik Host
+# Pengaturan Modul
 
-## Pencatatan dan umpan balik
+## Konfigurasi dari inti
 
-Kegagalan browser kini menggunakan kapabilitas Cognis `ui:log`, pemberitahuan sementara menggunakan `ui:showToast`, dan kegagalan fatal saat memasang halaman membuka popup laporan kesalahan host melalui `ui:openErrorPopup`. Jalur fallback server kini menggunakan fungsi `ctx.log` yang dicakup untuk modul.
+Cognis kini menampilkan pengaturan yang dideklarasikan dalam manifes dan bertukar nilai melalui endpoint konfigurasi GET dan PUT milik modul. Pencatatan browser, toast, dan pelaporan kesalahan fatal menggunakan kapabilitas host.

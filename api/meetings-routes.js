@@ -1,4 +1,3 @@
-import { logApiFallback } from "./reuse/log-fallback.js";
 export function registerMeetingRoutes({
     router,
     store,
@@ -246,9 +245,9 @@ export function registerMeetingRoutes({
     router.get(
         "/api/v1/modules/jitsi-meet/meetings/active",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
                 claims.sub,
@@ -282,13 +281,7 @@ export function registerMeetingRoutes({
                 const startedByProfile = startedByUsername
                     ? await profileStore
                           .getProfileByHandle(startedByUsername)
-                          .catch((error) =>
-                              logApiFallback(
-                                  error,
-                                  "meetings_routes_fallback",
-                                  null,
-                              ),
-                          )
+                          .catch(() => null)
                     : null;
                 const activeParticipantHandles = Array.isArray(
                     activeMeeting.activeUsernames,
@@ -356,9 +349,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/get",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const shareGuestAccess =
                 typeof resolveShareGuestMeetingAccess === "function"
@@ -455,9 +448,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/preflight",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const config = await store.getConfig();
             if (!config.instanceUrl) {
                 sendError(
@@ -484,9 +477,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/probe",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
 
             const resolved = await resolveMeetingPayloadOrReject({
@@ -517,9 +510,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/reclaim",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
 
             const resolved = await resolveMeetingPayloadOrReject({
@@ -564,9 +557,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/auth-required",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
 
             const resolved = await resolveMeetingPayloadOrReject({
@@ -598,9 +591,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/auth-start",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
 
             const resolved = await resolveMeetingPayloadOrReject({
@@ -650,9 +643,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/auth-complete",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
 
             const resolved = await resolveMeetingPayloadOrReject({
@@ -686,9 +679,9 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/state",
         async (req, res) => {
+            await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
             const body = await readJson(req);
             const shareGuestAccess =
                 typeof resolveShareGuestMeetingAccess === "function"

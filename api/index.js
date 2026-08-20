@@ -1,4 +1,3 @@
-import { configureApiLogger, logApiFallback } from "./reuse/log-fallback.js";
 import path from "node:path";
 import { registerMeetingRoutes } from "./meetings-routes.js";
 import { registerMeetingConfigRoutes } from "./config-routes.js";
@@ -7,7 +6,10 @@ import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
 import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
-import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
+import {
+    normalizeHttpUrl,
+    resolveExternalBaseUrl,
+} from "./reuse/url-parts.js";
 import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { isModeratorRole, normalizeMeetingPrefix } from "./meeting-values.js";
 import {
@@ -147,7 +149,6 @@ export function registerUi(ctx) {
 }
 
 export function registerApiRoutes(router, ctx) {
-    configureApiLogger(ctx.log);
     const requireAuth = ctx.getCapability("auth:requireAuth");
     if (typeof requireAuth !== "function") {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
@@ -511,23 +512,17 @@ export function registerApiRoutes(router, ctx) {
         const organizerProfile = organizerUsername
             ? await profileStore
                   .getProfileByHandle(organizerUsername)
-                  .catch((error) =>
-                      logApiFallback(error, "index_fallback", null),
-                  )
+                  .catch(() => null)
             : null;
         const normalizedRecipients = [];
         for (const recipientUsername of candidateRecipients) {
             let recipientProfile = await profileStore
                 .getProfileByHandle(recipientUsername)
-                .catch((error) =>
-                    logApiFallback(error, "index_fallback", null),
-                );
+                .catch(() => null);
             if (!recipientProfile?.accountId) {
                 recipientProfile = await profileStore
                     .getProfile(recipientUsername)
-                    .catch((error) =>
-                        logApiFallback(error, "index_fallback", null),
-                    );
+                    .catch(() => null);
             }
             if (!recipientProfile?.accountId) {
                 log?.(
@@ -607,9 +602,7 @@ export function registerApiRoutes(router, ctx) {
         ) {
             return Array.from(moderatorSet).filter(Boolean);
         }
-        const users = await accountStore
-            .list()
-            .catch((error) => logApiFallback(error, "index_fallback", []));
+        const users = await accountStore.list().catch(() => []);
         for (const user of users) {
             const username = normalizeHandleKey(user?.username);
             if (!username || !normalizedParticipants.includes(username)) {

@@ -1,4 +1,3 @@
-import { readJsonWithFallback } from "./reuse/json-response.js";
 import { formatDateTime } from "/static/reuse/timestamp.js";
 
 const REFRESH_INTERVAL_MS = 2500;
@@ -48,11 +47,7 @@ export function createAdminSection({ i18n, apiFetch, escapeHtml }) {
         if (!response.ok) {
             return [];
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: [] },
-            "load_admin_meetings",
-        );
+        const payload = await response.json().catch(() => ({ data: [] }));
         return Array.isArray(payload?.data) ? payload.data : [];
     }
 
@@ -63,11 +58,7 @@ export function createAdminSection({ i18n, apiFetch, escapeHtml }) {
         if (!response.ok) {
             return [];
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: [] },
-            "load_admin_meetings",
-        );
+        const payload = await response.json().catch(() => ({ data: [] }));
         return Array.isArray(payload?.data) ? payload.data : [];
     }
 

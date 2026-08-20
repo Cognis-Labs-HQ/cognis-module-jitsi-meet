@@ -1,6 +1,4 @@
 import { logUi } from "./reuse/feedback.js";
-import { readJsonWithFallback } from "./reuse/json-response.js";
-import { messagesClient } from "./reuse/gateway-clients.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { renderMarkdown } from "/static/reuse/markdown-renderer.js";
 import { showToast } from "./reuse/feedback.js";
@@ -28,6 +26,7 @@ export function createChatHandlers({
     root,
     state,
     i18n,
+    apiFetch,
     messageReactions,
     loadChatRoomKey,
 }) {
@@ -58,12 +57,7 @@ export function createChatHandlers({
                 hexToBytes(`${cipherHex}${authTag}`),
             );
             return new TextDecoder().decode(decrypted);
-        } catch (error) {
-            void logUi("error", "[jitsi-meet] failed to decrypt chat message", {
-                component: "jitsi-meet-module",
-                operation: "decrypt_chat_message",
-                error: error instanceof Error ? error.message : String(error),
-            });
+        } catch {
             return null;
         }
     }
@@ -101,7 +95,7 @@ export function createChatHandlers({
                     String(message?.senderDisplayName ?? "").trim() ||
                     String(message?.senderHandle ?? "").trim() ||
                     String(message?.senderId ?? "").trim() ||
-                    i18n.t("ui.reuse.unknown");
+                    "Unknown";
                 const createdAt = String(message?.createdAt ?? "").trim();
                 const safeTime = formatTime(createdAt, "");
                 const body = renderMarkdown(
@@ -255,23 +249,22 @@ export function createChatHandlers({
             clearNativeChatThread();
             return;
         }
-        const response = await messagesClient().listRoomMessages(roomId, {
-            accessToken: state.shareAccessToken || undefined,
-            suppressAccessDeniedEvent: true,
-        });
+        const response = await apiFetch(
+            `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages?limit=50`,
+            {
+                accessToken: state.shareAccessToken || undefined,
+                suppressAccessDeniedEvent: true,
+            },
+        );
         if (!response.ok) {
             setNativeChatReady(false);
             clearNativeChatThread();
             return;
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: [] },
-            "load_chat_messages",
-        );
+        const payload = await response.json().catch(() => ({ data: [] }));
         const ordered = Array.isArray(payload?.data)
             ? payload.data
-                  .slice(0, 50)
+                  .slice()
                   .reverse()
                   .filter(
                       (message) =>
@@ -331,11 +324,9 @@ export function createChatHandlers({
     async function activatePrivateChatForParticipant(username) {
         const normalizedUsername = normalizeUsername(username);
         if (!normalizedUsername) {
-            void logUi(
-                "warn",
+            void logUi("warn",
                 "[jitsi-meet] invalid participant username for private chat",
                 {
-                    component: "jitsi-meet-module",
                     operation: "open_private_chat",
                     rawUsername: username,
                 },
@@ -348,15 +339,14 @@ export function createChatHandlers({
             );
             return;
         }
-        const response = await messagesClient().openPrivateRoom({
-            handles: [normalizedUsername],
+        const response = await apiFetch("/api/v1/social/messages/rooms", {
+            method: "POST",
+            body: JSON.stringify({
+                handles: [normalizedUsername],
+            }),
         });
         if (!response.ok) {
-            const payload = await readJsonWithFallback(
-                response,
-                null,
-                "load_private_chat",
-            );
+            const payload = await response.json().catch(() => null);
             const errorCode = String(payload?.error?.code ?? "").trim();
             const errorMessageKey =
                 response.status === 401 ||
@@ -364,34 +354,25 @@ export function createChatHandlers({
                 errorCode === "forbidden"
                     ? "module.jitsi_meet.chat.private_open_forbidden"
                     : "module.jitsi_meet.chat.private_open_unavailable";
-            void logUi(
-                "error",
-                "[jitsi-meet] failed to open private chat room",
-                {
-                    operation: "open_private_chat",
-                    targetUsername: normalizedUsername,
-                    status: response.status,
-                    errorCode,
-                    errorMessage:
-                        typeof payload?.error?.message === "string"
-                            ? payload.error.message
-                            : null,
-                },
-            );
+            void logUi("error", "[jitsi-meet] failed to open private chat room", {
+                operation: "open_private_chat",
+                targetUsername: normalizedUsername,
+                status: response.status,
+                errorCode,
+                errorMessage:
+                    typeof payload?.error?.message === "string"
+                        ? payload.error.message
+                        : null,
+            });
             showToast(i18n.t(errorMessageKey), {
                 variant: "error",
             });
             return;
         }
-        const payload = await readJsonWithFallback(
-            response,
-            { data: null },
-            "load_chat_room",
-        );
+        const payload = await response.json().catch(() => ({ data: null }));
         const roomId = normalizeChatRoomId(payload?.data?.id);
         if (!roomId) {
-            void logUi(
-                "error",
+            void logUi("error",
                 "[jitsi-meet] private chat room response missing room id",
                 {
                     operation: "open_private_chat",

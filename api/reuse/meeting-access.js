@@ -1,6 +1,8 @@
-import { logApiFallback } from "./log-fallback.js";
 import { normalizeHandleKey } from "./normalize-handle.js";
-import { hasShareCapability, resolveShareGuestId } from "./share-guest.js";
+import {
+    hasShareCapability,
+    resolveShareGuestId,
+} from "./share-guest.js";
 import { resolveRequesterUsername } from "./requester.js";
 
 /**
@@ -33,9 +35,7 @@ export async function resolveShareGuestMeetingAccess({
     if (typeof getShareTokenById !== "function") {
         return { isGuest: true, allowed: false, tokenRecord: null };
     }
-    const tokenRecord = await getShareTokenById(shareGuestId).catch((error) =>
-        logApiFallback(error, "meeting_access_fallback", null),
-    );
+    const tokenRecord = await getShareTokenById(shareGuestId).catch(() => null);
     if (!tokenRecord) {
         return { isGuest: true, allowed: false, tokenRecord: null };
     }
@@ -92,9 +92,7 @@ export async function filterUsernamesForGuestVisibility(
         if (!normalizedHandle) continue;
         const profile = await profileStore
             .getProfileByHandle(normalizedHandle)
-            .catch((error) =>
-                logApiFallback(error, "meeting_access_fallback", null),
-            );
+            .catch(() => null);
         if (profile?.visibility === "community") {
             visibleUsernames.push(normalizedHandle);
         }
@@ -123,9 +121,7 @@ export async function canAccessMeeting({
         for (const handle of possibleBlockingUsers) {
             const profile = await profileStore
                 .getProfileByHandle(handle)
-                .catch((error) =>
-                    logApiFallback(error, "meeting_access_fallback", null),
-                );
+                .catch(() => null);
             if (
                 profile?.accountId &&
                 profile.accountId !== requesterAccountId &&
@@ -156,9 +152,7 @@ export async function canAccessMeeting({
             resourceType: "meeting",
             resourceId: meeting.id,
             requiredCapability: "meeting:join",
-        }).catch((error) =>
-            logApiFallback(error, "meeting_access_fallback", null),
-        );
+        }).catch(() => null);
         if (shareAccess?.authorized) return true;
     }
     if (!meeting.classroomId) {
@@ -226,9 +220,7 @@ export async function resolveMeetingPayloadOrReject({
             resourceType: "meeting",
             resourceId: meeting.id,
             requiredCapability: "meeting:join",
-        }).catch((error) =>
-            logApiFallback(error, "meeting_access_fallback", null),
-        );
+        }).catch(() => null);
         if (shareAccess?.authorized) participants.push(requesterUsername);
     }
     const state = await store.getMeetingState(meeting.id);
