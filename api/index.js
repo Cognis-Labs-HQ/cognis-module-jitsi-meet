@@ -1,6 +1,6 @@
 import path from "node:path";
 import { registerMeetingRoutes } from "./meetings-routes.js";
-import { createModuleConfigResolver } from './module-preferences.js';
+import { registerMeetingConfigRoutes } from "./config-routes.js";
 import { registerMeetingParticipantRoutes } from "./participant-routes.js";
 import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
 import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
@@ -38,6 +38,26 @@ function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
         return;
     }
     registerScriptOrigins(PAGE_SCRIPT_ORIGIN_OWNER_ID, [config?.instanceUrl]);
+}
+
+async function registerStoredJitsiOrigin({
+    store,
+    registerScriptOrigins,
+    log,
+}) {
+    try {
+        await store.ensureSchema();
+        registerConfiguredJitsiOrigin(
+            registerScriptOrigins,
+            await store.getConfig(),
+        );
+    } catch (error) {
+        log?.("error", "Failed to register stored Jitsi CSP origin.", {
+            component: "jitsi-meet-module",
+            operation: "register_stored_jitsi_origin",
+            error: error instanceof Error ? error.message : String(error),
+        });
+    }
 }
 
 function sendJson(res, status, payload) {
@@ -212,6 +232,12 @@ export function registerApiRoutes(router, ctx) {
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
+        router.get("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
+            unavailablePayload(res);
+        });
+        router.put("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
+            unavailablePayload(res);
+        });
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
             async (_req, res) => {
@@ -355,18 +381,9 @@ export function registerApiRoutes(router, ctx) {
         "auth:registerPageScriptOrigins",
     );
     const store = resolveStore(dbExecutor, log);
-    const readModuleConfig = createModuleConfigResolver(
-        ctx.getCapability('preferences:store'),
-        log,
-    );
-    const resolveModuleConfig = async (accountId) => {
-        const config = await readModuleConfig(accountId);
-        registerConfiguredJitsiOrigin(registerScriptOrigins, config);
-        return config;
-    };
-    const runEnableTest = async (accountId) => {
+    const runEnableTest = async () => {
         await store.ensureSchema();
-        const config = await resolveModuleConfig(accountId);
+        const config = await store.getConfig();
         if (!config.instanceUrl) {
             return {
                 ok: false,
@@ -394,7 +411,7 @@ export function registerApiRoutes(router, ctx) {
     const contributeHealth = ctx.getCapability("system:health:contribute");
     if (typeof contributeHealth === "function") {
         contributeHealth("module:jitsi-meet", async () => {
-            const result = await runEnableTest('__system__');
+            const result = await runEnableTest();
             return {
                 componentId: "jitsi-meet",
                 componentType: "module",
@@ -407,10 +424,8 @@ export function registerApiRoutes(router, ctx) {
     }
     router.post(
         "/api/v1/modules/jitsi-meet/admin/enable-test",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "admin");
-            if (!claims) return;
-            const result = await runEnableTest(claims.sub);
+        async (_req, res) => {
+            const result = await runEnableTest();
             if (!result.ok) {
                 sendError(res, 409, result.code, result.message);
                 return;
@@ -441,6 +456,7 @@ export function registerApiRoutes(router, ctx) {
             };
         },
     );
+    void registerStoredJitsiOrigin({ store, registerScriptOrigins, log });
 
     registerJitsiUiResourcesRoute({
         requireAuth,
@@ -624,9 +640,9 @@ export function registerApiRoutes(router, ctx) {
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
         deleteResourceShares,
-        resolveModuleConfig,
     };
 
+    registerMeetingConfigRoutes(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
 
@@ -650,7 +666,6 @@ export function registerApiRoutes(router, ctx) {
         checkHttpLiveness,
         LIVELINESS_TIMEOUT_MS,
         resolveShareGuestMeetingAccess,
-        resolveModuleConfig,
     });
 
     registerAdminMeetingRoutes({

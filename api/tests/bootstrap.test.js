@@ -56,6 +56,7 @@ function createScopedRuntime() {
       },
       router: {
         get: (path, handler) => registerRoute('GET', path, handler),
+        put: (path, handler) => registerRoute('PUT', path, handler),
         post: (path, handler) => registerRoute('POST', path, handler),
       },
       registerStaticDir: (prefix, directory) =>
@@ -137,7 +138,7 @@ test('jitsi bootstrap is removable and repeatable across lifecycle cycles', () =
   assert.deepEqual(runtime.snapshot(), initialSnapshot);
 });
 
-test('manifest exposes Jitsi configuration to module preference ingestion', async () => {
+test('manifest exposes Jitsi config field metadata for core rendering', async () => {
   const manifest = JSON.parse(
     await readFile(new URL('../../manifest.json', import.meta.url), 'utf8'),
   );
@@ -149,8 +150,5 @@ test('manifest exposes Jitsi configuration to module preference ingestion', asyn
       { key: 'meetingPrefix', type: 'string' },
     ],
   );
-  assert.equal(
-    manifest.ui.preferences.find(({ key }) => key === 'meetingPrefix').default,
-    '',
-  );
+  assert.equal(manifest.ui.componentConfig, undefined);
 });

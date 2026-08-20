@@ -33,6 +33,8 @@ Do not add generated secrets. Keep store artwork and screenshots free of credent
 
 ## Component isolation and ctx
 
+The module manifest describes configuration option keys and types only. Cognis owns rendering the settings popup and polls `GET /api/v1/modules/jitsi-meet/config`, then pushes changes with `PUT` to that same endpoint. The Jitsi Meet module remains responsible for validating, applying, and persisting those values; do not add another settings UI or use the Cognis preference store as module configuration storage.
+
 `bootstrap.js` is the sole system integration entrypoint. It may import repository-local files, but runtime code and tests must not import Cognis source-tree internals, sibling components, or private package implementations.
 
 Treat `ctx` as the complete cross-component bus:

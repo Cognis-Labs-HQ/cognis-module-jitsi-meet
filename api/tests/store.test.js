@@ -245,7 +245,7 @@ test("jitsi store meeting creation falls back to a readable default slug", async
     );
 });
 
-test("jitsi store applies current manifest preferences to reused meetings", async () => {
+test("jitsi store reconnects a reused meeting to its resolved chat room", async () => {
     const participantKey = createHash("sha256")
         .update(
             JSON.stringify({
@@ -279,7 +279,7 @@ test("jitsi store applies current manifest preferences to reused meetings", asyn
     const store = new JitsiMeetStore({ db: mockDb });
 
     const meeting = await store.createMeeting({
-        instanceUrl: "https://broken.example.test",
+        instanceUrl: "https://meet.example.com",
         meetingPrefix: "classroom",
         usernames: ["alice", "bob"],
         classroomId: null,
@@ -289,10 +289,6 @@ test("jitsi store applies current manifest preferences to reused meetings", asyn
 
     assert.equal(meeting?.reused, true);
     assert.equal(meeting?.chatRoomId, "resolved-room");
-    assert.equal(
-        meeting?.meetingUrl,
-        "https://broken.example.test/classroom-existing",
-    );
     assert.equal(mockDb.insertedMeetingRows.length, 0);
     assert.equal(
         (await store.getMeetingById("meeting-1"))?.chatRoomId,
@@ -338,6 +334,53 @@ test("jitsi store meeting state backfill writes an ISO timestamp when the driver
     assert.equal(updateCommands.length, 1);
     const isoTimestampPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
     assert.match(updateCommands[0].set.updated_at, isoTimestampPattern);
+});
+
+test("jitsi store config change invalidates existing meeting rows", async () => {
+    const commands = [];
+    const mockDb = {
+        async ensureTable() {},
+        async transaction(callback) {
+            return callback(this);
+        },
+        async executeCommand(command) {
+            commands.push(command);
+            if (
+                command.option === "SELECT" &&
+                command.table === "jitsi_module_config"
+            ) {
+                return {
+                    rows: [
+                        {
+                            instance_url: "https://old.example.com",
+                            meeting_prefix: "old",
+                            updated_at: "2026-01-01T00:00:00.000Z",
+                        },
+                    ],
+                };
+            }
+            return { rows: [] };
+        },
+    };
+    const store = new JitsiMeetStore({ db: mockDb });
+
+    const saved = await store.saveConfig({
+        instanceUrl: "https://new.example.com",
+        meetingPrefix: "classroom",
+    });
+
+    assert.equal(saved.invalidatedMeetings, true);
+    assert.deepEqual(
+        commands
+            .filter((command) => command.option === "DELETE")
+            .map((command) => command.table),
+        [
+            "jitsi_meeting_presence",
+            "jitsi_meeting_state",
+            "jitsi_meeting_participants",
+            "jitsi_meetings",
+        ],
+    );
 });
 
 test("jitsi active meeting summaries report invited and active participants separately", async () => {
