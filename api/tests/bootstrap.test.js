@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { bootstrapModule } from '../../bootstrap.js';
 
 function createScopedRuntime() {
@@ -134,4 +135,22 @@ test('jitsi bootstrap is removable and repeatable across lifecycle cycles', () =
   assert.deepEqual(runtime.snapshot(), firstEnabledSnapshot);
   secondDispose();
   assert.deepEqual(runtime.snapshot(), initialSnapshot);
+});
+
+test('manifest exposes Jitsi configuration to module preference ingestion', async () => {
+  const manifest = JSON.parse(
+    await readFile(new URL('../../manifest.json', import.meta.url), 'utf8'),
+  );
+
+  assert.deepEqual(
+    manifest.ui.preferences.map(({ key, type }) => ({ key, type })),
+    [
+      { key: 'instanceUrl', type: 'string' },
+      { key: 'meetingPrefix', type: 'string' },
+    ],
+  );
+  assert.equal(
+    manifest.ui.preferences.find(({ key }) => key === 'meetingPrefix').default,
+    '',
+  );
 });
