@@ -1,4 +1,5 @@
 import { logUi, openErrorPopup } from "./reuse/feedback.js";
+import { messagesClient } from "./reuse/gateway-clients.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
@@ -48,10 +49,6 @@ const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
     toggleReaction: async () => undefined,
 });
 /**
- * Mounts the Meetings page inside the dashboard shell and wires all runtime
- * interactions (participant selection, meeting lifecycle polling, and chat
- * embed updates). The optional AbortSignal is used by the SPA router to clean
- * up timers and event listeners when users navigate away.
  *
  * Guest link shares receive a limited shell, while signed-in user-share
  * recipients retain the full account page structure. Both share modes suppress
@@ -893,17 +890,11 @@ export async function mount(
                         messageText,
                         roomKey,
                     );
-                    const response = await apiFetch(
-                        `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages`,
+                    const response = await messagesClient().sendRoomMessage(
+                        roomId,
                         {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                ...encrypted,
-                                contentType: "text/plain",
-                            }),
+                            ...encrypted,
+                            contentType: "text/plain",
                             accessToken: state.shareAccessToken || undefined,
                             suppressAccessDeniedEvent: true,
                         },

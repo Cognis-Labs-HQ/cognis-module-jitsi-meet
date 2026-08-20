@@ -1,8 +1,5 @@
 import { normalizeHandleKey } from "./normalize-handle.js";
-import {
-    hasShareCapability,
-    resolveShareGuestId,
-} from "./share-guest.js";
+import { hasShareCapability, resolveShareGuestId } from "./share-guest.js";
 import { resolveRequesterUsername } from "./requester.js";
 
 /**

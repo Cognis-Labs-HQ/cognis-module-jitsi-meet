@@ -5,26 +5,26 @@ import { join, resolve } from "node:path";
 
 const ROOT = process.cwd();
 
-test('jitsi manifest declares its supplied capabilities and dependencies', () => {
-  const manifest = JSON.parse(
-    readFileSync(resolve(ROOT, 'manifest.json'), 'utf8'),
-  );
+test("jitsi manifest declares its supplied capabilities and dependencies", () => {
+    const manifest = JSON.parse(
+        readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
+    );
 
-  assert.deepEqual(manifest.requiresCapabilities, [
-    'auth:requireAuth',
-    'ui:profileAvatarRenderer',
-  ]);
-  assert.deepEqual(manifest.capabilities, [
-    'meeting:video',
-    'meeting:chat',
-    'meeting:moderation',
-  ]);
-  assert.deepEqual(manifest.requires, [
-    'e8732526-8976-54ef-828b-ed0dfe21bd9e',
-    '4387fae9-26dd-5a80-84b2-e5f4833b7fb9',
-    '0da92508-63fa-53ed-918c-e6f08692a382',
-    '062a74f5-5699-52fb-98a3-63ec6538bdfc',
-  ]);
+    assert.deepEqual(manifest.requiresCapabilities, [
+        "auth:requireAuth",
+        "ui:profileAvatarRenderer",
+    ]);
+    assert.deepEqual(manifest.capabilities, [
+        "meeting:video",
+        "meeting:chat",
+        "meeting:moderation",
+    ]);
+    assert.deepEqual(manifest.requires, [
+        "e8732526-8976-54ef-828b-ed0dfe21bd9e",
+        "4387fae9-26dd-5a80-84b2-e5f4833b7fb9",
+        "0da92508-63fa-53ed-918c-e6f08692a382",
+        "062a74f5-5699-52fb-98a3-63ec6538bdfc",
+    ]);
 });
 
 function readJitsiApiBundle() {
@@ -36,22 +36,25 @@ function readJitsiApiBundle() {
         .join("\n");
 }
 
-test('jitsi bootstrap uses scoped lifecycle registrations', () => {
-  const bootstrapSource = readFileSync(resolve(ROOT, 'bootstrap.js'), 'utf8');
+test("jitsi bootstrap uses scoped lifecycle registrations", () => {
+    const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 
-  assert.match(bootstrapSource, /ctx\.contributePublicCapability\(/);
-  assert.match(bootstrapSource, /ctx\.registerFlow\(flow\)/);
-  assert.match(bootstrapSource, /if \(!ctx\.flow\.exists\(flow\.id\)\)/);
-  assert.match(bootstrapSource, /stages: \['resolve-providers', 'resolve-panels', 'compose-surface'\]/);
-  assert.match(bootstrapSource, /stages: \['validate-request', 'provision-session', 'finalize-join'\]/);
-  assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
+    assert.match(bootstrapSource, /ctx\.contributePublicCapability\(/);
+    assert.match(bootstrapSource, /ctx\.registerFlow\(flow\)/);
+    assert.match(bootstrapSource, /if \(!ctx\.flow\.exists\(flow\.id\)\)/);
+    assert.match(
+        bootstrapSource,
+        /stages: \["resolve-providers", "resolve-panels", "compose-surface"\]/,
+    );
+    assert.match(
+        bootstrapSource,
+        /stages: \["validate-request", "provision-session", "finalize-join"\]/,
+    );
+    assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
 });
 
 test("jitsi API registers configured CSP origins through auth capability", () => {
-    const indexSource = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const bundleSource = readJitsiApiBundle();
 
     assert.match(indexSource, /auth:registerPageScriptOrigins/);
@@ -63,10 +66,7 @@ test("jitsi API registers configured CSP origins through auth capability", () =>
 });
 
 test("jitsi resolves guest access through the Share gateway contract", () => {
-    const source = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     assert.match(source, /ctx\.getCapability\(\s*"share:resolveGuestAccess"/);
     assert.match(source, /resourceType: "meeting"/);
     assert.match(source, /const legacyMeetingAccess/);
@@ -103,10 +103,7 @@ test("participant-free meetings delete their identity and shares when closed", (
 });
 
 test("jitsi API logs stored CSP origin registration failures", () => {
-    const source = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
 
     assert.match(source, /Failed to register stored Jitsi CSP origin/);
     assert.match(source, /operation: "register_stored_jitsi_origin"/);
@@ -124,10 +121,7 @@ test("jitsi participant lookup delegates follow filtering to profile search", ()
 });
 
 test("jitsi meeting notifications target authenticated account ids", () => {
-    const source = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
 
     assert.match(source, /recipientUsername: recipient\.accountId/);
     assert.match(source, /profileStore\s*\.getProfile\(recipientUsername\)/);
@@ -152,10 +146,7 @@ test("jitsi meeting creation resolves hidden participants only for admins", () =
 });
 
 test("jitsi meetings API exposes current events query endpoint", () => {
-    const apiSource = readFileSync(
-        resolve(ROOT, "api/index.js"),
-        "utf8",
-    );
+    const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const routesSource = readFileSync(
         resolve(ROOT, "api/meetings-routes.js"),
         "utf8",

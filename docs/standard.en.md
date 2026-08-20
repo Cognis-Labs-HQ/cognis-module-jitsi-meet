@@ -1,10 +1,8 @@
 # Jitsi Meet Module
 
-## Summary
-
 The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, meeting URL reuse, session reclaim, and Messages chat-room reuse.
 
-## Features
+## Usage Examples
 
 - Configurable Jitsi instance URL and optional URI prefix rendered by Cognis from the manifest and persisted by the module-owned config endpoint
 - `/meetings` and `/meeting` application routes with:
@@ -17,14 +15,14 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - Active meeting monitoring section in Administration → Meetings
 - UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, plus capability-based `auth:requireAuth` and `ui:profileAvatarRenderer` runtime requirements
 
-## Security Notes
+## Technical Specification
 
 - API calls require a valid Cognis access token.
 - Meeting details are only returned to allowed participants.
 - Meeting passwords are generated per meeting record.
 - Session reclaim allows a user to disconnect their previous active session.
 
-## Gold Standard Contract
+### Integration Contract
 
 - `bootstrap.js` is the only module entrypoint consumed by the platform.
 - The bootstrap ctx is the only integration bus for this module (API routes, UI registration, capabilities, and future CLI/DB wiring).

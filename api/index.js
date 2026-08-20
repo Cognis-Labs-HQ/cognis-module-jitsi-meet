@@ -6,10 +6,7 @@ import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
 import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
-import {
-    normalizeHttpUrl,
-    resolveExternalBaseUrl,
-} from "./reuse/url-parts.js";
+import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
 import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { isModeratorRole, normalizeMeetingPrefix } from "./meeting-values.js";
 import {

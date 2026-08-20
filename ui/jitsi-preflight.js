@@ -364,7 +364,8 @@ export function createPreflightHandlers({
             try {
                 return apiInstance.isParticipantModerator() === true;
             } catch (error) {
-                void logUi("warn",
+                void logUi(
+                    "warn",
                     "[jitsi-meet] failed to check Jitsi moderator status:",
                     error,
                 );
@@ -389,7 +390,8 @@ export function createPreflightHandlers({
         try {
             staleApi?.dispose?.();
         } catch (error) {
-            void logUi("warn",
+            void logUi(
+                "warn",
                 "[jitsi-meet] failed to dispose stale meeting session during recovery:",
                 error,
             );

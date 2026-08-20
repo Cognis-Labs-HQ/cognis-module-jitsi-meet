@@ -1,7 +1,13 @@
 import { logUi } from "./reuse/feedback.js";
+import {
+    filesClient,
+    profileClient,
+    shareClient,
+} from "./reuse/gateway-clients.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
+import { getShareContext } from "/static/reuse/auth-session.js";
 
 const profileAvatars = () => {
     const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
@@ -25,7 +31,8 @@ export async function loadMessageUiResources() {
             "/api/v1/modules/jitsi-meet/ui-resources",
         );
         if (!response.ok) {
-            void logUi("warn",
+            void logUi(
+                "warn",
                 "[jitsi-meet] message UI resources unavailable; using fallback resources",
                 {
                     operation: "load_message_ui_resources",
@@ -70,7 +77,8 @@ export async function loadMessageUiResources() {
                     : null,
         };
     } catch {
-        void logUi("warn",
+        void logUi(
+            "warn",
             "[jitsi-meet] failed to load message UI resources; using fallback resources",
             { operation: "load_message_ui_resources" },
         );
@@ -80,12 +88,7 @@ export async function loadMessageUiResources() {
 
 function buildFileUrl(namespaceId, objectKey) {
     if (!namespaceId || !objectKey) return "";
-    return `${window.location.origin}/api/v1/files/${encodeURIComponent(
-        namespaceId,
-    )}/${String(objectKey)
-        .split("/")
-        .map((part) => encodeURIComponent(part))
-        .join("/")}`;
+    return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
 }
 
 export function ensureStylesheetLoaded(stylesheetUrl) {
@@ -152,7 +155,7 @@ export function resolveMeetingChatRoomId(meeting) {
 export async function fetchCurrentProfile() {
     const guestProfile = await fetchShareGuestProfile();
     if (guestProfile) return guestProfile;
-    const response = await apiFetch("/api/v1/social/profile");
+    const response = await profileClient().getCurrentProfile();
     if (!response.ok) return null;
     const payload = await response.json().catch(() => ({ data: null }));
     const profile = payload?.data;
@@ -185,20 +188,8 @@ export async function fetchCurrentProfile() {
  * is unavailable, so callers fall back to the normal profile lookup.
  */
 async function fetchShareGuestProfile() {
-    let shareButtonModule;
-    try {
-        shareButtonModule =
-            await import("/static/gateways/share/ui/reuse/share-button.js");
-    } catch {
-        return null;
-    }
-    if (typeof shareButtonModule?.isViewingAsGuest !== "function") {
-        return null;
-    }
-    if (!shareButtonModule.isViewingAsGuest()) {
-        return null;
-    }
-    const response = await apiFetch("/api/v1/share/guest-profile");
+    if (!getShareContext()?.guestAccessToken) return null;
+    const response = await shareClient().getGuestProfile();
     if (!response.ok) return null;
     const payload = await response.json().catch(() => ({ data: null }));
     const profile = payload?.data;

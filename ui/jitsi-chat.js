@@ -1,4 +1,5 @@
 import { logUi } from "./reuse/feedback.js";
+import { messagesClient } from "./reuse/gateway-clients.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { renderMarkdown } from "/static/reuse/markdown-renderer.js";
 import { showToast } from "./reuse/feedback.js";
@@ -95,7 +96,7 @@ export function createChatHandlers({
                     String(message?.senderDisplayName ?? "").trim() ||
                     String(message?.senderHandle ?? "").trim() ||
                     String(message?.senderId ?? "").trim() ||
-                    "Unknown";
+                    i18n.t("ui.reuse.unknown");
                 const createdAt = String(message?.createdAt ?? "").trim();
                 const safeTime = formatTime(createdAt, "");
                 const body = renderMarkdown(
@@ -249,13 +250,10 @@ export function createChatHandlers({
             clearNativeChatThread();
             return;
         }
-        const response = await apiFetch(
-            `/api/v1/social/messages/rooms/${encodeURIComponent(roomId)}/messages?limit=50`,
-            {
-                accessToken: state.shareAccessToken || undefined,
-                suppressAccessDeniedEvent: true,
-            },
-        );
+        const response = await messagesClient().listRoomMessages(roomId, {
+            accessToken: state.shareAccessToken || undefined,
+            suppressAccessDeniedEvent: true,
+        });
         if (!response.ok) {
             setNativeChatReady(false);
             clearNativeChatThread();
@@ -324,7 +322,8 @@ export function createChatHandlers({
     async function activatePrivateChatForParticipant(username) {
         const normalizedUsername = normalizeUsername(username);
         if (!normalizedUsername) {
-            void logUi("warn",
+            void logUi(
+                "warn",
                 "[jitsi-meet] invalid participant username for private chat",
                 {
                     operation: "open_private_chat",
@@ -339,11 +338,8 @@ export function createChatHandlers({
             );
             return;
         }
-        const response = await apiFetch("/api/v1/social/messages/rooms", {
-            method: "POST",
-            body: JSON.stringify({
-                handles: [normalizedUsername],
-            }),
+        const response = await messagesClient().openPrivateRoom({
+            handles: [normalizedUsername],
         });
         if (!response.ok) {
             const payload = await response.json().catch(() => null);
@@ -354,16 +350,20 @@ export function createChatHandlers({
                 errorCode === "forbidden"
                     ? "module.jitsi_meet.chat.private_open_forbidden"
                     : "module.jitsi_meet.chat.private_open_unavailable";
-            void logUi("error", "[jitsi-meet] failed to open private chat room", {
-                operation: "open_private_chat",
-                targetUsername: normalizedUsername,
-                status: response.status,
-                errorCode,
-                errorMessage:
-                    typeof payload?.error?.message === "string"
-                        ? payload.error.message
-                        : null,
-            });
+            void logUi(
+                "error",
+                "[jitsi-meet] failed to open private chat room",
+                {
+                    operation: "open_private_chat",
+                    targetUsername: normalizedUsername,
+                    status: response.status,
+                    errorCode,
+                    errorMessage:
+                        typeof payload?.error?.message === "string"
+                            ? payload.error.message
+                            : null,
+                },
+            );
             showToast(i18n.t(errorMessageKey), {
                 variant: "error",
             });
@@ -372,7 +372,8 @@ export function createChatHandlers({
         const payload = await response.json().catch(() => ({ data: null }));
         const roomId = normalizeChatRoomId(payload?.data?.id);
         if (!roomId) {
-            void logUi("error",
+            void logUi(
+                "error",
                 "[jitsi-meet] private chat room response missing room id",
                 {
                     operation: "open_private_chat",

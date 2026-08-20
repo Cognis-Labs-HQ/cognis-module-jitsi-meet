@@ -1,9 +1,13 @@
 {
     "name": "@cognis/module-jitsi-meet",
-    "version": "1.4.61",
+    "version": "1.4.62",
     "private": false,
     "type": "module",
     "scripts": {
-        "test": "node --test api/tests/*.test.js ui/tests/*.test.js"
+        "test": "node --test api/tests/*.test.js ui/tests/*.test.js",
+        "lint": "node ./tooling/scripts/lint-placeholder.mjs && node ./tooling/scripts/lint-readable.mjs"
+    },
+    "devDependencies": {
+        "prettier": "^3.9.6"
     }
 }

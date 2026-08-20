@@ -12,7 +12,9 @@ import { uiCtx } from "/static/reuse/ui-ctx.js";
 function requireCapability(capabilityName) {
     const capability = uiCtx.capabilities.get(capabilityName);
     if (typeof capability !== "function") {
-        throw new Error(`Required UI capability unavailable: ${capabilityName}`);
+        throw new Error(
+            `Required UI capability unavailable: ${capabilityName}`,
+        );
     }
     return capability;
 }

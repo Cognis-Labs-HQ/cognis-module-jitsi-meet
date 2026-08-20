@@ -1,10 +1,8 @@
 # Jitsi-Meet-Modul
 
-## Zusammenfassung
-
 Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmerauswahl, Wiederverwendung von Meeting-URLs, Sitzungsübernahme und Wiederverwendung von Nachrichten-Chaträumen.
 
-## Funktionen
+## Anwendungsbeispiele
 
 - Konfigurierbare Jitsi-Instanz-URL und optionales URI-Präfix, von Cognis aus dem Manifest dargestellt und über den moduleigenen Konfigurationsendpunkt gespeichert
 - Anwendungsrouten `/meetings` und `/meeting` mit:
@@ -17,14 +15,14 @@ Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmera
 - Live-Meeting-Überwachung in Administration → Meetings
 - UUID-basierte Abhängigkeiten vom Social-Gateway, Profil-Adapter, Share-Gateway und Messages-Adapter sowie fähigkeitsbasierte Laufzeitanforderungen `auth:requireAuth` und `ui:profileAvatarRenderer`
 
-## Sicherheitshinweise
+## Technische Spezifikation
 
 - API-Aufrufe erfordern ein gültiges Cognis-Access-Token.
 - Meeting-Details werden nur an berechtigte Teilnehmer ausgegeben.
 - Meeting-Passwörter werden pro Meeting-Datensatz generiert.
 - Die Sitzungsübernahme ermöglicht das Trennen einer vorherigen aktiven Sitzung.
 
-## Goldstandard-Vertrag
+### Integrationsvertrag
 
 - `bootstrap.js` ist der einzige vom Plattformkern genutzte Moduleinstieg.
 - Das Bootstrap-ctx ist der einzige Integrationsbus dieses Moduls (API-Routen, UI-Registrierung, Fähigkeiten sowie künftige CLI/DB-Anbindung).
