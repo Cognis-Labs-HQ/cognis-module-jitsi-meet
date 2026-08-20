@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.62",
+    "version": "1.4.63",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -228,19 +228,19 @@
             "sha256": "b6dde8c6b5fd301a33ddb21aec44971e6b25d1618d3d871d98b9bdb5fb6fa64b"
         },
         {
-            "path": "changelog/work.de.md",
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
             "sha256": "4e8d099c76d822ec969b32421923ccfa748c39ee8d052d8f177da068ad5664b6"
         },
         {
-            "path": "changelog/work.en.md",
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
             "sha256": "50cac2e3fc2ef44059b3a3b70e98ff8f9b1d4dcaab19596d0e41b9aa94a4e05d"
         },
         {
-            "path": "changelog/work.id.md",
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
             "sha256": "bd510784d5cc6e918a7033fa5dab97b190705d15f42ad568f73b25adac74c70a"
         },
         {
-            "path": "changelog/work.ja.md",
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
             "sha256": "3aa46f4b08fbbb5d899cbc8371c43fe12d35b40de9133d9b3417d10a8261111d"
         },
         {
@@ -265,11 +265,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "b15bce5488418c69c96ee71583222ee2ba4ca35e997a3bdd0634333907f3f174"
+            "sha256": "798d4f3a717fb1486bf1debcd3489b9418fda0e79b472db09361b69e61c26c3d"
         },
         {
             "path": "package.json",
-            "sha256": "50328b31ed72bc284cb79049c6945f182d967b0d4b6823d5f5ff9e7a5f455e51"
+            "sha256": "8bd30fb649a351aed9349033fc08156108790ed33c5537ac33da59a57f1c7c51"
         },
         {
             "path": "routes.json",
