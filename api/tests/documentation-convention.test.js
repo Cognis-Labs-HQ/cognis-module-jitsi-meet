@@ -5,6 +5,7 @@ import { relative, resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dirname, "../..");
 const TEMPLATE = resolve(ROOT, ".github/DOCUMENTATION_TEMPLATE.en.md");
+const LANGUAGES = ["de", "en", "id", "ja"];
 
 function markdownFiles(directory) {
     return readdirSync(directory).flatMap((name) => {
@@ -31,4 +32,16 @@ test("documentation follows the hidden heading convention", () => {
             : [relative(ROOT, path)];
     });
     assert.deepEqual(violations, []);
+});
+
+test("documentation templates exist for every supported language", () => {
+    const expected = headingLevels(TEMPLATE);
+    for (const language of LANGUAGES) {
+        const template = resolve(
+            ROOT,
+            `.github/DOCUMENTATION_TEMPLATE.${language}.md`,
+        );
+        assert.ok(statSync(template).isFile());
+        assert.deepEqual(headingLevels(template), expected);
+    }
 });

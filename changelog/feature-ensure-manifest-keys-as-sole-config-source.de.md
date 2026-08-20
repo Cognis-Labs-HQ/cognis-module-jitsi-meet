@@ -7,3 +7,7 @@ Cognis stellt nun die im Manifest deklarierten Einstellungen dar und tauscht Wer
 ## Qualitätsstandards
 
 Das Modul verwendet nun die Cognis-Prettier-Konfiguration sowie eigenständige Prüfungen für Struktur, Lokalisierung, Benennung und Dokumentationskonventionen.
+
+## Lokalisierte Dokumentvorlagen
+
+Die Dokumentvorlagen für Mitwirkende enthalten nun deutsche, englische, indonesische und japanische Varianten aus dem Cognis-Standard.

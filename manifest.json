@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.63",
+    "version": "1.4.64",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -64,8 +64,20 @@
     "support": "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/issues",
     "files": [
         {
+            "path": ".github/DOCUMENTATION_TEMPLATE.de.md",
+            "sha256": "68da4be565d7fcd6caf74a6eeddd62ee35620063f4fb3c42128c23e98e4c7313"
+        },
+        {
             "path": ".github/DOCUMENTATION_TEMPLATE.en.md",
             "sha256": "0430dc1ef9233808219652e78e6079d3b6cf455f04818487e00fd7aa217a07fa"
+        },
+        {
+            "path": ".github/DOCUMENTATION_TEMPLATE.id.md",
+            "sha256": "a701f0f05180972949e4ac159e3d65656fc66b8d07aa72b3832aa312d711cd24"
+        },
+        {
+            "path": ".github/DOCUMENTATION_TEMPLATE.ja.md",
+            "sha256": "8fafead6e01dbab777528e72d1ce924ff3d8e0bd250d21a0a29116fe1ef7ed44"
         },
         {
             "path": ".gitignore",
@@ -185,7 +197,7 @@
         },
         {
             "path": "api/tests/documentation-convention.test.js",
-            "sha256": "c2ef98c5a20b9fd4e5111284964083924728779434d900bcd27c66cf1d2dd081"
+            "sha256": "bd46b4d41342660fce61ea5bcc893955bda898ee1f5825527e9bbffe885f3d12"
         },
         {
             "path": "api/tests/index.test.js",
@@ -229,19 +241,19 @@
         },
         {
             "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
-            "sha256": "4e8d099c76d822ec969b32421923ccfa748c39ee8d052d8f177da068ad5664b6"
+            "sha256": "c65ad4c7405f018858ac386175e34c654c7f24c5ecafeebdaf8ec4d84aa0a7e7"
         },
         {
             "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
-            "sha256": "50cac2e3fc2ef44059b3a3b70e98ff8f9b1d4dcaab19596d0e41b9aa94a4e05d"
+            "sha256": "8f3933cada10ff3146d892d2dc469edbbc93203519acbb20110128e314cdbbec"
         },
         {
             "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
-            "sha256": "bd510784d5cc6e918a7033fa5dab97b190705d15f42ad568f73b25adac74c70a"
+            "sha256": "1c4b48f2781fa3c37e010ab0c0fa62f195525050b21ef88c15fd5b72ff9e0529"
         },
         {
             "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
-            "sha256": "3aa46f4b08fbbb5d899cbc8371c43fe12d35b40de9133d9b3417d10a8261111d"
+            "sha256": "3182d26815b5cb9d0193e9eab0c3391a308e9948f403c052307ecc22ca0cc69f"
         },
         {
             "path": "cli/index.js",
@@ -265,11 +277,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "798d4f3a717fb1486bf1debcd3489b9418fda0e79b472db09361b69e61c26c3d"
+            "sha256": "1f44b0ac8933fc7229c735367e0e0e57ac8e2555f4ec6a4fa725659900f65a88"
         },
         {
             "path": "package.json",
-            "sha256": "8bd30fb649a351aed9349033fc08156108790ed33c5537ac33da59a57f1c7c51"
+            "sha256": "9f76434e37b54c9ae5be44ac7f246b38998d754d6ee0bcd823deabac1e95c085"
         },
         {
             "path": "routes.json",

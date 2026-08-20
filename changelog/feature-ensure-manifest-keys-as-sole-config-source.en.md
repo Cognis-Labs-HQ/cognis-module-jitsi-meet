@@ -7,3 +7,7 @@ Cognis now renders the manifest-declared settings and exchanges values with the 
 ## Quality standards
 
 The module now uses the Cognis Prettier configuration and standalone structural, localization, naming, and documentation-convention checks.
+
+## Localized documentation templates
+
+Contributor documentation templates now include German, English, Indonesian, and Japanese variants copied from the Cognis standard.

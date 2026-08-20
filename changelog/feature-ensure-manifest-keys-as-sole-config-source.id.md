@@ -7,3 +7,7 @@ Cognis kini menampilkan pengaturan yang dideklarasikan dalam manifes dan bertuka
 ## Standar kualitas
 
 Modul kini menggunakan konfigurasi Prettier Cognis serta pemeriksaan mandiri untuk struktur, pelokalan, penamaan, dan konvensi dokumentasi.
+
+## Templat dokumentasi lokal
+
+Templat dokumentasi kontributor kini mencakup varian bahasa Jerman, Inggris, Indonesia, dan Jepang yang disalin dari standar Cognis.
