@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { bootstrapModule } from "../../bootstrap.js";
+import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
 
 function createScopedRuntime() {
     const capabilities = new Map([["auth:requireAuth", () => null]]);
@@ -56,6 +56,8 @@ function createScopedRuntime() {
                 get: (path, handler) => registerRoute("GET", path, handler),
                 put: (path, handler) => registerRoute("PUT", path, handler),
                 post: (path, handler) => registerRoute("POST", path, handler),
+                delete: (path, handler) =>
+                    registerRoute("DELETE", path, handler),
             },
             registerStaticDir: (prefix, directory) =>
                 registerUiContribution("static", { prefix, directory }),
@@ -139,6 +141,49 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
     assert.deepEqual(runtime.snapshot(), initialSnapshot);
 });
 
+test("jitsi uninstall cleanup honors the content deletion choice", async () => {
+    const commands = [];
+    const ctx = {
+        getCapability(capabilityId) {
+            assert.equal(capabilityId, "db:executor");
+            return {
+                async ensureTable() {},
+                async executeCommand(command) {
+                    commands.push(command);
+                    return { rows: [] };
+                },
+            };
+        },
+    };
+
+    await uninstallModule(ctx, { deleteContent: false });
+    assert.deepEqual(
+        commands.filter(({ option }) => option === "DELETE"),
+        [
+            {
+                option: "DELETE",
+                table: "jitsi_module_config",
+                where: [{ column: "id", value: "default" }],
+            },
+        ],
+    );
+
+    commands.length = 0;
+    await uninstallModule(ctx, { deleteContent: true });
+    assert.deepEqual(
+        commands
+            .filter(({ option }) => option === "DELETE")
+            .map(({ table }) => table),
+        [
+            "jitsi_meeting_presence",
+            "jitsi_meeting_state",
+            "jitsi_meeting_participants",
+            "jitsi_meetings",
+            "jitsi_module_config",
+        ],
+    );
+});
+
 test("manifest exposes localized configuration metadata for core rendering", async () => {
     const manifest = JSON.parse(
         await readFile(new URL("../../manifest.json", import.meta.url), "utf8"),
@@ -168,5 +213,14 @@ test("manifest exposes localized configuration metadata for core rendering", asy
     for (const preference of manifest.ui.preferences) {
         assert.match(preference.labelKey, /^module\.jitsi_meet\./);
         assert.match(preference.descriptionKey, /^module\.jitsi_meet\./);
+    }
+    for (const metadataKey of [
+        manifest.name,
+        manifest.summary,
+        manifest.description,
+        ...manifest.categories,
+        ...manifest.tags,
+    ]) {
+        assert.match(metadataKey, /^module\.jitsi_meet\./);
     }
 });

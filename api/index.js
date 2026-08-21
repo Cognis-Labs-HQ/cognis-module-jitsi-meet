@@ -138,7 +138,7 @@ export function registerUi(ctx) {
     }
     ctx.registerAdminSection({
         id: "module-jitsi-meet-meetings",
-        label: "Meetings",
+        label: "module.jitsi_meet.name",
         scriptUrl: "/static/modules/jitsi-meet/admin-meetings-section.js",
         access: { minRole: "admin" },
         stringsBaseUrl: "/static/modules/jitsi-meet/languages",
@@ -235,6 +235,12 @@ export function registerApiRoutes(router, ctx) {
         router.put("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
             unavailablePayload(res);
         });
+        router.delete(
+            "/api/v1/modules/jitsi-meet/config",
+            async (_req, res) => {
+                unavailablePayload(res);
+            },
+        );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
             async (_req, res) => {

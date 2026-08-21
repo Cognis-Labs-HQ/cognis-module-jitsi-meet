@@ -8,7 +8,7 @@ function createResponse() {
             this.status = status;
         },
         end(body) {
-            this.payload = JSON.parse(body);
+            this.payload = body ? JSON.parse(body) : null;
         },
     };
 }
@@ -28,6 +28,9 @@ test("config endpoint polls and persists the module-owned configuration", async 
             put(path, handler) {
                 handlers[`PUT ${path}`] = handler;
             },
+            delete(path, handler) {
+                handlers[`DELETE ${path}`] = handler;
+            },
         },
         store: {
             ensureSchema: async () => operations.push("ensure_schema"),
@@ -35,6 +38,10 @@ test("config endpoint polls and persists the module-owned configuration", async 
             saveConfig: async (values) => {
                 config = values;
                 return config;
+            },
+            deleteConfig: async () => {
+                operations.push("delete_config");
+                config = { instanceUrl: "", meetingPrefix: "" };
             },
         },
         requireAuth: (_request, _response, role) => {
@@ -68,5 +75,17 @@ test("config endpoint polls and persists the module-owned configuration", async 
     assert.deepEqual(operations.slice(-2), [
         "authorize_admin",
         "ensure_schema",
+    ]);
+
+    const deleteResponse = createResponse();
+    await handlers["DELETE /api/v1/modules/jitsi-meet/config"](
+        {},
+        deleteResponse,
+    );
+    assert.equal(deleteResponse.status, 204);
+    assert.deepEqual(operations.slice(-3), [
+        "authorize_admin",
+        "ensure_schema",
+        "delete_config",
     ]);
 });

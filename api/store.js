@@ -282,6 +282,26 @@ export class JitsiMeetStore {
         };
     }
 
+    async deleteConfig() {
+        await this.db.executeCommand({
+            option: "DELETE",
+            table: "jitsi_module_config",
+            where: [{ column: "id", value: "default" }],
+        });
+    }
+
+    async deleteAllData() {
+        for (const table of [
+            "jitsi_meeting_presence",
+            "jitsi_meeting_state",
+            "jitsi_meeting_participants",
+            "jitsi_meetings",
+            "jitsi_module_config",
+        ]) {
+            await this.db.executeCommand({ option: "DELETE", table });
+        }
+    }
+
     async getMeetingById(meetingId) {
         const result = await this.db.executeCommand({
             option: "SELECT",
