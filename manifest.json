@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "Jitsi Meet",
-    "version": "1.4.64",
+    "version": "1.4.65",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -18,6 +18,7 @@
             {
                 "key": "instanceUrl",
                 "type": "string",
+                "required": true,
                 "labelKey": "module.jitsi_meet.admin.config.instance_url",
                 "descriptionKey": "module.jitsi_meet.admin.config.instance_url_description"
             },
@@ -25,6 +26,7 @@
                 "key": "meetingPrefix",
                 "type": "string",
                 "default": "",
+                "required": false,
                 "labelKey": "module.jitsi_meet.admin.config.meeting_prefix",
                 "descriptionKey": "module.jitsi_meet.admin.config.meeting_prefix_description"
             }
@@ -48,7 +50,17 @@
         "0da92508-63fa-53ed-918c-e6f08692a382",
         "062a74f5-5699-52fb-98a3-63ec6538bdfc"
     ],
-    "requiresCapabilities": ["auth:requireAuth", "ui:profileAvatarRenderer"],
+    "requiresCapabilities": [
+        "auth:requireAuth",
+        "ui:profileAvatarRenderer",
+        "files:uiClient",
+        "social:profileUiClient",
+        "social:messagesUiClient",
+        "share:uiClient",
+        "ui:log",
+        "ui:showToast",
+        "ui:openErrorPopup"
+    ],
     "summary": "Secure video meetings integrated with Cognis.",
     "description": "Create, join, moderate, and share Jitsi meetings from Cognis.",
     "categories": ["Collaboration"],
@@ -93,7 +105,7 @@
         },
         {
             "path": "AGENTS.md",
-            "sha256": "c280274dbedc5c6f52b255edf19e7368c703c3434147b804198bbd201b32e09c"
+            "sha256": "aaa8fffb3a555eda2f334eb22b1ff1cfc6b2ff7856b200f38ceb8c3912126f9c"
         },
         {
             "path": "LICENSE",
@@ -189,7 +201,7 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "ff1acba2698e8d08f898635850b5c1affa8da81705c4d413130f1406b896a630"
+            "sha256": "65323bc2e8ee0806eb82464c5a889d6f35f5948b46fdf5f19357431a126486e4"
         },
         {
             "path": "api/tests/config-routes.test.js",
@@ -201,7 +213,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "5208b8abaa73d148d8cb9f8f601485ffd328684046df7d959530f5963b8e873a"
+            "sha256": "c8213ebe8faf1065f0d029d9c788584f1fc75818d16d47ad16e4166d4dfc8b70"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -277,11 +289,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "1f44b0ac8933fc7229c735367e0e0e57ac8e2555f4ec6a4fa725659900f65a88"
+            "sha256": "f451122826dc2fabc63cd13ab9ca94b15c7bfb7125f1aae505c15cec5241f3c0"
         },
         {
             "path": "package.json",
-            "sha256": "9f76434e37b54c9ae5be44ac7f246b38998d754d6ee0bcd823deabac1e95c085"
+            "sha256": "8449c89a76b5c7f590ad7a69fbda0712ad1643c0d5638b723d17d23280da0bfa"
         },
         {
             "path": "routes.json",

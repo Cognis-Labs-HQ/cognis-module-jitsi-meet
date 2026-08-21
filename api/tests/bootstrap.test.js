@@ -145,10 +145,14 @@ test("manifest exposes localized configuration metadata for core rendering", asy
     );
 
     assert.deepEqual(
-        manifest.ui.preferences.map(({ key, type }) => ({ key, type })),
+        manifest.ui.preferences.map(({ key, type, required }) => ({
+            key,
+            type,
+            required,
+        })),
         [
-            { key: "instanceUrl", type: "string" },
-            { key: "meetingPrefix", type: "string" },
+            { key: "instanceUrl", type: "string", required: true },
+            { key: "meetingPrefix", type: "string", required: false },
         ],
     );
     assert.equal(
