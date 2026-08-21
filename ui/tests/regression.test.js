@@ -24,6 +24,24 @@ function readJitsiApiBundle() {
         .join("\n");
 }
 
+test("navbar mounts the ping request only on Meetings routes and aborts it on navigation", () => {
+    const source = readFileSync(resolve(ROOT, "ui/navbar.js"), "utf8");
+
+    assert.match(source, /MEETINGS_PATHS\.has\(window\.location\.pathname\)/);
+    assert.match(
+        source,
+        /if \(!MEETINGS_PATHS[\s\S]*unmountMeetingPing\(\)[\s\S]*return;/,
+    );
+    assert.match(
+        source,
+        /apiFetch\("\/api\/v1\/modules\/jitsi-meet\/ping",\s*\{[\s\S]*signal: controller\.signal/,
+    );
+    assert.match(
+        source,
+        /window\.addEventListener\("popstate", syncMeetingLink\)/,
+    );
+});
+
 test("meeting chat polling respects cancelled keyring access", () => {
     const source = readFileSync(resolve(ROOT, "ui/jitsi-chat.js"), "utf8");
     assert.match(source, /keyring:isAccessSuppressed/);
