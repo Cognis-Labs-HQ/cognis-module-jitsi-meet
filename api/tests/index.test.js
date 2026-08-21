@@ -13,6 +13,13 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
     assert.deepEqual(manifest.requiresCapabilities, [
         "auth:requireAuth",
         "ui:profileAvatarRenderer",
+        "files:uiClient",
+        "social:profileUiClient",
+        "social:messagesUiClient",
+        "share:uiClient",
+        "ui:log",
+        "ui:showToast",
+        "ui:openErrorPopup",
     ]);
     assert.deepEqual(manifest.capabilities, [
         "meeting:video",

@@ -25,7 +25,7 @@ This repository delivers exactly one external Cognis module. Keep these files at
 
 Preserve the module UUID permanently. The readable ID may change, but the UUID must never be replaced, transferred, or reused. Every `requires` value must be a component UUID.
 
-The versions in `manifest.json`, `package.json`, and `package-lock.json` must remain synchronized. Keep `package.json` configured with `"type": "module"`, keep `routes.json` as an array, and ensure every declared entrypoint and asset is a regular repository-relative file with exact filename casing.
+The module version must be bumped for every change. The versions in `manifest.json`, `package.json`, and `package-lock.json` must remain synchronized. Keep `package.json` configured with `"type": "module"`, keep `routes.json` as an array, and ensure every declared entrypoint and asset is a regular repository-relative file with exact filename casing.
 
 Keep repository, homepage, and support metadata pointed at this project. After the final file change, regenerate every SHA-256 digest in `manifest.files`. Do not include `manifest.json` in its own digest list. Verify all declared digests before committing.
 
