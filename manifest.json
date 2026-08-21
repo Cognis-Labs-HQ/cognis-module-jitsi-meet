@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.68",
+    "version": "1.4.69",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -57,6 +57,7 @@
         "social:profileUiClient",
         "social:messagesUiClient",
         "share:uiClient",
+        "share:openPopup",
         "ui:log",
         "ui:showToast",
         "ui:openErrorPopup"
@@ -229,7 +230,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "c8213ebe8faf1065f0d029d9c788584f1fc75818d16d47ad16e4166d4dfc8b70"
+            "sha256": "0f4d8f59311262c1482a3f302df55cb7c4ed789874025e75ff2cb606bc6235ba"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -316,6 +317,22 @@
             "sha256": "971c4c10505d2507e53641dd4807e9950a3a897881a3333a794645fcb4f3aabb"
         },
         {
+            "path": "changelog/fix-meeting-share-button.de.md",
+            "sha256": "07a3d5d2fbd09ef1640aa6bd54b5192f2e1b0b54d0c858ce09342cb18a44064c"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.en.md",
+            "sha256": "442ea7710c29108a2dd54ba4f449dbf0c2de778c91512eb6153c2965123bb8ba"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.id.md",
+            "sha256": "a480552d80e00ae87d6d5bbc74c5ef27ef76ffe28116f518054392d2d9290385"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.ja.md",
+            "sha256": "5bf31cd29b66b2f289531e72bb08916c6db96f887ff8c8f61a421aacfa061237"
+        },
+        {
             "path": "cli/index.js",
             "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
         },
@@ -337,11 +354,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "ba3357731461c4b2878c6440f96e0f7c97f6ada9c056ea1c962a9484f56ee6ee"
+            "sha256": "0d1cabc8f63a5b1a0ed17d3dfe99d6c1ff6f1cad23cb68cbb4e9181e75ac8441"
         },
         {
             "path": "package.json",
-            "sha256": "57a71149d4798756730f1ca56b2826f2697385edfc7db18b71675f51d886715c"
+            "sha256": "db690d3c9fa3cca3c8d0d8febc0419eb529b8d47752f9fe3a613fcc0ad924e83"
         },
         {
             "path": "routes.json",

@@ -17,6 +17,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "social:profileUiClient",
         "social:messagesUiClient",
         "share:uiClient",
+        "share:openPopup",
         "ui:log",
         "ui:showToast",
         "ui:openErrorPopup",
