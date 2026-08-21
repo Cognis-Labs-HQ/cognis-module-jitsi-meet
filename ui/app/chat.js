@@ -1,27 +1,20 @@
-import { logUi } from "./reuse/feedback.js";
-import { messagesClient } from "./reuse/gateway-clients.js";
+import { logUi } from "../reuse/feedback.js";
+import { messagesClient } from "../reuse/gateway-clients.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { renderMarkdown } from "/static/reuse/markdown-renderer.js";
-import { showToast } from "./reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { formatTime } from "/static/reuse/timestamp.js";
 import { bytesToHex, hexToBytes } from "/static/reuse/crypto-utils.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
-import { TEXT_ENCODER, CHAT_REFRESH_INTERVAL_MS } from "./constants.js";
+import { normalizeUsername } from "/static/reuse/value-normalizers.js";
+import { TEXT_ENCODER, CHAT_REFRESH_INTERVAL_MS } from "../constants.js";
 
 import {
     createChatParticipantAvatarButton,
     normalizeChatRoomId,
     resolveMeetingChatRoomId,
-} from "./jitsi-helpers.js";
-
-const profileAvatars = () => {
-    const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
-    if (!capability) throw new Error("Profile avatar capability unavailable");
-    return capability;
-};
-const hydrateProfileAvatars = (container) =>
-    profileAvatars().hydrate(container);
+} from "../jitsi-helpers.js";
+import { hydrateProfileAvatars } from "./profile-avatars.js";
 
 export function createChatHandlers({
     root,

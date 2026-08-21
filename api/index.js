@@ -111,9 +111,6 @@ export function registerUi(ctx) {
         access: { minRole: "user" },
     });
     const meetingsStylesheets = [
-        "/static/styles/page-builder.css",
-        "/static/styles/reuse/layout.css",
-        "/static/styles/reuse/page-sections.css",
         ...sharedStylesheetUrls,
         "/static/modules/jitsi-meet/jitsi-meet.css",
     ];
@@ -131,7 +128,7 @@ export function registerUi(ctx) {
     ]) {
         ctx.registerSpaRoute({
             ...route,
-            scriptUrl: "/static/modules/jitsi-meet/app.js",
+            scriptUrl: "/static/modules/jitsi-meet/app/index.js",
             stylesheets: meetingsStylesheets,
             access: { minRole: "user" },
         });

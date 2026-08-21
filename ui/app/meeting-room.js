@@ -1,4 +1,4 @@
-import { showToast } from "./reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { openPopup } from "/static/reuse/popup.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { uiCtx } from "/static/reuse/ui-ctx.js";
@@ -8,8 +8,8 @@ import {
     resolveJitsiDefaultBackground,
     resolveRoomName,
     resolveThemeMode,
-} from "./meeting-embed.js";
-import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "./constants.js";
+} from "../meeting-embed.js";
+import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "../constants.js";
 
 export function createEmbedHandlers({
     root,
