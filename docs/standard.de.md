@@ -6,6 +6,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmera
 
 - Konfigurierbare Jitsi-Instanz-URL und optionales URI-Präfix, von Cognis aus dem Manifest dargestellt und über den moduleigenen Konfigurationsendpunkt gespeichert
 - Anwendungsrouten `/meetings` und `/meeting` mit:
+    - eine seitenspezifische Verfügbarkeitsprüfung, die beim Verlassen sofort endet
     - Meeting-Bereich/Overlay
     - Teilnehmerauswahl und Drag-and-Drop
     - Chat-URL-Übergabe an den Messages-Adapter

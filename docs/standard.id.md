@@ -6,6 +6,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 
 - URL instans Jitsi dan prefiks URI opsional yang ditampilkan Cognis dari manifes dan disimpan oleh endpoint konfigurasi milik modul
 - Rute aplikasi `/meetings` dan `/meeting` dengan:
+    - pemeriksaan ketersediaan khusus halaman yang langsung berhenti setelah berpindah halaman
     - area rapat/overlay
     - pemilihan peserta dan drag-and-drop
     - handoff URL chat ke adapter Messages
