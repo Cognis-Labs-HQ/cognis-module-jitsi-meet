@@ -1,21 +1,13 @@
-import { logUi } from "./reuse/feedback.js";
-import { uiCtx } from "/static/reuse/ui-ctx.js";
-import { showToast } from "./reuse/feedback.js";
+import { logUi } from "../reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     HEARTBEAT_INTERVAL_MS,
     MEETING_TERMINATED_TEXT,
     STATE_REFRESH_INTERVAL_MS,
-} from "./constants.js";
-import { createParticipantAvatarEl } from "./jitsi-helpers.js";
-
-const profileAvatars = () => {
-    const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
-    if (!capability) throw new Error("Profile avatar capability unavailable");
-    return capability;
-};
-const hydrateProfileAvatars = (container) =>
-    profileAvatars().hydrate(container);
+} from "../constants.js";
+import { createParticipantAvatarEl } from "../jitsi-helpers.js";
+import { hydrateProfileAvatars } from "./profile-avatars.js";
 
 export function createPreflightHandlers({
     root,

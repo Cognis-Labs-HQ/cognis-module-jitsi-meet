@@ -62,7 +62,7 @@ export function bootstrapModule(ctx) {
         () => ({
             providerId: "jitsi-meet",
             providerName: "Jitsi Meet",
-            scriptUrl: "/static/modules/jitsi-meet/app.js",
+            scriptUrl: "/static/modules/jitsi-meet/app/index.js",
         }),
     );
 

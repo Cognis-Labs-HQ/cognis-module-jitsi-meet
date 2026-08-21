@@ -1,17 +1,12 @@
-import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { escapeHtml } from "/static/reuse/escape-html.js";
-import { showToast } from "./reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
-import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "./constants.js";
-import { normalizeMeetingId } from "./jitsi-helpers.js";
-
-const profileAvatars = () => {
-    const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
-    if (!capability) throw new Error("Profile avatar capability unavailable");
-    return capability;
-};
-const getInitialsText = (label) => profileAvatars().getInitials(label);
-const pickInitialsColor = (seed) => profileAvatars().getInitialsColor(seed);
+import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
+import { normalizeMeetingId } from "../jitsi-helpers.js";
+import {
+    getProfileInitials as getInitialsText,
+    getProfileInitialsColor as pickInitialsColor,
+} from "./profile-avatars.js";
 
 export function createMeetingHandlers({
     root,

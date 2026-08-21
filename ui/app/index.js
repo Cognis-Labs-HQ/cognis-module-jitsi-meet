@@ -1,21 +1,20 @@
-import { logUi, openErrorPopup } from "./reuse/feedback.js";
-import { messagesClient } from "./reuse/gateway-clients.js";
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { logUi, openErrorPopup } from "../reuse/feedback.js";
+import { messagesClient } from "../reuse/gateway-clients.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
 import { createPageComposer } from "/static/reuse/page-composer/index.js";
 import { registerSearchIndex } from "/static/reuse/search-util/popup.js";
 import { mountWhenDirect } from "/static/reuse/page-entry.js";
 import { openSearchPopup } from "/static/reuse/search-util/popup.js";
-import { showToast } from "./reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     getShareContext,
     ensureFullAccountSession,
 } from "/static/reuse/auth-session.js";
-import { ensureSessionId } from "./session.js";
-import { buildMeetingJoinUrl, resolveThemeMode } from "./meeting-embed.js";
-import { createMeetingPageElements } from "./page-elements.js";
+import { ensureSessionId } from "../session.js";
+import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
+import { createMeetingPageElements } from "../page-elements.js";
 import {
     ensureStylesheetLoaded,
     fetchCurrentProfile,
@@ -23,20 +22,15 @@ import {
     loadMessageReactionsController,
     loadMessageUiResources,
     normalizeMeetingId,
-} from "./jitsi-helpers.js";
-import { createChatHandlers } from "./jitsi-chat.js";
-import { createMeetingHandlers } from "./jitsi-meetings.js";
-import { createPreflightHandlers } from "./jitsi-preflight.js";
-import { createEmbedHandlers } from "./jitsi-embed.js";
-import { createMountUtilities } from "./jitsi-mount-utils.js";
-import { bindShareButton, openMeetingSharePopup } from "./share-button.js";
+} from "../jitsi-helpers.js";
+import { createChatHandlers } from "./chat.js";
+import { createMeetingHandlers } from "./meetings-list.js";
+import { createPreflightHandlers } from "./participants.js";
+import { createEmbedHandlers } from "./meeting-room.js";
+import { createMountUtilities } from "./mount-surface.js";
+import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
+import { handleProfileAvatarError } from "./profile-avatars.js";
 
-const profileAvatars = () => {
-    const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
-    if (!capability) throw new Error("Profile avatar capability unavailable");
-    return capability;
-};
-const handleProfileAvatarError = (event) => profileAvatars().handleError(event);
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
     destroy: () => undefined,
@@ -62,6 +56,7 @@ export async function mount(
     root,
     { signal, requestedMeetingId = "", shareContext: routedShareContext } = {},
 ) {
+    root.classList.add("jitsi-route-root");
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
         shareContext !== null && shareContext?.directAccess !== true;

@@ -4,18 +4,10 @@ import {
     profileClient,
     shareClient,
 } from "./reuse/gateway-clients.js";
-import { uiCtx } from "/static/reuse/ui-ctx.js";
 import { apiFetch } from "/static/reuse/api-client.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import { getShareContext } from "/static/reuse/auth-session.js";
-
-const profileAvatars = () => {
-    const capability = uiCtx.capabilities.get("ui:profileAvatarRenderer");
-    if (!capability) throw new Error("Profile avatar capability unavailable");
-    return capability;
-};
-const buildProfileAvatarMarkup = (options) =>
-    profileAvatars().buildMarkup(options);
+import { buildProfileAvatarMarkup } from "./app/profile-avatars.js";
 
 const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     languageBaseUrls: ["/static/modules/jitsi-meet/languages"],

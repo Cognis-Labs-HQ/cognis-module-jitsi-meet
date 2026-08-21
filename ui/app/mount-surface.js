@@ -1,4 +1,4 @@
-import { ALONE_PROMPT_GRACE_PERIOD_MS } from "./constants.js";
+import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
 
 export function createMountUtilities({ root, state }) {
     function isMeetingActive() {
