@@ -1,5 +1,6 @@
 import { registerApiRoutes, registerUi } from "./api/index.js";
 import { registerShareFlowHooks } from "./api/share-hooks.js";
+import { JitsiMeetStore } from "./api/store.js";
 
 const MEETINGS_FLOW_CATALOG = [
     {
@@ -13,6 +14,24 @@ const MEETINGS_FLOW_CATALOG = [
         stages: ["validate-request", "provision-session", "finalize-join"],
     },
 ];
+
+export async function uninstallModule(ctx, { deleteContent }) {
+    const store = new JitsiMeetStore({
+        db: ctx.getCapability("db:executor"),
+        log: ctx.log,
+    });
+    await store.ensureSchema();
+    if (deleteContent) {
+        await store.deleteAllData();
+    } else {
+        await store.deleteConfig();
+    }
+    ctx.log?.("info", "Jitsi Meet saved data deleted.", {
+        component: "jitsi-meet-module",
+        operation: "uninstall_cleanup",
+        deleteContent,
+    });
+}
 
 export function bootstrapModule(ctx) {
     registerUi(ctx);

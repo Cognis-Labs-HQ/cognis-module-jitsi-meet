@@ -76,4 +76,23 @@ export function registerMeetingConfigRoutes({
         },
         { access: { minRole: "admin" }, allowWhenDisabled: true },
     );
+
+    router.delete(
+        "/api/v1/modules/jitsi-meet/config",
+        async (req, res) => {
+            const claims = requireAuth(req, res, "admin");
+            if (!claims) return;
+            await store.ensureSchema();
+            await store.deleteConfig();
+            registerConfiguredJitsiOrigin(registerScriptOrigins, {});
+            log?.("info", "Jitsi Meet configuration deleted.", {
+                component: "jitsi-meet-module",
+                operation: "delete_config",
+                deletedBy: claims.sub,
+            });
+            res.writeHead(204);
+            res.end();
+        },
+        { access: { minRole: "admin" }, allowWhenDisabled: true },
+    );
 }

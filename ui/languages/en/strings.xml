@@ -112,4 +112,10 @@
   <string name="module.jitsi_meet.keyring_request_process">meeting {{meeting}}</string>
   <string name="module.jitsi_meet.keyring_prompt">Enter the meeting password.</string>
   <string name="module.jitsi_meet.keyring_invalid">The stored meeting password is invalid. Enter the current password.</string>
+  <string name="module.jitsi_meet.name">Jitsi Meet</string>
+  <string name="module.jitsi_meet.summary">Secure video meetings integrated with Cognis.</string>
+  <string name="module.jitsi_meet.description">Create, join, moderate, and share Jitsi meetings from Cognis.</string>
+  <string name="module.jitsi_meet.category_collaboration">Collaboration</string>
+  <string name="module.jitsi_meet.tag_video">Video</string>
+  <string name="module.jitsi_meet.tag_meetings">Meetings</string>
 </resources>
