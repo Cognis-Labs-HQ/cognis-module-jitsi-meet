@@ -99,7 +99,7 @@ test("jitsi authorizes its scoped guest chat through a neutral Messages contract
     assert.match(source, /requiredCapability/);
 });
 
-test("participant-free meetings delete their identity and shares when closed", () => {
+test("participant-free meetings delete their identity, shares, and chat when closed", () => {
     const source = readJitsiApiBundle();
 
     assert.match(
@@ -107,7 +107,11 @@ test("participant-free meetings delete their identity and shares when closed", (
         /const participantlessMeeting = resolved\.participants\.every/,
     );
     assert.match(source, /deleteResourceShares\?\.\(/);
-    assert.match(source, /await store\.deleteMeeting\(resolved\.meeting\.id\)/);
+    assert.match(source, /social:messages:deleteRoom/);
+    assert.match(source, /await deleteChatRoom\(\{/);
+    assert.match(source, /roomId: meeting\.chatRoomId/);
+    assert.match(source, /ownerAccountId/);
+    assert.match(source, /await store\.deleteMeeting\(meeting\.id\)/);
     assert.match(source, /async deleteMeeting\(meetingId\)/);
 });
 

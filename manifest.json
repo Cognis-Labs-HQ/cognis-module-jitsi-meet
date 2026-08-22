@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.74",
+    "version": "1.4.75",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -143,11 +143,11 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "5814e3efba3ad2463b3d420eb9e06dac818ded3b4a6b31599383ef645142ce46"
+            "sha256": "46ed4d6b7ec725a732e67deb3e9e6dda231c775f9e0f6ec80f07d8596fee93b6"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "28a49abb85cfdff2fb29149676f7196278c5fee440f303fa7bc841704b3480a2"
+            "sha256": "d2327bea5a693ff69998356126635af361c9a629b046ec665769e20bfb7859cd"
         },
         {
             "path": "api/meeting-values.js",
@@ -231,11 +231,15 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "027eeb2d5e190c745b4e22e4a90b205b88e8463efab58cabe3f1017de0f97ea8"
+            "sha256": "1eade5007771112eed30f2aa36744e7e0bd8fa34369c281cde697ddb48fcacc2"
         },
         {
             "path": "api/tests/meeting-access.test.js",
             "sha256": "aed490a549be52cd1ae7b315a18c258b7a5c52c4d6d2cea8ddf4c634883b691a"
+        },
+        {
+            "path": "api/tests/meeting-lifecycle-routes.test.js",
+            "sha256": "86bb950f732b83715488faec9f4bffc3f6db17b2e999c22960875dbebe923112"
         },
         {
             "path": "api/tests/participant-routes.test.js",
@@ -334,6 +338,22 @@
             "sha256": "971c4c10505d2507e53641dd4807e9950a3a897881a3333a794645fcb4f3aabb"
         },
         {
+            "path": "changelog/fix-delete-disposable-meeting-chat.de.md",
+            "sha256": "401033bf75dff5b66273736869ecbafb1a38ba354512ceb877dda0f1fdb67371"
+        },
+        {
+            "path": "changelog/fix-delete-disposable-meeting-chat.en.md",
+            "sha256": "d69063aafde2e80cb482a3d5e1e41f49e3ff7d84f4383f09d4da4edfcee50dc4"
+        },
+        {
+            "path": "changelog/fix-delete-disposable-meeting-chat.id.md",
+            "sha256": "659fb819920b29fa57c5f224f9417db10e01588b7709425deb14e89f29dab965"
+        },
+        {
+            "path": "changelog/fix-delete-disposable-meeting-chat.ja.md",
+            "sha256": "a542f555f8ac8b49c93ccdc1fad936aefa2e28ecb0e0bb679ff73ecc4038562b"
+        },
+        {
             "path": "changelog/fix-meeting-share-button.de.md",
             "sha256": "07a3d5d2fbd09ef1640aa6bd54b5192f2e1b0b54d0c858ce09342cb18a44064c"
         },
@@ -371,11 +391,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "b0172145bf88f56eac09df3d7567c6b1bd65fe79478b368779e1707ac11af1c3"
+            "sha256": "359deb59296e6adeb4c68eacfc3628a851d411252c9dfb17c7ea7af3b2da8878"
         },
         {
             "path": "package.json",
-            "sha256": "71fb475f2cad8298e7eb3ad88a1d8e7a50dc616fefb2bf17ddc59074544e9507"
+            "sha256": "a6ec804bbd95e21f8559e69ca7f6b05cf71564910efed1c557409e5813fd8d52"
         },
         {
             "path": "routes.json",

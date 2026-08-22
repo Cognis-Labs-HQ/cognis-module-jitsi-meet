@@ -1,5 +1,50 @@
 import { randomUUID } from "node:crypto";
 
+export async function deleteDisposableMeeting({
+    meeting,
+    ownerAccountId,
+    store,
+    deleteResourceShares,
+    deleteChatRoom,
+    log,
+}) {
+    await deleteResourceShares?.({
+        ownerAccountId,
+        resourceType: "meeting",
+        resourceId: meeting.id,
+    });
+    if (meeting.chatRoomId) {
+        try {
+            if (typeof deleteChatRoom !== "function") {
+                throw new Error(
+                    "The Messages chat deletion capability is unavailable.",
+                );
+            }
+            await deleteChatRoom({
+                roomId: meeting.chatRoomId,
+                ownerAccountId,
+            });
+        } catch (error) {
+            log?.("error", "Failed to delete disposable meeting chat.", {
+                component: "jitsi-meet-module",
+                operation: "delete_disposable_meeting_chat",
+                meetingId: meeting.id,
+                chatRoomId: meeting.chatRoomId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
+    }
+    await store.deleteMeeting(meeting.id);
+    log?.("info", "Disposable meeting data deleted.", {
+        component: "jitsi-meet-module",
+        operation: "delete_disposable_meeting",
+        meetingId: meeting.id,
+        chatRoomId: meeting.chatRoomId,
+        ownerAccountId,
+    });
+}
+
 export function registerMeetingLifecycleRoutes({
     router,
     store,
@@ -22,6 +67,8 @@ export function registerMeetingLifecycleRoutes({
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
     deleteResourceShares,
+    deleteChatRoom,
+    log,
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
@@ -569,12 +616,14 @@ export function registerMeetingLifecycleRoutes({
                         (username) => username === resolved.meeting.createdBy,
                     );
                     if (participantlessMeeting) {
-                        await deleteResourceShares?.({
+                        await deleteDisposableMeeting({
+                            meeting: resolved.meeting,
                             ownerAccountId: claims.sub,
-                            resourceType: "meeting",
-                            resourceId: resolved.meeting.id,
+                            store,
+                            deleteResourceShares,
+                            deleteChatRoom,
+                            log,
                         });
-                        await store.deleteMeeting(resolved.meeting.id);
                         disposableMeetingDeleted = true;
                     }
                 }
