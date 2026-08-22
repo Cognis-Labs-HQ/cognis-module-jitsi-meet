@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.73",
+    "version": "1.4.74",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -302,6 +302,22 @@
             "sha256": "3182d26815b5cb9d0193e9eab0c3391a308e9948f403c052307ecc22ca0cc69f"
         },
         {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.de.md",
+            "sha256": "478cb6eaa7b77ef0a792314201b830f84f38e2a3b7f17aa2b3751f9404374c48"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.en.md",
+            "sha256": "98705f36977ef20f132c9736b34bfa40c42854c044491723197a1c538ef45dec"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.id.md",
+            "sha256": "288bdec14acec748a2da8ec82f3473d9c1335d3d9baf0108a1dcfa746c7fabc0"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.ja.md",
+            "sha256": "dec2ecde4dab5f4919ab16945dcf9cab5228f6549b55184b5e37f0c278b5dfb8"
+        },
+        {
             "path": "changelog/feature-localize-readme-variants.de.md",
             "sha256": "0823473667e1164c27555387620eb449a7d220c34cdcc072f620197f945f0965"
         },
@@ -334,54 +350,6 @@
             "sha256": "5bf31cd29b66b2f289531e72bb08916c6db96f887ff8c8f61a421aacfa061237"
         },
         {
-            "path": "changelog/fix-null-share-trigger.de.md",
-            "sha256": "fcbf520182813b6a66e8bc4fa29865b859edae9c5e2d545e31c762a0d1cb42cd"
-        },
-        {
-            "path": "changelog/fix-null-share-trigger.en.md",
-            "sha256": "af3deb857fd90d710792d28df498d8b366af248a46846863ab992d0c23460989"
-        },
-        {
-            "path": "changelog/fix-null-share-trigger.id.md",
-            "sha256": "ca97de64b67b3d39c314664cecedfbe721c7935c6e553850b4e8670013380bf6"
-        },
-        {
-            "path": "changelog/fix-null-share-trigger.ja.md",
-            "sha256": "9312abbaa9bcaec5534aedb74dd28c396db974013e8dc2f32d703eafff25fe25"
-        },
-        {
-            "path": "changelog/fix-share-trigger-and-active-owner-join.de.md",
-            "sha256": "775508012ced647d7069e99b7cfe6b4b56935bea0770c5630f525931713df1e2"
-        },
-        {
-            "path": "changelog/fix-share-trigger-and-active-owner-join.en.md",
-            "sha256": "02bb1eb638661350913e3dc906dbce09d561c0d0ededc7d844d2d8114e7b077e"
-        },
-        {
-            "path": "changelog/fix-share-trigger-and-active-owner-join.id.md",
-            "sha256": "1b5a40dfeedf12537d5c74dc2e16efd307a970b22622b40ef88e86e5043c52df"
-        },
-        {
-            "path": "changelog/fix-share-trigger-and-active-owner-join.ja.md",
-            "sha256": "0a320b1b52e785036986bc892301d7727d298770e54ca65fb001edab70d0f954"
-        },
-        {
-            "path": "changelog/fix-use-shared-ui-gateway.de.md",
-            "sha256": "a1d2a0e72fc4fcafcfcb6dfa12827088b470b666e8e5da3ba79d43da049b4f4a"
-        },
-        {
-            "path": "changelog/fix-use-shared-ui-gateway.en.md",
-            "sha256": "a95011d985149cb62de6e5367af8dd1737c0a5ff1d40d3ff07322cd265202d6d"
-        },
-        {
-            "path": "changelog/fix-use-shared-ui-gateway.id.md",
-            "sha256": "341f612b3ce3434f236c203415c1a8131bd287709782143b049035b5475e9510"
-        },
-        {
-            "path": "changelog/fix-use-shared-ui-gateway.ja.md",
-            "sha256": "30535ad509d63b719f0f7d806844ee043e534188ccfd2a8821da4820328b02b0"
-        },
-        {
             "path": "cli/index.js",
             "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
         },
@@ -403,11 +371,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "7448111e99bf834a145ec23c21ad40f155b8e3ae3372b6083f66d641e663c5a0"
+            "sha256": "b0172145bf88f56eac09df3d7567c6b1bd65fe79478b368779e1707ac11af1c3"
         },
         {
             "path": "package.json",
-            "sha256": "00c723cfb3bc4f76e609bb2c4f3ca68d9bbb2ba8babf599c2502ca52eb2aa8e6"
+            "sha256": "71fb475f2cad8298e7eb3ad88a1d8e7a50dc616fefb2bf17ddc59074544e9507"
         },
         {
             "path": "routes.json",
