@@ -796,7 +796,7 @@ test("meeting shares use the Cognis route and skip account setup", () => {
     assert.match(shareButtonSource, /onActivate:/);
     assert.match(
         shareButtonSource,
-        /button\.disabled = !state\.jitsiConferenceJoined/,
+        /if \(button\) \{\s*button\.disabled = !state\.jitsiConferenceJoined/,
     );
     assert.match(shareButtonSource, /destroy\(\)/);
     assert.doesNotMatch(

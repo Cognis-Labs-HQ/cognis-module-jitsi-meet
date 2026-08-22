@@ -4,7 +4,7 @@ const mountedShareTriggers = new WeakMap();
 
 export function syncShareButtonAvailability({ root, state }) {
     const mountedTrigger = mountedShareTriggers.get(root);
-    if (mountedTrigger) {
+    if (mountedTrigger?.button) {
         mountedTrigger.button.disabled = !state.jitsiConferenceJoined;
     }
 }
@@ -106,7 +106,9 @@ export async function bindShareButton({
     }
     const mountedTrigger = mountedShareTriggers.get(root);
     if (mountedTrigger?.slot === shareButtonSlot) {
-        mountedTrigger.button.disabled = !state.jitsiConferenceJoined;
+        if (mountedTrigger.button) {
+            mountedTrigger.button.disabled = !state.jitsiConferenceJoined;
+        }
         return;
     }
     mountedTrigger?.destroy();
@@ -123,7 +125,9 @@ export async function bindShareButton({
                 deferAloneParticipantPrompt,
             }),
     });
-    button.disabled = !state.jitsiConferenceJoined;
+    if (button) {
+        button.disabled = !state.jitsiConferenceJoined;
+    }
     const trigger = { button, destroy, slot: shareButtonSlot };
     mountedShareTriggers.set(root, trigger);
     signal?.addEventListener(

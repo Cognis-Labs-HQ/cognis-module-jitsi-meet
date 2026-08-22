@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.71",
+    "version": "1.4.72",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -334,6 +334,22 @@
             "sha256": "5bf31cd29b66b2f289531e72bb08916c6db96f887ff8c8f61a421aacfa061237"
         },
         {
+            "path": "changelog/fix-null-share-trigger.de.md",
+            "sha256": "fcbf520182813b6a66e8bc4fa29865b859edae9c5e2d545e31c762a0d1cb42cd"
+        },
+        {
+            "path": "changelog/fix-null-share-trigger.en.md",
+            "sha256": "af3deb857fd90d710792d28df498d8b366af248a46846863ab992d0c23460989"
+        },
+        {
+            "path": "changelog/fix-null-share-trigger.id.md",
+            "sha256": "ca97de64b67b3d39c314664cecedfbe721c7935c6e553850b4e8670013380bf6"
+        },
+        {
+            "path": "changelog/fix-null-share-trigger.ja.md",
+            "sha256": "9312abbaa9bcaec5534aedb74dd28c396db974013e8dc2f32d703eafff25fe25"
+        },
+        {
             "path": "changelog/fix-use-shared-ui-gateway.de.md",
             "sha256": "a1d2a0e72fc4fcafcfcb6dfa12827088b470b666e8e5da3ba79d43da049b4f4a"
         },
@@ -371,11 +387,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "aff2bda248a7c99b38a2dc5af11b3386cd5dbdb1eda1e076f57e4ea537a398b5"
+            "sha256": "5b9b7771681a1cff35ff4df0d325cdfa477557bc8957c41a928fee097ac5968a"
         },
         {
             "path": "package.json",
-            "sha256": "eae6168f767ea63e0e114c3d2e01736a4a176d114c4997f5672cfbb2edbe077f"
+            "sha256": "c2adec3816d726c25d63a046aff4f0353739d766b2e6cf41fe89bb7a396f5ce1"
         },
         {
             "path": "routes.json",
@@ -483,7 +499,7 @@
         },
         {
             "path": "ui/share-button.js",
-            "sha256": "12eacd69fbeb17edea874e21fe57615590fd7b55fbd8ed73f1ecd190862ab53d"
+            "sha256": "c394d2733980de52b814365434134aa923f6b69b52e8e52ed726684ae1bf7bfd"
         },
         {
             "path": "ui/styles/meetings.css",
@@ -499,7 +515,7 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "86e9783ab4bbe0512633109eb90f28c5085ed8c95c9bdb8a27f3bd17191c6e70"
+            "sha256": "8c9dd5654036057e5c078053293b2acb692e25ac500a6afbe684c7f64b15e10f"
         }
     ]
 }
