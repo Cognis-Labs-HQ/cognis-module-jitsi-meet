@@ -116,14 +116,14 @@ export async function bindShareButton({
     if (signal?.aborted) return;
 
     const shareUiGateway = uiCtx.capabilities.get("share:uiGateway");
-    const { button, destroy } = shareUiGateway.mountTrigger({
-        container: shareButtonSlot,
+    const { button, destroy } = shareUiGateway.mountTrigger(shareButtonSlot, {
         onActivate: () =>
             openMeetingSharePopup({
                 state,
                 i18n,
                 deferAloneParticipantPrompt,
             }),
+        signal,
     });
     if (button) {
         button.disabled = !state.jitsiConferenceJoined;
