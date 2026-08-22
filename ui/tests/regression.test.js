@@ -791,6 +791,21 @@ test("meeting shares use the Cognis route and skip account setup", () => {
         "utf8",
     );
     assert.match(shareButtonSource, /share:openPopup/);
+    assert.match(shareButtonSource, /share:uiGateway/);
+    assert.match(
+        shareButtonSource,
+        /shareUiGateway\.mountTrigger\(shareButtonSlot, \{/,
+    );
+    assert.match(shareButtonSource, /onActivate:/);
+    assert.match(
+        shareButtonSource,
+        /if \(button\) \{\s*button\.disabled = !state\.jitsiConferenceJoined/,
+    );
+    assert.match(shareButtonSource, /destroy\(\)/);
+    assert.doesNotMatch(
+        shareButtonSource,
+        /document\.createElement\("button"\)/,
+    );
     assert.match(shareButtonSource, /contentUrl: `\/meetings\?meetingId=/);
     assert.match(shareButtonSource, /&start=1`/);
     assert.match(
@@ -810,6 +825,21 @@ test("meeting shares use the Cognis route and skip account setup", () => {
         /createMeetingPageElements\(i18n, limitedShareView\)/,
     );
     assert.match(appSource, /if \(!inShareView\) \{[\s\S]*bindShareButton/);
+});
+
+test("active participant-free meetings remain joinable by their owner", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    assert.match(
+        source,
+        /const meetingHasActiveSession = state\.activeMeetings\.some/,
+    );
+    assert.match(
+        source,
+        /state\.selectedParticipants\.length === 0 &&\s*!meetingHasActiveSession/,
+    );
 });
 
 test("active link-shared meetings ignore a stale closed state", () => {

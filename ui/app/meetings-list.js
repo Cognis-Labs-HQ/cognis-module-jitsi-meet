@@ -238,9 +238,14 @@ export function createMeetingHandlers({
             return;
         }
         callbacks.renderParticipants();
+        const meetingHasActiveSession = state.activeMeetings.some(
+            (activeMeeting) =>
+                normalizeMeetingId(activeMeeting?.id) === normalizedMeetingId,
+        );
         if (
             !allowParticipantlessJoin &&
-            state.selectedParticipants.length === 0
+            state.selectedParticipants.length === 0 &&
+            !meetingHasActiveSession
         ) {
             return;
         }
