@@ -1,5 +1,14 @@
 import { uiCtx } from "/static/reuse/ui-ctx.js";
 
+const mountedShareTriggers = new WeakMap();
+
+export function syncShareButtonAvailability({ root, state }) {
+    const mountedTrigger = mountedShareTriggers.get(root);
+    if (mountedTrigger) {
+        mountedTrigger.button.disabled = !state.jitsiConferenceJoined;
+    }
+}
+
 /**
  * Wires the Jitsi Meet "share meeting" button.
  *
@@ -91,34 +100,39 @@ export async function bindShareButton({
 }) {
     const shareButtonSlot = root.querySelector("#jitsi-share-button-slot");
     if (!(shareButtonSlot instanceof HTMLElement)) {
+        mountedShareTriggers.get(root)?.destroy();
+        mountedShareTriggers.delete(root);
         return;
     }
-    const existingButton = shareButtonSlot.querySelector("#share-resource-btn");
-    if (existingButton instanceof HTMLButtonElement) {
-        // Already mounted from a prior composer render pass — just refresh
-        // its disabled state in case the meeting activity status changed.
-        existingButton.disabled = !state.jitsiConferenceJoined;
+    const mountedTrigger = mountedShareTriggers.get(root);
+    if (mountedTrigger?.slot === shareButtonSlot) {
+        mountedTrigger.button.disabled = !state.jitsiConferenceJoined;
         return;
     }
+    mountedTrigger?.destroy();
+    mountedShareTriggers.delete(root);
+    if (signal?.aborted) return;
 
-    const openSharePopup = uiCtx.capabilities.get("share:openPopup");
-    if (typeof openSharePopup !== "function") return;
-
-    const shareButton = document.createElement("button");
-    shareButton.type = "button";
-    shareButton.id = "share-resource-btn";
-    shareButton.className = "btn-confirm";
-    shareButton.textContent = i18n.t("module.jitsi_meet.share.button");
-    shareButton.disabled = !state.jitsiConferenceJoined;
-    shareButton.addEventListener(
-        "click",
-        () =>
+    const shareUiGateway = uiCtx.capabilities.get("share:uiGateway");
+    const { button, destroy } = shareUiGateway.mountTrigger({
+        container: shareButtonSlot,
+        onActivate: () =>
             openMeetingSharePopup({
                 state,
                 i18n,
                 deferAloneParticipantPrompt,
             }),
-        { signal },
+    });
+    button.disabled = !state.jitsiConferenceJoined;
+    const trigger = { button, destroy, slot: shareButtonSlot };
+    mountedShareTriggers.set(root, trigger);
+    signal?.addEventListener(
+        "abort",
+        () => {
+            if (mountedShareTriggers.get(root) !== trigger) return;
+            destroy();
+            mountedShareTriggers.delete(root);
+        },
+        { once: true },
     );
-    shareButtonSlot.appendChild(shareButton);
 }

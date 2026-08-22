@@ -1,4 +1,5 @@
 import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
+import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
 
 export function createMountUtilities({ root, state }) {
     function isMeetingActive() {
@@ -51,10 +52,7 @@ export function createMountUtilities({ root, state }) {
      * (`videoConferenceJoined`), not merely once the embed has been created.
      */
     function syncShareButtonAvailability() {
-        const shareButton = root.querySelector("#share-resource-btn");
-        if (shareButton instanceof HTMLButtonElement) {
-            shareButton.disabled = !state.jitsiConferenceJoined;
-        }
+        syncMountedShareButtonAvailability({ root, state });
     }
 
     function updatePreflightIndicator() {

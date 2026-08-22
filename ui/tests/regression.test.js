@@ -791,6 +791,18 @@ test("meeting shares use the Cognis route and skip account setup", () => {
         "utf8",
     );
     assert.match(shareButtonSource, /share:openPopup/);
+    assert.match(shareButtonSource, /share:uiGateway/);
+    assert.match(shareButtonSource, /shareUiGateway\.mountTrigger\(\{/);
+    assert.match(shareButtonSource, /onActivate:/);
+    assert.match(
+        shareButtonSource,
+        /button\.disabled = !state\.jitsiConferenceJoined/,
+    );
+    assert.match(shareButtonSource, /destroy\(\)/);
+    assert.doesNotMatch(
+        shareButtonSource,
+        /document\.createElement\("button"\)/,
+    );
     assert.match(shareButtonSource, /contentUrl: `\/meetings\?meetingId=/);
     assert.match(shareButtonSource, /&start=1`/);
     assert.match(
