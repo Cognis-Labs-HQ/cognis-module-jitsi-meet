@@ -116,12 +116,17 @@ export function registerUi(ctx) {
     ];
     for (const route of [
         {
-            id: "module-jitsi-meet-meetings",
+            id: "module.jitsi.meet.meetings",
             pattern: "^/meetings$",
             base: "/meetings",
+            componentPage: {
+                labelKey: "module.jitsi_meet.page_title",
+                descriptionKey: "module.jitsi_meet.description",
+                modes: ["overlay", "fullscreen", "pip"],
+            },
         },
         {
-            id: "module-jitsi-meet-meeting",
+            id: "module.jitsi.meet.meeting",
             pattern: "^/meeting$",
             base: "/meeting",
         },

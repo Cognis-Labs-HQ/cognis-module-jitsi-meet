@@ -15,6 +15,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - Classroom fallback participant authorization when `classroom_id` is set
 - Active meeting monitoring section in Administration → Meetings
 - UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, plus capability-based `auth:requireAuth` and `ui:profileAvatarRenderer` runtime requirements
+- An explicitly eligible Meetings component page, resolved by this module's immutable UUID and `module.jitsi.meet.meetings` route ID, with overlay, fullscreen, and picture-in-picture presentation modes
 
 ## Technical Specification
 
@@ -28,3 +29,4 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - `bootstrap.js` is the only module entrypoint consumed by the platform.
 - The bootstrap ctx is the only integration bus for this module (API routes, UI registration, capabilities, and future CLI/DB wiring).
 - Direct imports from other modules or core internals are forbidden; integration must happen via ctx-provided surfaces.
+- Component-page callers pass a serializable `meetingId` in `focusState`; the embedded mount stays inside the supplied root and uses a frameless composer without duplicating the host navigation.

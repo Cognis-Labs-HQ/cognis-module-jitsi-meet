@@ -124,6 +124,16 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
             .map(({ contribution }) => contribution.base),
         ["/meetings", "/meeting"],
     );
+    const componentPageRoute = firstEnabledSnapshot.uiContributions.find(
+        ({ type, contribution }) =>
+            type === "spa" && contribution.componentPage,
+    ).contribution;
+    assert.equal(componentPageRoute.id, "module.jitsi.meet.meetings");
+    assert.deepEqual(componentPageRoute.componentPage, {
+        labelKey: "module.jitsi_meet.page_title",
+        descriptionKey: "module.jitsi_meet.description",
+        modes: ["overlay", "fullscreen", "pip"],
+    });
     assert.deepEqual(
         firstEnabledSnapshot.uiContributions.find(
             ({ type }) => type === "navbar",

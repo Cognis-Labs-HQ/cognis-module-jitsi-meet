@@ -15,6 +15,7 @@ Jitsi Meet モジュールは、参加者選択、ミーティング URL 再利�
 - `classroom_id` 設定時の Classroom 参加者フォールバック認可
 - 管理 → Meetings でのアクティブミーティング監視
 - Social ゲートウェイ、Profile アダプター、Share ゲートウェイ、Messages アダプターへの UUID ベースの依存関係と、`auth:requireAuth` および `ui:profileAvatarRenderer` のケイパビリティベースのランタイム要件
+- このモジュールの不変 UUID とルート ID `module.jitsi.meet.meetings` で解決され、オーバーレイ、全画面、ピクチャーインピクチャーに対応する、明示的に公開されたミーティングコンポーネントページ
 
 ## 技術仕様
 
@@ -28,3 +29,4 @@ Jitsi Meet モジュールは、参加者選択、ミーティング URL 再利�
 - `bootstrap.js` をプラットフォームが参照する唯一のモジュール入口とします。
 - ブートストラップ ctx をこのモジュールの唯一の統合バスとし、API ルート、UI 登録、機能公開、将来の CLI/DB 配線を扱います。
 - 他モジュールやコア内部への直接 import は禁止し、連携は ctx 経由に限定します。
+- コンポーネントページの呼び出し元は、直列化可能な `meetingId` を `focusState` で渡します。埋め込み Mount は指定されたルート内だけに描画し、Host ナビゲーションを重複させないフレームレス Composer を使用します。

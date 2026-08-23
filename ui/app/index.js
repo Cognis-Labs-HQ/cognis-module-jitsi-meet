@@ -49,12 +49,17 @@ const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
  * resharing controls.
  *
  * @param {HTMLElement} root - Page mount root (usually #app).
- * @param {{ signal?: AbortSignal, requestedMeetingId?: string, shareContext?: object }} [options] - Router lifecycle options.
+ * @param {{ signal?: AbortSignal, requestedMeetingId?: string, shareContext?: object, focusState?: object }} [options] - Router and component-page lifecycle options.
  * @returns {Promise<void>}
  */
 export async function mount(
     root,
-    { signal, requestedMeetingId = "", shareContext: routedShareContext } = {},
+    {
+        signal,
+        requestedMeetingId = "",
+        shareContext: routedShareContext,
+        focusState = null,
+    } = {},
 ) {
     root.classList.add("jitsi-route-root");
     const shareContext = routedShareContext ?? getShareContext();
@@ -67,6 +72,7 @@ export async function mount(
     if (!limitedShareView) await ensureFullAccountSession();
     const resolvedMeetingId =
         requestedMeetingId ||
+        String(focusState?.meetingId ?? "") ||
         (inShareView ? String(shareContext?.resourceId ?? "") : "");
     const messageUiResources = await loadMessageUiResources();
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
@@ -933,7 +939,7 @@ export async function mount(
     }));
 
     const composer = createPageComposer(root, {
-        allowCustomization: !limitedShareView,
+        allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,
         elements,
         preferenceKey: "meetings-layout-v3",
@@ -942,13 +948,13 @@ export async function mount(
             title: i18n.t("ui.reuse.meetings"),
             subtitle: i18n.t("module.jitsi_meet.page.subtitle"),
         },
-        showTopbar: true,
-        showNavbar: !limitedShareView,
-        showFooter: true,
-        showThemeToggle: true,
+        showTopbar: !focusState,
+        showNavbar: !limitedShareView && !focusState,
+        showFooter: !focusState,
+        showThemeToggle: !focusState,
         requireAccountSession: !limitedShareView,
-        persistLayoutPreferences: !limitedShareView,
-        frameless: false,
+        persistLayoutPreferences: !limitedShareView && !focusState,
+        frameless: Boolean(focusState),
         onRender: (...args) => {
             bindInteractiveHandlers(...args);
             if (!inShareView) {

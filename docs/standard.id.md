@@ -15,6 +15,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Otorisasi peserta fallback classroom saat `classroom_id` diisi
 - Pemantauan rapat aktif di Administrasi → Meetings
 - Dependensi berbasis UUID pada gateway Social, adapter Profile, gateway Share, dan adapter Messages, serta persyaratan runtime berbasis kapabilitas `auth:requireAuth` dan `ui:profileAvatarRenderer`
+- Halaman komponen Rapat yang diizinkan secara eksplisit, ditemukan melalui UUID permanen modul ini dan ID rute `module.jitsi.meet.meetings`, dengan mode overlay, layar penuh, dan gambar-dalam-gambar
 
 ## Spesifikasi Teknis
 
@@ -28,3 +29,4 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - `bootstrap.js` adalah satu-satunya entrypoint modul yang dipakai platform.
 - ctx bootstrap adalah satu-satunya bus integrasi modul ini (rute API, registrasi UI, kapabilitas, serta wiring CLI/DB di masa depan).
 - Impor langsung dari modul lain atau internal core dilarang; integrasi wajib lewat permukaan yang diberikan ctx.
+- Pemanggil halaman komponen meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tetap berada di root yang diberikan dan memakai composer tanpa bingkai tanpa menggandakan navigasi host.

@@ -698,6 +698,14 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
     );
     assert.match(source, /\/api\/v1\/modules\/jitsi-meet\/meetings\/active/);
     assert.match(source, /requestedMeetingId/);
+    assert.match(source, /String\(focusState\?\.meetingId \?\? ""\)/);
+    assert.match(source, /frameless: Boolean\(focusState\)/);
+    assert.match(source, /showTopbar: !focusState/);
+    assert.match(source, /showNavbar: !limitedShareView && !focusState/);
+    assert.match(
+        source,
+        /persistLayoutPreferences: !limitedShareView && !focusState/,
+    );
     assert.match(
         source,
         /await joinMeetingById\(state\.requestedMeetingId, \{\s*autoStart: inShareView \|\| state\.requestedMeetingStart/,
