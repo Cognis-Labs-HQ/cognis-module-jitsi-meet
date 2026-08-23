@@ -360,6 +360,14 @@ test("reclaim session button uses success outline styling", () => {
     assert.match(source, /id="jitsi-reclaim-btn" class="btn-confirm"/);
 });
 
+test("find participants button uses confirm styling", () => {
+    const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    assert.match(
+        source,
+        /id="jitsi-find-participants-btn" class="btn-confirm"/,
+    );
+});
+
 test("meetings mini chat sends on Enter and hides explicit send button", () => {
     const source = readJitsiUiBundle();
     assert.doesNotMatch(source, /id="jitsi-chat-send"/);
