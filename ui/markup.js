@@ -51,7 +51,7 @@ export function buildParticipantsMarkup(i18n) {
     <section class="jitsi-participants-pane card-elevated">
       <header class="jitsi-participants-header">
         <h3>${escapeHtml(i18n.t("module.jitsi_meet.participants.heading"))}</h3>
-        <button id="jitsi-find-participants-btn" class="btn-cancel" type="button">
+        <button id="jitsi-find-participants-btn" class="btn-confirm" type="button">
           ${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}
         </button>
       </header>
