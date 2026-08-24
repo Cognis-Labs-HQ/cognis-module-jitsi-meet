@@ -474,18 +474,20 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /createDisposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
+    assert.match(buttonSource, /component-pages:spawn/);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
-    assert.match(buttonSource, /elementId:\s*target\.id/);
+    assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
     assert.match(buttonSource, /whiteboardId/);
-    assert.match(buttonSource, /focusState(?:,|:)/);
-    assert.match(buttonSource, /automaticMountFailureKey/);
-    const automaticSyncSource = buttonSource.slice(
-        buttonSource.indexOf(
-            "export async function syncMeetingWhiteboardComponent",
-        ),
-        buttonSource.indexOf("export function closeMeetingWhiteboard"),
+    assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
+    assert.match(buttonSource, /componentWindow\?\.discard/);
+    const clickHandlerSource = buttonSource.slice(
+        buttonSource.indexOf('button.addEventListener(\n        "click"'),
+        buttonSource.indexOf("signal?.addEventListener"),
     );
-    assert.doesNotMatch(automaticSyncSource, /showToast/);
+    assert.ok(
+        clickHandlerSource.indexOf("spawnComponentWindow") <
+            clickHandlerSource.indexOf("void (async ()"),
+    );
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
@@ -495,12 +497,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         stylesheet,
-        /\.jitsi-component-window\s*\{[\s\S]*?grid-area:\s*1\s*\/\s*1;/,
+        /\.jitsi-stage-frame-wrap\.component-page-stage\s+\.jitsi-stage-frame/,
     );
-    assert.doesNotMatch(
-        stylesheet,
-        /\.jitsi-component-window\s*\{[^}]*position:\s*absolute;/,
-    );
+    assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
 });
 
 test("meeting state polling ignores responses after meeting teardown", () => {

@@ -12,6 +12,4 @@ When the optional Nextcloud Whiteboard ctx capability is available, a Whiteboard
 
 The integration no longer calls a Jitsi API route to create a whiteboard through another module. The Whiteboard button is supplied only when the Whiteboard module contributes the optional browser CTX capability `whiteboard:uiGateway`, whose `createDisposableCanvas` method owns provider creation. Jitsi retains only its meeting-local active-window state endpoint.
 
-Automatic restoration now supplies both the component-page focus state and the Whiteboard provider's current share context. A failed background restoration is logged once per meeting canvas without repeatedly showing user-action error toasts.
-
-The embedded Whiteboard now uses the host component-page broker's destination element ID to mount directly into the Meeting Window stage. The stage uses normal grid layout for the Whiteboard and meeting PiP instead of absolutely positioning the component window.
+Whiteboard discovery now uses `component-pages:request` without mounting UI. After a disposable canvas has been prepared, the user's button activation synchronously invokes `component-pages:spawn` with the Meeting Window stage ID; the broker owns containment, navigation blocking, provider cleanup, and the returned discard handle. The meeting PiP responds to the broker's `component-page-stage` state without custom component-window positioning.

@@ -32,5 +32,4 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Pemanggil halaman komponen meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tetap berada di root yang diberikan dan memakai composer tanpa bingkai tanpa menggandakan navigasi host.
 - Deteksi berakhirnya rapat mencakup kegagalan Jitsi `conference.destroyed`, tindakan Mulai Rapat segera dipulihkan setelah keluar, dan toolbar tertanam menyembunyikan kontrol peserta, performa, serta latar belakang.
 - Saat kapabilitas browser Nextcloud Whiteboard opsional `whiteboard:uiGateway` aktif, panggung rapat menyediakan jendela komponen papan tulis sementara yang tersinkron dan mempertahankan rapat tanpa gangguan dalam gambar-dalam-gambar sampai papan tulis ditutup.
-- Pemulihan papan tulis di latar belakang meneruskan konteks berbagi penyedia dan mencegah toast kesalahan tindakan berulang setelah pemasangan otomatis gagal.
-- Halaman komponen Papan Tulis diminta dengan ID elemen tujuan panggung rapat agar broker jendela komponen host memasangnya langsung di dalam kartu widget Jendela Rapat.
+- Ketersediaan Papan Tulis ditemukan tanpa memasang UI. Klik pengguna memanggil `component-pages:spawn` dengan ID elemen panggung rapat, lalu handle yang dikembalikan dibuang saat jendela ditutup atau halaman rapat dilepas.
