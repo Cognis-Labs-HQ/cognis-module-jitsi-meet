@@ -5,6 +5,7 @@ const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
 const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
 const WHITEBOARD_UI_GATEWAY = "whiteboard:uiGateway";
 const mountedWhiteboardButtons = new WeakMap();
+let componentWindowSequence = 0;
 
 function setButtonActive(button, active) {
     button?.classList.toggle("active", active);
@@ -46,6 +47,8 @@ async function openComponentWindow(trigger, { meetingId, whiteboardId }) {
     );
     const target = document.createElement("div");
     target.className = "jitsi-component-window-target";
+    componentWindowSequence += 1;
+    target.id = `jitsi-whiteboard-component-window-${componentWindowSequence}`;
     componentWindow.append(target);
     trigger.frameWrap.append(componentWindow);
     trigger.frameWrap.classList.add("jitsi-component-window-active");
@@ -53,24 +56,23 @@ async function openComponentWindow(trigger, { meetingId, whiteboardId }) {
     trigger.whiteboardId = whiteboardId;
     setButtonActive(trigger.button, true);
     try {
-        const pageModule = await trigger.componentPage.load({
-            signal: componentController.signal,
-        });
         const focusState = {
             meetingId,
             whiteboardId,
             instantCanvas: true,
             disposable: true,
         };
-        await pageModule?.mount?.(target, {
+        const componentPage = await trigger.requestComponentPage({
+            componentUuid: WHITEBOARD_MODULE_UUID,
+            routeId: WHITEBOARD_ROUTE_ID,
+            mode: "fullscreen",
+            elementId: target.id,
+            context: focusState,
             signal: componentController.signal,
-            focusState,
-            shareContext: {
-                directAccess: false,
-                page: { instantCanvas: true },
-                payload: { whiteboardId },
-            },
         });
+        if (!componentPage)
+            throw new Error("whiteboard_component_page_unavailable");
+        trigger.componentPage = componentPage;
     } catch (error) {
         closeComponentWindow(trigger);
         throw error;

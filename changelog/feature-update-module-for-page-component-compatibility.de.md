@@ -14,4 +14,4 @@ Die Integration ruft keine Jitsi-API-Route mehr auf, um ein Whiteboard über ein
 
 Die automatische Wiederherstellung übergibt jetzt sowohl den Fokuszustand der Komponentenseite als auch den aktuellen Freigabekontext des Whiteboard-Anbieters. Eine fehlgeschlagene Wiederherstellung im Hintergrund wird pro Besprechungszeichenfläche nur einmal protokolliert, ohne wiederholt Fehlermeldungen für Benutzeraktionen anzuzeigen.
 
-Das eingebettete Whiteboard begrenzt jetzt Position, Größe und Darstellung auf die Besprechungsfenster-Bühne, sodass Seitenlayouts des Anbieters nicht mehr das gesamte Dashboard überdecken können.
+Das eingebettete Whiteboard verwendet jetzt die Zielelement-ID des Komponentenfenster-Brokers, um direkt in die Besprechungsfenster-Bühne eingebunden zu werden. Die Bühne verwendet für Whiteboard und Besprechungs-Bild-im-Bild ein normales Rasterlayout statt einer absoluten Positionierung des Komponentenfensters.

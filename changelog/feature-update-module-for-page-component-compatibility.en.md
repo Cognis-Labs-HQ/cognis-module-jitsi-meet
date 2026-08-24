@@ -14,4 +14,4 @@ The integration no longer calls a Jitsi API route to create a whiteboard through
 
 Automatic restoration now supplies both the component-page focus state and the Whiteboard provider's current share context. A failed background restoration is logged once per meeting canvas without repeatedly showing user-action error toasts.
 
-The embedded Whiteboard now establishes its positioning, size, and paint containment inside the Meeting Window stage, preventing provider page layouts from expanding over the full dashboard.
+The embedded Whiteboard now uses the host component-page broker's destination element ID to mount directly into the Meeting Window stage. The stage uses normal grid layout for the Whiteboard and meeting PiP instead of absolutely positioning the component window.

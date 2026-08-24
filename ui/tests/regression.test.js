@@ -474,10 +474,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /createDisposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
-    assert.match(buttonSource, /componentPage\.load/);
+    assert.doesNotMatch(buttonSource, /componentPage\.load/);
+    assert.match(buttonSource, /elementId:\s*target\.id/);
     assert.match(buttonSource, /whiteboardId/);
     assert.match(buttonSource, /focusState(?:,|:)/);
-    assert.match(buttonSource, /shareContext:/);
     assert.match(buttonSource, /automaticMountFailureKey/);
     const automaticSyncSource = buttonSource.slice(
         buttonSource.indexOf(
@@ -491,11 +491,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
     assert.match(
         stylesheet,
-        /\.jitsi-component-window\s*\{[\s\S]*?contain:\s*strict;[\s\S]*?transform:\s*translateZ\(0\);/,
+        /\.jitsi-stage-frame-wrap\s*\{[\s\S]*?display:\s*grid;/,
     );
     assert.match(
         stylesheet,
-        /\.jitsi-component-window-target\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?max-height:\s*100%;/,
+        /\.jitsi-component-window\s*\{[\s\S]*?grid-area:\s*1\s*\/\s*1;/,
+    );
+    assert.doesNotMatch(
+        stylesheet,
+        /\.jitsi-component-window\s*\{[^}]*position:\s*absolute;/,
     );
 });
 

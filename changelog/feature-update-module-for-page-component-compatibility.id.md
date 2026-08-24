@@ -14,4 +14,4 @@ Integrasi tidak lagi memanggil rute API Jitsi untuk membuat papan tulis melalui 
 
 Pemulihan otomatis kini meneruskan status fokus halaman komponen dan konteks berbagi terkini milik penyedia Papan Tulis. Kegagalan pemulihan latar belakang dicatat sekali untuk setiap kanvas rapat tanpa berulang kali menampilkan toast kesalahan tindakan pengguna.
 
-Papan Tulis tertanam kini membatasi posisi, ukuran, dan tampilannya di dalam panggung Jendela Rapat sehingga tata letak halaman penyedia tidak dapat meluas menutupi seluruh dasbor.
+Papan Tulis tertanam kini memakai ID elemen tujuan dari broker halaman komponen host agar dipasang langsung ke panggung Jendela Rapat. Panggung memakai tata letak kisi normal untuk Papan Tulis dan gambar-dalam-gambar rapat, bukan memosisikan jendela komponen secara absolut.
