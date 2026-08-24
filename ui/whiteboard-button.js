@@ -56,13 +56,19 @@ async function openComponentWindow(trigger, { meetingId, whiteboardId }) {
         const pageModule = await trigger.componentPage.load({
             signal: componentController.signal,
         });
+        const focusState = {
+            meetingId,
+            whiteboardId,
+            instantCanvas: true,
+            disposable: true,
+        };
         await pageModule?.mount?.(target, {
             signal: componentController.signal,
-            focusState: {
-                meetingId,
-                whiteboardId,
-                instantCanvas: true,
-                disposable: true,
+            focusState,
+            shareContext: {
+                directAccess: false,
+                page: { instantCanvas: true },
+                payload: { whiteboardId },
             },
         });
     } catch (error) {
@@ -101,12 +107,16 @@ export async function syncMeetingWhiteboardComponent({ root, state }) {
         whiteboardId &&
         state.jitsiConferenceJoined
     ) {
+        const mountKey = `${state.meeting.id}:${whiteboardId}`;
+        if (trigger.automaticMountFailureKey === mountKey) return;
         try {
             await openComponentWindow(trigger, {
                 meetingId: state.meeting.id,
                 whiteboardId,
             });
+            trigger.automaticMountFailureKey = "";
         } catch (error) {
+            trigger.automaticMountFailureKey = mountKey;
             await logUi("error", "Meeting whiteboard could not mount.", {
                 component: "module:jitsi-meet",
                 operation: "mount_meeting_whiteboard",
@@ -114,13 +124,10 @@ export async function syncMeetingWhiteboardComponent({ root, state }) {
                 whiteboardId,
                 error: error instanceof Error ? error.message : String(error),
             });
-            showToast(
-                trigger.i18n.t("module.jitsi_meet.whiteboard.open_failed"),
-                { variant: "error" },
-            );
         }
         return;
     }
+    trigger.automaticMountFailureKey = "";
     closeComponentWindow(trigger);
 }
 
@@ -159,6 +166,7 @@ export async function bindWhiteboardButton({
     slot.replaceChildren(button);
     const trigger = {
         apiFetch,
+        automaticMountFailureKey: "",
         button,
         componentController: null,
         componentPage: null,
@@ -201,6 +209,7 @@ export async function bindWhiteboardButton({
         async () => {
             if (!state.meeting?.id || !state.jitsiConferenceJoined) return;
             button.disabled = true;
+            trigger.automaticMountFailureKey = "";
             try {
                 if (trigger.componentWindow) {
                     const response = await apiFetch(

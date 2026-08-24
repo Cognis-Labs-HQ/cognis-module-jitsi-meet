@@ -475,7 +475,16 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /whiteboardId/);
-    assert.match(buttonSource, /focusState:/);
+    assert.match(buttonSource, /focusState(?:,|:)/);
+    assert.match(buttonSource, /shareContext:/);
+    assert.match(buttonSource, /automaticMountFailureKey/);
+    const automaticSyncSource = buttonSource.slice(
+        buttonSource.indexOf(
+            "export async function syncMeetingWhiteboardComponent",
+        ),
+        buttonSource.indexOf("export function closeMeetingWhiteboard"),
+    );
+    assert.doesNotMatch(automaticSyncSource, /showToast/);
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
