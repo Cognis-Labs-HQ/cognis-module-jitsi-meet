@@ -480,6 +480,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /whiteboardId/);
     assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
     assert.match(buttonSource, /componentWindow\?\.discard/);
+    assert.match(buttonSource, /if \(trigger\.componentWindow\) return/);
+    assert.match(buttonSource, /ui:ensureProvidersLoaded/);
     const clickHandlerSource = buttonSource.slice(
         buttonSource.indexOf('button.addEventListener(\n        "click"'),
         buttonSource.indexOf("signal?.addEventListener"),
@@ -500,6 +502,19 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /\.jitsi-stage-frame-wrap\.component-page-stage\s+\.jitsi-stage-frame/,
     );
     assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-stage-frame-wrap > \.component-page-window[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;/,
+    );
+    const lifecycleSource = readFileSync(
+        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        "utf8",
+    );
+    const meetingRestartSource = lifecycleSource.slice(
+        lifecycleSource.indexOf("if (!state.firstJoinedBy || state.endedAt)"),
+        lifecycleSource.indexOf("meetingStarted = true"),
+    );
+    assert.doesNotMatch(meetingRestartSource, /whiteboardId:\s*null/);
 });
 
 test("meeting state polling ignores responses after meeting teardown", () => {
