@@ -15,55 +15,20 @@ function createRecorder() {
     };
 }
 
-function createRoutes(spawnWhiteboard) {
+function createRoutes({ authorized = true } = {}) {
     const handlers = new Map();
-    const options = [];
-    const router = {
-        get(path, handler, routeOptions) {
-            handlers.set(`GET ${path}`, handler);
-            options.push(routeOptions);
-        },
-        post(path, handler, routeOptions) {
-            handlers.set(`POST ${path}`, handler);
-            options.push(routeOptions);
-        },
-    };
-    const spawnRequests = [];
     const stateUpdates = [];
     registerMeetingWhiteboardRoutes({
-        router,
-        ctx: {
-            getCapability(capabilityId) {
-                const spawn = async (request) => {
-                    spawnRequests.push(request);
-                    return {
-                        whiteboardId: "board-1",
-                        disposable: true,
-                    };
-                };
-                if (
-                    capabilityId ===
-                    "nextcloud-whiteboard:spawnWhiteboardWindow"
-                ) {
-                    return spawnWhiteboard === true ? spawn : null;
-                }
-                if (capabilityId === "system:ctx") {
-                    return {
-                        getCapability: () =>
-                            spawnWhiteboard === "system" ? spawn : null,
-                    };
-                }
-                return null;
+        router: {
+            post(path, handler) {
+                handlers.set(`POST ${path}`, handler);
             },
-            log() {},
         },
+        ctx: { log() {} },
         store: {
             async ensureSchema() {},
             async getMeetingById(id) {
                 return { id, meetingName: "Planning" };
-            },
-            async listParticipants() {
-                return ["alice", "bob"];
             },
             async updateMeetingState(meetingId, update) {
                 stateUpdates.push({ meetingId, update });
@@ -84,58 +49,32 @@ function createRoutes(spawnWhiteboard) {
             res.writeHead(status);
             res.end(JSON.stringify({ error: { code, message } }));
         },
-        canAccessMeeting: async () => true,
+        canAccessMeeting: async () => authorized,
         listClassroomParticipantHandles: async () => [],
     });
-    return { handlers, options, spawnRequests, stateUpdates };
+    return { handlers, stateUpdates };
 }
 
-test("meeting whiteboard routes detect the optional ctx capability", async () => {
-    const available = createRoutes(true);
-    const availableResponse = createRecorder();
-    await available.handlers.get(
-        "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
-    )({}, availableResponse);
-    assert.equal(availableResponse.status, 200);
-    assert.equal(availableResponse.body.data.available, true);
-
-    const unavailable = createRoutes(false);
-    const unavailableResponse = createRecorder();
-    await unavailable.handlers.get(
-        "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
-    )({}, unavailableResponse);
-    assert.equal(unavailableResponse.body.data.available, false);
-
-    const globallyAvailable = createRoutes("system");
-    const globalResponse = createRecorder();
-    await globallyAvailable.handlers.get(
-        "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
-    )({}, globalResponse);
-    assert.equal(globalResponse.body.data.available, true);
-});
-
-test("meeting participants can create a disposable synchronized canvas", async () => {
-    const routes = createRoutes(true);
+test("meeting participants can synchronize a provider-created whiteboard", async () => {
+    const routes = createRoutes();
     const response = createRecorder();
-    await routes.handlers.get("POST /api/v1/modules/jitsi-meet/whiteboard")(
-        { body: { meetingId: "meeting-1" } },
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                active: true,
+            },
+        },
         response,
     );
-    assert.equal(response.status, 201);
+    assert.equal(response.status, 200);
     assert.deepEqual(response.body.data, {
         whiteboardId: "board-1",
-        disposable: true,
+        active: true,
     });
-    assert.deepEqual(routes.spawnRequests, [
-        {
-            title: "Planning",
-            createdBy: "alice",
-            participants: ["alice", "bob"],
-            externalPath: "meeting:meeting-1",
-            instantCanvas: true,
-            disposable: true,
-        },
-    ]);
     assert.deepEqual(routes.stateUpdates, [
         {
             meetingId: "meeting-1",
@@ -145,19 +84,41 @@ test("meeting participants can create a disposable synchronized canvas", async (
             },
         },
     ]);
-    assert.ok(
-        routes.options.every(
-            (routeOptions) => routeOptions.access.minRole === "user",
-        ),
+});
+
+test("meeting whiteboard state rejects malformed and unauthorized requests", async () => {
+    const malformed = createRoutes();
+    const malformedResponse = createRecorder();
+    await malformed.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )({ body: { meetingId: "meeting-1", active: true } }, malformedResponse);
+    assert.equal(malformedResponse.status, 400);
+    assert.equal(malformed.stateUpdates.length, 0);
+
+    const forbidden = createRoutes({ authorized: false });
+    const forbiddenResponse = createRecorder();
+    await forbidden.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                active: true,
+            },
+        },
+        forbiddenResponse,
     );
+    assert.equal(forbiddenResponse.status, 403);
+    assert.equal(forbidden.stateUpdates.length, 0);
 });
 
 test("closing a meeting whiteboard synchronizes the default view", async () => {
-    const routes = createRoutes(true);
+    const routes = createRoutes();
     const response = createRecorder();
     await routes.handlers.get(
-        "POST /api/v1/modules/jitsi-meet/whiteboard/close",
-    )({ body: { meetingId: "meeting-1" } }, response);
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )({ body: { meetingId: "meeting-1", active: false } }, response);
     assert.equal(response.status, 200);
     assert.deepEqual(routes.stateUpdates, [
         {

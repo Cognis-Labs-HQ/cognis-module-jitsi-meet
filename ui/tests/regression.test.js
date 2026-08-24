@@ -467,14 +467,16 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const appSource = readJitsiUiBundle();
-    assert.match(apiSource, /ctx\.getCapability\(WHITEBOARD_CAPABILITY\)/);
-    assert.match(apiSource, /disposable: true/);
+    assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
+    assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
+    assert.match(buttonSource, /whiteboard:uiGateway/);
+    assert.match(buttonSource, /createDisposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /whiteboardId/);
     assert.match(buttonSource, /focusState:/);
-    assert.match(buttonSource, /whiteboard\/close/);
+    assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
 });

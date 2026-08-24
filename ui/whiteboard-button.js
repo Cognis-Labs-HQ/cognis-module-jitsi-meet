@@ -3,6 +3,7 @@ import { uiCtx } from "/static/reuse/ui-ctx.js";
 
 const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
 const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
+const WHITEBOARD_UI_GATEWAY = "whiteboard:uiGateway";
 const mountedWhiteboardButtons = new WeakMap();
 
 function setButtonActive(button, active) {
@@ -146,49 +147,8 @@ export async function bindWhiteboardButton({
     mounted?.destroy();
     mountedWhiteboardButtons.delete(root);
     if (signal?.aborted) return;
-    const pending = { slot, button: null, destroy() {} };
-    mountedWhiteboardButtons.set(root, pending);
-    const clearPending = () => {
-        if (mountedWhiteboardButtons.get(root) === pending) {
-            mountedWhiteboardButtons.delete(root);
-        }
-    };
-    let availabilityResponse;
-    try {
-        availabilityResponse = await apiFetch(
-            "/api/v1/modules/jitsi-meet/whiteboard/availability",
-            { signal },
-        );
-    } catch (error) {
-        if (!signal?.aborted) {
-            await logUi("error", "Whiteboard availability check failed.", {
-                component: "module:jitsi-meet",
-                operation: "check_whiteboard_availability",
-                error: error instanceof Error ? error.message : String(error),
-            });
-        }
-        clearPending();
-        return;
-    }
-    if (!availabilityResponse.ok || signal?.aborted) {
-        clearPending();
-        return;
-    }
-    const availability = await availabilityResponse.json().catch((error) => {
-        void logUi("error", "Whiteboard availability response failed.", {
-            component: "module:jitsi-meet",
-            operation: "parse_whiteboard_availability",
-            error: error instanceof Error ? error.message : String(error),
-        });
-        return null;
-    });
-    if (availability?.data?.available !== true) {
-        clearPending();
-        return;
-    }
-    if (mountedWhiteboardButtons.get(root) !== pending || signal?.aborted) {
-        return;
-    }
+    const whiteboardGateway = uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY);
+    if (typeof whiteboardGateway?.createDisposableCanvas !== "function") return;
 
     const button = document.createElement("button");
     button.type = "button";
@@ -205,6 +165,7 @@ export async function bindWhiteboardButton({
         componentWindow: null,
         frameWrap,
         i18n,
+        whiteboardGateway,
         requestComponentPage: async (request) => {
             const requestPage = uiCtx.capabilities.get(
                 "component-pages:request",
@@ -243,12 +204,13 @@ export async function bindWhiteboardButton({
             try {
                 if (trigger.componentWindow) {
                     const response = await apiFetch(
-                        "/api/v1/modules/jitsi-meet/whiteboard/close",
+                        "/api/v1/modules/jitsi-meet/whiteboard/state",
                         {
                             method: "POST",
                             headers: { "content-type": "application/json" },
                             body: JSON.stringify({
                                 meetingId: state.meeting.id,
+                                active: false,
                             }),
                         },
                     );
@@ -259,20 +221,40 @@ export async function bindWhiteboardButton({
                     return;
                 }
                 await ensureComponentPage(trigger, state.meeting.id);
+                const canvas =
+                    await trigger.whiteboardGateway.createDisposableCanvas({
+                        resourceType: "meeting",
+                        resourceId: state.meeting.id,
+                        title: state.meeting.meetingName,
+                        participantHandles: (state.meeting.participants ?? [])
+                            .map((participant) =>
+                                String(
+                                    participant?.username ??
+                                        participant?.handle ??
+                                        participant ??
+                                        "",
+                                ).trim(),
+                            )
+                            .filter(Boolean),
+                    });
+                const whiteboardId = String(
+                    canvas?.whiteboardId ?? canvas?.id ?? "",
+                ).trim();
+                if (!whiteboardId) throw new Error("whiteboard_id_missing");
                 const response = await apiFetch(
-                    "/api/v1/modules/jitsi-meet/whiteboard",
+                    "/api/v1/modules/jitsi-meet/whiteboard/state",
                     {
                         method: "POST",
                         headers: { "content-type": "application/json" },
-                        body: JSON.stringify({ meetingId: state.meeting.id }),
+                        body: JSON.stringify({
+                            meetingId: state.meeting.id,
+                            whiteboardId,
+                            active: true,
+                        }),
                     },
                 );
-                if (!response.ok) throw new Error("whiteboard_create_failed");
-                const payload = await response.json();
-                const whiteboardId = String(
-                    payload?.data?.whiteboardId ?? "",
-                ).trim();
-                if (!whiteboardId) throw new Error("whiteboard_id_missing");
+                if (!response.ok)
+                    throw new Error("whiteboard_state_sync_failed");
                 state.meeting.state.whiteboardId = whiteboardId;
                 state.meeting.state.whiteboardActive = true;
                 await openComponentWindow(trigger, {

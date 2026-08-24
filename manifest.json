@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.82",
+    "version": "1.4.83",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -61,8 +61,7 @@
         "share:openPopup",
         "ui:log",
         "ui:showToast",
-        "ui:openErrorPopup",
-        "system:ctx"
+        "ui:openErrorPopup"
     ],
     "summary": "module.jitsi_meet.summary",
     "description": "module.jitsi_meet.description",
@@ -133,6 +132,10 @@
         {
             "path": "README.md",
             "sha256": "7ed88d51bb0540c6dda5416676f3b6a823899a5622dd0ea5e763dbf22c809ab8"
+        },
+        {
+            "path": "TODO.md",
+            "sha256": "4370871ef36fd08dd80a1d159a19908778c7e2176428ea58f06ea3df729bc863"
         },
         {
             "path": "api/admin-meetings-routes.js",
@@ -232,7 +235,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "c367daf882732c8272ab35558a8cccec9285ede3eb4e96f350bef2b901f98f47"
+            "sha256": "1eade5007771112eed30f2aa36744e7e0bd8fa34369c281cde697ddb48fcacc2"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -260,7 +263,7 @@
         },
         {
             "path": "api/tests/whiteboard-routes.test.js",
-            "sha256": "24a770ab6d5ca3423506819e4467422ad11145051d00f6ab8b1fbf83b015aada"
+            "sha256": "d0e6d418772de105d926c73a0e08465c04797833c984a324d4aadd69978c8d12"
         },
         {
             "path": "api/ui-resources.js",
@@ -268,7 +271,7 @@
         },
         {
             "path": "api/whiteboard-routes.js",
-            "sha256": "e3cc5e757648e5107308543a6f0a50c58cac4e381764adef904ec0e016dabe92"
+            "sha256": "80ebedd4efc95c79866b2149473929744d7348e8cce383ef0e036e3bae57a131"
         },
         {
             "path": "assets/banner.png",
@@ -288,27 +291,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "93ba37874616cc03c9f1a3151f40e201756d39d8492cfd8b59fd34f1f4f18a0b"
+            "sha256": "a4b4c290043d8fe92b38a40116856e708ec726269cacac690bdbd5ec4bcaceac"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "83856f62c3b88cb273be557732aa813c36855e52ace530ff4b96a99000577a33"
+            "sha256": "79c9770aa54d2e47cdd56862e800c7dbafe46f047a6f77c0e4e49dc04b505041"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "87dc0f498c9733f7bc060d61ea5bddbe0d4ae0110deedaaf61dd314e53734cc4"
+            "sha256": "30d6719a6915572d79232f0aa0cf34c5c2b7a6610220c770517678f09405e054"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "554bd6c3891419bb3ff0f14aa2c005e6dad47e65c1aa96f54a1ddcb7808b0a07"
+            "sha256": "71efa9f43810bb2377854d48fd5c80f6d70693a0d004eb62bf892e1984cf5f07"
         },
         {
             "path": "package-lock.json",
-            "sha256": "f2ed99d7f45adc945335241e4a2ccafa8ca78795ca793e405325e8b719a29ea4"
+            "sha256": "871b082eab43a9679ed4da66738c5f1e6d342c6c5bef50b81b061ca7afdca853"
         },
         {
             "path": "package.json",
-            "sha256": "8497a8176d0ce6372eae8cce82d466bc1c4904c0490c0f056e7ca675d7394107"
+            "sha256": "6edbe9ed718381a22dcfa5c621adf195a0eba694c41a90b897714aadec0e93f3"
         },
         {
             "path": "routes.json",
@@ -436,11 +439,11 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "35ea36667461da6f830652a0fbb4964df7685ebd3fd37eaa2645c661223ce0d0"
+            "sha256": "54645ea8194edf3fef280d3c7ce59218e2c6f633e38464fee15e936082da1033"
         },
         {
             "path": "ui/whiteboard-button.js",
-            "sha256": "d69987c94015e22c0f9cd603061a7206da6f671a327b270a7ce26b511f488738"
+            "sha256": "6969cb3652050b03c5edb5dd456df70e06208d806f373ef662a1188ffd13c6c7"
         }
     ]
 }

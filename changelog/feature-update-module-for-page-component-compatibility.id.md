@@ -10,4 +10,4 @@ Siklus hidup rapat kini memperlakukan kegagalan Jitsi `conference.destroyed` seb
 
 Saat kapabilitas ctx Nextcloud Whiteboard opsional tersedia, tombol Papan Tulis membuat kanvas sementara dan membuka jendela komponennya yang tersinkron di panggung rapat. Rapat langsung berpindah ke gambar-dalam-gambar tanpa memutus koneksi, dan menutup papan tulis memulihkan tampilan rapat biasa.
 
-Tombol Papan Tulis kini ditampilkan segera setelah kapabilitas penyedia opsional ditemukan melalui ctx modul atau ctx sistem. Resolusi halaman komponen ditunda hingga aktivasi, sehingga kesiapan pemuatan halaman tidak lagi menyembunyikan integrasi yang sebenarnya tersedia.
+Integrasi tidak lagi memanggil rute API Jitsi untuk membuat papan tulis melalui modul lain. Tombol Papan Tulis hanya disediakan ketika modul Papan Tulis menyumbangkan kapabilitas CTX browser opsional `whiteboard:uiGateway`, dengan metode `createDisposableCanvas` yang menangani pembuatan oleh penyedia. Jitsi hanya menyimpan endpoint status jendela aktif lokal rapat.

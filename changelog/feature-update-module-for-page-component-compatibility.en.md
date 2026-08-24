@@ -10,4 +10,4 @@ The meeting lifecycle now treats Jitsi `conference.destroyed` failures as closed
 
 When the optional Nextcloud Whiteboard ctx capability is available, a Whiteboard button creates a disposable canvas and opens its synchronized component window in the meeting stage. The live meeting moves to picture-in-picture without disconnecting, and closing the whiteboard restores the normal meeting view.
 
-The Whiteboard button is now shown as soon as the optional provider capability is discovered through either the module ctx or system ctx. Component-page resolution is deferred until activation, so page-loading readiness no longer suppresses an otherwise available integration.
+The integration no longer calls a Jitsi API route to create a whiteboard through another module. The Whiteboard button is supplied only when the Whiteboard module contributes the optional browser CTX capability `whiteboard:uiGateway`, whose `createDisposableCanvas` method owns provider creation. Jitsi retains only its meeting-local active-window state endpoint.
