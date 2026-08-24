@@ -17,7 +17,7 @@ async function ensureComponentPage(trigger, meetingId) {
         trigger.componentPage = await trigger.requestComponentPage({
             componentUuid: WHITEBOARD_MODULE_UUID,
             routeId: WHITEBOARD_ROUTE_ID,
-            mode: "fullscreen",
+            mode: "overlay",
             context: { meetingId },
         });
     }
@@ -31,7 +31,7 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
     return trigger.spawnComponentPage({
         componentUuid: WHITEBOARD_MODULE_UUID,
         routeId: WHITEBOARD_ROUTE_ID,
-        mode: "fullscreen",
+        mode: "overlay",
         elementId: trigger.frameWrap.id,
         context: {
             meetingId,
@@ -56,7 +56,25 @@ function closeComponentWindow(trigger) {
     }
 }
 
-async function resolveWhiteboardCapabilities() {
+function waitForProviderRetry(signal, delayMs) {
+    return new Promise((resolve) => {
+        if (signal?.aborted) {
+            resolve();
+            return;
+        }
+        const timeoutId = setTimeout(resolve, delayMs);
+        signal?.addEventListener(
+            "abort",
+            () => {
+                clearTimeout(timeoutId);
+                resolve();
+            },
+            { once: true },
+        );
+    });
+}
+
+async function resolveWhiteboardCapabilities(signal) {
     const ensureProvidersLoaded = uiCtx.capabilities.get(
         "ui:ensureProvidersLoaded",
     );
@@ -65,18 +83,20 @@ async function resolveWhiteboardCapabilities() {
         spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
-    if (typeof ensureProvidersLoaded === "function") {
-        await ensureProvidersLoaded();
-    }
     let capabilities = readCapabilities();
-    if (
-        typeof ensureProvidersLoaded === "function" &&
-        (typeof capabilities.whiteboardGateway?.createDisposableCanvas !==
-            "function" ||
-            typeof capabilities.spawnComponentPage !== "function")
-    ) {
-        await ensureProvidersLoaded({ force: true });
+    for (let attempt = 0; attempt < 3 && !signal?.aborted; attempt += 1) {
+        if (typeof ensureProvidersLoaded === "function") {
+            await ensureProvidersLoaded({ force: attempt > 0 });
+        }
         capabilities = readCapabilities();
+        if (
+            typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
+                "function" &&
+            typeof capabilities.spawnComponentPage === "function"
+        ) {
+            return capabilities;
+        }
+        if (attempt < 2) await waitForProviderRetry(signal, 150);
     }
     return capabilities;
 }
@@ -191,10 +211,6 @@ export async function bindWhiteboardButton({
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
     if (!(slot instanceof HTMLElement) || !(frameWrap instanceof HTMLElement))
         return;
-    if (!frameWrap.id) {
-        componentStageSequence += 1;
-        frameWrap.id = `jitsi-whiteboard-stage-${componentStageSequence}`;
-    }
     const mounted = mountedWhiteboardButtons.get(root);
     if (mounted?.slot === slot) {
         syncWhiteboardButtonAvailability({ root, state });
@@ -203,9 +219,14 @@ export async function bindWhiteboardButton({
     mounted?.destroy();
     mountedWhiteboardButtons.delete(root);
     if (signal?.aborted) return;
+    componentStageSequence += 1;
+    const uniqueStageId = globalThis.crypto?.randomUUID?.();
+    frameWrap.id = uniqueStageId
+        ? `jitsi-whiteboard-stage-${uniqueStageId}`
+        : `jitsi-whiteboard-stage-${Date.now()}-${componentStageSequence}`;
     let capabilities;
     try {
-        capabilities = await resolveWhiteboardCapabilities();
+        capabilities = await resolveWhiteboardCapabilities(signal);
     } catch (error) {
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",

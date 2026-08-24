@@ -482,16 +482,16 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /componentWindow\?\.discard/);
     assert.match(buttonSource, /if \(trigger\.componentWindow\) return/);
     assert.match(buttonSource, /ui:ensureProvidersLoaded/);
-    assert.match(buttonSource, /ensureProvidersLoaded\(\{ force: true \}\)/);
-    assert.match(buttonSource, /component-pages:discard/);
-    assert.doesNotMatch(buttonSource, /component-pages:discardAll/);
-    const clickHandlerSource = buttonSource.slice(
-        buttonSource.indexOf('button.addEventListener(\n        "click"'),
-        buttonSource.indexOf("signal?.addEventListener"),
+    assert.match(
+        buttonSource,
+        /ensureProvidersLoaded\(\{ force: attempt > 0 \}\)/,
     );
-    assert.ok(
-        clickHandlerSource.indexOf("spawnComponentWindow") <
-            clickHandlerSource.indexOf("void (async ()"),
+    assert.match(buttonSource, /crypto\?\.randomUUID/);
+    assert.match(buttonSource, /mode:\s*"overlay"/);
+    assert.match(buttonSource, /component-pages:discard/);
+    assert.match(
+        buttonSource,
+        /const authorizedSpawnPromise = spawnComponentWindow[\s\S]*void \(async \(\)/,
     );
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
