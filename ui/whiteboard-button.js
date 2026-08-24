@@ -44,12 +44,41 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
 }
 
 function closeComponentWindow(trigger) {
-    void trigger?.componentWindow?.discard?.();
+    if (typeof trigger?.componentWindow?.discard === "function") {
+        void trigger.componentWindow.discard();
+    } else if (trigger?.frameWrap?.id) {
+        void trigger.discardComponentPage?.(trigger.frameWrap.id);
+    }
     if (trigger) {
         trigger.componentWindow = null;
         trigger.whiteboardId = "";
         setButtonActive(trigger.button, false);
     }
+}
+
+async function resolveWhiteboardCapabilities() {
+    const ensureProvidersLoaded = uiCtx.capabilities.get(
+        "ui:ensureProvidersLoaded",
+    );
+    const readCapabilities = () => ({
+        discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
+        spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
+        whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
+    });
+    if (typeof ensureProvidersLoaded === "function") {
+        await ensureProvidersLoaded();
+    }
+    let capabilities = readCapabilities();
+    if (
+        typeof ensureProvidersLoaded === "function" &&
+        (typeof capabilities.whiteboardGateway?.createDisposableCanvas !==
+            "function" ||
+            typeof capabilities.spawnComponentPage !== "function")
+    ) {
+        await ensureProvidersLoaded({ force: true });
+        capabilities = readCapabilities();
+    }
+    return capabilities;
 }
 
 function prepareMeetingCanvas(trigger, state) {
@@ -174,23 +203,20 @@ export async function bindWhiteboardButton({
     mounted?.destroy();
     mountedWhiteboardButtons.delete(root);
     if (signal?.aborted) return;
-    const ensureProvidersLoaded = uiCtx.capabilities.get(
-        "ui:ensureProvidersLoaded",
-    );
-    if (typeof ensureProvidersLoaded === "function") {
-        try {
-            await ensureProvidersLoaded();
-        } catch (error) {
-            await logUi("error", "Whiteboard UI providers could not load.", {
-                component: "module:jitsi-meet",
-                operation: "load_whiteboard_ui_providers",
-                error: error instanceof Error ? error.message : String(error),
-            });
-        }
+    let capabilities;
+    try {
+        capabilities = await resolveWhiteboardCapabilities();
+    } catch (error) {
+        await logUi("error", "Whiteboard UI providers could not load.", {
+            component: "module:jitsi-meet",
+            operation: "load_whiteboard_ui_providers",
+            error: error instanceof Error ? error.message : String(error),
+        });
+        return;
     }
     if (signal?.aborted) return;
-    const whiteboardGateway = uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY);
-    const spawnComponentPage = uiCtx.capabilities.get("component-pages:spawn");
+    const { discardComponentPage, spawnComponentPage, whiteboardGateway } =
+        capabilities;
     if (
         typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
         typeof spawnComponentPage !== "function"
@@ -209,6 +235,7 @@ export async function bindWhiteboardButton({
         button,
         componentPage: null,
         componentWindow: null,
+        discardComponentPage,
         frameWrap,
         i18n,
         preparedWhiteboardId: String(
