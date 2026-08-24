@@ -44,7 +44,25 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
     });
 }
 
+function releaseMeetingFloatingWindow(trigger) {
+    trigger?.releaseFloatingWindow?.();
+    if (trigger) trigger.releaseFloatingWindow = null;
+}
+
+function makeMeetingWindowFloat(trigger) {
+    releaseMeetingFloatingWindow(trigger);
+    const meetingFrame = trigger.frameWrap.querySelector(".jitsi-stage-frame");
+    if (!(meetingFrame instanceof HTMLElement)) return;
+    trigger.releaseFloatingWindow = trigger.makeFloatingWindow(meetingFrame, {
+        handle: trigger.pipHandle,
+        signal: trigger.signal,
+        minWidth: 224,
+        minHeight: 128,
+    });
+}
+
 function closeComponentWindow(trigger) {
+    releaseMeetingFloatingWindow(trigger);
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
     } else if (trigger?.frameWrap?.id) {
@@ -81,6 +99,7 @@ async function resolveWhiteboardCapabilities(signal) {
     );
     const readCapabilities = () => ({
         discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
+        makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
         spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
@@ -93,7 +112,8 @@ async function resolveWhiteboardCapabilities(signal) {
         if (
             typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
                 "function" &&
-            typeof capabilities.spawnComponentPage === "function"
+            typeof capabilities.spawnComponentPage === "function" &&
+            typeof capabilities.makeFloatingWindow === "function"
         ) {
             return capabilities;
         }
@@ -210,7 +230,12 @@ export async function bindWhiteboardButton({
 }) {
     const slot = root.querySelector("#jitsi-whiteboard-button-slot");
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
-    if (!(slot instanceof HTMLElement) || !(frameWrap instanceof HTMLElement))
+    const pipHandle = root.querySelector(".jitsi-stage-header");
+    if (
+        !(slot instanceof HTMLElement) ||
+        !(frameWrap instanceof HTMLElement) ||
+        !(pipHandle instanceof HTMLElement)
+    )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
     if (mounted?.slot === slot) {
@@ -237,11 +262,16 @@ export async function bindWhiteboardButton({
         return;
     }
     if (signal?.aborted) return;
-    const { discardComponentPage, spawnComponentPage, whiteboardGateway } =
-        capabilities;
+    const {
+        discardComponentPage,
+        makeFloatingWindow,
+        spawnComponentPage,
+        whiteboardGateway,
+    } = capabilities;
     if (
         typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
-        typeof spawnComponentPage !== "function"
+        typeof spawnComponentPage !== "function" ||
+        typeof makeFloatingWindow !== "function"
     )
         return;
 
@@ -260,12 +290,15 @@ export async function bindWhiteboardButton({
         discardComponentPage,
         frameWrap,
         i18n,
+        makeFloatingWindow,
+        pipHandle,
         preparedWhiteboardId: String(
             state.meeting?.state?.whiteboardId ?? "",
         ).trim(),
         preparedMeetingId: state.meeting?.id ?? "",
         preparationPromise: null,
         preparationFailedMeetingId: "",
+        releaseFloatingWindow: null,
         signal,
         spawnComponentPage,
         whiteboardGateway,
@@ -319,6 +352,7 @@ export async function bindWhiteboardButton({
                             "whiteboard_component_window_unavailable",
                         );
                     trigger.componentWindow = componentWindow;
+                    makeMeetingWindowFloat(trigger);
                     trigger.whiteboardId = whiteboardId;
                     setButtonActive(button, true);
                     const response = await apiFetch(

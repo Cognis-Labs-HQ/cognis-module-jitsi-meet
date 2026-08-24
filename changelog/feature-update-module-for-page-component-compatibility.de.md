@@ -21,3 +21,5 @@ Bei fehlendem Whiteboard-Gateway erzwingt Meetings jetzt eine einmalige Aktualis
 SPA-Einbindungen wiederholen jetzt die Provider-Bereitschaftsprüfung, vergeben für jede neu gebundene Besprechungsbühne eine kollisionssichere Ziel-ID und fordern das Whiteboard im Overlay-Modus an. Dadurch erhält geparktes oder veraltetes Meetings-DOM nicht mehr die Einbindung, und eine begrenzte Zeichenfläche wird nicht als Vollbildseite behandelt.
 
 Eingebundene Whiteboards fordern jetzt eine rahmenlose Darstellung an und verwenden bühnenbezogene Abstandsüberschreibungen für Arbeitsbereich, Panel, Abschnitt, Raster und Widget, damit die Zeichenfläche den verfügbaren Bereich des Besprechungsfensters ausfüllt und das Besprechungs-Bild-im-Bild erhalten bleibt.
+
+Das Meeting-Bild-in-Bild verwendet jetzt die Cognis-Core-Fähigkeit `ui:makeFloatingWindow` für einheitliche Bewegung, Größenänderung, Begrenzung auf den Ansichtsbereich und Lebenszyklusbereinigung.

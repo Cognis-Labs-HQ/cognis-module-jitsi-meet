@@ -21,3 +21,5 @@ Meetings now retries a missing Whiteboard gateway by forcing one host provider-c
 SPA mounts now retry provider readiness, assign every newly bound meeting stage a collision-resistant destination ID, and request the Whiteboard in overlay mode. This prevents parked or stale Meetings DOM from receiving the mount and prevents a contained canvas from being treated as a fullscreen page.
 
 Spawned Whiteboards now request frameless presentation and use stage-scoped workspace, panel, section, grid, and widget spacing overrides so the canvas expands to the available Meeting Window area while preserving the meeting PiP.
+
+Meeting PiP now uses Cognis core's `ui:makeFloatingWindow` capability for consistent movement, resizing, viewport constraints, and lifecycle cleanup.
