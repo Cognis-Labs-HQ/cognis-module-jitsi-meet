@@ -319,6 +319,8 @@ export function registerMeetingLifecycleRoutes({
                     authCompletedAt: null,
                     endedBy: null,
                     endedAt: null,
+                    whiteboardId: null,
+                    whiteboardActive: false,
                 });
                 meetingStarted = true;
             }
@@ -595,6 +597,7 @@ export function registerMeetingLifecycleRoutes({
                         firstJoinedAt: null,
                         endedBy: resolved.requesterUsername,
                         endedAt: new Date().toISOString(),
+                        whiteboardActive: false,
                     });
                     await dispatchMeetingNotifications(resolved.participants, {
                         subject: "Meeting Ended",

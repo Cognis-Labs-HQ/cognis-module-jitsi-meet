@@ -17,6 +17,7 @@ import {
 import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
 import {
     canAccessMeeting,
     createMeetingPayload,
@@ -654,6 +655,11 @@ export function registerApiRoutes(router, ctx) {
     registerMeetingConfigRoutes(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
+    registerMeetingWhiteboardRoutes({
+        ...routeContext,
+        ctx,
+        listClassroomParticipantHandles,
+    });
 
     registerMeetingRoutes({
         router,

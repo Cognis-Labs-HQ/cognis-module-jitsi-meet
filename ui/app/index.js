@@ -30,6 +30,11 @@ import { createEmbedHandlers } from "./meeting-room.js";
 import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
 import { handleProfileAvatarError } from "./profile-avatars.js";
+import { createMeetingSearchGroups } from "./meeting-search.js";
+import {
+    bindWhiteboardButton,
+    syncMeetingWhiteboardComponent,
+} from "../whiteboard-button.js";
 
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
@@ -147,52 +152,10 @@ export async function mount(
         recoveringMeetingSession: false,
         promptShareOnJoin: false,
     };
-    function collectMeetingSearchGroups() {
-        const meetings = [
-            ...(Array.isArray(state.activeMeetings)
-                ? state.activeMeetings
-                : []),
-            ...(state.meeting?.id ? [state.meeting] : []),
-        ];
-        const seenIds = new Set();
-        const items = [];
-        for (const meeting of meetings) {
-            const meetingId = normalizeMeetingId(meeting?.id);
-            if (!meetingId || seenIds.has(meetingId)) continue;
-            seenIds.add(meetingId);
-            const title = String(
-                meeting?.meetingName ?? i18n.t("ui.reuse.meeting"),
-            ).trim();
-            const owner = String(
-                meeting?.startedBy?.displayName ??
-                    meeting?.startedBy?.username ??
-                    meeting?.createdBy ??
-                    "",
-            ).trim();
-            const timeLabel = String(
-                meeting?.scheduledAt ?? meeting?.createdAt ?? "",
-            ).trim();
-            items.push({
-                id: `meeting:${meetingId}`,
-                label: title,
-                description: [timeLabel, owner].filter(Boolean).join(" · "),
-                url: `/meetings?meetingId=${encodeURIComponent(meetingId)}`,
-                resultClass: "page",
-                searchText: [
-                    title,
-                    owner,
-                    timeLabel,
-                    meeting?.meetingUrl,
-                    meeting?.scheduledAt,
-                    meeting?.createdAt,
-                ]
-                    .filter(Boolean)
-                    .join(" "),
-            });
-        }
-        return items.length ? [{ category: "Meetings", items }] : [];
-    }
-    registerSearchIndex("jitsi-meetings", collectMeetingSearchGroups);
+    registerSearchIndex(
+        "jitsi-meetings",
+        createMeetingSearchGroups(state, i18n),
+    );
     const {
         clearTimers,
         deferAloneParticipantPrompt,
@@ -211,6 +174,8 @@ export async function mount(
         });
     }
     const callbacks = {
+        syncMeetingWhiteboardComponent: () =>
+            syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>
             openMeetingSharePopup({
                 state,
@@ -964,6 +929,13 @@ export async function mount(
                     state,
                     i18n,
                     deferAloneParticipantPrompt,
+                });
+                void bindWhiteboardButton({
+                    root,
+                    signal,
+                    state,
+                    i18n,
+                    apiFetch,
                 });
             }
         },

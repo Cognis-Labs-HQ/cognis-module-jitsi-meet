@@ -3,6 +3,7 @@ import { showToast } from "../reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
 import {
     HEARTBEAT_INTERVAL_MS,
+    MEETING_DESTROYED_TEXT,
     MEETING_TERMINATED_TEXT,
     STATE_REFRESH_INTERVAL_MS,
 } from "../constants.js";
@@ -211,6 +212,7 @@ export function createPreflightHandlers({
         }
         if (state.meeting?.id !== meetingId) return;
         state.meeting.state = latestState;
+        await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_waiting"),
@@ -341,10 +343,15 @@ export function createPreflightHandlers({
             event?.notification?.title,
             event?.notification?.description,
             event?.details?.message,
+            event?.error?.name,
+            event?.error?.message,
         ]
             .map((value) => String(value ?? "").toLowerCase())
             .join(" ");
-        return message.includes(MEETING_TERMINATED_TEXT);
+        return (
+            message.includes(MEETING_TERMINATED_TEXT) ||
+            message.includes(MEETING_DESTROYED_TEXT)
+        );
     }
 
     function currentUserIsJitsiModerator(apiInstance) {

@@ -159,6 +159,13 @@ export class JitsiMeetStore {
                 { name: "auth_completed_at", type: "timestamp" },
                 { name: "ended_by", type: "text" },
                 { name: "ended_at", type: "timestamp" },
+                { name: "whiteboard_id", type: "text" },
+                {
+                    name: "whiteboard_active",
+                    type: "integer",
+                    notNull: true,
+                    default: 0,
+                },
                 {
                     name: "updated_at",
                     type: "timestamp",
@@ -611,6 +618,8 @@ export class JitsiMeetStore {
                 updatedAt: null,
                 endedBy: null,
                 endedAt: null,
+                whiteboardId: null,
+                whiteboardActive: false,
             };
         }
         const instanceId = row.instance_id
@@ -645,6 +654,8 @@ export class JitsiMeetStore {
             updatedAt: readDbTimestampValue(row.updated_at),
             endedBy: row.ended_by ? String(row.ended_by) : null,
             endedAt: readDbTimestampValue(row.ended_at),
+            whiteboardId: row.whiteboard_id ? String(row.whiteboard_id) : null,
+            whiteboardActive: Number(row.whiteboard_active ?? 0) === 1,
         };
     }
 
@@ -669,6 +680,8 @@ export class JitsiMeetStore {
                 updated_at: merged.updatedAt,
                 ended_by: merged.endedBy,
                 ended_at: merged.endedAt,
+                whiteboard_id: merged.whiteboardId,
+                whiteboard_active: merged.whiteboardActive ? 1 : 0,
             },
             conflict: {
                 action: "update",

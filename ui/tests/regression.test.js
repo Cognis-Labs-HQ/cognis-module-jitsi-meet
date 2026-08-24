@@ -433,8 +433,50 @@ test("meetings session state polling handles closed meetings and distinct leave 
         constantsSource,
         /MEETING_TERMINATED_TEXT = "meeting terminated"/,
     );
+    assert.match(
+        constantsSource,
+        /MEETING_DESTROYED_TEXT = "conference\.destroyed"/,
+    );
+    assert.match(source, /message\.includes\(MEETING_DESTROYED_TEXT\)/);
+    assert.match(source, /canStart: state\.preflightPassed/);
+    assert.match(
+        source,
+        /if \(forceClosedOverlay\) \{[\s\S]*resetMeetingState\([\s\S]*meeting_closed[\s\S]*await leaveStatePromise/,
+    );
     assert.match(source, /addEventListener\("notificationTriggered"/);
     assert.match(source, /reportTerminated: true/);
+});
+
+test("Jitsi toolbar hides participant, performance, and background controls", () => {
+    const constantsSource = readFileSync(
+        resolve(ROOT, "ui/constants.js"),
+        "utf8",
+    );
+    assert.doesNotMatch(constantsSource, /"participants-pane"/);
+    assert.doesNotMatch(constantsSource, /"videoquality"/);
+    assert.doesNotMatch(constantsSource, /"select-background"/);
+});
+
+test("meeting whiteboards use ctx discovery and synchronized component windows", () => {
+    const apiSource = readFileSync(
+        resolve(ROOT, "api/whiteboard-routes.js"),
+        "utf8",
+    );
+    const buttonSource = readFileSync(
+        resolve(ROOT, "ui/whiteboard-button.js"),
+        "utf8",
+    );
+    const appSource = readJitsiUiBundle();
+    assert.match(apiSource, /ctx\.getCapability\(WHITEBOARD_CAPABILITY\)/);
+    assert.match(apiSource, /disposable: true/);
+    assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
+    assert.match(buttonSource, /component-pages:request/);
+    assert.match(buttonSource, /componentPage\.load/);
+    assert.match(buttonSource, /whiteboardId/);
+    assert.match(buttonSource, /focusState:/);
+    assert.match(buttonSource, /whiteboard\/close/);
+    assert.match(buttonSource, /export function closeMeetingWhiteboard/);
+    assert.match(appSource, /syncMeetingWhiteboardComponent/);
 });
 
 test("meeting state polling ignores responses after meeting teardown", () => {

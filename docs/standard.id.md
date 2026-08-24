@@ -30,3 +30,5 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - ctx bootstrap adalah satu-satunya bus integrasi modul ini (rute API, registrasi UI, kapabilitas, serta wiring CLI/DB di masa depan).
 - Impor langsung dari modul lain atau internal core dilarang; integrasi wajib lewat permukaan yang diberikan ctx.
 - Pemanggil halaman komponen meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tetap berada di root yang diberikan dan memakai composer tanpa bingkai tanpa menggandakan navigasi host.
+- Deteksi berakhirnya rapat mencakup kegagalan Jitsi `conference.destroyed`, tindakan Mulai Rapat segera dipulihkan setelah keluar, dan toolbar tertanam menyembunyikan kontrol peserta, performa, serta latar belakang.
+- Saat kapabilitas ctx Nextcloud Whiteboard opsional aktif, panggung rapat menyediakan jendela komponen papan tulis sementara yang tersinkron dan mempertahankan rapat tanpa gangguan dalam gambar-dalam-gambar sampai papan tulis ditutup.

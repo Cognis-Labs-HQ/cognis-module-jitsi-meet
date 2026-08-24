@@ -1,5 +1,9 @@
 import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
+import {
+    syncMeetingWhiteboardComponent,
+    syncWhiteboardButtonAvailability,
+} from "../whiteboard-button.js";
 
 export function createMountUtilities({ root, state }) {
     function isMeetingActive() {
@@ -53,6 +57,8 @@ export function createMountUtilities({ root, state }) {
      */
     function syncShareButtonAvailability() {
         syncMountedShareButtonAvailability({ root, state });
+        syncWhiteboardButtonAvailability({ root, state });
+        void syncMeetingWhiteboardComponent({ root, state });
     }
 
     function updatePreflightIndicator() {

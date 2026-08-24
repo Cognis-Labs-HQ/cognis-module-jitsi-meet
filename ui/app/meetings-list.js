@@ -1,6 +1,7 @@
 import { escapeHtml } from "/static/reuse/escape-html.js";
 import { showToast } from "../reuse/feedback.js";
 import { normalizeUsername } from "/static/reuse/value-normalizers.js";
+import { closeMeetingWhiteboard } from "../whiteboard-button.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {
@@ -89,6 +90,7 @@ export function createMeetingHandlers({
         if (!utils.isMeetingActive()) return;
         await callbacks.keepPresenceAlive(false).catch(() => undefined);
         utils.clearTimers();
+        closeMeetingWhiteboard(root);
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
@@ -331,6 +333,7 @@ export function createMeetingHandlers({
             await callbacks.keepPresenceAlive(false).catch(() => undefined);
         }
         utils.clearTimers();
+        closeMeetingWhiteboard(root);
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
@@ -342,17 +345,17 @@ export function createMeetingHandlers({
         callbacks.stopNativeChatPolling();
         utils.resetParticipantSelection();
         callbacks.renderParticipants();
-        await callbacks.updateNativeChat();
-        void loadActiveMeetings({ resolveRequested: false });
         if (overlayMessageKey) {
             utils.updateOverlay({
                 message: i18n.t(overlayMessageKey),
-                canStart: false,
+                canStart: state.preflightPassed,
                 showAuth: false,
                 showReclaim: false,
                 visible: true,
             });
         }
+        await callbacks.updateNativeChat();
+        void loadActiveMeetings({ resolveRequested: false });
         if (toastMessageKey) {
             showToast(i18n.t(toastMessageKey), {
                 variant: toastVariant,
@@ -366,14 +369,22 @@ export function createMeetingHandlers({
         honorMeetingClosed = true,
         reportTerminated = false,
     }) {
-        const leaveState = await callbacks
+        const leaveStatePromise = callbacks
             .keepPresenceAlive(false, {
                 terminated: reportTerminated,
             })
             .catch(() => null);
+        if (forceClosedOverlay) {
+            await resetMeetingState({
+                overlayMessageKey: "module.jitsi_meet.overlay.meeting_closed",
+                skipPresenceUpdate: true,
+            });
+            await leaveStatePromise;
+            return;
+        }
+        const leaveState = await leaveStatePromise;
         const overlayMessageKey =
-            forceClosedOverlay ||
-            (honorMeetingClosed && leaveState?.meetingClosed)
+            honorMeetingClosed && leaveState?.meetingClosed
                 ? "module.jitsi_meet.overlay.meeting_closed"
                 : fallbackOverlayMessageKey;
         await resetMeetingState({

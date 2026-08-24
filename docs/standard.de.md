@@ -30,3 +30,5 @@ Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmera
 - Das Bootstrap-ctx ist der einzige Integrationsbus dieses Moduls (API-Routen, UI-Registrierung, Fähigkeiten sowie künftige CLI/DB-Anbindung).
 - Direkte Imports aus anderen Modulen oder Core-Interna sind verboten; Integration muss über ctx erfolgen.
 - Aufrufer der Komponentenseite übergeben eine serialisierbare `meetingId` in `focusState`; die eingebettete Ansicht bleibt im bereitgestellten Wurzelelement und nutzt einen rahmenlosen Composer ohne doppelte Host-Navigation.
+- Die Erkennung des Besprechungsendes berücksichtigt Jitsi-Fehler vom Typ `conference.destroyed`, stellt die Aktion „Besprechung starten“ nach dem Verlassen sofort wieder her und blendet Teilnehmer-, Leistungs- und Hintergrundfunktionen aus der eingebetteten Werkzeugleiste aus.
+- Wenn die optionale Nextcloud-Whiteboard-ctx-Capability aktiv ist, bietet die Besprechungsbühne ein synchronisiertes, temporäres Whiteboard-Komponentenfenster und zeigt die ununterbrochene Besprechung bis zum Schließen des Whiteboards als Bild-im-Bild an.
