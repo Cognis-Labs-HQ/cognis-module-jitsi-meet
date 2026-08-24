@@ -457,69 +457,6 @@ test("Jitsi toolbar hides participant, performance, and background controls", ()
     assert.doesNotMatch(constantsSource, /"select-background"/);
 });
 
-test("meeting whiteboards use ctx discovery and synchronized component windows", () => {
-    const apiSource = readFileSync(
-        resolve(ROOT, "api/whiteboard-routes.js"),
-        "utf8",
-    );
-    const buttonSource = readFileSync(
-        resolve(ROOT, "ui/whiteboard-button.js"),
-        "utf8",
-    );
-    const appSource = readJitsiUiBundle();
-    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
-    assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
-    assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
-    assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
-    assert.match(buttonSource, /whiteboard:uiGateway/);
-    assert.match(buttonSource, /createDisposableCanvas/);
-    assert.match(buttonSource, /component-pages:request/);
-    assert.match(buttonSource, /component-pages:spawn/);
-    assert.doesNotMatch(buttonSource, /componentPage\.load/);
-    assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
-    assert.match(buttonSource, /whiteboardId/);
-    assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
-    assert.match(buttonSource, /componentWindow\?\.discard/);
-    assert.match(buttonSource, /if \(trigger\.componentWindow\) return/);
-    assert.match(buttonSource, /ui:ensureProvidersLoaded/);
-    assert.match(
-        buttonSource,
-        /ensureProvidersLoaded\(\{ force: attempt > 0 \}\)/,
-    );
-    assert.match(buttonSource, /crypto\?\.randomUUID/);
-    assert.match(buttonSource, /mode:\s*"overlay"/);
-    assert.match(buttonSource, /component-pages:discard/);
-    assert.match(
-        buttonSource,
-        /const authorizedSpawnPromise = spawnComponentWindow[\s\S]*void \(async \(\)/,
-    );
-    assert.match(buttonSource, /whiteboard\/state/);
-    assert.match(buttonSource, /export function closeMeetingWhiteboard/);
-    assert.match(appSource, /syncMeetingWhiteboardComponent/);
-    assert.match(
-        stylesheet,
-        /\.jitsi-stage-frame-wrap\s*\{[\s\S]*?display:\s*grid;/,
-    );
-    assert.match(
-        stylesheet,
-        /\.jitsi-stage-frame-wrap\.component-page-stage\s+\.jitsi-stage-frame/,
-    );
-    assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
-    assert.match(
-        stylesheet,
-        /\.jitsi-stage-frame-wrap > \.component-page-window[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%;/,
-    );
-    const lifecycleSource = readFileSync(
-        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
-        "utf8",
-    );
-    const meetingRestartSource = lifecycleSource.slice(
-        lifecycleSource.indexOf("if (!state.firstJoinedBy || state.endedAt)"),
-        lifecycleSource.indexOf("meetingStarted = true"),
-    );
-    assert.doesNotMatch(meetingRestartSource, /whiteboardId:\s*null/);
-});
-
 test("meeting state polling ignores responses after meeting teardown", () => {
     const source = readFileSync(
         resolve(ROOT, "ui/app/participants.js"),

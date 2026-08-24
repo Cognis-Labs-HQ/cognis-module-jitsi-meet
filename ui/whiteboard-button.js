@@ -38,6 +38,7 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
             whiteboardId,
             instantCanvas: true,
             disposable: true,
+            frameless: true,
         },
         signal: trigger.signal,
     });

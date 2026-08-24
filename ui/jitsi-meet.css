@@ -49,7 +49,7 @@
 }
 
 .jitsi-stage-frame-wrap > .component-page-window,
-.jitsi-stage-frame-wrap > .component-page-window > :where(.app-page) {
+.jitsi-stage-frame-wrap > .component-page-window > .workspace {
     width: 100%;
     height: 100%;
     min-width: 0;
@@ -57,9 +57,37 @@
     box-sizing: border-box;
 }
 
-.jitsi-stage-frame-wrap > .component-page-window > :where(.app-page) {
+.jitsi-stage-frame-wrap > .component-page-window > .workspace {
     margin: 0;
     padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+.jitsi-stage-frame-wrap
+    > .component-page-window
+    > .workspace
+    .composer-view-grid {
+    gap: 0;
+}
+
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .widget-card,
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-section,
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-panel,
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .main-window,
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-grid {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-panel {
+    min-height: 0;
 }
 
 .jitsi-overlay {

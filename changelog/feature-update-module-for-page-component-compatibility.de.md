@@ -19,3 +19,5 @@ Wiederholtes Betätigen der Whiteboard-Schaltfläche verwirft eine geöffnete Ze
 Bei fehlendem Whiteboard-Gateway erzwingt Meetings jetzt eine einmalige Aktualisierung des Host-Provider-Katalogs. Dadurch funktionieren veraltete Kataloge nach Start oder Modulaktualisierung ohne Deaktivierungs-/Aktivierungszyklus. Komponentenfenster verwenden ihr Broker-Discard-Handle mit bühnenbezogenem Fallback; die routenweite Bereinigung über `component-pages:discardAll` bleibt bei der SPA-Shell.
 
 SPA-Einbindungen wiederholen jetzt die Provider-Bereitschaftsprüfung, vergeben für jede neu gebundene Besprechungsbühne eine kollisionssichere Ziel-ID und fordern das Whiteboard im Overlay-Modus an. Dadurch erhält geparktes oder veraltetes Meetings-DOM nicht mehr die Einbindung, und eine begrenzte Zeichenfläche wird nicht als Vollbildseite behandelt.
+
+Eingebundene Whiteboards fordern jetzt eine rahmenlose Darstellung an und verwenden bühnenbezogene Abstandsüberschreibungen für Arbeitsbereich, Panel, Abschnitt, Raster und Widget, damit die Zeichenfläche den verfügbaren Bereich des Besprechungsfensters ausfüllt und das Besprechungs-Bild-im-Bild erhalten bleibt.

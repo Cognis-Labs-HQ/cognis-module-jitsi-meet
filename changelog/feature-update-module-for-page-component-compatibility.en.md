@@ -19,3 +19,5 @@ Repeated Whiteboard button presses no longer discard an open canvas. Participant
 Meetings now retries a missing Whiteboard gateway by forcing one host provider-catalog refresh, fixing stale startup and module-update catalogs without a disable/enable cycle. Component windows use their broker discard handle with a stage-scoped fallback, while route-wide `component-pages:discardAll` cleanup remains with the SPA shell.
 
 SPA mounts now retry provider readiness, assign every newly bound meeting stage a collision-resistant destination ID, and request the Whiteboard in overlay mode. This prevents parked or stale Meetings DOM from receiving the mount and prevents a contained canvas from being treated as a fullscreen page.
+
+Spawned Whiteboards now request frameless presentation and use stage-scoped workspace, panel, section, grid, and widget spacing overrides so the canvas expands to the available Meeting Window area while preserving the meeting PiP.
