@@ -467,6 +467,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const appSource = readJitsiUiBundle();
+    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
     assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
@@ -488,6 +489,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-component-window\s*\{[\s\S]*?contain:\s*strict;[\s\S]*?transform:\s*translateZ\(0\);/,
+    );
+    assert.match(
+        stylesheet,
+        /\.jitsi-component-window-target\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?max-height:\s*100%;/,
+    );
 });
 
 test("meeting state polling ignores responses after meeting teardown", () => {

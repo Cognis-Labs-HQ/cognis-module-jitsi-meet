@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.4.85",
+    "version": "1.4.86",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -287,27 +287,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "42611b78036952028361892bb36e9d82081dbfd91f38c1c078d311d97114b793"
+            "sha256": "f1333c51b3fecd07fa33cd6f7965b1474c9c7963ca4e73097479524ecd5fc25f"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "95604fb87abc8e1381add4857ded21f295956160121642e5593e44c2d7d09d33"
+            "sha256": "e0c53faf0db8f58ba78a6f63fe9b03679b5adf5ce03edf1e6b76210739b63d96"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "c32d1ad99bf7f109205a9a535554f0d661a2ec044a294b1078528570cd864af4"
+            "sha256": "c3a283c8d324358600e034d1097496919553d49005e532829dc9027f7cf9277d"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "83b1288a0960ef5f605a6fd52dee54cba003e8298486fcc478fbccef8b25835b"
+            "sha256": "960c61f1e9684af5baf359328cf09852d0baef5228460669b0db8cbd90e73c0b"
         },
         {
             "path": "package-lock.json",
-            "sha256": "aee658c2894b2415429ef700bb0f0f9aac984639d79085ba3796e7a92d39964a"
+            "sha256": "e3c8c90cfc7ce166f272aefa92d92b07e4bbe3e192b585f07205a0c4881829f2"
         },
         {
             "path": "package.json",
-            "sha256": "a04098d1423903ac393c81f80505304ad13df7a2baecb82cb179c5498500d10c"
+            "sha256": "09e962d277d8c6c24a0d9630a67a51f16521aa027ad71a9f36b6c753070c8432"
         },
         {
             "path": "routes.json",
@@ -371,7 +371,7 @@
         },
         {
             "path": "ui/jitsi-meet.css",
-            "sha256": "9c4d555f9aec486900852f032caae8547eaf79f8540da1212c6466191b1778d7"
+            "sha256": "0e7e9aa698e364022005ab9a2efcc40e867254f5ea5b6a5e701611b7224373b6"
         },
         {
             "path": "ui/languages/de/strings.xml",
@@ -435,7 +435,7 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "63ac67bd4556ba015e9268113714a97bd644de290c678b10ee654172c65997b6"
+            "sha256": "c61ba515484e8e8e64bc34b4b2cffcd9e8b0108d976e62b0ddc062a1ebf67528"
         },
         {
             "path": "ui/whiteboard-button.js",

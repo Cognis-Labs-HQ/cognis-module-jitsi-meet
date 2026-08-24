@@ -13,3 +13,5 @@ Wenn die optionale Nextcloud-Whiteboard-ctx-Capability verfügbar ist, erstellt 
 Die Integration ruft keine Jitsi-API-Route mehr auf, um ein Whiteboard über ein anderes Modul zu erstellen. Die Whiteboard-Schaltfläche wird nur bereitgestellt, wenn das Whiteboard-Modul die optionale Browser-CTX-Capability `whiteboard:uiGateway` beiträgt, deren Methode `createDisposableCanvas` die Provider-Erstellung übernimmt. Jitsi behält nur seinen besprechungslokalen Endpunkt für den Zustand des aktiven Fensters.
 
 Die automatische Wiederherstellung übergibt jetzt sowohl den Fokuszustand der Komponentenseite als auch den aktuellen Freigabekontext des Whiteboard-Anbieters. Eine fehlgeschlagene Wiederherstellung im Hintergrund wird pro Besprechungszeichenfläche nur einmal protokolliert, ohne wiederholt Fehlermeldungen für Benutzeraktionen anzuzeigen.
+
+Das eingebettete Whiteboard begrenzt jetzt Position, Größe und Darstellung auf die Besprechungsfenster-Bühne, sodass Seitenlayouts des Anbieters nicht mehr das gesamte Dashboard überdecken können.

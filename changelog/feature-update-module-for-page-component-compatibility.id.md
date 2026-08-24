@@ -13,3 +13,5 @@ Saat kapabilitas ctx Nextcloud Whiteboard opsional tersedia, tombol Papan Tulis 
 Integrasi tidak lagi memanggil rute API Jitsi untuk membuat papan tulis melalui modul lain. Tombol Papan Tulis hanya disediakan ketika modul Papan Tulis menyumbangkan kapabilitas CTX browser opsional `whiteboard:uiGateway`, dengan metode `createDisposableCanvas` yang menangani pembuatan oleh penyedia. Jitsi hanya menyimpan endpoint status jendela aktif lokal rapat.
 
 Pemulihan otomatis kini meneruskan status fokus halaman komponen dan konteks berbagi terkini milik penyedia Papan Tulis. Kegagalan pemulihan latar belakang dicatat sekali untuk setiap kanvas rapat tanpa berulang kali menampilkan toast kesalahan tindakan pengguna.
+
+Papan Tulis tertanam kini membatasi posisi, ukuran, dan tampilannya di dalam panggung Jendela Rapat sehingga tata letak halaman penyedia tidak dapat meluas menutupi seluruh dasbor.

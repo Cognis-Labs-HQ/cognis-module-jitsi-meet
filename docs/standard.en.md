@@ -33,3 +33,4 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - Meeting termination detection includes Jitsi `conference.destroyed` failures, the post-call Start Meeting action is immediately restored, and the embedded toolbar omits participant, performance, and background controls.
 - When the optional Nextcloud Whiteboard browser capability `whiteboard:uiGateway` is active, the meeting stage exposes a synchronized disposable whiteboard component window and keeps the uninterrupted meeting in picture-in-picture until the whiteboard is closed.
 - Background whiteboard restoration passes the provider share context and suppresses repeated action-error toasts after a failed automatic mount.
+- The Whiteboard component window is size- and paint-contained inside the Meeting Window widget card; it cannot expand into the surrounding dashboard.

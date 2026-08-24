@@ -33,3 +33,4 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Deteksi berakhirnya rapat mencakup kegagalan Jitsi `conference.destroyed`, tindakan Mulai Rapat segera dipulihkan setelah keluar, dan toolbar tertanam menyembunyikan kontrol peserta, performa, serta latar belakang.
 - Saat kapabilitas browser Nextcloud Whiteboard opsional `whiteboard:uiGateway` aktif, panggung rapat menyediakan jendela komponen papan tulis sementara yang tersinkron dan mempertahankan rapat tanpa gangguan dalam gambar-dalam-gambar sampai papan tulis ditutup.
 - Pemulihan papan tulis di latar belakang meneruskan konteks berbagi penyedia dan mencegah toast kesalahan tindakan berulang setelah pemasangan otomatis gagal.
+- Ukuran dan tampilan jendela komponen Papan Tulis dibatasi di dalam kartu widget Jendela Rapat sehingga tidak dapat meluas ke dasbor di sekitarnya.
