@@ -10,6 +10,21 @@ function setButtonActive(button, active) {
     button?.setAttribute("aria-pressed", String(active));
 }
 
+async function ensureComponentPage(trigger, meetingId) {
+    if (!trigger.componentPage) {
+        trigger.componentPage = await trigger.requestComponentPage({
+            componentUuid: WHITEBOARD_MODULE_UUID,
+            routeId: WHITEBOARD_ROUTE_ID,
+            mode: "fullscreen",
+            context: { meetingId },
+        });
+    }
+    if (!trigger.componentPage) {
+        throw new Error("whiteboard_component_page_unavailable");
+    }
+    return trigger.componentPage;
+}
+
 async function openComponentWindow(trigger, { meetingId, whiteboardId }) {
     if (
         trigger.whiteboardId === whiteboardId &&
@@ -18,6 +33,7 @@ async function openComponentWindow(trigger, { meetingId, whiteboardId }) {
         return;
     }
     closeComponentWindow(trigger);
+    await ensureComponentPage(trigger, meetingId);
     const componentController = new AbortController();
     trigger.componentController = componentController;
     const componentWindow = document.createElement("section");
@@ -166,30 +182,7 @@ export async function bindWhiteboardButton({
         });
         return null;
     });
-    const requestComponentPage = uiCtx.capabilities.get(
-        "component-pages:request",
-    );
-    if (
-        availability?.data?.available !== true ||
-        typeof requestComponentPage !== "function"
-    ) {
-        clearPending();
-        return;
-    }
-    const componentPage = await requestComponentPage({
-        componentUuid: WHITEBOARD_MODULE_UUID,
-        routeId: WHITEBOARD_ROUTE_ID,
-        mode: "fullscreen",
-        context: { meetingId: state.meeting?.id ?? "" },
-    }).catch((error) => {
-        void logUi("error", "Whiteboard component page request failed.", {
-            component: "module:jitsi-meet",
-            operation: "request_whiteboard_component_page",
-            error: error instanceof Error ? error.message : String(error),
-        });
-        return null;
-    });
-    if (!componentPage) {
+    if (availability?.data?.available !== true) {
         clearPending();
         return;
     }
@@ -208,10 +201,31 @@ export async function bindWhiteboardButton({
         apiFetch,
         button,
         componentController: null,
-        componentPage,
+        componentPage: null,
         componentWindow: null,
         frameWrap,
         i18n,
+        requestComponentPage: async (request) => {
+            const requestPage = uiCtx.capabilities.get(
+                "component-pages:request",
+            );
+            if (typeof requestPage !== "function") return null;
+            return requestPage(request).catch((error) => {
+                void logUi(
+                    "error",
+                    "Whiteboard component page request failed.",
+                    {
+                        component: "module:jitsi-meet",
+                        operation: "request_whiteboard_component_page",
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return null;
+            });
+        },
         slot,
         whiteboardId: "",
         destroy() {
@@ -244,6 +258,7 @@ export async function bindWhiteboardButton({
                     closeComponentWindow(trigger);
                     return;
                 }
+                await ensureComponentPage(trigger, state.meeting.id);
                 const response = await apiFetch(
                     "/api/v1/modules/jitsi-meet/whiteboard",
                     {

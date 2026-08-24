@@ -9,3 +9,5 @@ Pengenal rute halaman komponen menggunakan nama yang dipisahkan titik agar peman
 Siklus hidup rapat kini memperlakukan kegagalan Jitsi `conference.destroyed` sebagai rapat yang ditutup dan segera memulihkan tindakan Mulai Rapat setelah keluar. Fungsi peserta, performa, dan latar belakang dihapus dari toolbar Jitsi tertanam.
 
 Saat kapabilitas ctx Nextcloud Whiteboard opsional tersedia, tombol Papan Tulis membuat kanvas sementara dan membuka jendela komponennya yang tersinkron di panggung rapat. Rapat langsung berpindah ke gambar-dalam-gambar tanpa memutus koneksi, dan menutup papan tulis memulihkan tampilan rapat biasa.
+
+Tombol Papan Tulis kini ditampilkan segera setelah kapabilitas penyedia opsional ditemukan melalui ctx modul atau ctx sistem. Resolusi halaman komponen ditunda hingga aktivasi, sehingga kesiapan pemuatan halaman tidak lagi menyembunyikan integrasi yang sebenarnya tersedia.

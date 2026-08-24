@@ -33,16 +33,28 @@ function createRoutes(spawnWhiteboard) {
     registerMeetingWhiteboardRoutes({
         router,
         ctx: {
-            getCapability: () =>
-                spawnWhiteboard === false
-                    ? null
-                    : async (request) => {
-                          spawnRequests.push(request);
-                          return {
-                              whiteboardId: "board-1",
-                              disposable: true,
-                          };
-                      },
+            getCapability(capabilityId) {
+                const spawn = async (request) => {
+                    spawnRequests.push(request);
+                    return {
+                        whiteboardId: "board-1",
+                        disposable: true,
+                    };
+                };
+                if (
+                    capabilityId ===
+                    "nextcloud-whiteboard:spawnWhiteboardWindow"
+                ) {
+                    return spawnWhiteboard === true ? spawn : null;
+                }
+                if (capabilityId === "system:ctx") {
+                    return {
+                        getCapability: () =>
+                            spawnWhiteboard === "system" ? spawn : null,
+                    };
+                }
+                return null;
+            },
             log() {},
         },
         store: {
@@ -93,6 +105,13 @@ test("meeting whiteboard routes detect the optional ctx capability", async () =>
         "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
     )({}, unavailableResponse);
     assert.equal(unavailableResponse.body.data.available, false);
+
+    const globallyAvailable = createRoutes("system");
+    const globalResponse = createRecorder();
+    await globallyAvailable.handlers.get(
+        "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
+    )({}, globalResponse);
+    assert.equal(globalResponse.body.data.available, true);
 });
 
 test("meeting participants can create a disposable synchronized canvas", async () => {

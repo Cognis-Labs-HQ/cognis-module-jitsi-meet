@@ -9,3 +9,5 @@ Die Routenkennungen der Komponentenseite verwenden durch Punkte getrennte Namen,
 Der Besprechungslebenszyklus behandelt Jitsi-Fehler vom Typ `conference.destroyed` jetzt als geschlossene Besprechungen und stellt die Aktion „Besprechung starten“ nach dem Verlassen sofort wieder her. Teilnehmer-, Leistungs- und Hintergrundfunktionen sind aus der eingebetteten Jitsi-Werkzeugleiste entfernt.
 
 Wenn die optionale Nextcloud-Whiteboard-ctx-Capability verfügbar ist, erstellt eine Whiteboard-Schaltfläche eine temporäre Zeichenfläche und öffnet ihr synchronisiertes Komponentenfenster in der Besprechungsbühne. Die laufende Besprechung wechselt ohne Verbindungsabbruch in den Bild-im-Bild-Modus; das Schließen des Whiteboards stellt die normale Ansicht wieder her.
+
+Die Whiteboard-Schaltfläche wird jetzt angezeigt, sobald die optionale Provider-Capability über den Modul-ctx oder den System-ctx erkannt wird. Die Auflösung der Komponentenseite erfolgt erst bei der Aktivierung, sodass die Bereitschaft zum Laden der Seite eine ansonsten verfügbare Integration nicht mehr ausblendet.

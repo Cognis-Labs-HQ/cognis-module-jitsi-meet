@@ -9,3 +9,5 @@ The component-page route identifiers use period-separated names so callers can r
 The meeting lifecycle now treats Jitsi `conference.destroyed` failures as closed meetings and immediately restores the Start Meeting action after leaving. Participant, performance, and background controls are omitted from the embedded Jitsi toolbar.
 
 When the optional Nextcloud Whiteboard ctx capability is available, a Whiteboard button creates a disposable canvas and opens its synchronized component window in the meeting stage. The live meeting moves to picture-in-picture without disconnecting, and closing the whiteboard restores the normal meeting view.
+
+The Whiteboard button is now shown as soon as the optional provider capability is discovered through either the module ctx or system ctx. Component-page resolution is deferred until activation, so page-loading readiness no longer suppresses an otherwise available integration.

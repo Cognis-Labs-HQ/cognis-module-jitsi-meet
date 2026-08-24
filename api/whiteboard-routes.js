@@ -2,6 +2,13 @@ import { resolveRequesterUsername } from "./reuse/requester.js";
 
 const WHITEBOARD_CAPABILITY = "nextcloud-whiteboard:spawnWhiteboardWindow";
 
+function resolveWhiteboardCapability(ctx) {
+    return (
+        ctx.getCapability(WHITEBOARD_CAPABILITY) ??
+        ctx.getCapability("system:ctx")?.getCapability?.(WHITEBOARD_CAPABILITY)
+    );
+}
+
 export function registerMeetingWhiteboardRoutes({
     router,
     ctx,
@@ -22,8 +29,7 @@ export function registerMeetingWhiteboardRoutes({
             sendJson(res, 200, {
                 data: {
                     available:
-                        typeof ctx.getCapability(WHITEBOARD_CAPABILITY) ===
-                        "function",
+                        typeof resolveWhiteboardCapability(ctx) === "function",
                 },
             });
         },
@@ -35,7 +41,7 @@ export function registerMeetingWhiteboardRoutes({
         async (req, res) => {
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            const spawnWhiteboard = ctx.getCapability(WHITEBOARD_CAPABILITY);
+            const spawnWhiteboard = resolveWhiteboardCapability(ctx);
             if (typeof spawnWhiteboard !== "function") {
                 sendError(
                     res,
