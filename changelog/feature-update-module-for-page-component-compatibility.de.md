@@ -22,6 +22,6 @@ SPA-Einbindungen wiederholen jetzt die Provider-Bereitschaftsprüfung, vergeben 
 
 Eingebundene Whiteboards fordern jetzt eine rahmenlose Darstellung an und verwenden bühnenbezogene Abstandsüberschreibungen für Arbeitsbereich, Panel, Abschnitt, Raster und Widget, damit die Zeichenfläche den verfügbaren Bereich des Besprechungsfensters ausfüllt und das Besprechungs-Bild-im-Bild erhalten bleibt.
 
-Das Meeting-Bild-in-Bild verwendet jetzt die Cognis-Core-Fähigkeit `ui:makeFloatingWindow` für einheitliche Bewegung, Größenänderung, Begrenzung auf den Ansichtsbereich und Lebenszyklusbereinigung.
+Das Meeting-Bild-in-Bild wird jetzt vollständig vom Cognis-Komponentenseiten-Broker verwaltet. Das Modul fordert keine Floating-Window-Fähigkeit mehr an und enthält keinen Code für PiP-Positionierung oder -Lebenszyklus.
 
 Die Whiteboard-Darstellung markiert die Zeichenfläche jetzt nur bei teilnehmerlosen Besprechungen als temporär; Besprechungen mit vorgemerkten Teilnehmern öffnen die normale ressourcengebundene Zeichenfläche.

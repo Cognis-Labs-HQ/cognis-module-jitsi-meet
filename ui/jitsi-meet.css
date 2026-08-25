@@ -34,22 +34,6 @@
     background: var(--color-accent);
 }
 
-.jitsi-stage-frame-wrap.component-page-stage
-    .jitsi-stage-frame.floating-window {
-    position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    z-index: 6;
-    width: min(32%, 24rem);
-    height: min(32%, 15rem);
-    min-width: 14rem;
-    min-height: 8rem;
-    margin: 0;
-    border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
 .jitsi-stage-frame-wrap > .component-page-window,
 .jitsi-stage-frame-wrap > .component-page-window > .workspace {
     width: 100%;

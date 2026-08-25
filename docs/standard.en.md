@@ -37,4 +37,4 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - If the Whiteboard gateway is absent from a cached provider catalog, Meetings forces one provider-catalog refresh before hiding the integration. Window teardown uses the broker handle or stage-scoped discard fallback; global `component-pages:discardAll` remains owned by the Cognis SPA shell.
 - Provider readiness is retried during SPA mounts, and each rendered meeting stage receives a collision-resistant destination ID so parked or stale DOM cannot capture a new component window. Whiteboards request overlay presentation rather than fullscreen presentation.
 - The spawned Whiteboard requests frameless rendering and removes composer workspace, panel, section, and widget insets inside the meeting-owned component window so the canvas uses the available stage area.
-- Meeting picture-in-picture delegates movement, resizing, viewport constraints, and teardown to the host `ui:makeFloatingWindow` capability.
+- The Cognis component-page broker automatically manages meeting picture-in-picture while the Whiteboard occupies the stage; this module does not implement floating-window behavior.

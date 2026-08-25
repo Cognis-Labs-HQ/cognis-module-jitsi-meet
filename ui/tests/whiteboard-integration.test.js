@@ -34,10 +34,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /component-pages:spawn/);
-    assert.match(buttonSource, /ui:makeFloatingWindow/);
-    assert.match(buttonSource, /trigger\.makeFloatingWindow\(meetingFrame/);
-    assert.match(buttonSource, /handle:\s*trigger\.pipHandle/);
-    assert.match(buttonSource, /releaseFloatingWindow/);
     assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
@@ -64,10 +60,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(
         stylesheet,
         /\.jitsi-stage-frame-wrap\s*\{[\s\S]*?display:\s*grid;/,
-    );
-    assert.match(
-        stylesheet,
-        /\.jitsi-stage-frame-wrap\.component-page-stage\s+\.jitsi-stage-frame\.floating-window[\s\S]*?position:\s*fixed;/,
     );
     assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
     assert.match(

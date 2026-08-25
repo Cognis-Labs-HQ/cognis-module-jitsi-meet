@@ -22,6 +22,6 @@ Pemasangan SPA kini mencoba ulang kesiapan penyedia, memberikan setiap panggung 
 
 Papan Tulis yang dibuka kini meminta tampilan tanpa bingkai dan memakai penggantian jarak berbasis panggung untuk ruang kerja, panel, bagian, kisi, dan widget agar kanvas meluas ke area Jendela Rapat yang tersedia sambil mempertahankan gambar-dalam-gambar rapat.
 
-PiP rapat kini menggunakan kapabilitas `ui:makeFloatingWindow` dari inti Cognis untuk pemindahan, pengubahan ukuran, pembatasan viewport, dan pembersihan siklus hidup yang konsisten.
+PiP rapat kini sepenuhnya dimiliki broker halaman komponen Cognis. Modul tidak lagi meminta kapabilitas jendela mengambang atau membawa kode pemosisian dan siklus hidup PiP.
 
 Presentasi Papan Tulis kini menandai kanvas sebagai sementara hanya untuk rapat tanpa peserta; rapat dengan peserta yang disiapkan membuka kanvas normal berbasis sumber daya.
