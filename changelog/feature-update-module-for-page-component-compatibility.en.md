@@ -33,3 +33,5 @@ Whiteboard component-window spawns now set the Cognis core `borderless` contract
 The Whiteboard button highlights immediately while its component window is active. Selecting the highlighted button again discards the component window, releases meeting picture-in-picture, and synchronizes the default meeting view.
 
 New meetings now derive their display name from the generated Jitsi room slug. That exact unique name is passed to the meeting Whiteboard, while the associated Messages chat uses the unique meeting name followed by its creation date.
+
+Borderless Whiteboard windows now let the Jitsi stage grow with their content instead of clipping it into a fixed-height area with vertical overflow. The stage responds to core’s `app-page__main--component-borderless` host class, and redundant module-level component-window margin overrides were removed in favor of the core contract.

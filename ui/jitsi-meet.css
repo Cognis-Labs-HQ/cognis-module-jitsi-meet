@@ -34,46 +34,16 @@
     background: var(--color-accent);
 }
 
-.jitsi-stage-frame-wrap > .component-page-window,
-.jitsi-stage-frame-wrap > .component-page-window > .workspace {
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
-    box-sizing: border-box;
+.app-page__main--component-borderless .jitsi-meeting-stage {
+    height: auto;
+    min-height: 100%;
 }
 
-.jitsi-stage-frame-wrap > .component-page-window > .workspace {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    backdrop-filter: none;
-}
-
-.jitsi-stage-frame-wrap
-    > .component-page-window
-    > .workspace
-    .composer-view-grid {
-    gap: 0;
-}
-
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .widget-card,
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-section,
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-panel,
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .main-window,
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-grid {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
-.jitsi-stage-frame-wrap > .component-page-window > .workspace .content-panel {
-    min-height: 0;
+.app-page__main--component-borderless
+    .jitsi-stage-frame-wrap.component-page-stage {
+    flex: 1 0 auto;
+    min-height: 100%;
+    overflow: visible;
 }
 
 .jitsi-overlay {

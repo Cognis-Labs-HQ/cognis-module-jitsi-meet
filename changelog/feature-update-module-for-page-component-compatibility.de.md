@@ -33,3 +33,5 @@ Beim Erzeugen des Whiteboard-Komponentenfensters wird jetzt das Cognis-Core-Vert
 Die Whiteboard-Schaltfläche wird sofort hervorgehoben, solange ihr Komponentenfenster aktiv ist. Durch erneutes Auswählen der hervorgehobenen Schaltfläche wird das Komponentenfenster verworfen, das Bild-in-Bild der Besprechung beendet und die Standardansicht der Besprechung synchronisiert.
 
 Neue Besprechungen leiten ihren Anzeigenamen jetzt vom erzeugten Jitsi-Raum-Slug ab. Genau dieser eindeutige Name wird an das Besprechungs-Whiteboard übergeben; der zugehörige Messages-Chat verwendet den eindeutigen Besprechungsnamen mit anschließendem Erstellungsdatum.
+
+Rahmenlose Whiteboard-Fenster lassen die Jitsi-Bühne jetzt mit ihrem Inhalt wachsen, statt ihn in einem Bereich fester Höhe mit vertikalem Überlauf abzuschneiden. Die Bühne reagiert auf die Core-Hostklasse `app-page__main--component-borderless`; redundante moduleigene Abstandsüberschreibungen für Komponentenfenster wurden zugunsten des Core-Vertrags entfernt.
