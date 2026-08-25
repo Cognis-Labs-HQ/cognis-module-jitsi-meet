@@ -42,6 +42,7 @@ async function ensureComponentPage(trigger, meetingId) {
 
 function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
     return trigger.spawnComponentPage({
+        borderless: true,
         componentUuid: WHITEBOARD_MODULE_UUID,
         routeId: WHITEBOARD_ROUTE_ID,
         mode: "overlay",

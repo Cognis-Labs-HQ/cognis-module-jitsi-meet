@@ -34,6 +34,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /component-pages:spawn/);
+    assert.match(
+        buttonSource,
+        /spawnComponentPage\(\{[\s\S]*?borderless:\s*true/,
+    );
     assert.match(buttonSource, /ui:makeFloatingWindow/);
     assert.match(buttonSource, /trigger\.componentWindowPending = true/);
     assert.match(
