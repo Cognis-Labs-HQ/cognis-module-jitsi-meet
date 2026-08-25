@@ -26,6 +26,12 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /createDisposableCanvas/);
+    assert.match(
+        buttonSource,
+        /disposableCanvas = participantHandles\.length === 0/,
+    );
+    assert.match(buttonSource, /instantCanvas: trigger\.disposableCanvas/);
+    assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /component-pages:spawn/);
     assert.match(buttonSource, /ui:makeFloatingWindow/);

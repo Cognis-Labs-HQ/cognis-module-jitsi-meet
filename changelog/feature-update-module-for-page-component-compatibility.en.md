@@ -23,3 +23,5 @@ SPA mounts now retry provider readiness, assign every newly bound meeting stage 
 Spawned Whiteboards now request frameless presentation and use stage-scoped workspace, panel, section, grid, and widget spacing overrides so the canvas expands to the available Meeting Window area while preserving the meeting PiP.
 
 Meeting PiP now uses Cognis core's `ui:makeFloatingWindow` capability for consistent movement, resizing, viewport constraints, and lifecycle cleanup.
+
+Whiteboard presentation now marks the canvas disposable only for participant-free meetings; meetings with staged participants open the normal resource-keyed canvas.

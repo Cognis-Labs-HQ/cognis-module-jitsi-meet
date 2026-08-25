@@ -116,7 +116,7 @@
   <string name="module.jitsi_meet.summary">Rapat video aman yang terintegrasi dengan Cognis.</string>
   <string name="module.jitsi_meet.description">Buat, ikuti, moderasi, dan bagikan rapat Jitsi dari Cognis.</string>
   <string name="module.jitsi_meet.whiteboard.open">Papan tulis</string>
-  <string name="module.jitsi_meet.whiteboard.description">Buka papan tulis sementara yang tersinkron untuk rapat ini.</string>
+  <string name="module.jitsi_meet.whiteboard.description">Buka papan tulis tersinkron untuk rapat ini.</string>
   <string name="module.jitsi_meet.whiteboard.open_failed">Papan tulis rapat tidak dapat dibuka.</string>
   <string name="module.jitsi_meet.category_collaboration">Kolaborasi</string>
   <string name="module.jitsi_meet.tag_video">Video</string>

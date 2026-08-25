@@ -7,6 +7,19 @@ const WHITEBOARD_UI_GATEWAY = "whiteboard:uiGateway";
 const mountedWhiteboardButtons = new WeakMap();
 let componentStageSequence = 0;
 
+function getParticipantHandles(meeting) {
+    return (meeting?.participants ?? [])
+        .map((participant) =>
+            String(
+                participant?.username ??
+                    participant?.handle ??
+                    participant ??
+                    "",
+            ).trim(),
+        )
+        .filter(Boolean);
+}
+
 function setButtonActive(button, active) {
     button?.classList.toggle("active", active);
     button?.setAttribute("aria-pressed", String(active));
@@ -36,8 +49,8 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
         context: {
             meetingId,
             whiteboardId,
-            instantCanvas: true,
-            disposable: true,
+            instantCanvas: trigger.disposableCanvas,
+            disposable: trigger.disposableCanvas,
             frameless: true,
         },
         signal: trigger.signal,
@@ -129,21 +142,14 @@ function prepareMeetingCanvas(trigger, state) {
         return Promise.resolve();
     }
     if (trigger.preparationPromise) return trigger.preparationPromise;
+    const participantHandles = getParticipantHandles(state.meeting);
+    trigger.disposableCanvas = participantHandles.length === 0;
     trigger.preparationPromise = trigger.whiteboardGateway
         .createDisposableCanvas({
             resourceType: "meeting",
             resourceId: state.meeting.id,
             title: state.meeting.meetingName,
-            participantHandles: (state.meeting.participants ?? [])
-                .map((participant) =>
-                    String(
-                        participant?.username ??
-                            participant?.handle ??
-                            participant ??
-                            "",
-                    ).trim(),
-                )
-                .filter(Boolean),
+            participantHandles,
         })
         .then((canvas) => {
             trigger.preparedWhiteboardId = String(
@@ -164,6 +170,8 @@ function prepareMeetingCanvas(trigger, state) {
 export function syncWhiteboardButtonAvailability({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (trigger?.button) {
+        trigger.disposableCanvas =
+            getParticipantHandles(state.meeting).length === 0;
         const meetingId = state.meeting?.id ?? "";
         if (trigger.preparedMeetingId !== meetingId) {
             trigger.preparedMeetingId = meetingId;
@@ -288,6 +296,7 @@ export async function bindWhiteboardButton({
         componentPage: null,
         componentWindow: null,
         discardComponentPage,
+        disposableCanvas: getParticipantHandles(state.meeting).length === 0,
         frameWrap,
         i18n,
         makeFloatingWindow,
