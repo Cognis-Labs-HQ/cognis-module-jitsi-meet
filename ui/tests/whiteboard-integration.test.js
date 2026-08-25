@@ -42,6 +42,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /trigger\.componentWindowPending = true/);
     assert.match(
         buttonSource,
+        /if \(trigger\.componentWindow\)[\s\S]*?closeComponentWindow\(trigger\)[\s\S]*?active:\s*false/,
+    );
+    assert.match(
+        buttonSource,
+        /setButtonActive\(button, true\)[\s\S]*?trigger\.componentWindowPending = true/,
+    );
+    assert.match(
+        buttonSource,
         /whiteboardActive !== true &&[\s\S]*?componentWindowPending !== true/,
     );
     assert.match(
@@ -54,7 +62,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /whiteboardId/);
     assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
     assert.match(buttonSource, /componentWindow\?\.discard/);
-    assert.match(buttonSource, /if \(trigger\.componentWindow\) return/);
     assert.match(buttonSource, /ui:ensureProvidersLoaded/);
     assert.match(
         buttonSource,

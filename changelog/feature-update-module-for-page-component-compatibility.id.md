@@ -29,3 +29,5 @@ Presentasi Papan Tulis kini menandai kanvas sebagai sementara hanya untuk rapat 
 Kapabilitas jendela mengambang inti kini diaktifkan sebelum pemasangan halaman komponen asinkron dimulai. Ini memulihkan perilaku sebelumnya: rapat masuk ke PiP segera saat Papan Tulis mengambil alih panggung, bukan menunggu pemasangan Papan Tulis selesai.
 
 Pembuatan jendela komponen Papan Tulis kini menetapkan flag kontrak inti Cognis `borderless`, sehingga broker menghapus bingkai jendela luar sementara status fokus tanpa bingkai yang ada mengendalikan shell Papan Tulis tersemat.
+
+Tombol Papan Tulis langsung disorot selama jendela komponennya aktif. Memilih tombol yang disorot sekali lagi akan membuang jendela komponen, melepaskan gambar-dalam-gambar rapat, dan menyinkronkan tampilan rapat default.

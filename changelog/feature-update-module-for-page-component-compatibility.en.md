@@ -29,3 +29,5 @@ Whiteboard presentation now marks the canvas disposable only for participant-fre
 The core floating-window capability is now activated before the asynchronous component-page spawn begins. This restores the previously working behavior where the meeting enters PiP as soon as the Whiteboard takes over the stage, instead of waiting for the Whiteboard mount to finish.
 
 Whiteboard component-window spawns now set the Cognis core `borderless` contract flag, allowing the broker to remove the outer window frame while the existing frameless focus state controls the embedded Whiteboard shell.
+
+The Whiteboard button highlights immediately while its component window is active. Selecting the highlighted button again discards the component window, releases meeting picture-in-picture, and synchronizes the default meeting view.
