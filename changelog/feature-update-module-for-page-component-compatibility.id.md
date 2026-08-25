@@ -22,6 +22,6 @@ Pemasangan SPA kini mencoba ulang kesiapan penyedia, memberikan setiap panggung 
 
 Papan Tulis yang dibuka kini meminta tampilan tanpa bingkai dan memakai penggantian jarak berbasis panggung untuk ruang kerja, panel, bagian, kisi, dan widget agar kanvas meluas ke area Jendela Rapat yang tersedia sambil mempertahankan gambar-dalam-gambar rapat.
 
-PiP rapat kini sepenuhnya dimiliki broker halaman komponen Cognis. Modul tidak lagi meminta kapabilitas jendela mengambang atau membawa kode pemosisian dan siklus hidup PiP.
+PiP rapat kini sepenuhnya dimiliki broker halaman komponen Cognis. Modul memanggil kapabilitas jendela mengambang inti tanpa membawa kode atau gaya pemosisian PiP. Aktivasi Papan Tulis kini tetap tertunda hingga pemasangan komponen dan sinkronisasi status selesai agar polling tidak membuang pemasangan yang sedang berlangsung.
 
 Presentasi Papan Tulis kini menandai kanvas sebagai sementara hanya untuk rapat tanpa peserta; rapat dengan peserta yang disiapkan membuka kanvas normal berbasis sumber daya.

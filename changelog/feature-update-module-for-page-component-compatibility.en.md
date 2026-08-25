@@ -22,6 +22,6 @@ SPA mounts now retry provider readiness, assign every newly bound meeting stage 
 
 Spawned Whiteboards now request frameless presentation and use stage-scoped workspace, panel, section, grid, and widget spacing overrides so the canvas expands to the available Meeting Window area while preserving the meeting PiP.
 
-Meeting PiP is now owned entirely by the Cognis component-page broker. The module no longer requests the floating-window capability or carries PiP positioning and lifecycle code.
+Meeting PiP is now owned entirely by the Cognis component-page broker. The module invokes the core floating-window capability without carrying PiP positioning code or styles. Whiteboard activation now remains pending until component mounting and state synchronization finish, preventing polling from discarding an in-progress mount.
 
 Whiteboard presentation now marks the canvas disposable only for participant-free meetings; meetings with staged participants open the normal resource-keyed canvas.

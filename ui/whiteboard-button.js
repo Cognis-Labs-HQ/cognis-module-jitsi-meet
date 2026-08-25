@@ -58,13 +58,16 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
 }
 
 function closeComponentWindow(trigger) {
+    trigger?.releaseFloatingWindow?.();
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
     } else if (trigger?.frameWrap?.id) {
         void trigger.discardComponentPage?.(trigger.frameWrap.id);
     }
     if (trigger) {
+        trigger.componentWindowPending = false;
         trigger.componentWindow = null;
+        trigger.releaseFloatingWindow = null;
         trigger.whiteboardId = "";
         setButtonActive(trigger.button, false);
     }
@@ -94,6 +97,7 @@ async function resolveWhiteboardCapabilities(signal) {
     );
     const readCapabilities = () => ({
         discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
+        makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
         spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
@@ -106,7 +110,8 @@ async function resolveWhiteboardCapabilities(signal) {
         if (
             typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
                 "function" &&
-            typeof capabilities.spawnComponentPage === "function"
+            typeof capabilities.spawnComponentPage === "function" &&
+            typeof capabilities.makeFloatingWindow === "function"
         ) {
             return capabilities;
         }
@@ -199,7 +204,10 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
 export function syncMeetingWhiteboardComponent({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (!trigger?.button) return;
-    if (state.meeting?.state?.whiteboardActive !== true) {
+    if (
+        state.meeting?.state?.whiteboardActive !== true &&
+        trigger.componentWindowPending !== true
+    ) {
         closeComponentWindow(trigger);
     }
     syncWhiteboardButtonAvailability({ root, state });
@@ -218,7 +226,12 @@ export async function bindWhiteboardButton({
 }) {
     const slot = root.querySelector("#jitsi-whiteboard-button-slot");
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
-    if (!(slot instanceof HTMLElement) || !(frameWrap instanceof HTMLElement))
+    const pipHandle = root.querySelector(".jitsi-stage-header");
+    if (
+        !(slot instanceof HTMLElement) ||
+        !(frameWrap instanceof HTMLElement) ||
+        !(pipHandle instanceof HTMLElement)
+    )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
     if (mounted?.slot === slot) {
@@ -245,11 +258,16 @@ export async function bindWhiteboardButton({
         return;
     }
     if (signal?.aborted) return;
-    const { discardComponentPage, spawnComponentPage, whiteboardGateway } =
-        capabilities;
+    const {
+        discardComponentPage,
+        makeFloatingWindow,
+        spawnComponentPage,
+        whiteboardGateway,
+    } = capabilities;
     if (
         typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
-        typeof spawnComponentPage !== "function"
+        typeof spawnComponentPage !== "function" ||
+        typeof makeFloatingWindow !== "function"
     )
         return;
 
@@ -265,16 +283,20 @@ export async function bindWhiteboardButton({
         button,
         componentPage: null,
         componentWindow: null,
+        componentWindowPending: false,
         discardComponentPage,
         disposableCanvas: getParticipantHandles(state.meeting).length === 0,
         frameWrap,
         i18n,
+        makeFloatingWindow,
+        pipHandle,
         preparedWhiteboardId: String(
             state.meeting?.state?.whiteboardId ?? "",
         ).trim(),
         preparedMeetingId: state.meeting?.id ?? "",
         preparationPromise: null,
         preparationFailedMeetingId: "",
+        releaseFloatingWindow: null,
         signal,
         spawnComponentPage,
         whiteboardGateway,
@@ -316,6 +338,7 @@ export async function bindWhiteboardButton({
             const whiteboardId = trigger.preparedWhiteboardId;
             if (!whiteboardId || !trigger.componentPage) return;
             button.disabled = true;
+            trigger.componentWindowPending = true;
             const authorizedSpawnPromise = spawnComponentWindow(trigger, {
                 meetingId: state.meeting.id,
                 whiteboardId,
@@ -328,6 +351,17 @@ export async function bindWhiteboardButton({
                             "whiteboard_component_window_unavailable",
                         );
                     trigger.componentWindow = componentWindow;
+                    const meetingFrame =
+                        frameWrap.querySelector(".jitsi-stage-frame");
+                    if (meetingFrame instanceof HTMLElement) {
+                        trigger.releaseFloatingWindow = makeFloatingWindow(
+                            meetingFrame,
+                            {
+                                handle: pipHandle,
+                                signal,
+                            },
+                        );
+                    }
                     trigger.whiteboardId = whiteboardId;
                     setButtonActive(button, true);
                     const response = await apiFetch(
@@ -364,6 +398,7 @@ export async function bindWhiteboardButton({
                         },
                     );
                 } finally {
+                    trigger.componentWindowPending = false;
                     syncWhiteboardButtonAvailability({ root, state });
                 }
             })();
