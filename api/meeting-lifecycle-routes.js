@@ -119,9 +119,21 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
+            let meeting = await store.createMeeting({
+                instanceUrl: config.instanceUrl,
+                meetingPrefix: config.meetingPrefix,
+                usernames: normalizedInput.participantUsernames,
+                classroomId: normalizedInput.classroomId,
+                createdBy: requesterUsername,
+                chatRoomId: null,
+                scheduledAt: body.scheduledAt,
+            });
             let chatRoom = null;
             if (typeof resolveGroupChat === "function") {
-                const meetingChatTitle = buildMeetingChatTitle();
+                const meetingChatTitle = buildMeetingChatTitle(
+                    meeting.meetingName,
+                    meeting.createdAt,
+                );
                 chatRoom = await resolveGroupChat({
                     usernames: normalizedInput.participantUsernames,
                     title: meetingChatTitle,
@@ -132,17 +144,18 @@ export function registerMeetingLifecycleRoutes({
                     // share-link guests can never be granted chat access.
                     allowSingleMember: true,
                 }).catch(() => null);
+                if (chatRoom?.roomId) {
+                    meeting = await store.createMeeting({
+                        instanceUrl: config.instanceUrl,
+                        meetingPrefix: config.meetingPrefix,
+                        usernames: normalizedInput.participantUsernames,
+                        classroomId: normalizedInput.classroomId,
+                        createdBy: requesterUsername,
+                        chatRoomId: chatRoom.roomId,
+                        scheduledAt: body.scheduledAt,
+                    });
+                }
             }
-
-            const meeting = await store.createMeeting({
-                instanceUrl: config.instanceUrl,
-                meetingPrefix: config.meetingPrefix,
-                usernames: normalizedInput.participantUsernames,
-                classroomId: normalizedInput.classroomId,
-                createdBy: requesterUsername,
-                chatRoomId: chatRoom?.roomId ?? null,
-                scheduledAt: body.scheduledAt,
-            });
 
             const participants = await store.listParticipants(meeting.id);
             const state = await store.getMeetingState(meeting.id);

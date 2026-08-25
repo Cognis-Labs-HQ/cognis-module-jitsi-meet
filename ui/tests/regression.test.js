@@ -187,6 +187,10 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
 test("jitsi meeting group chats include the meeting date in their title", () => {
     const source = readJitsiApiBundle();
     assert.match(source, /function buildMeetingChatTitle[\s\S]*slice\(0, 10\)/);
+    assert.match(
+        source,
+        /buildMeetingChatTitle\([\s\S]*meeting\.meetingName,[\s\S]*meeting\.createdAt/,
+    );
     assert.match(source, /title:\s*meetingChatTitle/);
 });
 

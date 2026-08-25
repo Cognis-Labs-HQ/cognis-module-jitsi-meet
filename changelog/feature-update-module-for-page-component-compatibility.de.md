@@ -31,3 +31,5 @@ Die Floating-Window-Fähigkeit des Kerns wird jetzt aktiviert, bevor das asynchr
 Beim Erzeugen des Whiteboard-Komponentenfensters wird jetzt das Cognis-Core-Vertragsflag `borderless` gesetzt, sodass der Broker den äußeren Fensterrahmen entfernt, während der vorhandene rahmenlose Fokuszustand die eingebettete Whiteboard-Oberfläche steuert.
 
 Die Whiteboard-Schaltfläche wird sofort hervorgehoben, solange ihr Komponentenfenster aktiv ist. Durch erneutes Auswählen der hervorgehobenen Schaltfläche wird das Komponentenfenster verworfen, das Bild-in-Bild der Besprechung beendet und die Standardansicht der Besprechung synchronisiert.
+
+Neue Besprechungen leiten ihren Anzeigenamen jetzt vom erzeugten Jitsi-Raum-Slug ab. Genau dieser eindeutige Name wird an das Besprechungs-Whiteboard übergeben; der zugehörige Messages-Chat verwendet den eindeutigen Besprechungsnamen mit anschließendem Erstellungsdatum.

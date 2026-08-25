@@ -22,6 +22,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - API calls require a valid Cognis access token.
 - Meeting details are only returned to allowed participants.
 - Meeting passwords are generated per meeting record.
+- Each meeting name includes its generated Jitsi room slug. The same unique name is passed to its Whiteboard, and its Messages chat title combines that name with the creation date.
 - Session reclaim allows a user to disconnect their previous active session.
 
 ### Integration Contract

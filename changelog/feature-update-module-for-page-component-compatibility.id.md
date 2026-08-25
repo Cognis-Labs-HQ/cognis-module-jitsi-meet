@@ -31,3 +31,5 @@ Kapabilitas jendela mengambang inti kini diaktifkan sebelum pemasangan halaman k
 Pembuatan jendela komponen Papan Tulis kini menetapkan flag kontrak inti Cognis `borderless`, sehingga broker menghapus bingkai jendela luar sementara status fokus tanpa bingkai yang ada mengendalikan shell Papan Tulis tersemat.
 
 Tombol Papan Tulis langsung disorot selama jendela komponennya aktif. Memilih tombol yang disorot sekali lagi akan membuang jendela komponen, melepaskan gambar-dalam-gambar rapat, dan menyinkronkan tampilan rapat default.
+
+Rapat baru kini memperoleh nama tampilannya dari slug ruang Jitsi yang dibuat. Nama unik yang sama diteruskan ke Papan Tulis rapat, sedangkan chat Messages terkait memakai nama rapat unik yang diikuti tanggal pembuatannya.

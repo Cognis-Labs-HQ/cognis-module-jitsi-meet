@@ -1,4 +1,15 @@
 const DEFAULT_MEETING_PREFIX_MAX_LENGTH = 48;
+const DEFAULT_MEETING_TITLE = "Cognis Classroom";
+
+export function buildMeetingName(roomSlug, storedMeetingName = "") {
+    const normalizedRoomSlug = String(roomSlug ?? "").trim();
+    const normalizedStoredName = String(storedMeetingName ?? "").trim();
+    const baseName = normalizedStoredName || DEFAULT_MEETING_TITLE;
+    if (!normalizedRoomSlug || baseName.endsWith(`— ${normalizedRoomSlug}`)) {
+        return baseName;
+    }
+    return `${baseName} — ${normalizedRoomSlug}`;
+}
 
 export function normalizeMeetingPrefix(rawPrefix) {
     return String(rawPrefix ?? "")

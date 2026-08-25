@@ -72,13 +72,14 @@ function sendError(res, status, code, message) {
     });
 }
 
-function buildMeetingChatTitle(createdAt = null) {
+function buildMeetingChatTitle(meetingName, createdAt = null) {
     const parsedCreatedAt =
         typeof createdAt === "string" ? Date.parse(createdAt) : Number.NaN;
     const isoDate = Number.isFinite(parsedCreatedAt)
         ? new Date(parsedCreatedAt).toISOString().slice(0, 10)
         : new Date().toISOString().slice(0, 10);
-    return `${MEETING_TITLE} — ${isoDate}`;
+    const normalizedMeetingName = String(meetingName ?? "").trim();
+    return `${normalizedMeetingName || MEETING_TITLE} — ${isoDate}`;
 }
 
 function buildMeetingActionUrl(meetingId) {

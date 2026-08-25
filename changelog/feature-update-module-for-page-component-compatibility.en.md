@@ -31,3 +31,5 @@ The core floating-window capability is now activated before the asynchronous com
 Whiteboard component-window spawns now set the Cognis core `borderless` contract flag, allowing the broker to remove the outer window frame while the existing frameless focus state controls the embedded Whiteboard shell.
 
 The Whiteboard button highlights immediately while its component window is active. Selecting the highlighted button again discards the component window, releases meeting picture-in-picture, and synchronizes the default meeting view.
+
+New meetings now derive their display name from the generated Jitsi room slug. That exact unique name is passed to the meeting Whiteboard, while the associated Messages chat uses the unique meeting name followed by its creation date.

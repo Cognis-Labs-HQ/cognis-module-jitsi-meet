@@ -274,7 +274,7 @@ test("jitsi share hooks let participants mint and revoke meeting shares", async 
     });
     const resolvedPayload = resolveResult.stageResults["resolve-resource"][0];
     assert.equal(resolvedPayload.resolved, true);
-    assert.equal(resolvedPayload.payload.title, "Planning");
+    assert.equal(resolvedPayload.payload.title, "Planning — room-1");
     assert.equal(resolvedPayload.payload.hostDisplayName, "Alice Example");
     assert.equal(
         resolvedPayload.payload.joinUrl,

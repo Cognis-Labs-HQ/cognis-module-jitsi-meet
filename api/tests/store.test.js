@@ -204,6 +204,10 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         /^classroom-[a-f0-9]{8}$/,
     );
     assert.equal(
+        mockDb.insertedMeetingRows[0].meeting_name,
+        `Cognis Classroom — ${mockDb.insertedMeetingRows[0].room_slug}`,
+    );
+    assert.equal(
         String(mockDb.insertedMeetingRows[0].meeting_url).endsWith(
             `/${mockDb.insertedMeetingRows[0].room_slug}`,
         ),

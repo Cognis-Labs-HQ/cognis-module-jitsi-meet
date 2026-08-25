@@ -22,6 +22,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat native Cognis dengan pemilihan pes
 - Panggilan API memerlukan access token Cognis yang valid.
 - Detail rapat hanya diberikan ke peserta yang diizinkan.
 - Password rapat dibuat untuk setiap catatan rapat.
+- Setiap nama rapat menyertakan slug ruang Jitsi yang dibuat. Nama unik yang sama diteruskan ke Papan Tulis, dan judul chat Messages menggabungkan nama tersebut dengan tanggal pembuatan.
 - Reclaim sesi memungkinkan pengguna memutus sesi aktif sebelumnya.
 
 ### Kontrak Integrasi

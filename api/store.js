@@ -8,7 +8,7 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { normalizeMeetingPrefix } from "./meeting-values.js";
+import { buildMeetingName, normalizeMeetingPrefix } from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -337,7 +337,7 @@ export class JitsiMeetStore {
             participantKey: String(participantKey),
             meetingUrl: row.meeting_url ? String(row.meeting_url) : "",
             meetingPassword,
-            meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+            meetingName: buildMeetingName(row.room_slug, row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
@@ -467,6 +467,7 @@ export class JitsiMeetStore {
         const meetingId = randomUUID();
         const prefix = normalizeMeetingPrefix(meetingPrefix);
         const meetingSlug = buildRoomSlug(prefix);
+        const meetingName = buildMeetingName(meetingSlug);
         const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
@@ -495,7 +496,7 @@ export class JitsiMeetStore {
                 meeting_url: meetingUrl,
                 meeting_password: encryptedPassword.ciphertext,
                 meeting_password_iv: encryptedPassword.iv,
-                meeting_name: "Cognis Classroom",
+                meeting_name: meetingName,
                 room_slug: meetingSlug,
                 chat_room_id: chatRoomId ?? null,
                 classroom_id: normalizedClassroomId,
@@ -799,7 +800,10 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+                    meetingName: buildMeetingName(
+                        row.room_slug,
+                        row.meeting_name,
+                    ),
                     classroomId: row.classroom_id
                         ? String(row.classroom_id)
                         : null,
@@ -915,7 +919,10 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+                    meetingName: buildMeetingName(
+                        row.room_slug,
+                        row.meeting_name,
+                    ),
                     createdBy: String(row.created_by),
                     scheduledAt:
                         readDbTimestampValue(row.scheduled_at) ??

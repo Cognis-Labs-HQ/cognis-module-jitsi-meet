@@ -22,6 +22,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmera
 - API-Aufrufe erfordern ein gültiges Cognis-Access-Token.
 - Meeting-Details werden nur an berechtigte Teilnehmer ausgegeben.
 - Meeting-Passwörter werden pro Meeting-Datensatz generiert.
+- Jeder Besprechungsname enthält den erzeugten Jitsi-Raum-Slug. Derselbe eindeutige Name wird an das Whiteboard übergeben; der Titel des Messages-Chats kombiniert ihn mit dem Erstellungsdatum.
 - Die Sitzungsübernahme ermöglicht das Trennen einer vorherigen aktiven Sitzung.
 
 ### Integrationsvertrag
