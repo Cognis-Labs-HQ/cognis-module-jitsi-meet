@@ -40,6 +40,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /whiteboardActive !== true &&[\s\S]*?componentWindowPending !== true/,
     );
+    assert.match(
+        buttonSource,
+        /makeFloatingWindow\([\s\S]*?const authorizedSpawnPromise = spawnComponentWindow/,
+    );
     assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);

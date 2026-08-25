@@ -339,6 +339,16 @@ export async function bindWhiteboardButton({
             if (!whiteboardId || !trigger.componentPage) return;
             button.disabled = true;
             trigger.componentWindowPending = true;
+            const meetingFrame = frameWrap.querySelector(".jitsi-stage-frame");
+            if (meetingFrame instanceof HTMLElement) {
+                trigger.releaseFloatingWindow = makeFloatingWindow(
+                    meetingFrame,
+                    {
+                        handle: pipHandle,
+                        signal,
+                    },
+                );
+            }
             const authorizedSpawnPromise = spawnComponentWindow(trigger, {
                 meetingId: state.meeting.id,
                 whiteboardId,
@@ -351,17 +361,6 @@ export async function bindWhiteboardButton({
                             "whiteboard_component_window_unavailable",
                         );
                     trigger.componentWindow = componentWindow;
-                    const meetingFrame =
-                        frameWrap.querySelector(".jitsi-stage-frame");
-                    if (meetingFrame instanceof HTMLElement) {
-                        trigger.releaseFloatingWindow = makeFloatingWindow(
-                            meetingFrame,
-                            {
-                                handle: pipHandle,
-                                signal,
-                            },
-                        );
-                    }
                     trigger.whiteboardId = whiteboardId;
                     setButtonActive(button, true);
                     const response = await apiFetch(

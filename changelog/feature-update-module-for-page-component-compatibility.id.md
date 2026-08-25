@@ -25,3 +25,5 @@ Papan Tulis yang dibuka kini meminta tampilan tanpa bingkai dan memakai penggant
 PiP rapat kini sepenuhnya dimiliki broker halaman komponen Cognis. Modul memanggil kapabilitas jendela mengambang inti tanpa membawa kode atau gaya pemosisian PiP. Aktivasi Papan Tulis kini tetap tertunda hingga pemasangan komponen dan sinkronisasi status selesai agar polling tidak membuang pemasangan yang sedang berlangsung.
 
 Presentasi Papan Tulis kini menandai kanvas sebagai sementara hanya untuk rapat tanpa peserta; rapat dengan peserta yang disiapkan membuka kanvas normal berbasis sumber daya.
+
+Kapabilitas jendela mengambang inti kini diaktifkan sebelum pemasangan halaman komponen asinkron dimulai. Ini memulihkan perilaku sebelumnya: rapat masuk ke PiP segera saat Papan Tulis mengambil alih panggung, bukan menunggu pemasangan Papan Tulis selesai.

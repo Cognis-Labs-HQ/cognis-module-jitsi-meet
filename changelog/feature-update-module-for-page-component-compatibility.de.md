@@ -25,3 +25,5 @@ Eingebundene Whiteboards fordern jetzt eine rahmenlose Darstellung an und verwen
 Das Meeting-Bild-in-Bild wird jetzt vollständig vom Cognis-Komponentenseiten-Broker verwaltet. Das Modul ruft die Floating-Window-Fähigkeit des Kerns auf, ohne PiP-Positionierungscode oder -Stile zu enthalten. Die Whiteboard-Aktivierung bleibt nun ausstehend, bis Komponenten-Einbindung und Zustandssynchronisierung abgeschlossen sind, damit Polling keine laufende Einbindung verwirft.
 
 Die Whiteboard-Darstellung markiert die Zeichenfläche jetzt nur bei teilnehmerlosen Besprechungen als temporär; Besprechungen mit vorgemerkten Teilnehmern öffnen die normale ressourcengebundene Zeichenfläche.
+
+Die Floating-Window-Fähigkeit des Kerns wird jetzt aktiviert, bevor das asynchrone Einbinden der Komponentenseite beginnt. Damit wird das zuvor funktionierende Verhalten wiederhergestellt: Das Meeting wechselt in PiP, sobald das Whiteboard die Bühne übernimmt, statt auf den Abschluss der Whiteboard-Einbindung zu warten.
