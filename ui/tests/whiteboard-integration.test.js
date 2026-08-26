@@ -97,8 +97,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /component-pages:spawn/);
     assert.match(
         buttonSource,
-        /spawnComponentPage\(\{[\s\S]*?borderless:\s*true/,
+        /frameWrap\.classList\.add\("jitsi-whiteboard-component-open"\)/,
     );
+    assert.match(
+        buttonSource,
+        /frameWrap\?\.classList\.remove\("jitsi-whiteboard-component-open"\)/,
+    );
+    assert.doesNotMatch(buttonSource, /spawnComponentPage\(\{\s*borderless:/);
+    assert.match(stylesheet, /\.jitsi-whiteboard-component-open/);
     assert.match(buttonSource, /ui:makeFloatingWindow/);
     assert.match(buttonSource, /trigger\.componentWindowPending = true/);
     assert.match(
@@ -177,11 +183,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
     assert.match(
         stylesheet,
-        /\.jitsi-meeting-stage:has\([\s\S]*?\.component-page-stage--borderless[\s\S]*?height:\s*auto;/,
+        /\.jitsi-meeting-stage:has\([\s\S]*?\.jitsi-whiteboard-component-open[\s\S]*?height:\s*auto;/,
     );
     assert.match(
         stylesheet,
-        /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?grid-template-rows:\s*minmax\(min-content, 1fr\);[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
+        /\.jitsi-stage-frame-wrap\.jitsi-whiteboard-component-open\s*\{[\s\S]*?grid-template-rows:\s*minmax\(min-content, 1fr\);[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
     assert.match(
         buttonSource,

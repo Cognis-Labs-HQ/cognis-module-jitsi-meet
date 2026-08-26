@@ -30,13 +30,13 @@
 }
 
 .jitsi-meeting-stage:has(
-    > .jitsi-stage-frame-wrap.component-page-stage--borderless
+    > .jitsi-stage-frame-wrap.jitsi-whiteboard-component-open
 ) {
     height: auto;
     min-height: 100%;
 }
 
-.jitsi-stage-frame-wrap.component-page-stage--borderless {
+.jitsi-stage-frame-wrap.jitsi-whiteboard-component-open {
     display: grid;
     grid-template-rows: minmax(min-content, 1fr);
     align-items: stretch;
@@ -44,6 +44,14 @@
     height: auto;
     min-height: 100%;
     overflow: visible;
+}
+
+.jitsi-stage-frame-wrap.jitsi-whiteboard-component-open
+    > .component-page-window {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: transparent;
 }
 
 .jitsi-overlay {
