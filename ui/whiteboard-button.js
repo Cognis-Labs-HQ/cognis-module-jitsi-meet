@@ -226,56 +226,6 @@ async function ensureWhiteboardKeyringUnlocked(trigger, state) {
     );
 }
 
-function canvasParticipantSaveKey(state, whiteboardId) {
-    return `${whiteboardId}:${getParticipantHandles(state.meeting).slice().sort().join(",")}`;
-}
-
-async function reportCanvasSaveFailure(trigger, state, whiteboardId, error) {
-    trigger.failedCanvasParticipantKey = canvasParticipantSaveKey(
-        state,
-        whiteboardId,
-    );
-    await logUi("error", "Meeting whiteboard participant save failed.", {
-        component: "module:jitsi-meet",
-        operation: "save_meeting_whiteboard_for_participants",
-        meetingId: state.meeting?.id,
-        whiteboardId,
-        error: error instanceof Error ? error.message : String(error),
-    });
-}
-
-function saveCanvasToParticipants(trigger, state, whiteboardId) {
-    if (trigger.disposableCanvas || !whiteboardId) return Promise.resolve();
-    if (
-        typeof trigger.whiteboardGateway?.saveCanvasToParticipants !==
-        "function"
-    )
-        return Promise.resolve();
-    const participantHandles = getParticipantHandles(state.meeting);
-    const saveKey = canvasParticipantSaveKey(state, whiteboardId);
-    if (
-        trigger.savedCanvasParticipantKey === saveKey ||
-        trigger.failedCanvasParticipantKey === saveKey
-    )
-        return Promise.resolve();
-    if (trigger.saveCanvasPromise) return trigger.saveCanvasPromise;
-    trigger.saveCanvasPromise = trigger.whiteboardGateway
-        .saveCanvasToParticipants({
-            whiteboardId,
-            resourceType: "meeting",
-            resourceId: state.meeting.id,
-            participantHandles,
-        })
-        .then(() => {
-            trigger.savedCanvasParticipantKey = saveKey;
-            trigger.failedCanvasParticipantKey = "";
-        })
-        .finally(() => {
-            trigger.saveCanvasPromise = null;
-        });
-    return trigger.saveCanvasPromise;
-}
-
 function prepareMeetingCanvas(trigger, state) {
     if (trigger.preparedWhiteboardId || !state.meeting?.id)
         return Promise.resolve();
@@ -291,21 +241,20 @@ function prepareMeetingCanvas(trigger, state) {
     ) {
         throw new Error("whiteboard_persistent_canvas_unavailable");
     }
-    const createCanvas = trigger.disposableCanvas
-        ? trigger.whiteboardGateway.createDisposableCanvas.bind(
-              trigger.whiteboardGateway,
-          )
-        : trigger.whiteboardGateway.createCanvas.bind(
-              trigger.whiteboardGateway,
-          );
-    trigger.preparationPromise = createCanvas({
-        resourceType: "meeting",
-        resourceId: state.meeting.id,
-        title: state.meeting.meetingName,
-        participantHandles,
-        disposable: trigger.disposableCanvas,
-    })
-        .then(async (canvas) => {
+    trigger.preparationPromise = (
+        trigger.disposableCanvas
+            ? trigger.whiteboardGateway.createDisposableCanvas({
+                  resourceType: "meeting",
+                  resourceId: state.meeting.id,
+                  title: state.meeting.meetingName,
+                  participantHandles,
+              })
+            : trigger.whiteboardGateway.createCanvas({
+                  title: state.meeting.meetingName,
+                  participantHandles,
+              })
+    )
+        .then((canvas) => {
             trigger.preparedWhiteboardId = String(
                 canvas?.whiteboardId ?? canvas?.id ?? "",
             ).trim();
@@ -314,18 +263,6 @@ function prepareMeetingCanvas(trigger, state) {
             }
             trigger.preparationFailedMeetingId = "";
             trigger.preparedMeetingId = state.meeting.id;
-            await saveCanvasToParticipants(
-                trigger,
-                state,
-                trigger.preparedWhiteboardId,
-            ).catch((error) =>
-                reportCanvasSaveFailure(
-                    trigger,
-                    state,
-                    trigger.preparedWhiteboardId,
-                    error,
-                ),
-            );
         })
         .finally(() => {
             trigger.preparationPromise = null;
@@ -356,18 +293,6 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             stateWhiteboardDisposable === trigger.disposableCanvas
         ) {
             trigger.preparedWhiteboardId = stateWhiteboardId;
-            void saveCanvasToParticipants(
-                trigger,
-                state,
-                stateWhiteboardId,
-            ).catch((error) =>
-                reportCanvasSaveFailure(
-                    trigger,
-                    state,
-                    stateWhiteboardId,
-                    error,
-                ),
-            );
         }
         setButtonActive(
             trigger.button,
@@ -513,7 +438,6 @@ export async function bindWhiteboardButton({
         componentWindowPending: false,
         discardComponentPage,
         disposableCanvas: !meetingHasInvitedParticipants(state.meeting),
-        failedCanvasParticipantKey: "",
         frameWrap,
         i18n,
         isKeyringUnlocked,
@@ -529,8 +453,6 @@ export async function bindWhiteboardButton({
         preparationPromise: null,
         preparationFailedMeetingId: "",
         releaseFloatingWindow: null,
-        saveCanvasPromise: null,
-        savedCanvasParticipantKey: "",
         sharedOpenRequested: false,
         signal,
         spawnComponentPage,
