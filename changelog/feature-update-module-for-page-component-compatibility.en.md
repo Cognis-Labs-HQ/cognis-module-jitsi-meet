@@ -41,3 +41,5 @@ The host-level `app-page__main--component-borderless` override was removed. The 
 Meetings now persists an optional per-meeting `whiteboardOpen` state only when a Whiteboard canvas exists. Organizers open it immediately; non-organizers accumulate presence-scoped votes until a strict majority agrees. Polling clients that observe the open state automatically spawn the shared canvas and activate meeting PiP, including participants who join later.
 
 Starting or reclaiming a meeting instance no longer resets an already-open per-meeting Whiteboard. This removes the join-lifecycle race that closed participant-free meeting Whiteboards on the next five-second state refresh; explicit meeting termination still closes the shared Whiteboard.
+
+The five-second state endpoint now returns the same public meeting-state shape as initial meeting loads. It maps the persisted internal Whiteboard flag to `whiteboardOpen`, preventing polling from treating an open participant-free Whiteboard as absent and closing its component window.

@@ -36,6 +36,8 @@ export function registerMeetingRoutes({
     };
     const overlapsWindow = (startAt, endAt, windowStart, windowEnd) =>
         startAt < windowEnd && endAt > windowStart;
+    const buildPollingMeetingState = (meeting, state) =>
+        store.buildMeetingPayload(meeting, [], state).state;
 
     router.get(
         "/api/v1/modules/jitsi-meet/events/current",
@@ -713,7 +715,7 @@ export function registerMeetingRoutes({
                 ]);
                 sendJson(res, 200, {
                     data: {
-                        state,
+                        state: buildPollingMeetingState(meeting, state),
                         activeParticipants: await (async () => {
                             const activeUsernames = store
                                 .filterCurrentPresenceEntries(presence)
@@ -754,7 +756,10 @@ export function registerMeetingRoutes({
                 : null;
             sendJson(res, 200, {
                 data: {
-                    state: resolved.state,
+                    state: buildPollingMeetingState(
+                        resolved.meeting,
+                        resolved.state,
+                    ),
                     activeParticipants: store
                         .filterCurrentPresenceEntries(presence)
                         .map((entry) => entry.username),

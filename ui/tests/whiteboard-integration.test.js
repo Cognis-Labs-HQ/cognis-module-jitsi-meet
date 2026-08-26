@@ -16,6 +16,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const storeSource = readFileSync(resolve(ROOT, "api/store.js"), "utf8");
+    const meetingsRoutesSource = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
     const buttonSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-button.js"),
         "utf8",
@@ -29,6 +33,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /state\.whiteboardId[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
     );
     assert.match(buttonSource, /state\.meeting\?\.state\?\.whiteboardOpen/);
+    assert.match(
+        meetingsRoutesSource,
+        /state:\s*buildPollingMeetingState\(meeting, state\)/,
+    );
+    assert.match(
+        meetingsRoutesSource,
+        /state:\s*buildPollingMeetingState\([\s\S]*?resolved\.meeting,[\s\S]*?resolved\.state/,
+    );
     assert.match(
         buttonSource,
         /sharedOpenRequested = true;[\s\S]*?trigger\.button\.click\(\)/,
