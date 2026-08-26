@@ -70,7 +70,6 @@ function spawnComponentWindow(
     trigger,
     { meetingId, meetingName, whiteboardId },
 ) {
-    trigger.frameWrap.classList.add("jitsi-whiteboard-component-open");
     return trigger.spawnComponentPage({
         componentUuid: WHITEBOARD_MODULE_UUID,
         routeId: WHITEBOARD_ROUTE_ID,
@@ -127,7 +126,6 @@ async function spawnComponentWindowWithRetry(
 
 function closeComponentWindow(trigger) {
     trigger?.releaseFloatingWindow?.();
-    trigger?.frameWrap?.classList.remove("jitsi-whiteboard-component-open");
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
     } else if (trigger?.frameWrap?.id) {

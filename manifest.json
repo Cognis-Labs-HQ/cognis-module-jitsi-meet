@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.28",
+    "version": "1.5.29",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -347,6 +347,22 @@
             "sha256": "6a92e2d3eb066ec35f30c68b7b8320a83fe93c63fd4d5e1a77acb9cc62c84c3c"
         },
         {
+            "path": "changelog/fix-whiteboard-css-scope.de.md",
+            "sha256": "0cdc8ff1d22ce9d224d47d6d5f62ff850fb5a77a44f0d44d2a1b755a9dbc39c0"
+        },
+        {
+            "path": "changelog/fix-whiteboard-css-scope.en.md",
+            "sha256": "cc823459946b7f61c564747ed1536e2006bfa3b2b07c6e5f612bdd29770e2ba4"
+        },
+        {
+            "path": "changelog/fix-whiteboard-css-scope.id.md",
+            "sha256": "c8ac21efa8349040dd7458df76e9c6a135b1c20980d669452171a1d360eba610"
+        },
+        {
+            "path": "changelog/fix-whiteboard-css-scope.ja.md",
+            "sha256": "2ecfe5d72eda43752c981773e24f1dd512d229ecbd2baab5fc6efc33516a5c6a"
+        },
+        {
             "path": "changelog/fix-whiteboard-keyring-popup.de.md",
             "sha256": "1975f23900d16ea16663aa1402a468077c9d769f683c46246619dcd169f88a61"
         },
@@ -432,27 +448,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "e64a18a630afa09c403a425e358461fb92348b8a2d3737cca370db039c8fdec6"
+            "sha256": "908cb24f236e408befcb114ac0a8a7a463b30e2a12dd161efa78ddcf325e29e5"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "8abfe0878770255eec5521ce4dea6b54fbb1cbd1f6deaa13cac19a2949135094"
+            "sha256": "af770489875b0a395ca0622e7e450a5a5f45bd0b0cc39d7b7dc9b2a3927d2a60"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "2b4bff236487e998016bac6e337dc6367c0a52d5a52853b5e254ac45f3df03b4"
+            "sha256": "a70d66f73909a6c68e81344205a574dc3a2fc70f2b5b4dc83d1e7c6bb6c2fb32"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "ae17a13c8ae86f11c00a8b64f82a776506a622c881f4942d1da675fe3e13c11d"
+            "sha256": "32fcc62f8469900eaf0c170962a9fefd4006aa3f58504fd1281dee6f055f4445"
         },
         {
             "path": "package-lock.json",
-            "sha256": "911ae0782bac37c03283ed23c839380ab2ea4bcfbd14d446a22ab0a651430401"
+            "sha256": "f429c9e75a68b33f1d4ba6ed86f21dfa048016fb0a085eface5f7fa67914e84d"
         },
         {
             "path": "package.json",
-            "sha256": "61a4f616790cf4aa76128d09408cf48ccfd733c4862c00653eb23b523e89bfe4"
+            "sha256": "ebde404f0906100d535697c35f52cab49d9ee801a571e63a17fb66c92370a587"
         },
         {
             "path": "routes.json",
@@ -516,7 +532,7 @@
         },
         {
             "path": "ui/jitsi-meet.css",
-            "sha256": "ffeb88ed1ffa87c56406c703815864406255a24bf2ac26389fee0f502ecbb402"
+            "sha256": "b6dc1ba0b540971967d2c04195a7bec075d17c81106290fdb51e422af99b13e0"
         },
         {
             "path": "ui/languages/de/strings.xml",
@@ -588,11 +604,11 @@
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "a752b8a026cc10f8fe8cdc7a8666d2c0bedb5092afa4f396bbf1ab10091a86e1"
+            "sha256": "bdc0311435743d7542f8e2530f26a4dc35a63602f67a61feec059cf387648926"
         },
         {
             "path": "ui/whiteboard-button.js",
-            "sha256": "b71d2ca97219377617a8db057ef8c073e7b5c63aef2bac438187ec1c173d9af1"
+            "sha256": "d9a3fb502f2ec488547c096bb1382c53c54c770a86eee4ca326296845d4d39ca"
         }
     ]
 }

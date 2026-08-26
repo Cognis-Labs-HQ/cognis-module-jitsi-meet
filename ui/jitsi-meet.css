@@ -29,38 +29,6 @@
     gap: 0.5rem;
 }
 
-#jitsi-whiteboard-button-slot > button.active {
-    border-color: color-mix(in srgb, var(--accent-2) 35%, transparent);
-    color: var(--text);
-    background: color-mix(in srgb, var(--accent-2) 22%, transparent);
-    box-shadow: inset 0 -2px 0 var(--accent-2);
-}
-
-.jitsi-meeting-stage:has(
-    > .jitsi-stage-frame-wrap.jitsi-whiteboard-component-open
-) {
-    height: auto;
-    min-height: 100%;
-}
-
-.jitsi-stage-frame-wrap.jitsi-whiteboard-component-open {
-    display: grid;
-    grid-template-rows: minmax(min-content, 1fr);
-    align-items: stretch;
-    flex: 1 0 auto;
-    height: auto;
-    min-height: 100%;
-    overflow: visible;
-}
-
-.jitsi-stage-frame-wrap.jitsi-whiteboard-component-open
-    > .component-page-window {
-    border: 0;
-    border-radius: 0;
-    padding: 0;
-    background: transparent;
-}
-
 .jitsi-overlay {
     position: absolute;
     inset: 0;

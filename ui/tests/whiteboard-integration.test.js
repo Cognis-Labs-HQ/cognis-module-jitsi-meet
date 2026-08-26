@@ -97,10 +97,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /button\.dataset\.activeLabel[\s\S]*?module\.jitsi_meet\.whiteboard\.close/,
     );
     assert.match(
-        stylesheet,
-        /#jitsi-whiteboard-button-slot > button\.active[\s\S]*?var\(--accent-2\)/,
-    );
-    assert.match(
         buttonSource,
         /disposableCanvas = !meetingHasInvitedParticipants/,
     );
@@ -112,16 +108,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /component-pages:spawn/);
-    assert.match(
-        buttonSource,
-        /frameWrap\.classList\.add\("jitsi-whiteboard-component-open"\)/,
-    );
-    assert.match(
-        buttonSource,
-        /frameWrap\?\.classList\.remove\("jitsi-whiteboard-component-open"\)/,
-    );
+    assert.doesNotMatch(buttonSource, /jitsi-whiteboard-component-open/);
     assert.doesNotMatch(buttonSource, /spawnComponentPage\(\{\s*borderless:/);
-    assert.match(stylesheet, /\.jitsi-whiteboard-component-open/);
+    assert.doesNotMatch(stylesheet, /\.jitsi-whiteboard-component-open/);
     assert.match(buttonSource, /ui:makeFloatingWindow/);
     assert.match(buttonSource, /trigger\.componentWindowPending = true/);
     assert.match(
@@ -198,14 +187,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /\.jitsi-stage-frame-wrap\s*\{[\s\S]*?display:\s*grid;/,
     );
     assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
-    assert.match(
-        stylesheet,
-        /\.jitsi-meeting-stage:has\([\s\S]*?\.jitsi-whiteboard-component-open[\s\S]*?height:\s*auto;/,
-    );
-    assert.match(
-        stylesheet,
-        /\.jitsi-stage-frame-wrap\.jitsi-whiteboard-component-open\s*\{[\s\S]*?grid-template-rows:\s*minmax\(min-content, 1fr\);[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
-    );
+    assert.doesNotMatch(stylesheet, /\.component-page-stage--borderless/);
+    assert.doesNotMatch(stylesheet, /\.component-page-window/);
     assert.match(
         buttonSource,
         /button\.className = "btn-neutral btn-animated";/,
