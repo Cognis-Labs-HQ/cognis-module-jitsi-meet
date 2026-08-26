@@ -21,6 +21,9 @@ function getParticipantHandles(meeting) {
 }
 
 function meetingHasInvitedParticipants(meeting) {
+    if (typeof meeting?.hasInvitedParticipants === "boolean") {
+        return meeting.hasInvitedParticipants;
+    }
     const organizerHandle = String(meeting?.createdBy ?? "").trim();
     return getParticipantHandles(meeting).some(
         (handle) => !organizerHandle || handle !== organizerHandle,
@@ -284,15 +287,19 @@ function prepareMeetingCanvas(trigger, state) {
     if (trigger.preparationPromise) return trigger.preparationPromise;
     const participantHandles = getParticipantHandles(state.meeting);
     trigger.disposableCanvas = !meetingHasInvitedParticipants(state.meeting);
-    const createCanvas =
-        trigger.disposableCanvas ||
+    if (
+        !trigger.disposableCanvas &&
         typeof trigger.whiteboardGateway.createCanvas !== "function"
-            ? trigger.whiteboardGateway.createDisposableCanvas.bind(
-                  trigger.whiteboardGateway,
-              )
-            : trigger.whiteboardGateway.createCanvas.bind(
-                  trigger.whiteboardGateway,
-              );
+    ) {
+        throw new Error("whiteboard_persistent_canvas_unavailable");
+    }
+    const createCanvas = trigger.disposableCanvas
+        ? trigger.whiteboardGateway.createDisposableCanvas.bind(
+              trigger.whiteboardGateway,
+          )
+        : trigger.whiteboardGateway.createCanvas.bind(
+              trigger.whiteboardGateway,
+          );
     trigger.preparationPromise = createCanvas({
         resourceType: "meeting",
         resourceId: state.meeting.id,

@@ -881,6 +881,9 @@ export class JitsiMeetStore {
             classroomId: meeting.classroomId,
             chatRoomId: meeting.chatRoomId,
             createdBy: meeting.createdBy,
+            hasInvitedParticipants: participants.some(
+                (username) => username !== meeting.createdBy,
+            ),
             participants,
             state: {
                 authRequired: state.authRequired,

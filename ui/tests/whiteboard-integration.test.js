@@ -46,6 +46,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /state\.whiteboardId[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
     );
     assert.match(storeSource, /createdBy:\s*meeting\.createdBy/);
+    assert.match(storeSource, /hasInvitedParticipants:\s*participants\.some/);
     assert.match(buttonSource, /state\.meeting\?\.state\?\.whiteboardOpen/);
     assert.match(
         meetingsRoutesSource,
@@ -67,7 +68,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /createCanvas/);
     assert.match(
         buttonSource,
-        /typeof trigger\.whiteboardGateway\.createCanvas !== "function"[\s\S]*?createDisposableCanvas\.bind/,
+        /!trigger\.disposableCanvas[\s\S]*?typeof trigger\.whiteboardGateway\.createCanvas !== "function"[\s\S]*?whiteboard_persistent_canvas_unavailable/,
+    );
+    assert.doesNotMatch(
+        buttonSource,
+        /typeof trigger\.whiteboardGateway\.createCanvas !== "function"\s*\?\s*trigger\.whiteboardGateway\.createDisposableCanvas/,
     );
     assert.match(buttonSource, /saveCanvasToParticipants/);
     assert.match(
