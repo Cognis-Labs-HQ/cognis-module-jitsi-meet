@@ -12,7 +12,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 ## Spesifikasi Teknis
 
 - Panggilan API memerlukan token akses Cognis yang valid; detail rapat hanya dikembalikan kepada peserta berwenang atau tamu berbagi yang terbatas.
-- Kata sandi dibuat per rekaman rapat. Nama tampilan rapat menyertakan slug ruang Jitsi yang dihasilkan; nama yang sama mengidentifikasi Papan Tulis dan mengawali judul chat Messages bertanggal.
+- Kata sandi dibuat per rekaman rapat. Nama tampilan rapat berupa frasa empat kata yang unik tanpa awalan produk; nama yang sama mengidentifikasi Papan Tulis dan chat Messages tanpa tanggal. Rapat sekali pakai tanpa peserta tidak membuat chat Messages, dan chat lama yang terkait akan dihapus permanen saat rapat berakhir.
 - Persistensi milik modul menyimpan konfigurasi, peserta, kehadiran, status siklus hidup, status Papan Tulis, dan suara konsensus.
 - Pengambilalihan sesi memutus sesi rapat aktif pengguna sebelumnya.
 

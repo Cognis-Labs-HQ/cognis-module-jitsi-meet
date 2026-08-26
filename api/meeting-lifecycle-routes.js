@@ -129,19 +129,19 @@ export function registerMeetingLifecycleRoutes({
                 scheduledAt: body.scheduledAt,
             });
             let chatRoom = null;
-            if (typeof resolveGroupChat === "function") {
+            const hasInvitedParticipants =
+                normalizedInput.participantUsernames.length > 1;
+            if (
+                hasInvitedParticipants &&
+                typeof resolveGroupChat === "function"
+            ) {
                 const meetingChatTitle = buildMeetingChatTitle(
                     meeting.meetingName,
-                    meeting.createdAt,
                 );
                 chatRoom = await resolveGroupChat({
                     usernames: normalizedInput.participantUsernames,
                     title: meetingChatTitle,
                     createdByAccountId: claims.sub,
-                    // Meetings are commonly created solo and shared out via a
-                    // guest link afterwards, so a chat room must exist even
-                    // with only the creator as a real member — otherwise
-                    // share-link guests can never be granted chat access.
                     allowSingleMember: true,
                 }).catch(() => null);
                 if (chatRoom?.roomId) {

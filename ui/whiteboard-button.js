@@ -52,7 +52,10 @@ async function ensureComponentPage(trigger, meetingId) {
     return trigger.componentPage;
 }
 
-function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
+function spawnComponentWindow(
+    trigger,
+    { meetingId, meetingName, whiteboardId },
+) {
     return trigger.spawnComponentPage({
         borderless: true,
         componentUuid: WHITEBOARD_MODULE_UUID,
@@ -61,6 +64,7 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
         elementId: trigger.frameWrap.id,
         context: {
             meetingId,
+            title: meetingName,
             whiteboardId,
             instantCanvas: trigger.disposableCanvas,
             disposable: trigger.disposableCanvas,
@@ -79,13 +83,14 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
 
 async function spawnComponentWindowWithRetry(
     trigger,
-    { meetingId, whiteboardId },
+    { meetingId, meetingName, whiteboardId },
 ) {
     let lastError;
     for (let attempt = 0; attempt < 4; attempt += 1) {
         try {
             const componentWindow = await spawnComponentWindow(trigger, {
                 meetingId,
+                meetingName,
                 whiteboardId,
             });
             if (componentWindow) return componentWindow;
@@ -232,6 +237,12 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             state.meeting?.state?.whiteboardId ?? "",
         ).trim();
         if (stateWhiteboardId) trigger.preparedWhiteboardId = stateWhiteboardId;
+        setButtonActive(
+            trigger.button,
+            state.meeting?.state?.whiteboardOpen === true ||
+                trigger.componentWindowPending === true ||
+                Boolean(trigger.componentWindow),
+        );
         if (
             !trigger.loadFailed &&
             !trigger.preparedWhiteboardId &&
@@ -508,6 +519,7 @@ export async function bindWhiteboardButton({
                         trigger,
                         {
                             meetingId: state.meeting.id,
+                            meetingName: state.meeting.meetingName,
                             whiteboardId,
                         },
                     );

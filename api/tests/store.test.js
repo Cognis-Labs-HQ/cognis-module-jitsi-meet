@@ -203,9 +203,13 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         String(mockDb.insertedMeetingRows[0].room_slug),
         /^classroom-[a-f0-9]{8}$/,
     );
-    assert.equal(
+    assert.match(
         mockDb.insertedMeetingRows[0].meeting_name,
-        `Cognis Classroom — ${mockDb.insertedMeetingRows[0].room_slug}`,
+        /^[A-Z][a-z]+(?: [A-Z][a-z]+){3,4}$/,
+    );
+    assert.doesNotMatch(
+        mockDb.insertedMeetingRows[0].meeting_name,
+        /^Cognis Classroom/,
     );
     assert.equal(
         String(mockDb.insertedMeetingRows[0].meeting_url).endsWith(

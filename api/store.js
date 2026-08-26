@@ -8,7 +8,11 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName, normalizeMeetingPrefix } from "./meeting-values.js";
+import {
+    buildMeetingName,
+    generateMeetingName,
+    normalizeMeetingPrefix,
+} from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -451,7 +455,7 @@ export class JitsiMeetStore {
         const meetingId = randomUUID();
         const prefix = normalizeMeetingPrefix(meetingPrefix);
         const meetingSlug = buildRoomSlug(prefix);
-        const meetingName = buildMeetingName(meetingSlug);
+        const meetingName = generateMeetingName();
         const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
