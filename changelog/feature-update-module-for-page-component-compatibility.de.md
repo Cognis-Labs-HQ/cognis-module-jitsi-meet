@@ -35,3 +35,5 @@ Die Whiteboard-Schaltfläche wird sofort hervorgehoben, solange ihr Komponentenf
 Neue Besprechungen leiten ihren Anzeigenamen jetzt vom erzeugten Jitsi-Raum-Slug ab. Genau dieser eindeutige Name wird an das Besprechungs-Whiteboard übergeben; der zugehörige Messages-Chat verwendet den eindeutigen Besprechungsnamen mit anschließendem Erstellungsdatum.
 
 Rahmenlose Whiteboard-Fenster lassen die Jitsi-Bühne jetzt mit ihrem Inhalt wachsen, statt ihn in einem Bereich fester Höhe mit vertikalem Überlauf abzuschneiden. Die Bühne reagiert auf die Core-Hostklasse `app-page__main--component-borderless`; redundante moduleigene Abstandsüberschreibungen für Komponentenfenster wurden zugunsten des Core-Vertrags entfernt.
+
+Die Host-Überschreibung `app-page__main--component-borderless` wurde entfernt. Der Überlauf entstand, weil die später geladene Jitsi-Bühnenregel `overflow: hidden` das generische Core-Verhalten von `component-page-stage` überschrieb. Die Korrektur zielt jetzt direkt auf `.jitsi-stage-frame-wrap.component-page-stage` und lässt das rahmenlose Kindelement eine automatische Bühnenhöhe bestimmen.

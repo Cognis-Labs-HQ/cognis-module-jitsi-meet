@@ -86,11 +86,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(stylesheet, /\.jitsi-component-window/);
     assert.match(
         stylesheet,
-        /\.app-page__main--component-borderless \.jitsi-meeting-stage[\s\S]*?height:\s*auto;/,
-    );
-    assert.match(
-        stylesheet,
-        /\.app-page__main--component-borderless[\s\S]*?\.jitsi-stage-frame-wrap\.component-page-stage[\s\S]*?overflow:\s*visible;/,
+        /\.jitsi-stage-frame-wrap\.component-page-stage\s*\{[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
     const lifecycleSource = readFileSync(
         resolve(ROOT, "api/meeting-lifecycle-routes.js"),

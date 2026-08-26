@@ -34,14 +34,9 @@
     background: var(--color-accent);
 }
 
-.app-page__main--component-borderless .jitsi-meeting-stage {
-    height: auto;
-    min-height: 100%;
-}
-
-.app-page__main--component-borderless
-    .jitsi-stage-frame-wrap.component-page-stage {
+.jitsi-stage-frame-wrap.component-page-stage {
     flex: 1 0 auto;
+    height: auto;
     min-height: 100%;
     overflow: visible;
 }
