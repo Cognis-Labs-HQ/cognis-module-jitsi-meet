@@ -119,6 +119,7 @@
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
   <string name="module.jitsi_meet.whiteboard.open_failed">Das Whiteboard der Besprechung konnte nicht geöffnet werden.</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>
+  <string name="module.jitsi_meet.whiteboard.consensus_pending">Warten auf die Zustimmung der Teilnehmer zum Öffnen des Whiteboards.</string>
   <string name="module.jitsi_meet.category_collaboration">Zusammenarbeit</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>

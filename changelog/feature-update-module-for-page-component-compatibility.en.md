@@ -37,3 +37,5 @@ New meetings now derive their display name from the generated Jitsi room slug. T
 Borderless Whiteboard windows now let the Jitsi stage grow with their content instead of clipping it into a fixed-height area with vertical overflow. The stage responds to core’s `app-page__main--component-borderless` host class, and redundant module-level component-window margin overrides were removed in favor of the core contract.
 
 The host-level `app-page__main--component-borderless` override was removed. The overflow came from the Jitsi stage’s own later-loaded `overflow: hidden` rule overriding core’s generic `component-page-stage` behavior; the fix now targets `.jitsi-stage-frame-wrap.component-page-stage` directly and lets its borderless child establish an automatic stage height.
+
+Meetings now persists an optional per-meeting `whiteboardOpen` state only when a Whiteboard canvas exists. Organizers open it immediately; non-organizers accumulate presence-scoped votes until a strict majority agrees. Polling clients that observe the open state automatically spawn the shared canvas and activate meeting PiP, including participants who join later.

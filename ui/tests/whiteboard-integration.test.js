@@ -15,6 +15,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "api/whiteboard-routes.js"),
         "utf8",
     );
+    const storeSource = readFileSync(resolve(ROOT, "api/store.js"), "utf8");
     const buttonSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-button.js"),
         "utf8",
@@ -23,6 +24,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
     assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
+    assert.match(
+        storeSource,
+        /state\.whiteboardId[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
+    );
+    assert.match(buttonSource, /state\.meeting\?\.state\?\.whiteboardOpen/);
+    assert.match(
+        buttonSource,
+        /sharedOpenRequested = true;[\s\S]*?trigger\.button\.click\(\)/,
+    );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /createDisposableCanvas/);
@@ -51,7 +61,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /whiteboardActive !== true &&[\s\S]*?componentWindowPending !== true/,
+        /whiteboardOpen !== true &&[\s\S]*?componentWindowPending !== true/,
     );
     assert.match(
         buttonSource,

@@ -41,23 +41,6 @@ function buildParticipantKey(usernames, classroomId = null) {
     return createHash("sha256").update(payload).digest("hex");
 }
 
-/**
- * Persistence layer for Jitsi module configuration, meetings, participants,
- * auth state, and active session presence.
- *
- * Public methods provide schema setup, meeting creation/query helpers,
- * participant/auth-state updates, and normalized response payload helpers used
- * by the Jitsi API routes.
- *
- * @param {{
- *   db: {
- *     ensureTable: (definition: object) => Promise<void>,
- *     executeCommand: (command: object) => Promise<{ rows?: Array<Record<string, unknown>> }>,
- *     transaction: (callback: (executor: object) => Promise<void>) => Promise<void>,
- *   },
- *   log?: (level: string, message: string, meta?: Record<string, unknown>) => void,
- * }} options
- */
 export class JitsiMeetStore {
     constructor({ db, log }) {
         this.db = db;
@@ -166,6 +149,7 @@ export class JitsiMeetStore {
                     notNull: true,
                     default: 0,
                 },
+                { name: "whiteboard_open_votes", type: "text" },
                 {
                     name: "updated_at",
                     type: "timestamp",
@@ -621,6 +605,7 @@ export class JitsiMeetStore {
                 endedAt: null,
                 whiteboardId: null,
                 whiteboardActive: false,
+                whiteboardOpenVotes: [],
             };
         }
         const instanceId = row.instance_id
@@ -657,6 +642,9 @@ export class JitsiMeetStore {
             endedAt: readDbTimestampValue(row.ended_at),
             whiteboardId: row.whiteboard_id ? String(row.whiteboard_id) : null,
             whiteboardActive: Number(row.whiteboard_active ?? 0) === 1,
+            whiteboardOpenVotes: JSON.parse(
+                row.whiteboard_open_votes ?? "[]",
+            ).map(String),
         };
     }
 
@@ -683,6 +671,9 @@ export class JitsiMeetStore {
                 ended_at: merged.endedAt,
                 whiteboard_id: merged.whiteboardId,
                 whiteboard_active: merged.whiteboardActive ? 1 : 0,
+                whiteboard_open_votes: JSON.stringify(
+                    merged.whiteboardOpenVotes ?? [],
+                ),
             },
             conflict: {
                 action: "update",
@@ -895,6 +886,12 @@ export class JitsiMeetStore {
                 firstJoinedAt: state.firstJoinedAt,
                 endedBy: state.endedBy,
                 endedAt: state.endedAt,
+                ...(state.whiteboardId
+                    ? {
+                          whiteboardId: state.whiteboardId,
+                          whiteboardOpen: state.whiteboardActive,
+                      }
+                    : {}),
             },
             scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
             instanceUrl: extractUrlOrigin(meeting.meetingUrl),

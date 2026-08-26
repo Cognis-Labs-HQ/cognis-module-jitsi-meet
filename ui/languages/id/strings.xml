@@ -119,6 +119,7 @@
   <string name="module.jitsi_meet.whiteboard.description">Buka papan tulis tersinkron untuk rapat ini.</string>
   <string name="module.jitsi_meet.whiteboard.open_failed">Papan tulis rapat tidak dapat dibuka.</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Papan tulis rapat tidak dapat ditutup.</string>
+  <string name="module.jitsi_meet.whiteboard.consensus_pending">Menunggu konsensus peserta untuk membuka papan tulis.</string>
   <string name="module.jitsi_meet.category_collaboration">Kolaborasi</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Rapat</string>

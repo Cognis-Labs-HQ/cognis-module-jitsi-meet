@@ -333,6 +333,7 @@ export function registerMeetingLifecycleRoutes({
                     endedBy: null,
                     endedAt: null,
                     whiteboardActive: false,
+                    whiteboardOpenVotes: [],
                 });
                 meetingStarted = true;
             }
@@ -610,6 +611,7 @@ export function registerMeetingLifecycleRoutes({
                         endedBy: resolved.requesterUsername,
                         endedAt: new Date().toISOString(),
                         whiteboardActive: false,
+                        whiteboardOpenVotes: [],
                     });
                     await dispatchMeetingNotifications(resolved.participants, {
                         subject: "Meeting Ended",

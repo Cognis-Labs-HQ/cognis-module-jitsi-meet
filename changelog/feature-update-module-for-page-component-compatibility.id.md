@@ -37,3 +37,5 @@ Rapat baru kini memperoleh nama tampilannya dari slug ruang Jitsi yang dibuat. N
 Jendela Papan Tulis tanpa bingkai kini memungkinkan panggung Jitsi tumbuh mengikuti kontennya, bukan memotongnya dalam area bertinggi tetap dengan overflow vertikal. Panggung merespons kelas host inti `app-page__main--component-borderless`, dan override margin jendela komponen milik modul yang berlebihan dihapus demi kontrak inti.
 
 Override tingkat host `app-page__main--component-borderless` telah dihapus. Overflow berasal dari aturan panggung Jitsi `overflow: hidden` yang dimuat lebih akhir dan menggantikan perilaku generik inti `component-page-stage`; perbaikan kini menargetkan `.jitsi-stage-frame-wrap.component-page-stage` secara langsung dan membiarkan anak tanpa bingkai menetapkan tinggi panggung otomatis.
+
+Meetings kini menyimpan status opsional per rapat `whiteboardOpen` hanya jika kanvas Papan Tulis ada. Penyelenggara langsung membukanya; non-penyelenggara mengumpulkan suara berbasis kehadiran hingga mayoritas mutlak setuju. Klien polling yang melihat status terbuka otomatis membuat kanvas bersama dan mengaktifkan PiP rapat, termasuk peserta yang bergabung kemudian.

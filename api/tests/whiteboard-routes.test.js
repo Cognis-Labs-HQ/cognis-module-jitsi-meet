@@ -15,7 +15,13 @@ function createRecorder() {
     };
 }
 
-function createRoutes({ authorized = true } = {}) {
+function createRoutes({
+    authorized = true,
+    requesterUsername = "alice",
+    organizerUsername = "alice",
+    presence = [],
+    state = { whiteboardOpenVotes: [] },
+} = {}) {
     const handlers = new Map();
     const stateUpdates = [];
     registerMeetingWhiteboardRoutes({
@@ -28,7 +34,20 @@ function createRoutes({ authorized = true } = {}) {
         store: {
             async ensureSchema() {},
             async getMeetingById(id) {
-                return { id, meetingName: "Planning" };
+                return {
+                    id,
+                    meetingName: "Planning",
+                    createdBy: organizerUsername,
+                };
+            },
+            async getMeetingState() {
+                return state;
+            },
+            async listPresence() {
+                return presence;
+            },
+            filterCurrentPresenceEntries(entries) {
+                return entries;
             },
             async updateMeetingState(meetingId, update) {
                 stateUpdates.push({ meetingId, update });
@@ -36,7 +55,7 @@ function createRoutes({ authorized = true } = {}) {
         },
         profileStore: {
             async getProfile() {
-                return { handle: "alice" };
+                return { handle: requesterUsername };
             },
         },
         requireAuth: () => ({ sub: "account-alice" }),
@@ -73,7 +92,10 @@ test("meeting participants can synchronize a provider-created whiteboard", async
     assert.equal(response.status, 200);
     assert.deepEqual(response.body.data, {
         whiteboardId: "board-1",
-        active: true,
+        whiteboardOpen: true,
+        pendingConsensus: false,
+        voteCount: 0,
+        votesRequired: 0,
     });
     assert.deepEqual(routes.stateUpdates, [
         {
@@ -81,6 +103,7 @@ test("meeting participants can synchronize a provider-created whiteboard", async
             update: {
                 whiteboardId: "board-1",
                 whiteboardActive: true,
+                whiteboardOpenVotes: [],
             },
         },
     ]);
@@ -123,7 +146,56 @@ test("closing a meeting whiteboard synchronizes the default view", async () => {
     assert.deepEqual(routes.stateUpdates, [
         {
             meetingId: "meeting-1",
-            update: { whiteboardActive: false },
+            update: { whiteboardActive: false, whiteboardOpenVotes: [] },
         },
     ]);
+});
+
+test("meeting participants reach consensus before opening a whiteboard", async () => {
+    const state = { whiteboardOpenVotes: [] };
+    const presence = [{ username: "bob" }, { username: "carol" }];
+    const firstVote = createRoutes({
+        requesterUsername: "bob",
+        organizerUsername: "alice",
+        presence,
+        state,
+    });
+    const firstResponse = createRecorder();
+    await firstVote.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                active: true,
+            },
+        },
+        firstResponse,
+    );
+    assert.equal(firstResponse.body.data.pendingConsensus, true);
+    assert.equal(firstResponse.body.data.votesRequired, 2);
+    state.whiteboardOpenVotes = ["bob"];
+
+    const secondVote = createRoutes({
+        requesterUsername: "carol",
+        organizerUsername: "alice",
+        presence,
+        state,
+    });
+    const secondResponse = createRecorder();
+    await secondVote.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                active: true,
+            },
+        },
+        secondResponse,
+    );
+    assert.equal(secondResponse.body.data.whiteboardOpen, true);
+    assert.equal(secondResponse.body.data.voteCount, 2);
 });

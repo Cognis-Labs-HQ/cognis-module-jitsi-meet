@@ -205,13 +205,20 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
 export function syncMeetingWhiteboardComponent({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (!trigger?.button) return;
+    syncWhiteboardButtonAvailability({ root, state });
     if (
-        state.meeting?.state?.whiteboardActive !== true &&
+        state.meeting?.state?.whiteboardOpen !== true &&
         trigger.componentWindowPending !== true
     ) {
         closeComponentWindow(trigger);
+    } else if (
+        state.meeting?.state?.whiteboardOpen === true &&
+        !trigger.componentWindow &&
+        trigger.componentWindowPending !== true
+    ) {
+        trigger.sharedOpenRequested = true;
+        trigger.button.click();
     }
-    syncWhiteboardButtonAvailability({ root, state });
 }
 
 export function closeMeetingWhiteboard(root) {
@@ -298,6 +305,7 @@ export async function bindWhiteboardButton({
         preparationPromise: null,
         preparationFailedMeetingId: "",
         releaseFloatingWindow: null,
+        sharedOpenRequested: false,
         signal,
         spawnComponentPage,
         whiteboardGateway,
@@ -338,7 +346,7 @@ export async function bindWhiteboardButton({
             if (trigger.componentWindow) {
                 const whiteboardId = trigger.whiteboardId;
                 closeComponentWindow(trigger);
-                state.meeting.state.whiteboardActive = false;
+                state.meeting.state.whiteboardOpen = false;
                 void (async () => {
                     try {
                         const response = await apiFetch(
@@ -381,6 +389,8 @@ export async function bindWhiteboardButton({
             }
             const whiteboardId = trigger.preparedWhiteboardId;
             if (!whiteboardId || !trigger.componentPage) return;
+            const synchronizeOpen = trigger.sharedOpenRequested !== true;
+            trigger.sharedOpenRequested = false;
             button.disabled = true;
             setButtonActive(button, true);
             trigger.componentWindowPending = true;
@@ -407,22 +417,39 @@ export async function bindWhiteboardButton({
                         );
                     trigger.componentWindow = componentWindow;
                     trigger.whiteboardId = whiteboardId;
-                    const response = await apiFetch(
-                        "/api/v1/modules/jitsi-meet/whiteboard/state",
-                        {
-                            method: "POST",
-                            headers: { "content-type": "application/json" },
-                            body: JSON.stringify({
-                                meetingId: state.meeting.id,
-                                whiteboardId,
-                                active: true,
-                            }),
-                        },
-                    );
-                    if (!response.ok)
+                    const response = synchronizeOpen
+                        ? await apiFetch(
+                              "/api/v1/modules/jitsi-meet/whiteboard/state",
+                              {
+                                  method: "POST",
+                                  headers: {
+                                      "content-type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                      meetingId: state.meeting.id,
+                                      whiteboardId,
+                                      active: true,
+                                  }),
+                              },
+                          )
+                        : null;
+                    if (response && !response.ok)
                         throw new Error("whiteboard_state_sync_failed");
+                    const responseData = response
+                        ? (await response.json())?.data
+                        : { whiteboardOpen: true };
+                    if (responseData?.whiteboardOpen !== true) {
+                        closeComponentWindow(trigger);
+                        state.meeting.state.whiteboardOpen = false;
+                        showToast(
+                            i18n.t(
+                                "module.jitsi_meet.whiteboard.consensus_pending",
+                            ),
+                        );
+                        return;
+                    }
                     state.meeting.state.whiteboardId = whiteboardId;
-                    state.meeting.state.whiteboardActive = true;
+                    state.meeting.state.whiteboardOpen = true;
                 } catch (error) {
                     closeComponentWindow(trigger);
                     await logUi("error", "Meeting whiteboard action failed.", {

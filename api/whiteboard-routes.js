@@ -86,22 +86,63 @@ export function registerMeetingWhiteboardRoutes({
                 );
                 return;
             }
+            const currentState = await store.getMeetingState(
+                resolved.meeting.id,
+            );
+            let whiteboardOpen = false;
+            let whiteboardOpenVotes = [];
+            let votesRequired = 0;
+            if (
+                active &&
+                resolved.requesterUsername === resolved.meeting.createdBy
+            ) {
+                whiteboardOpen = true;
+            } else if (active) {
+                const currentParticipants = Array.from(
+                    new Set(
+                        store
+                            .filterCurrentPresenceEntries(
+                                await store.listPresence(resolved.meeting.id),
+                            )
+                            .map((entry) => entry.username)
+                            .filter(
+                                (username) =>
+                                    username !== resolved.meeting.createdBy,
+                            ),
+                    ),
+                );
+                const eligibleVoters = new Set(currentParticipants);
+                eligibleVoters.add(resolved.requesterUsername);
+                whiteboardOpenVotes = Array.from(
+                    new Set([
+                        ...(currentState.whiteboardOpenVotes ?? []),
+                        resolved.requesterUsername,
+                    ]),
+                ).filter((username) => eligibleVoters.has(username));
+                votesRequired = Math.floor(eligibleVoters.size / 2) + 1;
+                whiteboardOpen = whiteboardOpenVotes.length >= votesRequired;
+            }
             await store.updateMeetingState(resolved.meeting.id, {
                 ...(whiteboardId ? { whiteboardId } : {}),
-                whiteboardActive: active,
+                whiteboardActive: active && whiteboardOpen,
+                whiteboardOpenVotes:
+                    active && !whiteboardOpen ? whiteboardOpenVotes : [],
             });
             ctx.log?.("info", "Meeting whiteboard state changed.", {
                 component: "jitsi-meet-module",
                 operation: "update_meeting_whiteboard_state",
                 meetingId: resolved.meeting.id,
                 whiteboardId: whiteboardId || undefined,
-                active,
+                active: active && whiteboardOpen,
                 requesterUsername: resolved.requesterUsername,
             });
             sendJson(res, 200, {
                 data: {
                     whiteboardId: whiteboardId || null,
-                    active,
+                    whiteboardOpen: active && whiteboardOpen,
+                    pendingConsensus: active && !whiteboardOpen,
+                    voteCount: whiteboardOpenVotes.length,
+                    votesRequired,
                 },
             });
         },
