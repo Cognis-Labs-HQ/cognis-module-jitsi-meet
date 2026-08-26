@@ -77,8 +77,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /makeFloatingWindow\([\s\S]*?const authorizedSpawnPromise = spawnComponentWindow/,
+        /apiFetch\([\s\S]*?active:\s*true[\s\S]*?makeFloatingWindow\([\s\S]*?await spawnComponentWindowWithRetry/,
     );
+    assert.match(
+        buttonSource,
+        /for \(let attempt = 0; attempt < 4; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
+    );
+    assert.match(buttonSource, /document\.createElement\("a"\)/);
+    assert.match(buttonSource, /classList\.toggle\("btn-confirm", active\)/);
+    assert.match(buttonSource, /aria-disabled/);
     assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
@@ -94,10 +101,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /mode:\s*"overlay"/);
     assert.match(buttonSource, /frameless:\s*true/);
     assert.match(buttonSource, /component-pages:discard/);
-    assert.match(
-        buttonSource,
-        /const authorizedSpawnPromise = spawnComponentWindow[\s\S]*void \(async \(\)/,
-    );
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(appSource, /syncMeetingWhiteboardComponent/);

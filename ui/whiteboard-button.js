@@ -21,8 +21,14 @@ function getParticipantHandles(meeting) {
 }
 
 function setButtonActive(button, active) {
-    button?.classList.toggle("active", active);
+    button?.classList.toggle("btn-confirm", active);
+    button?.classList.toggle("btn-neutral", !active);
     button?.setAttribute("aria-pressed", String(active));
+}
+
+function setButtonDisabled(button, disabled) {
+    button?.classList.toggle("disabled", disabled);
+    button?.setAttribute("aria-disabled", String(disabled));
 }
 
 function setBorderlessStageActive(frameWrap, active) {
@@ -60,6 +66,28 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
         },
         signal: trigger.signal,
     });
+}
+
+async function spawnComponentWindowWithRetry(
+    trigger,
+    { meetingId, whiteboardId },
+) {
+    let lastError;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+        try {
+            const componentWindow = await spawnComponentWindow(trigger, {
+                meetingId,
+                whiteboardId,
+            });
+            if (componentWindow) return componentWindow;
+            lastError = new Error("whiteboard_component_window_unavailable");
+        } catch (error) {
+            lastError = error;
+        }
+        if (trigger.signal?.aborted) throw lastError;
+        if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
+    }
+    throw lastError;
 }
 
 function closeComponentWindow(trigger) {
@@ -200,10 +228,12 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
                     syncWhiteboardButtonAvailability({ root, state }),
                 );
         }
-        trigger.button.disabled =
+        setButtonDisabled(
+            trigger.button,
             !state.jitsiConferenceJoined ||
-            !trigger.componentPage ||
-            !trigger.preparedWhiteboardId;
+                !trigger.componentPage ||
+                !trigger.preparedWhiteboardId,
+        );
     }
 }
 
@@ -284,12 +314,13 @@ export async function bindWhiteboardButton({
     )
         return;
 
-    const button = document.createElement("button");
-    button.type = "button";
+    const button = document.createElement("a");
+    button.href = "#";
+    button.setAttribute("role", "button");
     button.className = "jitsi-whiteboard-button btn-neutral";
     button.setAttribute("aria-pressed", "false");
     button.textContent = i18n.t("module.jitsi_meet.whiteboard.open");
-    button.disabled = true;
+    setButtonDisabled(button, true);
     slot.replaceChildren(button);
     const trigger = {
         apiFetch,
@@ -346,7 +377,9 @@ export async function bindWhiteboardButton({
 
     button.addEventListener(
         "click",
-        () => {
+        (event) => {
+            event.preventDefault();
+            if (button.getAttribute("aria-disabled") === "true") return;
             if (!state.meeting?.id || !state.jitsiConferenceJoined) return;
             if (trigger.componentWindow) {
                 const whiteboardId = trigger.whiteboardId;
@@ -396,33 +429,12 @@ export async function bindWhiteboardButton({
             if (!whiteboardId || !trigger.componentPage) return;
             const synchronizeOpen = trigger.sharedOpenRequested !== true;
             trigger.sharedOpenRequested = false;
-            button.disabled = true;
+            setButtonDisabled(button, true);
             setButtonActive(button, true);
             trigger.componentWindowPending = true;
             setBorderlessStageActive(frameWrap, true);
-            const meetingFrame = frameWrap.querySelector(".jitsi-stage-frame");
-            if (meetingFrame instanceof HTMLElement) {
-                trigger.releaseFloatingWindow = makeFloatingWindow(
-                    meetingFrame,
-                    {
-                        handle: pipHandle,
-                        signal,
-                    },
-                );
-            }
-            const authorizedSpawnPromise = spawnComponentWindow(trigger, {
-                meetingId: state.meeting.id,
-                whiteboardId,
-            });
             void (async () => {
                 try {
-                    const componentWindow = await authorizedSpawnPromise;
-                    if (!componentWindow)
-                        throw new Error(
-                            "whiteboard_component_window_unavailable",
-                        );
-                    trigger.componentWindow = componentWindow;
-                    trigger.whiteboardId = whiteboardId;
                     const response = synchronizeOpen
                         ? await apiFetch(
                               "/api/v1/modules/jitsi-meet/whiteboard/state",
@@ -456,6 +468,26 @@ export async function bindWhiteboardButton({
                     }
                     state.meeting.state.whiteboardId = whiteboardId;
                     state.meeting.state.whiteboardOpen = true;
+                    const meetingFrame =
+                        frameWrap.querySelector(".jitsi-stage-frame");
+                    if (meetingFrame instanceof HTMLElement) {
+                        trigger.releaseFloatingWindow = makeFloatingWindow(
+                            meetingFrame,
+                            {
+                                handle: pipHandle,
+                                signal,
+                            },
+                        );
+                    }
+                    const componentWindow = await spawnComponentWindowWithRetry(
+                        trigger,
+                        {
+                            meetingId: state.meeting.id,
+                            whiteboardId,
+                        },
+                    );
+                    trigger.componentWindow = componentWindow;
+                    trigger.whiteboardId = whiteboardId;
                 } catch (error) {
                     closeComponentWindow(trigger);
                     await logUi("error", "Meeting whiteboard action failed.", {

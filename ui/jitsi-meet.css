@@ -29,11 +29,6 @@
     gap: 0.5rem;
 }
 
-.jitsi-whiteboard-button.active {
-    color: white;
-    background: var(--color-accent);
-}
-
 .jitsi-meeting-stage:has(
     > .jitsi-stage-frame-wrap.component-page-stage--borderless
 ) {
