@@ -45,6 +45,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         storeSource,
         /state\.whiteboardId[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
     );
+    assert.match(storeSource, /createdBy:\s*meeting\.createdBy/);
     assert.match(buttonSource, /state\.meeting\?\.state\?\.whiteboardOpen/);
     assert.match(
         meetingsRoutesSource,
@@ -56,11 +57,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /sharedOpenRequested = true;[\s\S]*?trigger\.button\.click\(\)/,
+        /sharedOpenRequested = !shouldAutoOpenMappedCanvas;[\s\S]*?trigger\.button\.click\(\)/,
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /createDisposableCanvas/);
+    assert.match(buttonSource, /createCanvas/);
+    assert.match(buttonSource, /saveCanvasToParticipants/);
+    assert.match(buttonSource, /meetingHasInvitedParticipants/);
+    assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);
     assert.match(buttonSource, /title:\s*state\.meeting\.meetingName/);
     assert.match(buttonSource, /title:\s*meetingName/);
     assert.match(
@@ -70,7 +75,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
         buttonSource,
-        /disposableCanvas = participantHandles\.length === 0/,
+        /disposableCanvas = !meetingHasInvitedParticipants/,
     );
     assert.match(buttonSource, /instantCanvas: trigger\.disposableCanvas/);
     assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
@@ -92,7 +97,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /whiteboardOpen !== true &&[\s\S]*?componentWindowPending !== true/,
+        /const shouldAutoOpenMappedCanvas[\s\S]*?const shouldOpen[\s\S]*?button\.disabled !== true[\s\S]*?componentWindowPending !== true/,
     );
     assert.match(
         buttonSource,

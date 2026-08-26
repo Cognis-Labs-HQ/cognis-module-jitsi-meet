@@ -92,10 +92,18 @@ export function registerMeetingWhiteboardRoutes({
             let whiteboardOpen = false;
             let whiteboardOpenVotes = [];
             let votesRequired = 0;
+            const mappedParticipantCanvas =
+                active &&
+                currentState.whiteboardId === whiteboardId &&
+                (await store.listParticipants(resolved.meeting.id)).some(
+                    (username) => username !== resolved.meeting.createdBy,
+                );
             if (
                 active &&
                 resolved.requesterUsername === resolved.meeting.createdBy
             ) {
+                whiteboardOpen = true;
+            } else if (mappedParticipantCanvas) {
                 whiteboardOpen = true;
             } else if (active) {
                 const currentParticipants = Array.from(

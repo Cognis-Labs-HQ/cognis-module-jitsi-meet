@@ -20,6 +20,13 @@ function getParticipantHandles(meeting) {
         .filter(Boolean);
 }
 
+function meetingHasInvitedParticipants(meeting) {
+    const organizerHandle = String(meeting?.createdBy ?? "").trim();
+    return getParticipantHandles(meeting).some(
+        (handle) => !organizerHandle || handle !== organizerHandle,
+    );
+}
+
 function syncButtonStyle(button) {
     if (!button) return;
     const confirmed = button.getAttribute("aria-pressed") === "true";
@@ -181,6 +188,10 @@ async function resolveWhiteboardCapabilities(signal) {
         if (
             typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
                 "function" &&
+            typeof capabilities.whiteboardGateway?.createCanvas ===
+                "function" &&
+            typeof capabilities.whiteboardGateway?.saveCanvasToParticipants ===
+                "function" &&
             typeof capabilities.spawnComponentPage === "function" &&
             typeof capabilities.makeFloatingWindow === "function"
         ) {
@@ -191,6 +202,51 @@ async function resolveWhiteboardCapabilities(signal) {
     return capabilities;
 }
 
+function canvasParticipantSaveKey(state, whiteboardId) {
+    return `${whiteboardId}:${getParticipantHandles(state.meeting).slice().sort().join(",")}`;
+}
+
+async function reportCanvasSaveFailure(trigger, state, whiteboardId, error) {
+    trigger.failedCanvasParticipantKey = canvasParticipantSaveKey(
+        state,
+        whiteboardId,
+    );
+    await logUi("error", "Meeting whiteboard participant save failed.", {
+        component: "module:jitsi-meet",
+        operation: "save_meeting_whiteboard_for_participants",
+        meetingId: state.meeting?.id,
+        whiteboardId,
+        error: error instanceof Error ? error.message : String(error),
+    });
+}
+
+function saveCanvasToParticipants(trigger, state, whiteboardId) {
+    if (trigger.disposableCanvas || !whiteboardId) return Promise.resolve();
+    const participantHandles = getParticipantHandles(state.meeting);
+    const saveKey = canvasParticipantSaveKey(state, whiteboardId);
+    if (
+        trigger.savedCanvasParticipantKey === saveKey ||
+        trigger.failedCanvasParticipantKey === saveKey
+    )
+        return Promise.resolve();
+    if (trigger.saveCanvasPromise) return trigger.saveCanvasPromise;
+    trigger.saveCanvasPromise = trigger.whiteboardGateway
+        .saveCanvasToParticipants({
+            whiteboardId,
+            resourceType: "meeting",
+            resourceId: state.meeting.id,
+            participantHandles,
+        })
+        .then(() => {
+            trigger.savedCanvasParticipantKey = saveKey;
+            trigger.failedCanvasParticipantKey = "";
+        })
+        .finally(() => {
+            trigger.saveCanvasPromise = null;
+        });
+    return trigger.saveCanvasPromise;
+}
+
 function prepareMeetingCanvas(trigger, state) {
     if (trigger.preparedWhiteboardId || !state.meeting?.id)
         return Promise.resolve();
@@ -199,15 +255,22 @@ function prepareMeetingCanvas(trigger, state) {
     }
     if (trigger.preparationPromise) return trigger.preparationPromise;
     const participantHandles = getParticipantHandles(state.meeting);
-    trigger.disposableCanvas = participantHandles.length === 0;
-    trigger.preparationPromise = trigger.whiteboardGateway
-        .createDisposableCanvas({
-            resourceType: "meeting",
-            resourceId: state.meeting.id,
-            title: state.meeting.meetingName,
-            participantHandles,
-        })
-        .then((canvas) => {
+    trigger.disposableCanvas = !meetingHasInvitedParticipants(state.meeting);
+    const createCanvas = trigger.disposableCanvas
+        ? trigger.whiteboardGateway.createDisposableCanvas.bind(
+              trigger.whiteboardGateway,
+          )
+        : trigger.whiteboardGateway.createCanvas.bind(
+              trigger.whiteboardGateway,
+          );
+    trigger.preparationPromise = createCanvas({
+        resourceType: "meeting",
+        resourceId: state.meeting.id,
+        title: state.meeting.meetingName,
+        participantHandles,
+        disposable: trigger.disposableCanvas,
+    })
+        .then(async (canvas) => {
             trigger.preparedWhiteboardId = String(
                 canvas?.whiteboardId ?? canvas?.id ?? "",
             ).trim();
@@ -216,6 +279,18 @@ function prepareMeetingCanvas(trigger, state) {
             }
             trigger.preparationFailedMeetingId = "";
             trigger.preparedMeetingId = state.meeting.id;
+            await saveCanvasToParticipants(
+                trigger,
+                state,
+                trigger.preparedWhiteboardId,
+            ).catch((error) =>
+                reportCanvasSaveFailure(
+                    trigger,
+                    state,
+                    trigger.preparedWhiteboardId,
+                    error,
+                ),
+            );
         })
         .finally(() => {
             trigger.preparationPromise = null;
@@ -226,8 +301,9 @@ function prepareMeetingCanvas(trigger, state) {
 export function syncWhiteboardButtonAvailability({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (trigger?.button) {
-        trigger.disposableCanvas =
-            getParticipantHandles(state.meeting).length === 0;
+        trigger.disposableCanvas = !meetingHasInvitedParticipants(
+            state.meeting,
+        );
         const meetingId = state.meeting?.id ?? "";
         if (trigger.preparedMeetingId !== meetingId) {
             trigger.preparedMeetingId = meetingId;
@@ -237,7 +313,21 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         const stateWhiteboardId = String(
             state.meeting?.state?.whiteboardId ?? "",
         ).trim();
-        if (stateWhiteboardId) trigger.preparedWhiteboardId = stateWhiteboardId;
+        if (stateWhiteboardId) {
+            trigger.preparedWhiteboardId = stateWhiteboardId;
+            void saveCanvasToParticipants(
+                trigger,
+                state,
+                stateWhiteboardId,
+            ).catch((error) =>
+                reportCanvasSaveFailure(
+                    trigger,
+                    state,
+                    stateWhiteboardId,
+                    error,
+                ),
+            );
+        }
         setButtonActive(
             trigger.button,
             state.meeting?.state?.whiteboardOpen === true ||
@@ -279,18 +369,27 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (!trigger?.button) return;
     syncWhiteboardButtonAvailability({ root, state });
-    if (
-        state.meeting?.state?.whiteboardOpen !== true &&
-        trigger.componentWindowPending !== true
-    ) {
+    const meetingId = state.meeting?.id ?? "";
+    const shouldAutoOpenMappedCanvas =
+        Boolean(trigger.preparedWhiteboardId) &&
+        trigger.disposableCanvas !== true &&
+        trigger.autoOpenedMeetingIds.has(meetingId) === false;
+    const shouldOpen =
+        state.meeting?.state?.whiteboardOpen === true ||
+        shouldAutoOpenMappedCanvas;
+    if (!shouldOpen && trigger.componentWindowPending !== true) {
         closeComponentWindow(trigger);
     } else if (
-        state.meeting?.state?.whiteboardOpen === true &&
+        shouldOpen &&
         trigger.loadFailed !== true &&
+        trigger.button.disabled !== true &&
         !trigger.componentWindow &&
         trigger.componentWindowPending !== true
     ) {
-        trigger.sharedOpenRequested = true;
+        if (shouldAutoOpenMappedCanvas) {
+            trigger.autoOpenedMeetingIds.add(meetingId);
+        }
+        trigger.sharedOpenRequested = !shouldAutoOpenMappedCanvas;
         trigger.button.click();
     }
 }
@@ -348,6 +447,8 @@ export async function bindWhiteboardButton({
     } = capabilities;
     if (
         typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
+        typeof whiteboardGateway?.createCanvas !== "function" ||
+        typeof whiteboardGateway?.saveCanvasToParticipants !== "function" ||
         typeof spawnComponentPage !== "function" ||
         typeof makeFloatingWindow !== "function"
     )
@@ -362,12 +463,14 @@ export async function bindWhiteboardButton({
     slot.replaceChildren(button);
     const trigger = {
         apiFetch,
+        autoOpenedMeetingIds: new Set(),
         button,
         componentPage: null,
         componentWindow: null,
         componentWindowPending: false,
         discardComponentPage,
-        disposableCanvas: getParticipantHandles(state.meeting).length === 0,
+        disposableCanvas: !meetingHasInvitedParticipants(state.meeting),
+        failedCanvasParticipantKey: "",
         frameWrap,
         i18n,
         loadFailed: false,
@@ -380,6 +483,8 @@ export async function bindWhiteboardButton({
         preparationPromise: null,
         preparationFailedMeetingId: "",
         releaseFloatingWindow: null,
+        saveCanvasPromise: null,
+        savedCanvasParticipantKey: "",
         sharedOpenRequested: false,
         signal,
         spawnComponentPage,

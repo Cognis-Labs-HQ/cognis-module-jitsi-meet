@@ -880,6 +880,7 @@ export class JitsiMeetStore {
             meetingPassword: extra.meetingPassword ?? "",
             classroomId: meeting.classroomId,
             chatRoomId: meeting.chatRoomId,
+            createdBy: meeting.createdBy,
             participants,
             state: {
                 authRequired: state.authRequired,

@@ -19,6 +19,7 @@ function createRoutes({
     authorized = true,
     requesterUsername = "alice",
     organizerUsername = "alice",
+    participants = ["alice"],
     presence = [],
     state = { whiteboardOpenVotes: [] },
 } = {}) {
@@ -45,6 +46,9 @@ function createRoutes({
             },
             async listPresence() {
                 return presence;
+            },
+            async listParticipants() {
+                return participants;
             },
             filterCurrentPresenceEntries(entries) {
                 return entries;
@@ -198,4 +202,31 @@ test("meeting participants reach consensus before opening a whiteboard", async (
     );
     assert.equal(secondResponse.body.data.whiteboardOpen, true);
     assert.equal(secondResponse.body.data.voteCount, 2);
+});
+
+test("a mapped participant canvas reopens without another consensus vote", async () => {
+    const routes = createRoutes({
+        requesterUsername: "bob",
+        organizerUsername: "alice",
+        participants: ["alice", "bob"],
+        state: { whiteboardId: "board-1", whiteboardOpenVotes: [] },
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.body.data.whiteboardOpen, true);
+    assert.equal(response.body.data.pendingConsensus, false);
+    assert.equal(response.body.data.voteCount, 0);
 });
