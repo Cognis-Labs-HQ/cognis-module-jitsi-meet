@@ -63,3 +63,5 @@ Die Whiteboard-Aktion bleibt ein Anker und delegiert jetzt alle visuellen Zustä
 Der Whiteboard-Anker trägt keine modulspezifische Darstellungsklasse mehr. Sein Standard-, Hover- und Aktiv-Erscheinungsbild stammt vollständig aus den Cognis-Core-Werkzeugen `btn-neutral`, `btn-confirm` und `btn-animated`; das Modul behält nur semantischen ARIA-Zustand und Verhalten.
 
 Die Meetings-SPA ruft jetzt vor der Darstellung den Vertrag `loadCommonStyles()` der Fähigkeit `ui:reuse` auf, statt nur `page-sections.css` zu laden. Damit steht der vollständige Cognis-Core-Stylesheet-Katalog einschließlich der Standarddarstellung von Schaltflächen nach direkter Navigation und SPA-Navigation zur Verfügung.
+
+Der Stylesheet-Loader des Moduls behält den stabilen Exportnamen `loadReuseStylesheet` bei und delegiert weiterhin an `loadCommonStyles()` des Core. Aktuelle und bereits zwischengespeicherte Meetings-Einstiegsskripte lösen dadurch bei der SPA-Navigation denselben benannten Export auf.

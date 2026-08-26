@@ -63,3 +63,5 @@ Tindakan Papan Tulis tetap berupa tautan dan kini mendelegasikan semua status vi
 Tautan Papan Tulis tidak lagi membawa kelas presentasi khusus modul. Tampilan bawaan, hover, dan aktifnya kini sepenuhnya berasal dari utilitas Cognis core `btn-neutral`, `btn-confirm`, dan `btn-animated`; modul hanya mempertahankan status ARIA semantik dan perilakunya.
 
 SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:reuse` sebelum merender, alih-alih hanya memuat `page-sections.css`. Dengan demikian, seluruh katalog stylesheet Cognis core, termasuk tampilan tombol standar, tersedia setelah navigasi langsung maupun navigasi SPA.
+
+Ekspor pemuat stylesheet modul mempertahankan nama stabil `loadReuseStylesheet` sambil mendelegasikan ke `loadCommonStyles()` milik core. Skrip entri Meetings yang aktif maupun yang sudah tersimpan dalam cache kini menemukan ekspor bernama yang sama selama navigasi SPA.

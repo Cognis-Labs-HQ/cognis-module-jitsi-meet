@@ -63,3 +63,5 @@ The Whiteboard action remains an anchor and now delegates all visual states to C
 The Whiteboard anchor no longer carries a module-specific presentation class. Its default, hover, and active appearance now comes entirely from the Cognis core `btn-neutral`, `btn-confirm`, and `btn-animated` utilities; the module retains only semantic ARIA state and behavior.
 
 The Meetings SPA now calls the `ui:reuse` capability's `loadCommonStyles()` contract before rendering instead of loading only `page-sections.css`. This ensures the complete Cognis core stylesheet catalog, including standard button presentation, is available after direct and SPA navigation.
+
+The module's stylesheet-loader export retains the stable `loadReuseStylesheet` name while delegating to core `loadCommonStyles()`. Current and already-cached Meetings entry scripts therefore resolve the same named export during SPA navigation.
