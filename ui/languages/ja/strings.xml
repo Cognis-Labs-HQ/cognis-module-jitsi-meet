@@ -116,6 +116,7 @@
   <string name="module.jitsi_meet.summary">Cognis に統合された安全なビデオミーティング。</string>
   <string name="module.jitsi_meet.description">Cognis から Jitsi ミーティングを作成、参加、管理、共有できます。</string>
   <string name="module.jitsi_meet.whiteboard.open">ホワイトボード</string>
+  <string name="module.jitsi_meet.whiteboard.close">Whiteboard を閉じる</string>
   <string name="module.jitsi_meet.whiteboard.description">このミーティング用の同期ホワイトボードを開きます。</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">ホワイトボードの読み込みエラー</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">ミーティングのホワイトボードを閉じられませんでした。</string>

@@ -116,6 +116,7 @@
   <string name="module.jitsi_meet.summary">Secure video meetings integrated with Cognis.</string>
   <string name="module.jitsi_meet.description">Create, join, moderate, and share Jitsi meetings from Cognis.</string>
   <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.close">Close Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.description">Open a synchronized whiteboard for this meeting.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Error loading whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">The meeting whiteboard could not be closed.</string>

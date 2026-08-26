@@ -89,6 +89,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
         buttonSource,
+        /button\.dataset\.activeLabel[\s\S]*?module\.jitsi_meet\.whiteboard\.close/,
+    );
+    assert.match(
+        stylesheet,
+        /#jitsi-whiteboard-button-slot > button\.active[\s\S]*?var\(--accent-2\)/,
+    );
+    assert.match(
+        buttonSource,
         /disposableCanvas = !meetingHasInvitedParticipants/,
     );
     assert.match(buttonSource, /instantCanvas: trigger\.disposableCanvas/);

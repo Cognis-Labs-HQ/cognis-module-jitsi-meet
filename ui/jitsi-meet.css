@@ -29,6 +29,13 @@
     gap: 0.5rem;
 }
 
+#jitsi-whiteboard-button-slot > button.active {
+    border-color: color-mix(in srgb, var(--accent-2) 35%, transparent);
+    color: var(--text);
+    background: color-mix(in srgb, var(--accent-2) 22%, transparent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+}
+
 .jitsi-meeting-stage:has(
     > .jitsi-stage-frame-wrap.jitsi-whiteboard-component-open
 ) {

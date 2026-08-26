@@ -116,6 +116,7 @@
   <string name="module.jitsi_meet.summary">Sichere, in Cognis integrierte Videobesprechungen.</string>
   <string name="module.jitsi_meet.description">Jitsi-Besprechungen in Cognis erstellen, ihnen beitreten, sie moderieren und teilen.</string>
   <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.close">Whiteboard schließen</string>
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>

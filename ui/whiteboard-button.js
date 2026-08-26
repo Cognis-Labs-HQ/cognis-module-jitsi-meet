@@ -33,6 +33,9 @@ function syncButtonStyle(button) {
     button.classList.toggle("active", confirmed);
     button.classList.toggle("btn-confirm", confirmed);
     button.classList.toggle("btn-neutral", !confirmed);
+    button.textContent = confirmed
+        ? button.dataset.activeLabel || button.textContent
+        : button.dataset.inactiveLabel || button.textContent;
 }
 
 function setButtonActive(button, active) {
@@ -485,7 +488,9 @@ export async function bindWhiteboardButton({
     button.type = "button";
     button.className = "btn-neutral btn-animated";
     button.setAttribute("aria-pressed", "false");
-    button.textContent = i18n.t("module.jitsi_meet.whiteboard.open");
+    button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
+    button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
+    button.textContent = button.dataset.inactiveLabel;
     setButtonDisabled(button, true);
     slot.replaceChildren(button);
     const trigger = {
