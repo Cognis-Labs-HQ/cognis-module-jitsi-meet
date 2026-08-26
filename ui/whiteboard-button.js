@@ -22,9 +22,7 @@ function getParticipantHandles(meeting) {
 
 function syncButtonStyle(button) {
     if (!button) return;
-    const confirmed =
-        button.getAttribute("aria-pressed") === "true" ||
-        button.dataset.hovered === "true";
+    const confirmed = button.getAttribute("aria-pressed") === "true";
     button.classList.toggle("btn-confirm", confirmed);
     button.classList.toggle("btn-neutral", !confirmed);
 }
@@ -34,13 +32,8 @@ function setButtonActive(button, active) {
     syncButtonStyle(button);
 }
 
-function setButtonHovered(button, hovered) {
-    if (!button) return;
-    button.dataset.hovered = String(hovered);
-    syncButtonStyle(button);
-}
-
 function setButtonDisabled(button, disabled) {
+    if (button instanceof HTMLButtonElement) button.disabled = disabled;
     button?.setAttribute("aria-disabled", String(disabled));
 }
 
@@ -72,6 +65,13 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
             instantCanvas: trigger.disposableCanvas,
             disposable: trigger.disposableCanvas,
             frameless: true,
+            borderless: true,
+            contentScrolling: false,
+            layout: {
+                borderless: true,
+                fillParent: true,
+                scrollOwner: "document",
+            },
         },
         signal: trigger.signal,
     });
@@ -341,9 +341,8 @@ export async function bindWhiteboardButton({
     )
         return;
 
-    const button = document.createElement("a");
-    button.href = "#";
-    button.setAttribute("role", "button");
+    const button = document.createElement("button");
+    button.type = "button";
     button.className = "btn-neutral btn-animated";
     button.setAttribute("aria-pressed", "false");
     button.textContent = i18n.t("module.jitsi_meet.whiteboard.open");
@@ -404,23 +403,9 @@ export async function bindWhiteboardButton({
     mountedWhiteboardButtons.set(root, trigger);
 
     button.addEventListener(
-        "mouseenter",
-        () => setButtonHovered(button, true),
-        {
-            signal,
-        },
-    );
-    button.addEventListener(
-        "mouseleave",
-        () => setButtonHovered(button, false),
-        { signal },
-    );
-
-    button.addEventListener(
         "click",
         (event) => {
-            event.preventDefault();
-            if (button.getAttribute("aria-disabled") === "true") return;
+            if (button.disabled) return;
             if (!state.meeting?.id || !state.jitsiConferenceJoined) return;
             if (trigger.componentWindow) {
                 const whiteboardId = trigger.whiteboardId;

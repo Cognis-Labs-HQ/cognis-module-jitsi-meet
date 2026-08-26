@@ -37,6 +37,9 @@
 }
 
 .jitsi-stage-frame-wrap.component-page-stage--borderless {
+    display: grid;
+    grid-template-rows: minmax(min-content, 1fr);
+    align-items: stretch;
     flex: 1 0 auto;
     height: auto;
     min-height: 100%;

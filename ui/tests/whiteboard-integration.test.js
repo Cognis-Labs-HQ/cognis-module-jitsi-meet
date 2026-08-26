@@ -109,16 +109,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
     );
-    assert.match(buttonSource, /document\.createElement\("a"\)/);
+    assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(
         buttonSource,
-        /dataset\.hovered === "true"[\s\S]*?classList\.toggle\("btn-confirm", confirmed\)[\s\S]*?classList\.toggle\("btn-neutral", !confirmed\)/,
+        /getAttribute\("aria-pressed"\) === "true"[\s\S]*?classList\.toggle\("btn-confirm", confirmed\)[\s\S]*?classList\.toggle\("btn-neutral", !confirmed\)/,
     );
     assert.match(
         buttonSource,
-        /"mouseenter"[\s\S]*?setButtonHovered\(button, true\)[\s\S]*?"mouseleave"[\s\S]*?setButtonHovered\(button, false\)/,
+        /button instanceof HTMLButtonElement[\s\S]*?button\.disabled = disabled/,
     );
-    assert.match(buttonSource, /aria-disabled/);
     assert.match(
         apiIndexSource,
         /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
@@ -137,6 +136,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /crypto\?\.randomUUID/);
     assert.match(buttonSource, /mode:\s*"overlay"/);
     assert.match(buttonSource, /frameless:\s*true/);
+    assert.match(buttonSource, /contentScrolling:\s*false/);
+    assert.match(
+        buttonSource,
+        /layout:\s*\{[\s\S]*?borderless:\s*true[\s\S]*?fillParent:\s*true[\s\S]*?scrollOwner:\s*"document"/,
+    );
     assert.match(buttonSource, /component-pages:discard/);
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
@@ -152,7 +156,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         stylesheet,
-        /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
+        /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?grid-template-rows:\s*minmax\(min-content, 1fr\);[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
     assert.match(
         buttonSource,

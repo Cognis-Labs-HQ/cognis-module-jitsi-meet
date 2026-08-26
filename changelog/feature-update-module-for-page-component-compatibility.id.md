@@ -63,3 +63,5 @@ Tindakan Papan Tulis tetap berupa tautan dan kini mendelegasikan semua status vi
 Tautan Papan Tulis tidak lagi membawa kelas presentasi khusus modul. Tampilan bawaan, hover, dan aktifnya kini sepenuhnya berasal dari utilitas Cognis core `btn-neutral`, `btn-confirm`, dan `btn-animated`; modul hanya mempertahankan status ARIA semantik dan perilakunya.
 
 SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:reuse` sebelum merender, alih-alih hanya memuat `page-sections.css`. Dengan demikian, seluruh katalog stylesheet Cognis core, termasuk tampilan tombol standar, tersedia setelah navigasi langsung maupun navigasi SPA.
+
+Tindakan Papan Tulis kini menggunakan kontrak `<button>` native dan `btn-*` core yang sama seperti tindakan Bagikan di sebelahnya, termasuk status nonaktif native. Spawn tanpa bingkai juga meneruskan kontrak tata letak pengguliran dokumen dalam konteks komponen, dan stage Jitsi aktif memakai baris grid berukuran konten dengan luapan terlihat agar kanvas tertanam dapat membesar tanpa membuat penggulir vertikal bertingkat.
