@@ -20,10 +20,24 @@ function getParticipantHandles(meeting) {
         .filter(Boolean);
 }
 
+function syncButtonStyle(button) {
+    if (!button) return;
+    const confirmed =
+        button.getAttribute("aria-pressed") === "true" ||
+        button.dataset.hovered === "true";
+    button.classList.toggle("btn-confirm", confirmed);
+    button.classList.toggle("btn-neutral", !confirmed);
+}
+
 function setButtonActive(button, active) {
-    button?.classList.toggle("btn-confirm", active);
-    button?.classList.toggle("btn-neutral", !active);
     button?.setAttribute("aria-pressed", String(active));
+    syncButtonStyle(button);
+}
+
+function setButtonHovered(button, hovered) {
+    if (!button) return;
+    button.dataset.hovered = String(hovered);
+    syncButtonStyle(button);
 }
 
 function setButtonDisabled(button, disabled) {
@@ -389,6 +403,19 @@ export async function bindWhiteboardButton({
         },
     };
     mountedWhiteboardButtons.set(root, trigger);
+
+    button.addEventListener(
+        "mouseenter",
+        () => setButtonHovered(button, true),
+        {
+            signal,
+        },
+    );
+    button.addEventListener(
+        "mouseleave",
+        () => setButtonHovered(button, false),
+        { signal },
+    );
 
     button.addEventListener(
         "click",

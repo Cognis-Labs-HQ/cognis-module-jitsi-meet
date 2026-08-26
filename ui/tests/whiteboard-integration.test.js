@@ -110,7 +110,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
     );
     assert.match(buttonSource, /document\.createElement\("a"\)/);
-    assert.match(buttonSource, /classList\.toggle\("btn-confirm", active\)/);
+    assert.match(
+        buttonSource,
+        /dataset\.hovered === "true"[\s\S]*?classList\.toggle\("btn-confirm", confirmed\)[\s\S]*?classList\.toggle\("btn-neutral", !confirmed\)/,
+    );
+    assert.match(
+        buttonSource,
+        /"mouseenter"[\s\S]*?setButtonHovered\(button, true\)[\s\S]*?"mouseleave"[\s\S]*?setButtonHovered\(button, false\)/,
+    );
     assert.match(buttonSource, /aria-disabled/);
     assert.match(
         stylesheet,

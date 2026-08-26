@@ -57,3 +57,5 @@ Meetings kini menggunakan kapabilitas `ui:reuse` yang baru dipublikasikan sebaga
 Ekspor lokal `ensureStylesheetLoaded` dipulihkan sebagai delegasi yang didukung `ui:reuse`, dan entrypoint Meetings saat ini menggunakan ekspor yang sama. Ini mencegah cache SPA campuran memuat entry rute lama terhadap modul helper yang lebih baru dan menggagalkan instansiasi modul karena ekspor bernama tidak ditemukan.
 
 Kegagalan pemasangan Papan Tulis kini dikunci untuk mount SPA Meetings saat ini. Kegagalan impor dinamis yang tidak dapat dicoba ulang dihentikan segera; semua kegagalan akhir saat persiapan atau pemasangan dicatat sekali, menampilkan “Terjadi kesalahan saat memuat papan tulis”, menonaktifkan kontrol Papan Tulis lokal, dan mencegah polling konsensus mencoba pemasangan lagi hingga pemuatan ulang atau remount SPA.
+
+Tindakan Papan Tulis tetap berupa tautan dan kini mendelegasikan semua status visual ke Cognis core: `btn-neutral` menjadi bawaan, sedangkan hover dan status aktif/terbuka memakai `btn-confirm`. Saat pointer meninggalkan kontrol, `btn-neutral` dipulihkan kecuali Papan Tulis masih aktif.

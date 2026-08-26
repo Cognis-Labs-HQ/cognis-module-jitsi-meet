@@ -57,3 +57,5 @@ Meetings now uses the newly published `ui:reuse` capability as its sole browser 
 The local `ensureStylesheetLoaded` export has been restored as a `ui:reuse`-backed delegate, and the current Meetings entrypoint consumes that same export. This prevents mixed SPA caches from loading an older route entry against a newer helper module and failing module instantiation with a missing named export.
 
 Whiteboard mount failures are now latched for the current Meetings SPA mount. Non-retryable dynamic-import failures stop immediately; all terminal preparation or mount failures are logged once, show “Error loading whiteboard,” disable the local Whiteboard control, and prevent consensus polling from attempting another mount until refresh or SPA remount.
+
+The Whiteboard action remains an anchor and now delegates all visual states to Cognis core: `btn-neutral` is the default, while hover and the active/open state apply `btn-confirm`. Leaving hover restores `btn-neutral` unless the Whiteboard is still active.
