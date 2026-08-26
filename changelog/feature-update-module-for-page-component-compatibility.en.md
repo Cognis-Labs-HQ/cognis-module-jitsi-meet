@@ -39,3 +39,5 @@ Borderless Whiteboard windows now let the Jitsi stage grow with their content in
 The host-level `app-page__main--component-borderless` override was removed. The overflow came from the Jitsi stage’s own later-loaded `overflow: hidden` rule overriding core’s generic `component-page-stage` behavior; the fix now targets `.jitsi-stage-frame-wrap.component-page-stage` directly and lets its borderless child establish an automatic stage height.
 
 Meetings now persists an optional per-meeting `whiteboardOpen` state only when a Whiteboard canvas exists. Organizers open it immediately; non-organizers accumulate presence-scoped votes until a strict majority agrees. Polling clients that observe the open state automatically spawn the shared canvas and activate meeting PiP, including participants who join later.
+
+Starting or reclaiming a meeting instance no longer resets an already-open per-meeting Whiteboard. This removes the join-lifecycle race that closed participant-free meeting Whiteboards on the next five-second state refresh; explicit meeting termination still closes the shared Whiteboard.

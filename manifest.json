@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.3",
+    "version": "1.5.4",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -123,7 +123,7 @@
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "445c1abe19314f2cf54a80b2a1e87ff91dd5e20ccdcd4bf64b0c6ef55f90b57d"
+            "sha256": "df386ede05003a224d4691e6f208b7453e5b8570e5f632f90d1ccd438749b314"
         },
         {
             "path": "api/meeting-values.js",
@@ -263,19 +263,19 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "acd967849818d9930329b48d2ff32694ee8637ced676033eb856bae9de0407d6"
+            "sha256": "b4d98ec4b9a2f0f820182fc919b2af3785c9a52a0e0dc2de8142b37a6afac4b7"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "93d32b4d62acc0b442e2ab8f78019fdc4850365ac038148752bff97650cb446e"
+            "sha256": "48f1a988c176a55968917382437fda684358c8584825bfe68717b432b837b338"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "766bbfb463c350ac58975af2ce2cdcbccbfd5e1d575909bdd2fa56b8bdab9bfd"
+            "sha256": "55bfa9906393d8da512bd8c752c1860c49b4a1b28b60f1a0001def262f32e570"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "438322dd1c45c46912bcd80742107fa0273f662c0513152b20ca3db7a4246645"
+            "sha256": "64f3f967a6743edfd8d7c3d4728864dacd92e15e6497a125bf5930f1ee235c24"
         },
         {
             "path": "LICENSE",
@@ -283,11 +283,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "b0fb4c05d47a68eb6486c9e56a4fe8b0ef7cd7eae85f0f292686c67198020c11"
+            "sha256": "14f927f7c2760ace8741a87fd33024e4bd743e7e9e99ca986e78373493e1b415"
         },
         {
             "path": "package.json",
-            "sha256": "91fe83eac046061096c345c63aeb5dd18f1ea298e21a84a2c8877601fc1bdd5c"
+            "sha256": "f4aa95a6ec531fe0c548d7670c0deaef2aef1c55d4ae357fa7a50d472d5fd564"
         },
         {
             "path": "README.de.md",
