@@ -7,12 +7,17 @@ import {
 import { importReuseModule } from "./reuse/resources.js";
 import { buildProfileAvatarMarkup } from "./app/profile-avatars.js";
 
-const [{ apiFetch }, { getShareContext }, { normalizeUsername }] =
-    await Promise.all([
-        importReuseModule("api-client.js"),
-        importReuseModule("auth-session.js"),
-        importReuseModule("value-normalizers.js"),
-    ]);
+const [
+    { apiFetch },
+    { getShareContext },
+    { ensurePageStylesheet },
+    { normalizeUsername },
+] = await Promise.all([
+    importReuseModule("api-client.js"),
+    importReuseModule("auth-session.js"),
+    importReuseModule("page-styles.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     languageBaseUrls: ["/static/modules/jitsi-meet/languages"],
@@ -86,6 +91,11 @@ export async function loadMessageUiResources() {
 function buildFileUrl(namespaceId, objectKey) {
     if (!namespaceId || !objectKey) return "";
     return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
+}
+
+export function ensureStylesheetLoaded(stylesheetUrl) {
+    if (!stylesheetUrl) return Promise.resolve();
+    return ensurePageStylesheet(stylesheetUrl);
 }
 
 export async function loadMessageReactionsController(

@@ -25,6 +25,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "ui/whiteboard-button.js"),
         "utf8",
     );
+    const helpersSource = readFileSync(
+        resolve(ROOT, "ui/jitsi-helpers.js"),
+        "utf8",
+    );
     const appIndexSource = readFileSync(
         resolve(ROOT, "ui/app/index.js"),
         "utf8",
@@ -140,7 +144,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /btn-neutral btn-animated/);
     assert.match(appIndexSource, /loadReuseStylesheet\("page-sections\.css"\)/);
-    assert.match(appIndexSource, /ensurePageStylesheet\(stylesheetUrl\)/);
+    assert.match(
+        appIndexSource,
+        /ensureStylesheetLoaded,[\s\S]*?from "\.\.\/jitsi-helpers\.js";/,
+    );
+    assert.match(
+        helpersSource,
+        /export function ensureStylesheetLoaded\(stylesheetUrl\)[\s\S]*?ensurePageStylesheet\(stylesheetUrl\)/,
+    );
     assert.match(
         reuseResourcesSource,
         /uiCtx\.capabilities\.get\("ui:reuse"\)/,

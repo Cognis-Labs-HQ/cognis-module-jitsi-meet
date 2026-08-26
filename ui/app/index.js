@@ -6,6 +6,7 @@ import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
 import {
+    ensureStylesheetLoaded,
     fetchCurrentProfile,
     fetchParticipants,
     loadMessageReactionsController,
@@ -31,7 +32,6 @@ const [
     { applyDocumentTitle, createI18n },
     { createPageComposer },
     { mountWhenDirect },
-    { ensurePageStylesheet },
     { registerSearchIndex, openSearchPopup },
     { normalizeUsername },
 ] = await Promise.all([
@@ -40,7 +40,6 @@ const [
     importReuseModule("i18n.js"),
     importReuseModule("page-composer/index.js"),
     importReuseModule("page-entry.js"),
-    importReuseModule("page-styles.js"),
     importReuseModule("search-util/popup.js"),
     importReuseModule("value-normalizers.js"),
 ]);
@@ -94,7 +93,7 @@ export async function mount(
         ? await import(messageUiResources.chatLoadingModuleUrl)
         : null;
     for (const stylesheetUrl of messageUiResources.stylesheetUrls) {
-        void ensurePageStylesheet(stylesheetUrl);
+        void ensureStylesheetLoaded(stylesheetUrl);
     }
     const i18n = await createI18n({
         componentStringBaseUrls: messageUiResources.languageBaseUrls,

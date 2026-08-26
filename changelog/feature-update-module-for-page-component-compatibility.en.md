@@ -53,3 +53,5 @@ The anchor-based Whiteboard action now has complete module-owned control styling
 Meetings now consumes Cognis core’s page-builder, reusable page-section stylesheet, and `ensurePageStylesheet` utility instead of duplicating button palettes, component-stage lifecycle toggling, and stylesheet injection. This also fixes the inactive Whiteboard anchor inheriting the global blue link color: `btn-neutral` and `btn-confirm` now come from the canonical core stylesheet bundle.
 
 Meetings now uses the newly published `ui:reuse` capability as its sole browser gateway to production modules under `ui/reuse/` and common reuse stylesheets. A small module-owned facade validates capability availability, all UI entrypoints request only the utilities they use, `page-sections.css` loads through the capability, and the duplicated stylesheet injector has been removed.
+
+The local `ensureStylesheetLoaded` export has been restored as a `ui:reuse`-backed delegate, and the current Meetings entrypoint consumes that same export. This prevents mixed SPA caches from loading an older route entry against a newer helper module and failing module instantiation with a missing named export.
