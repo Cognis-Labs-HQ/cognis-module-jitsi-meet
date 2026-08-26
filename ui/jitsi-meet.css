@@ -29,25 +29,6 @@
     gap: 0.5rem;
 }
 
-.jitsi-whiteboard-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.5rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 10px;
-    font: inherit;
-    line-height: 1.45;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.jitsi-whiteboard-button.disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
 .jitsi-meeting-stage:has(
     > .jitsi-stage-frame-wrap.component-page-stage--borderless
 ) {

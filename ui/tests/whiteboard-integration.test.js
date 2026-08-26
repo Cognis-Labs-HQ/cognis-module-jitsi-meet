@@ -120,16 +120,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /aria-disabled/);
     assert.match(
-        stylesheet,
-        /\.jitsi-whiteboard-button\s*\{[\s\S]*?display:\s*inline-flex;[\s\S]*?text-decoration:\s*none;/,
-    );
-    assert.match(
         apiIndexSource,
         /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
-    );
-    assert.match(
-        stylesheet,
-        /\.jitsi-whiteboard-button\.disabled\s*\{[\s\S]*?pointer-events:\s*none;/,
     );
     assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
@@ -162,7 +154,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         stylesheet,
         /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
-    assert.match(buttonSource, /btn-neutral btn-animated/);
+    assert.match(
+        buttonSource,
+        /button\.className = "btn-neutral btn-animated";/,
+    );
     assert.match(appIndexSource, /loadReuseStylesheet\("page-sections\.css"\)/);
     assert.match(
         appIndexSource,

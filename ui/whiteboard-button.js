@@ -41,7 +41,6 @@ function setButtonHovered(button, hovered) {
 }
 
 function setButtonDisabled(button, disabled) {
-    button?.classList.toggle("disabled", disabled);
     button?.setAttribute("aria-disabled", String(disabled));
 }
 
@@ -345,7 +344,7 @@ export async function bindWhiteboardButton({
     const button = document.createElement("a");
     button.href = "#";
     button.setAttribute("role", "button");
-    button.className = "jitsi-whiteboard-button btn-neutral btn-animated";
+    button.className = "btn-neutral btn-animated";
     button.setAttribute("aria-pressed", "false");
     button.textContent = i18n.t("module.jitsi_meet.whiteboard.open");
     setButtonDisabled(button, true);

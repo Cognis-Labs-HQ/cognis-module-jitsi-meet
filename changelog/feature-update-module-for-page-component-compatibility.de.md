@@ -59,3 +59,5 @@ Der lokale Export `ensureStylesheetLoaded` wurde als durch `ui:reuse` gestützte
 Fehler beim Einbinden des Whiteboards werden jetzt für den aktuellen Meetings-SPA-Mount gespeichert. Nicht wiederholbare Fehler dynamischer Importe werden sofort beendet; alle endgültigen Vorbereitungs- oder Einbindungsfehler werden einmal protokolliert, zeigen „Fehler beim Laden des Whiteboards“, deaktivieren das lokale Whiteboard-Steuerelement und verhindern weitere Einbindungsversuche durch die Konsensabfrage bis zur Aktualisierung oder zum SPA-Remount.
 
 Die Whiteboard-Aktion bleibt ein Anker und delegiert jetzt alle visuellen Zustände an Cognis Core: `btn-neutral` ist der Standard, während beim Darüberfahren sowie im aktiven/geöffneten Zustand `btn-confirm` gilt. Nach dem Verlassen wird `btn-neutral` wiederhergestellt, sofern das Whiteboard nicht weiterhin aktiv ist.
+
+Der Whiteboard-Anker trägt keine modulspezifische Darstellungsklasse mehr. Sein Standard-, Hover- und Aktiv-Erscheinungsbild stammt vollständig aus den Cognis-Core-Werkzeugen `btn-neutral`, `btn-confirm` und `btn-animated`; das Modul behält nur semantischen ARIA-Zustand und Verhalten.
