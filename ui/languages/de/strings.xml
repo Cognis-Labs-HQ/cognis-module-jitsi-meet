@@ -120,6 +120,9 @@
   <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Warten auf die Zustimmung der Teilnehmer zum Öffnen des Whiteboards.</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_action">auf das Whiteboard zuzugreifen</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_process">das Whiteboard für die Besprechung {{meeting}}</string>
   <string name="module.jitsi_meet.category_collaboration">Zusammenarbeit</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>

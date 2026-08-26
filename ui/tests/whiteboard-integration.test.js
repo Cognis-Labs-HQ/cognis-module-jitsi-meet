@@ -61,11 +61,17 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
+    assert.match(buttonSource, /keyring:requestUnlock/);
+    assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);
     assert.match(buttonSource, /createCanvas/);
     assert.match(buttonSource, /saveCanvasToParticipants/);
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
     assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);
+    assert.match(
+        buttonSource,
+        /await ensureWhiteboardKeyringUnlocked\(trigger, state\)[\s\S]*?unlock_meeting_whiteboard_keyring[\s\S]*?const response = synchronizeOpen/,
+    );
     assert.match(buttonSource, /title:\s*state\.meeting\.meetingName/);
     assert.match(buttonSource, /title:\s*meetingName/);
     assert.match(

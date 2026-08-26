@@ -175,7 +175,9 @@ async function resolveWhiteboardCapabilities(signal) {
     );
     const readCapabilities = () => ({
         discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
+        isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
         makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
+        requestKeyringUnlock: uiCtx.capabilities.get("keyring:requestUnlock"),
         spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
@@ -200,6 +202,27 @@ async function resolveWhiteboardCapabilities(signal) {
         if (attempt < 2) await waitForProviderRetry(signal, 150);
     }
     return capabilities;
+}
+
+async function ensureWhiteboardKeyringUnlocked(trigger, state) {
+    if (trigger.isKeyringUnlocked?.() === true) return true;
+    if (typeof trigger.requestKeyringUnlock !== "function") return true;
+    const meetingName = state.meeting?.meetingName || state.meeting?.id || "";
+    return Boolean(
+        await trigger.requestKeyringUnlock({
+            request: {
+                component: trigger.i18n.t(
+                    "module.jitsi_meet.whiteboard.keyring_component",
+                ),
+                action: trigger.i18n.t(
+                    "module.jitsi_meet.whiteboard.keyring_action",
+                ),
+                process: trigger.i18n
+                    .t("module.jitsi_meet.whiteboard.keyring_process")
+                    .replace("{{meeting}}", meetingName),
+            },
+        }),
+    );
 }
 
 function canvasParticipantSaveKey(state, whiteboardId) {
@@ -441,7 +464,9 @@ export async function bindWhiteboardButton({
     if (signal?.aborted) return;
     const {
         discardComponentPage,
+        isKeyringUnlocked,
         makeFloatingWindow,
+        requestKeyringUnlock,
         spawnComponentPage,
         whiteboardGateway,
     } = capabilities;
@@ -473,6 +498,7 @@ export async function bindWhiteboardButton({
         failedCanvasParticipantKey: "",
         frameWrap,
         i18n,
+        isKeyringUnlocked,
         loadFailed: false,
         makeFloatingWindow,
         pipHandle,
@@ -510,6 +536,7 @@ export async function bindWhiteboardButton({
                 return null;
             });
         },
+        requestKeyringUnlock,
         slot,
         whiteboardId: "",
         destroy() {
@@ -577,6 +604,21 @@ export async function bindWhiteboardButton({
             trigger.componentWindowPending = true;
             void (async () => {
                 try {
+                    const keyringUnlocked =
+                        await ensureWhiteboardKeyringUnlocked(trigger, state);
+                    if (!keyringUnlocked) {
+                        closeComponentWindow(trigger);
+                        await logUi(
+                            "info",
+                            "Meeting whiteboard keyring access cancelled.",
+                            {
+                                component: "module:jitsi-meet",
+                                operation: "unlock_meeting_whiteboard_keyring",
+                                meetingId: state.meeting?.id,
+                            },
+                        );
+                        return;
+                    }
                     const response = synchronizeOpen
                         ? await apiFetch(
                               "/api/v1/modules/jitsi-meet/whiteboard/state",
