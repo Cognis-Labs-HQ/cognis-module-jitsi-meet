@@ -350,7 +350,13 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         const stateWhiteboardId = String(
             state.meeting?.state?.whiteboardId ?? "",
         ).trim();
-        if (stateWhiteboardId) {
+        const stateWhiteboardDisposable =
+            state.meeting?.state?.whiteboardDisposable;
+        if (
+            stateWhiteboardId &&
+            typeof stateWhiteboardDisposable === "boolean" &&
+            stateWhiteboardDisposable === trigger.disposableCanvas
+        ) {
             trigger.preparedWhiteboardId = stateWhiteboardId;
             void saveCanvasToParticipants(
                 trigger,
@@ -516,9 +522,11 @@ export async function bindWhiteboardButton({
         loadFailed: false,
         makeFloatingWindow,
         pipHandle,
-        preparedWhiteboardId: String(
-            state.meeting?.state?.whiteboardId ?? "",
-        ).trim(),
+        preparedWhiteboardId:
+            state.meeting?.state?.whiteboardDisposable ===
+            !meetingHasInvitedParticipants(state.meeting)
+                ? String(state.meeting?.state?.whiteboardId ?? "").trim()
+                : "",
         preparedMeetingId: state.meeting?.id ?? "",
         preparationPromise: null,
         preparationFailedMeetingId: "",
@@ -579,6 +587,7 @@ export async function bindWhiteboardButton({
                                 body: JSON.stringify({
                                     meetingId: state.meeting.id,
                                     whiteboardId,
+                                    disposable: trigger.disposableCanvas,
                                     active: false,
                                 }),
                             },
@@ -644,6 +653,7 @@ export async function bindWhiteboardButton({
                                   body: JSON.stringify({
                                       meetingId: state.meeting.id,
                                       whiteboardId,
+                                      disposable: trigger.disposableCanvas,
                                       active: true,
                                   }),
                               },
@@ -665,6 +675,8 @@ export async function bindWhiteboardButton({
                         return;
                     }
                     state.meeting.state.whiteboardId = whiteboardId;
+                    state.meeting.state.whiteboardDisposable =
+                        trigger.disposableCanvas;
                     state.meeting.state.whiteboardOpen = true;
                     const meetingFrame =
                         frameWrap.querySelector(".jitsi-stage-frame");

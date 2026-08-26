@@ -88,6 +88,7 @@ test("meeting participants can synchronize a provider-created whiteboard", async
             body: {
                 meetingId: "meeting-1",
                 whiteboardId: "board-1",
+                disposable: false,
                 active: true,
             },
         },
@@ -96,6 +97,7 @@ test("meeting participants can synchronize a provider-created whiteboard", async
     assert.equal(response.status, 200);
     assert.deepEqual(response.body.data, {
         whiteboardId: "board-1",
+        whiteboardDisposable: false,
         whiteboardOpen: true,
         pendingConsensus: false,
         voteCount: 0,
@@ -106,6 +108,7 @@ test("meeting participants can synchronize a provider-created whiteboard", async
             meetingId: "meeting-1",
             update: {
                 whiteboardId: "board-1",
+                whiteboardDisposable: false,
                 whiteboardActive: true,
                 whiteboardOpenVotes: [],
             },
@@ -131,6 +134,7 @@ test("meeting whiteboard state rejects malformed and unauthorized requests", asy
             body: {
                 meetingId: "meeting-1",
                 whiteboardId: "board-1",
+                disposable: false,
                 active: true,
             },
         },
@@ -172,6 +176,7 @@ test("meeting participants reach consensus before opening a whiteboard", async (
             body: {
                 meetingId: "meeting-1",
                 whiteboardId: "board-1",
+                disposable: false,
                 active: true,
             },
         },
@@ -195,6 +200,7 @@ test("meeting participants reach consensus before opening a whiteboard", async (
             body: {
                 meetingId: "meeting-1",
                 whiteboardId: "board-1",
+                disposable: false,
                 active: true,
             },
         },
@@ -209,7 +215,11 @@ test("a mapped participant canvas reopens without another consensus vote", async
         requesterUsername: "bob",
         organizerUsername: "alice",
         participants: ["alice", "bob"],
-        state: { whiteboardId: "board-1", whiteboardOpenVotes: [] },
+        state: {
+            whiteboardId: "board-1",
+            whiteboardDisposable: false,
+            whiteboardOpenVotes: [],
+        },
     });
     const response = createRecorder();
 
@@ -220,6 +230,7 @@ test("a mapped participant canvas reopens without another consensus vote", async
             body: {
                 meetingId: "meeting-1",
                 whiteboardId: "board-1",
+                disposable: false,
                 active: true,
             },
         },

@@ -43,7 +43,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
     assert.match(
         storeSource,
-        /state\.whiteboardId[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
+        /state\.whiteboardId[\s\S]*?whiteboardDisposable:\s*state\.whiteboardDisposable[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
     );
     assert.match(storeSource, /createdBy:\s*meeting\.createdBy/);
     assert.match(storeSource, /hasInvitedParticipants:\s*participants\.some/);
@@ -106,6 +106,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /instantCanvas: trigger\.disposableCanvas/);
     assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
+    assert.match(
+        buttonSource,
+        /stateWhiteboardDisposable === trigger\.disposableCanvas/,
+    );
     assert.match(buttonSource, /component-pages:request/);
     assert.match(buttonSource, /component-pages:spawn/);
     assert.match(

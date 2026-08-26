@@ -77,12 +77,22 @@ export function registerMeetingWhiteboardRoutes({
             if (!resolved) return;
             const active = body.active === true;
             const whiteboardId = String(body.whiteboardId ?? "").trim();
+            const whiteboardDisposable = body.disposable;
             if (active && !whiteboardId) {
                 sendError(
                     res,
                     400,
                     "bad_request",
                     "whiteboardId is required when activating a whiteboard.",
+                );
+                return;
+            }
+            if (active && typeof whiteboardDisposable !== "boolean") {
+                sendError(
+                    res,
+                    400,
+                    "bad_request",
+                    "disposable is required when activating a whiteboard.",
                 );
                 return;
             }
@@ -95,6 +105,7 @@ export function registerMeetingWhiteboardRoutes({
             const mappedParticipantCanvas =
                 active &&
                 currentState.whiteboardId === whiteboardId &&
+                currentState.whiteboardDisposable === false &&
                 (await store.listParticipants(resolved.meeting.id)).some(
                     (username) => username !== resolved.meeting.createdBy,
                 );
@@ -132,6 +143,9 @@ export function registerMeetingWhiteboardRoutes({
             }
             await store.updateMeetingState(resolved.meeting.id, {
                 ...(whiteboardId ? { whiteboardId } : {}),
+                ...(whiteboardId && typeof whiteboardDisposable === "boolean"
+                    ? { whiteboardDisposable }
+                    : {}),
                 whiteboardActive: active && whiteboardOpen,
                 whiteboardOpenVotes:
                     active && !whiteboardOpen ? whiteboardOpenVotes : [],
@@ -147,6 +161,10 @@ export function registerMeetingWhiteboardRoutes({
             sendJson(res, 200, {
                 data: {
                     whiteboardId: whiteboardId || null,
+                    whiteboardDisposable:
+                        typeof whiteboardDisposable === "boolean"
+                            ? whiteboardDisposable
+                            : currentState.whiteboardDisposable,
                     whiteboardOpen: active && whiteboardOpen,
                     pendingConsensus: active && !whiteboardOpen,
                     voteCount: whiteboardOpenVotes.length,

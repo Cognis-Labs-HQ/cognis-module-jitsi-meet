@@ -91,7 +91,6 @@ export class JitsiMeetStore {
                     notNull: true,
                     default: "Cognis Classroom",
                 },
-                // Required by the schema and populated for all meeting rows.
                 { name: "room_slug", type: "text", notNull: true },
                 { name: "chat_room_id", type: "text" },
                 { name: "classroom_id", type: "text" },
@@ -147,6 +146,7 @@ export class JitsiMeetStore {
                 { name: "ended_by", type: "text" },
                 { name: "ended_at", type: "timestamp" },
                 { name: "whiteboard_id", type: "text" },
+                { name: "whiteboard_disposable", type: "integer" },
                 {
                     name: "whiteboard_active",
                     type: "integer",
@@ -608,6 +608,7 @@ export class JitsiMeetStore {
                 endedBy: null,
                 endedAt: null,
                 whiteboardId: null,
+                whiteboardDisposable: null,
                 whiteboardActive: false,
                 whiteboardOpenVotes: [],
             };
@@ -645,6 +646,10 @@ export class JitsiMeetStore {
             endedBy: row.ended_by ? String(row.ended_by) : null,
             endedAt: readDbTimestampValue(row.ended_at),
             whiteboardId: row.whiteboard_id ? String(row.whiteboard_id) : null,
+            whiteboardDisposable:
+                row.whiteboard_disposable == null
+                    ? null
+                    : Number(row.whiteboard_disposable) === 1,
             whiteboardActive: Number(row.whiteboard_active ?? 0) === 1,
             whiteboardOpenVotes: JSON.parse(
                 row.whiteboard_open_votes ?? "[]",
@@ -674,6 +679,12 @@ export class JitsiMeetStore {
                 ended_by: merged.endedBy,
                 ended_at: merged.endedAt,
                 whiteboard_id: merged.whiteboardId,
+                whiteboard_disposable:
+                    merged.whiteboardDisposable == null
+                        ? null
+                        : merged.whiteboardDisposable
+                          ? 1
+                          : 0,
                 whiteboard_active: merged.whiteboardActive ? 1 : 0,
                 whiteboard_open_votes: JSON.stringify(
                     merged.whiteboardOpenVotes ?? [],
@@ -897,6 +908,7 @@ export class JitsiMeetStore {
                 ...(state.whiteboardId
                     ? {
                           whiteboardId: state.whiteboardId,
+                          whiteboardDisposable: state.whiteboardDisposable,
                           whiteboardOpen: state.whiteboardActive,
                       }
                     : {}),
@@ -967,17 +979,6 @@ export class JitsiMeetStore {
             );
     }
 
-    /**
-     * Normalizes meeting-creation input into a deduplicated participant list
-     * that always includes the creator, plus a sanitized classroomId value.
-     *
-     * @param {{
-     *   participants?: string[],
-     *   classroomId?: string | null,
-     *   creatorUsername: string,
-     * }} input
-     * @returns {{ participantUsernames: string[], classroomId: string | null }}
-     */
     normalizeMeetingCreationInput({
         participants,
         classroomId,
