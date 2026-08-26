@@ -61,3 +61,5 @@ Fehler beim Einbinden des Whiteboards werden jetzt für den aktuellen Meetings-S
 Die Whiteboard-Aktion bleibt ein Anker und delegiert jetzt alle visuellen Zustände an Cognis Core: `btn-neutral` ist der Standard, während beim Darüberfahren sowie im aktiven/geöffneten Zustand `btn-confirm` gilt. Nach dem Verlassen wird `btn-neutral` wiederhergestellt, sofern das Whiteboard nicht weiterhin aktiv ist.
 
 Der Whiteboard-Anker trägt keine modulspezifische Darstellungsklasse mehr. Sein Standard-, Hover- und Aktiv-Erscheinungsbild stammt vollständig aus den Cognis-Core-Werkzeugen `btn-neutral`, `btn-confirm` und `btn-animated`; das Modul behält nur semantischen ARIA-Zustand und Verhalten.
+
+Die Meetings-SPA ruft jetzt vor der Darstellung den Vertrag `loadCommonStyles()` der Fähigkeit `ui:reuse` auf, statt nur `page-sections.css` zu laden. Damit steht der vollständige Cognis-Core-Stylesheet-Katalog einschließlich der Standarddarstellung von Schaltflächen nach direkter Navigation und SPA-Navigation zur Verfügung.

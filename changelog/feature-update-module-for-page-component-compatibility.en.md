@@ -61,3 +61,5 @@ Whiteboard mount failures are now latched for the current Meetings SPA mount. No
 The Whiteboard action remains an anchor and now delegates all visual states to Cognis core: `btn-neutral` is the default, while hover and the active/open state apply `btn-confirm`. Leaving hover restores `btn-neutral` unless the Whiteboard is still active.
 
 The Whiteboard anchor no longer carries a module-specific presentation class. Its default, hover, and active appearance now comes entirely from the Cognis core `btn-neutral`, `btn-confirm`, and `btn-animated` utilities; the module retains only semantic ARIA state and behavior.
+
+The Meetings SPA now calls the `ui:reuse` capability's `loadCommonStyles()` contract before rendering instead of loading only `page-sections.css`. This ensures the complete Cognis core stylesheet catalog, including standard button presentation, is available after direct and SPA navigation.

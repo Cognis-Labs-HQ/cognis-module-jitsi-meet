@@ -20,7 +20,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 
 - `bootstrap.js` adalah satu-satunya entrypoint platform; kapabilitas dan flow ctx merupakan satu-satunya permukaan integrasi lintas komponen.
 - SPA Meetings menggunakan router dan page composer Cognis. Pemanggil tertanam meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tanpa bingkai dan tidak menduplikasi navigasi host.
-- Utilitas browser dan gaya yang dapat digunakan ulang diperoleh melalui kapabilitas wajib `ui:reuse`. Page-builder core menyediakan tampilan kontrol standar, sedangkan CSS modul hanya memiliki tata letak khusus Jitsi.
+- Utilitas browser dan seluruh katalog stylesheet umum dimuat melalui kapabilitas wajib `ui:reuse` sebelum permukaan Meetings dirender. Cognis core menyediakan tampilan kontrol standar, sedangkan CSS modul hanya memiliki tata letak khusus Jitsi.
 - Integrasi Papan Tulis opsional hanya muncul ketika kapabilitas `whiteboard:uiGateway`, halaman komponen, dan jendela mengambang tersedia. Rapat dengan peserta memakai kanvas sumber daya persisten; rapat tanpa peserta memakai kanvas sekali pakai.
 - Penyelenggara dapat langsung membuka Papan Tulis. Peserta lain memerlukan mayoritas mutlak peserta non-penyelenggara yang sedang hadir. Status buka disimpan agar peserta saat ini dan yang datang kemudian otomatis membuka kanvas yang sama serta memindahkan rapat ke gambar-dalam-gambar.
 - Papan Tulis dibuka melalui broker halaman komponen sebagai komponen overlay tanpa bingkai. Cognis core memiliki penampungan jendela, status stage tanpa bingkai, pembersihan, dan posisi PiP; Meetings hanya melonggarkan pemotongan stage saat status tanpa bingkai milik broker aktif.

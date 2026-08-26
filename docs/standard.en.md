@@ -20,7 +20,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 
 - `bootstrap.js` is the sole platform entrypoint, and ctx capabilities and flows are the only cross-component integration surface.
 - The Meetings SPA uses the Cognis router and page composer. Embedded callers pass a serializable `meetingId` in `focusState`; embedded mounts are frameless and do not duplicate host navigation.
-- Browser utilities and reusable styles are obtained through the required `ui:reuse` capability. The core page-builder supplies standard control presentation, while module CSS owns only Jitsi-specific layout.
+- Browser utilities and the complete common stylesheet catalog are loaded through the required `ui:reuse` capability before the Meetings surface is rendered. Cognis core supplies standard control presentation, while module CSS owns only Jitsi-specific layout.
 - The optional Whiteboard integration is exposed only when `whiteboard:uiGateway`, component-page, and floating-window capabilities are available. Participant meetings use a persistent resource canvas; participant-free meetings use a disposable canvas.
 - The organizer can open the Whiteboard immediately. Other participants require a strict majority of currently present non-organizer participants. The open state is persisted so current and later participants automatically open the same canvas and move the meeting into picture-in-picture.
 - Whiteboards spawn through the component-page broker as borderless overlay components. Cognis core owns component-window containment, borderless stage state, cleanup, and PiP positioning; Meetings relaxes its stage clipping only while the broker's borderless state is active.

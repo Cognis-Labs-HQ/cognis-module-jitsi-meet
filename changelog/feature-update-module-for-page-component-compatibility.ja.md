@@ -61,3 +61,5 @@ Whiteboard のマウント失敗を現在の Meetings SPA マウント中は保�
 Whiteboard アクションはアンカーのまま、すべての表示状態を Cognis core に委譲するようになりました。既定は `btn-neutral`、ホバー中およびアクティブ／オープン状態では `btn-confirm` を適用します。ホバーを外すと、Whiteboard が引き続きアクティブな場合を除いて `btn-neutral` に戻ります。
 
 Whiteboard アンカーからモジュール固有の表示クラスを削除しました。既定、ホバー、アクティブ時の外観は Cognis core の `btn-neutral`、`btn-confirm`、`btn-animated` ユーティリティだけで提供し、モジュールはセマンティックな ARIA 状態と動作のみを保持します。
+
+Meetings SPA は `page-sections.css` だけを読み込む代わりに、描画前に `ui:reuse` 機能の `loadCommonStyles()` 契約を呼び出すようになりました。これにより、標準ボタン表示を含む Cognis core の完全なスタイルシートカタログが、直接ナビゲーションと SPA ナビゲーションのどちらでも利用できます。

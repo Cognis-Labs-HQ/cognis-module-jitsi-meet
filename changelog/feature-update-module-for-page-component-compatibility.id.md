@@ -61,3 +61,5 @@ Kegagalan pemasangan Papan Tulis kini dikunci untuk mount SPA Meetings saat ini.
 Tindakan Papan Tulis tetap berupa tautan dan kini mendelegasikan semua status visual ke Cognis core: `btn-neutral` menjadi bawaan, sedangkan hover dan status aktif/terbuka memakai `btn-confirm`. Saat pointer meninggalkan kontrol, `btn-neutral` dipulihkan kecuali Papan Tulis masih aktif.
 
 Tautan Papan Tulis tidak lagi membawa kelas presentasi khusus modul. Tampilan bawaan, hover, dan aktifnya kini sepenuhnya berasal dari utilitas Cognis core `btn-neutral`, `btn-confirm`, dan `btn-animated`; modul hanya mempertahankan status ARIA semantik dan perilakunya.
+
+SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:reuse` sebelum merender, alih-alih hanya memuat `page-sections.css`. Dengan demikian, seluruh katalog stylesheet Cognis core, termasuk tampilan tombol standar, tersedia setelah navigasi langsung maupun navigasi SPA.
