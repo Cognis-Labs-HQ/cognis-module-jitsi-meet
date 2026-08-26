@@ -29,6 +29,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "ui/app/index.js"),
         "utf8",
     );
+    const reuseResourcesSource = readFileSync(
+        resolve(ROOT, "ui/reuse/resources.js"),
+        "utf8",
+    );
     const appSource = readJitsiUiBundle();
     const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
@@ -97,7 +101,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         apiIndexSource,
-        /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/styles\/reuse\/page-sections\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
+        /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
     );
     assert.match(
         stylesheet,
@@ -135,11 +139,13 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
     assert.match(buttonSource, /btn-neutral btn-animated/);
-    assert.match(
-        appIndexSource,
-        /import \{ ensurePageStylesheet \} from "\/static\/reuse\/page-styles\.js";/,
-    );
+    assert.match(appIndexSource, /loadReuseStylesheet\("page-sections\.css"\)/);
     assert.match(appIndexSource, /ensurePageStylesheet\(stylesheetUrl\)/);
+    assert.match(
+        reuseResourcesSource,
+        /uiCtx\.capabilities\.get\("ui:reuse"\)/,
+    );
+    assert.match(reuseResourcesSource, /reuseResources\.importModule\(path\)/);
     const lifecycleSource = readFileSync(
         resolve(ROOT, "api/meeting-lifecycle-routes.js"),
         "utf8",

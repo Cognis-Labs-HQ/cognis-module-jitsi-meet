@@ -1,5 +1,5 @@
 import { logUi, showToast } from "./reuse/feedback.js";
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { uiCtx } from "./reuse/resources.js";
 
 const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
 const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";

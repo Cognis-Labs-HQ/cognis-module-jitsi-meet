@@ -114,7 +114,6 @@ export function registerUi(ctx) {
     });
     const meetingsStylesheets = [
         "/static/styles/page-builder.css",
-        "/static/styles/reuse/page-sections.css",
         ...sharedStylesheetUrls,
         "/static/modules/jitsi-meet/jitsi-meet.css",
     ];

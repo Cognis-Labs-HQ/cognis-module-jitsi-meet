@@ -1,18 +1,7 @@
 import { logUi, openErrorPopup } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { apiFetch } from "/static/reuse/api-client.js";
-import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
-import { createPageComposer } from "/static/reuse/page-composer/index.js";
-import { registerSearchIndex } from "/static/reuse/search-util/popup.js";
-import { mountWhenDirect } from "/static/reuse/page-entry.js";
-import { ensurePageStylesheet } from "/static/reuse/page-styles.js";
-import { openSearchPopup } from "/static/reuse/search-util/popup.js";
 import { showToast } from "../reuse/feedback.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
-import {
-    getShareContext,
-    ensureFullAccountSession,
-} from "/static/reuse/auth-session.js";
+import { importReuseModule, loadReuseStylesheet } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
@@ -35,6 +24,26 @@ import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
 } from "../whiteboard-button.js";
+
+const [
+    { apiFetch },
+    { getShareContext, ensureFullAccountSession },
+    { applyDocumentTitle, createI18n },
+    { createPageComposer },
+    { mountWhenDirect },
+    { ensurePageStylesheet },
+    { registerSearchIndex, openSearchPopup },
+    { normalizeUsername },
+] = await Promise.all([
+    importReuseModule("api-client.js"),
+    importReuseModule("auth-session.js"),
+    importReuseModule("i18n.js"),
+    importReuseModule("page-composer/index.js"),
+    importReuseModule("page-entry.js"),
+    importReuseModule("page-styles.js"),
+    importReuseModule("search-util/popup.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
@@ -66,6 +75,7 @@ export async function mount(
         focusState = null,
     } = {},
 ) {
+    await loadReuseStylesheet("page-sections.css");
     root.classList.add("jitsi-route-root");
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =

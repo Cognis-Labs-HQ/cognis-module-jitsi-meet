@@ -7,7 +7,7 @@
  * @param {string} capabilityName
  * @returns {object}
  */
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { uiCtx } from "./resources.js";
 
 function requireClient(capabilityName) {
     const client = uiCtx.capabilities.get(capabilityName);

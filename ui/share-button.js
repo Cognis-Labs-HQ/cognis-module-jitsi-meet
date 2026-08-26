@@ -1,4 +1,4 @@
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { uiCtx } from "./reuse/resources.js";
 
 const mountedShareTriggers = new WeakMap();
 

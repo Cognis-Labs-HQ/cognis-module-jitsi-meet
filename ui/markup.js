@@ -1,4 +1,6 @@
-import { escapeHtml } from "/static/reuse/escape-html.js";
+import { importReuseModule } from "./reuse/resources.js";
+
+const { escapeHtml } = await importReuseModule("escape-html.js");
 
 export function buildStageMarkup(i18n) {
     return `

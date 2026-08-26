@@ -1,6 +1,6 @@
 import { logUi } from "../reuse/feedback.js";
 import { showToast } from "../reuse/feedback.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
+import { importReuseModule } from "../reuse/resources.js";
 import {
     HEARTBEAT_INTERVAL_MS,
     MEETING_DESTROYED_TEXT,
@@ -9,6 +9,8 @@ import {
 } from "../constants.js";
 import { createParticipantAvatarEl } from "../jitsi-helpers.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
+
+const { normalizeUsername } = await importReuseModule("value-normalizers.js");
 
 export function createPreflightHandlers({
     root,

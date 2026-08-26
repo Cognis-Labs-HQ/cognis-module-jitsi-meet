@@ -1,8 +1,9 @@
 import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "./constants.js";
-import {
-    resolveUrlOrigin,
-    resolveUrlPathSlug,
-} from "/static/reuse/value-normalizers.js";
+import { importReuseModule } from "./reuse/resources.js";
+
+const { resolveUrlOrigin, resolveUrlPathSlug } = await importReuseModule(
+    "value-normalizers.js",
+);
 
 let jitsiExternalApiLoader = null;
 

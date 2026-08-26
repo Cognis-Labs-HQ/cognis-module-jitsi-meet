@@ -1,4 +1,4 @@
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { uiCtx } from "../reuse/resources.js";
 
 function profileAvatarRenderer() {
     const renderer = uiCtx.capabilities.get("ui:profileAvatarRenderer");

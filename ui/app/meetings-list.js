@@ -1,6 +1,5 @@
-import { escapeHtml } from "/static/reuse/escape-html.js";
 import { showToast } from "../reuse/feedback.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
+import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-button.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
@@ -8,6 +7,11 @@ import {
     getProfileInitials as getInitialsText,
     getProfileInitialsColor as pickInitialsColor,
 } from "./profile-avatars.js";
+
+const [{ escapeHtml }, { normalizeUsername }] = await Promise.all([
+    importReuseModule("escape-html.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 export function createMeetingHandlers({
     root,

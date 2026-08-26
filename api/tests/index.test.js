@@ -22,6 +22,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:log",
         "ui:showToast",
         "ui:openErrorPopup",
+        "ui:reuse",
     ]);
     assert.deepEqual(manifest.capabilities, [
         "meeting:video",

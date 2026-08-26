@@ -4,10 +4,15 @@ import {
     profileClient,
     shareClient,
 } from "./reuse/gateway-clients.js";
-import { apiFetch } from "/static/reuse/api-client.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
-import { getShareContext } from "/static/reuse/auth-session.js";
+import { importReuseModule } from "./reuse/resources.js";
 import { buildProfileAvatarMarkup } from "./app/profile-avatars.js";
+
+const [{ apiFetch }, { getShareContext }, { normalizeUsername }] =
+    await Promise.all([
+        importReuseModule("api-client.js"),
+        importReuseModule("auth-session.js"),
+        importReuseModule("value-normalizers.js"),
+    ]);
 
 const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     languageBaseUrls: ["/static/modules/jitsi-meet/languages"],
