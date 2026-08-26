@@ -63,5 +63,3 @@ Whiteboard アクションはアンカーのまま、すべての表示状態を
 Whiteboard アンカーからモジュール固有の表示クラスを削除しました。既定、ホバー、アクティブ時の外観は Cognis core の `btn-neutral`、`btn-confirm`、`btn-animated` ユーティリティだけで提供し、モジュールはセマンティックな ARIA 状態と動作のみを保持します。
 
 Meetings SPA は `page-sections.css` だけを読み込む代わりに、描画前に `ui:reuse` 機能の `loadCommonStyles()` 契約を呼び出すようになりました。これにより、標準ボタン表示を含む Cognis core の完全なスタイルシートカタログが、直接ナビゲーションと SPA ナビゲーションのどちらでも利用できます。
-
-モジュールの再利用ファサードは、同じ core ローダーを使う `loadCommonStyles` と、以前に公開した `loadReuseStylesheet` の両方をエクスポートします。これにより、スタイルシートを重複して読み込むことなく、現行およびキャッシュ済みの Meetings エントリスクリプトが混在バージョンの SPA ナビゲーションでも互換性を保ちます。

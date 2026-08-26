@@ -176,10 +176,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         reuseResourcesSource,
         /loadCommonStyles = \(\) => reuseResources\.loadCommonStyles\(\)/,
     );
-    assert.match(
-        reuseResourcesSource,
-        /loadReuseStylesheet = loadCommonStyles/,
-    );
     const lifecycleSource = readFileSync(
         resolve(ROOT, "api/meeting-lifecycle-routes.js"),
         "utf8",

@@ -14,4 +14,3 @@ export { uiCtx };
 
 export const importReuseModule = (path) => reuseResources.importModule(path);
 export const loadCommonStyles = () => reuseResources.loadCommonStyles();
-export const loadReuseStylesheet = loadCommonStyles;
