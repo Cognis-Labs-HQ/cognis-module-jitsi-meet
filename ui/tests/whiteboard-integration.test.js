@@ -65,7 +65,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);
     assert.match(buttonSource, /createCanvas/);
+    assert.match(
+        buttonSource,
+        /typeof trigger\.whiteboardGateway\.createCanvas !== "function"[\s\S]*?createDisposableCanvas\.bind/,
+    );
     assert.match(buttonSource, /saveCanvasToParticipants/);
+    assert.match(
+        buttonSource,
+        /typeof trigger\.whiteboardGateway\?\.saveCanvasToParticipants !==[\s\S]*?return Promise\.resolve\(\)/,
+    );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
     assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);
     assert.match(

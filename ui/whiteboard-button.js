@@ -190,10 +190,6 @@ async function resolveWhiteboardCapabilities(signal) {
         if (
             typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
                 "function" &&
-            typeof capabilities.whiteboardGateway?.createCanvas ===
-                "function" &&
-            typeof capabilities.whiteboardGateway?.saveCanvasToParticipants ===
-                "function" &&
             typeof capabilities.spawnComponentPage === "function" &&
             typeof capabilities.makeFloatingWindow === "function"
         ) {
@@ -245,6 +241,11 @@ async function reportCanvasSaveFailure(trigger, state, whiteboardId, error) {
 
 function saveCanvasToParticipants(trigger, state, whiteboardId) {
     if (trigger.disposableCanvas || !whiteboardId) return Promise.resolve();
+    if (
+        typeof trigger.whiteboardGateway?.saveCanvasToParticipants !==
+        "function"
+    )
+        return Promise.resolve();
     const participantHandles = getParticipantHandles(state.meeting);
     const saveKey = canvasParticipantSaveKey(state, whiteboardId);
     if (
@@ -279,13 +280,15 @@ function prepareMeetingCanvas(trigger, state) {
     if (trigger.preparationPromise) return trigger.preparationPromise;
     const participantHandles = getParticipantHandles(state.meeting);
     trigger.disposableCanvas = !meetingHasInvitedParticipants(state.meeting);
-    const createCanvas = trigger.disposableCanvas
-        ? trigger.whiteboardGateway.createDisposableCanvas.bind(
-              trigger.whiteboardGateway,
-          )
-        : trigger.whiteboardGateway.createCanvas.bind(
-              trigger.whiteboardGateway,
-          );
+    const createCanvas =
+        trigger.disposableCanvas ||
+        typeof trigger.whiteboardGateway.createCanvas !== "function"
+            ? trigger.whiteboardGateway.createDisposableCanvas.bind(
+                  trigger.whiteboardGateway,
+              )
+            : trigger.whiteboardGateway.createCanvas.bind(
+                  trigger.whiteboardGateway,
+              );
     trigger.preparationPromise = createCanvas({
         resourceType: "meeting",
         resourceId: state.meeting.id,
@@ -472,8 +475,6 @@ export async function bindWhiteboardButton({
     } = capabilities;
     if (
         typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
-        typeof whiteboardGateway?.createCanvas !== "function" ||
-        typeof whiteboardGateway?.saveCanvasToParticipants !== "function" ||
         typeof spawnComponentPage !== "function" ||
         typeof makeFloatingWindow !== "function"
     )
