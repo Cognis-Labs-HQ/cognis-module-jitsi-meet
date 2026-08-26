@@ -96,6 +96,19 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /for \(let attempt = 0; attempt < 4; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
     );
+    assert.match(
+        buttonSource,
+        /Failed to fetch dynamically imported module[\s\S]*?break;/,
+    );
+    assert.match(buttonSource, /loadFailed:\s*false/);
+    assert.match(
+        buttonSource,
+        /trigger\.loadFailed !== true[\s\S]*?trigger\.button\.click\(\)/,
+    );
+    assert.match(
+        buttonSource,
+        /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
+    );
     assert.match(buttonSource, /document\.createElement\("a"\)/);
     assert.match(buttonSource, /classList\.toggle\("btn-confirm", active\)/);
     assert.match(buttonSource, /aria-disabled/);

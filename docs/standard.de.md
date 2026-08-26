@@ -1,45 +1,27 @@
 # Jitsi-Meet-Modul
 
-Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmerauswahl, Wiederverwendung von Meeting-URLs, Sitzungsübernahme und Wiederverwendung von Nachrichten-Chaträumen.
+Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerauswahl, wiederverwendbaren Besprechungsräumen, Sitzungswiederaufnahme, Messages-Chat-Integration und einem optionalen gemeinsamen Whiteboard.
 
 ## Anwendungsbeispiele
 
-- Konfigurierbare Jitsi-Instanz-URL und optionales URI-Präfix, von Cognis aus dem Manifest dargestellt und über den moduleigenen Konfigurationsendpunkt gespeichert
-- Anwendungsrouten `/meetings` und `/meeting` mit:
-    - eine seitenspezifische Verfügbarkeitsprüfung, die beim Verlassen sofort endet
-    - Meeting-Bereich/Overlay
-    - Teilnehmerauswahl und Drag-and-Drop
-    - Chat-URL-Übergabe an den Messages-Adapter
-- Meeting-Persistenz in modulspezifischen Tabellen
-- Teilnehmergebundene API-Zugriffe per Benutzername
-- Classroom-Fallback-Autorisierung, wenn `classroom_id` gesetzt ist
-- Live-Meeting-Überwachung in Administration → Meetings
-- UUID-basierte Abhängigkeiten vom Social-Gateway, Profil-Adapter, Share-Gateway und Messages-Adapter sowie fähigkeitsbasierte Laufzeitanforderungen `auth:requireAuth` und `ui:profileAvatarRenderer`
-- Eine ausdrücklich freigegebene Meetings-Komponentenseite, die über die unveränderliche UUID dieses Moduls und die Routen-ID `module.jitsi.meet.meetings` aufgelöst wird und Overlay-, Vollbild- sowie Bild-im-Bild-Darstellung unterstützt
+- Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.
+- Teilnehmer auswählen, Besprechungszugriff teilen und den Messages-Chat der Besprechung verwenden.
+- Aktive und bevorstehende Besprechungen unter Administration → Meetings überwachen.
+- Die Meetings-Route als Overlay-, Vollbild- oder Bild-in-Bild-Komponentenseite einbetten.
 
 ## Technische Spezifikation
 
-- API-Aufrufe erfordern ein gültiges Cognis-Access-Token.
-- Meeting-Details werden nur an berechtigte Teilnehmer ausgegeben.
-- Meeting-Passwörter werden pro Meeting-Datensatz generiert.
-- Jeder Besprechungsname enthält den erzeugten Jitsi-Raum-Slug. Derselbe eindeutige Name wird an das Whiteboard übergeben; der Titel des Messages-Chats kombiniert ihn mit dem Erstellungsdatum.
-- Die Sitzungsübernahme ermöglicht das Trennen einer vorherigen aktiven Sitzung.
+- API-Aufrufe erfordern ein gültiges Cognis-Zugriffstoken; Besprechungsdetails werden nur autorisierten Teilnehmern oder begrenzten Freigabegästen zurückgegeben.
+- Kennwörter werden pro Besprechungsdatensatz erzeugt. Anzeigenamen enthalten den generierten Jitsi-Raum-Slug; derselbe Name kennzeichnet das Whiteboard und steht vor dem datierten Messages-Chat-Titel.
+- Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen.
+- Die Sitzungswiederaufnahme trennt die vorherige aktive Besprechungssitzung des Benutzers.
 
 ### Integrationsvertrag
 
-- `bootstrap.js` ist der einzige vom Plattformkern genutzte Moduleinstieg.
-- Das Bootstrap-ctx ist der einzige Integrationsbus dieses Moduls (API-Routen, UI-Registrierung, Fähigkeiten sowie künftige CLI/DB-Anbindung).
-- Direkte Imports aus anderen Modulen oder Core-Interna sind verboten; Integration muss über ctx erfolgen.
-- Aufrufer der Komponentenseite übergeben eine serialisierbare `meetingId` in `focusState`; die eingebettete Ansicht bleibt im bereitgestellten Wurzelelement und nutzt einen rahmenlosen Composer ohne doppelte Host-Navigation.
-- Die Erkennung des Besprechungsendes berücksichtigt Jitsi-Fehler vom Typ `conference.destroyed`, stellt die Aktion „Besprechung starten“ nach dem Verlassen sofort wieder her und blendet Teilnehmer-, Leistungs- und Hintergrundfunktionen aus der eingebetteten Werkzeugleiste aus.
-- Wenn die optionale Nextcloud-Whiteboard-Browser-Capability `whiteboard:uiGateway` aktiv ist, bietet die Besprechungsbühne ein synchronisiertes Whiteboard-Komponentenfenster, das für Besprechungen mit Teilnehmern dauerhaft und für teilnehmerlose Besprechungen temporär ist und zeigt die ununterbrochene Besprechung bis zum Schließen des Whiteboards als Bild-im-Bild an.
-- Die Whiteboard-Verfügbarkeit wird ohne Einbindung einer Oberfläche ermittelt. Ein Benutzerklick ruft `component-pages:spawn` mit der Element-ID der Besprechungsbühne auf; beim Schließen des Fensters oder Entfernen der Besprechungsseite wird das zurückgegebene Handle verworfen.
-- Ein geöffnetes Whiteboard bleibt bis zum Ende der Besprechung eingebunden oder bis die hervorgehobene Whiteboard-Schaltfläche erneut ausgewählt wird. Besprechungen mit eingeladenen Teilnehmern behalten ihre ressourcengebundene Zeichenflächen-ID für spätere Instanzen, während Besprechungen ohne Teilnehmer temporär bleiben; Provider-Laden und Zeichenflächenvorbereitung werden bei einem Besprechungswechsel per SPA sicher wiederholt.
-- Fehlt das Whiteboard-Gateway in einem zwischengespeicherten Provider-Katalog, erzwingt Meetings vor dem Ausblenden der Integration eine einmalige Aktualisierung des Provider-Katalogs. Der Fensterabbau verwendet das Broker-Handle oder den bühnenbezogenen Discard-Fallback; das globale `component-pages:discardAll` bleibt Aufgabe der Cognis-SPA-Shell.
-- Die Provider-Bereitschaft wird bei SPA-Einbindungen erneut geprüft, und jede gerenderte Besprechungsbühne erhält eine kollisionssichere Ziel-ID, damit geparktes oder veraltetes DOM kein neues Komponentenfenster abfangen kann. Whiteboards fordern eine Overlay- statt einer Vollbilddarstellung an.
-- Das eingebundene Whiteboard fordert den Core-Komponentenfenstervertrag `borderless` und eine rahmenlose Darstellung an. Cognis Core setzt nun den passenden Zustand `component-page-stage--borderless` für den Lebenszyklus des Komponenten-Handles; Meetings lockert seine feste Bühnenhöhe und den abgeschnittenen Überlauf nur als Reaktion auf diesen brokerverwalteten Zustand.
-- Meetings aktiviert die Floating-Window-Fähigkeit des Cognis-Kerns vor der Einbindung der Whiteboard-Komponentenseite, damit das Bild-in-Bild während des asynchronen Komponentenstarts sichtbar bleibt, ohne dass das Modul eigene Positionierung oder Stile bereitstellt.
-- Der Whiteboard-Öffnungszustand wird erst gespeichert, nachdem der optionale Whiteboard-Provider eine Zeichenflächen-ID geliefert hat. Der Organisator kann es sofort öffnen; andernfalls muss eine strikte Mehrheit der aktuell anwesenden Teilnehmer ohne Organisator dies anfordern. Nach dem Öffnen öffnet die Zustandsabfrage dieselbe Zeichenfläche automatisch für aktuelle und spätere Besprechungsteilnehmer und verschiebt deren Besprechung ins Bild-in-Bild. Das Starten oder Übernehmen der Jitsi-Instanz erhält diesen besprechungsbezogenen Zustand; eine ausdrückliche Beendigung schließt ihn. Erstmaliges Laden und fünfsekündige Zustandsaktualisierungen verwenden dieselbe öffentliche Zustandsform `whiteboardOpen`.
-- Die Whiteboard-Aktion ist ein ankerartiges Host-Steuerelement, das im aktiven Zustand von `btn-neutral` zu `btn-confirm` wechselt. Die Synchronisierung des Öffnungszustands durch den Organisator wird vor dem Einbinden der Komponentenseite abgeschlossen, sodass die Zustandsabfrage nicht mit dem ersten laufenden Einbinden konkurriert; automatische Öffnungen verwenden weiterhin den bereits synchronisierten Zustand. Vorübergehende Startfehler beim Einbinden der Komponente werden intern wiederholt, bevor eine Fehlermeldung angezeigt wird.
-- Meetings deklariert den Core Page Builder vor seinem Modul-Stylesheet, bezieht wiederverwendbare Browser-Werkzeuge über die erforderliche Fähigkeit `ui:reuse` und lädt `page-sections.css` über diese validierte Ressourcenoberfläche. Core verwaltet wiederverwendbare Schaltflächenfarben, Animationen, Komponentenbühnenzustand und Stylesheet-Deduplizierung; das Modul-CSS beschränkt sich auf die Jitsi-spezifische Geometrie und deaktivierte Interaktion des Ankers.
-- Das Modul behält `ensureStylesheetLoaded` als stabilen lokalen Hilfsprogramm-Export bei, delegiert seine Implementierung jedoch an das über `ui:reuse` bezogene Modul `page-styles.js`. Dadurch bleiben SPA-Abhängigkeitsgraphen gültig, wenn der Routeneinstieg und Hilfsmodule zu unterschiedlichen Zeitpunkten aktualisiert werden.
+- `bootstrap.js` ist der einzige Plattform-Einstiegspunkt; ctx-Fähigkeiten und Flows sind die einzige komponentenübergreifende Integrationsoberfläche.
+- Die Meetings-SPA verwendet Cognis-Router und Page Composer. Eingebettete Aufrufer übergeben eine serialisierbare `meetingId` in `focusState`; eingebettete Mounts sind rahmenlos und duplizieren nicht die Host-Navigation.
+- Browser-Werkzeuge und wiederverwendbare Stile werden über die erforderliche Fähigkeit `ui:reuse` bezogen. Der Core Page Builder liefert die Standarddarstellung der Steuerelemente; das Modul-CSS besitzt nur das Jitsi-spezifische Layout.
+- Die optionale Whiteboard-Integration erscheint nur, wenn `whiteboard:uiGateway`, Komponentenfenster- und Floating-Window-Fähigkeiten verfügbar sind. Besprechungen mit Teilnehmern verwenden eine dauerhafte Ressourcen-Arbeitsfläche; teilnehmerlose Besprechungen eine verwerfbare Arbeitsfläche.
+- Der Organisator kann das Whiteboard sofort öffnen. Andere Teilnehmer benötigen eine strikte Mehrheit der aktuell anwesenden Nicht-Organisatoren. Der Öffnungszustand bleibt gespeichert, sodass aktuelle und spätere Teilnehmer dieselbe Arbeitsfläche automatisch öffnen und die Besprechung in Bild-in-Bild verschieben.
+- Whiteboards werden über den Komponentenfenster-Broker als randlose Overlay-Komponenten gestartet. Cognis Core verwaltet Begrenzung, randlosen Bühnenzustand, Bereinigung und PiP-Positionierung; Meetings lockert das Abschneiden seiner Bühne nur, solange der randlose Broker-Zustand aktiv ist.
+- Die Auswahl des aktiven Whiteboard-Steuerelements schließt es für die Besprechung. Schlägt Vorbereitung oder Einbindung fehl, protokolliert Meetings den Fehler, zeigt „Fehler beim Laden des Whiteboards“ und deaktiviert das Steuerelement für diesen Browser-Mount, damit Polling den Vorgang nicht wiederholt. Aktualisieren oder Weg- und Zurücknavigieren erzeugt einen neuen Mount und erlaubt einen weiteren Versuch.

@@ -81,6 +81,13 @@ async function spawnComponentWindowWithRetry(
             lastError = error;
         }
         if (trigger.signal?.aborted) throw lastError;
+        if (
+            String(lastError?.message ?? lastError).includes(
+                "Failed to fetch dynamically imported module",
+            )
+        ) {
+            break;
+        }
         if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
     }
     throw lastError;
@@ -100,6 +107,22 @@ function closeComponentWindow(trigger) {
         trigger.whiteboardId = "";
         setButtonActive(trigger.button, false);
     }
+}
+
+async function disableWhiteboardAfterError(trigger, state, error, operation) {
+    if (trigger.loadFailed) return;
+    closeComponentWindow(trigger);
+    trigger.loadFailed = true;
+    setButtonDisabled(trigger.button, true);
+    await logUi("error", "Meeting whiteboard loading failed.", {
+        component: "module:jitsi-meet",
+        operation,
+        meetingId: state.meeting?.id,
+        error: error instanceof Error ? error.message : String(error),
+    });
+    showToast(trigger.i18n.t("module.jitsi_meet.whiteboard.load_failed"), {
+        variant: "error",
+    });
 }
 
 function waitForProviderRetry(signal, delayMs) {
@@ -197,6 +220,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         ).trim();
         if (stateWhiteboardId) trigger.preparedWhiteboardId = stateWhiteboardId;
         if (
+            !trigger.loadFailed &&
             !trigger.preparedWhiteboardId &&
             state.meeting?.id &&
             trigger.preparationFailedMeetingId !== state.meeting.id
@@ -205,18 +229,11 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
                 .catch((error) => {
                     trigger.preparationFailedMeetingId =
                         state.meeting?.id ?? "";
-                    return logUi(
-                        "error",
-                        "Meeting whiteboard preparation failed.",
-                        {
-                            component: "module:jitsi-meet",
-                            operation: "prepare_meeting_whiteboard",
-                            meetingId: state.meeting?.id,
-                            error:
-                                error instanceof Error
-                                    ? error.message
-                                    : String(error),
-                        },
+                    return disableWhiteboardAfterError(
+                        trigger,
+                        state,
+                        error,
+                        "prepare_meeting_whiteboard",
                     );
                 })
                 .finally(() =>
@@ -225,7 +242,8 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         }
         setButtonDisabled(
             trigger.button,
-            !state.jitsiConferenceJoined ||
+            trigger.loadFailed ||
+                !state.jitsiConferenceJoined ||
                 !trigger.componentPage ||
                 !trigger.preparedWhiteboardId,
         );
@@ -243,6 +261,7 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
         closeComponentWindow(trigger);
     } else if (
         state.meeting?.state?.whiteboardOpen === true &&
+        trigger.loadFailed !== true &&
         !trigger.componentWindow &&
         trigger.componentWindowPending !== true
     ) {
@@ -327,6 +346,7 @@ export async function bindWhiteboardButton({
         disposableCanvas: getParticipantHandles(state.meeting).length === 0,
         frameWrap,
         i18n,
+        loadFailed: false,
         makeFloatingWindow,
         pipHandle,
         preparedWhiteboardId: String(
@@ -483,21 +503,11 @@ export async function bindWhiteboardButton({
                     trigger.componentWindow = componentWindow;
                     trigger.whiteboardId = whiteboardId;
                 } catch (error) {
-                    closeComponentWindow(trigger);
-                    await logUi("error", "Meeting whiteboard action failed.", {
-                        component: "module:jitsi-meet",
-                        operation: "toggle_meeting_whiteboard",
-                        meetingId: state.meeting?.id,
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    });
-                    showToast(
-                        i18n.t("module.jitsi_meet.whiteboard.open_failed"),
-                        {
-                            variant: "error",
-                        },
+                    await disableWhiteboardAfterError(
+                        trigger,
+                        state,
+                        error,
+                        "load_meeting_whiteboard",
                     );
                 } finally {
                     trigger.componentWindowPending = false;
@@ -521,12 +531,12 @@ export async function bindWhiteboardButton({
         await prepareMeetingCanvas(trigger, state);
     } catch (error) {
         trigger.preparationFailedMeetingId = state.meeting?.id ?? "";
-        await logUi("error", "Meeting whiteboard preparation failed.", {
-            component: "module:jitsi-meet",
-            operation: "prepare_meeting_whiteboard",
-            meetingId: state.meeting?.id,
-            error: error instanceof Error ? error.message : String(error),
-        });
+        await disableWhiteboardAfterError(
+            trigger,
+            state,
+            error,
+            "prepare_meeting_whiteboard",
+        );
     }
     syncMeetingWhiteboardComponent({ root, state });
 }

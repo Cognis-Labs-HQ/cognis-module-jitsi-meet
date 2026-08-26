@@ -55,3 +55,5 @@ Meetings now consumes Cognis core’s page-builder, reusable page-section styles
 Meetings now uses the newly published `ui:reuse` capability as its sole browser gateway to production modules under `ui/reuse/` and common reuse stylesheets. A small module-owned facade validates capability availability, all UI entrypoints request only the utilities they use, `page-sections.css` loads through the capability, and the duplicated stylesheet injector has been removed.
 
 The local `ensureStylesheetLoaded` export has been restored as a `ui:reuse`-backed delegate, and the current Meetings entrypoint consumes that same export. This prevents mixed SPA caches from loading an older route entry against a newer helper module and failing module instantiation with a missing named export.
+
+Whiteboard mount failures are now latched for the current Meetings SPA mount. Non-retryable dynamic-import failures stop immediately; all terminal preparation or mount failures are logged once, show “Error loading whiteboard,” disable the local Whiteboard control, and prevent consensus polling from attempting another mount until refresh or SPA remount.

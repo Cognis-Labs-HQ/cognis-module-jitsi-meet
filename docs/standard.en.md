@@ -1,45 +1,27 @@
 # Jitsi Meet Module
 
-The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, meeting URL reuse, session reclaim, and Messages chat-room reuse.
+The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, reusable meeting rooms, session reclaim, Messages chat integration, and an optional shared Whiteboard.
 
 ## Usage Examples
 
-- Configurable Jitsi instance URL and optional URI prefix rendered by Cognis from the manifest and persisted by the module-owned config endpoint
-- `/meetings` and `/meeting` application routes with:
-    - a page-scoped availability check that stops immediately after navigation away
-    - meeting stage/overlay
-    - participant selection and drag-and-drop
-    - chat URL handoff to Messages adapter
-- Meeting persistence in module-owned tables
-- Participant-gated API access by username
-- Classroom fallback participant authorization when `classroom_id` is set
-- Active meeting monitoring section in Administration → Meetings
-- UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, plus capability-based `auth:requireAuth` and `ui:profileAvatarRenderer` runtime requirements
-- An explicitly eligible Meetings component page, resolved by this module's immutable UUID and `module.jitsi.meet.meetings` route ID, with overlay, fullscreen, and picture-in-picture presentation modes
+- Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.
+- Select participants, share meeting access, and use the meeting's Messages chat.
+- Monitor active and upcoming meetings from Administration → Meetings.
+- Embed the Meetings route as an overlay, fullscreen, or picture-in-picture component page.
 
 ## Technical Specification
 
-- API calls require a valid Cognis access token.
-- Meeting details are only returned to allowed participants.
-- Meeting passwords are generated per meeting record.
-- Each meeting name includes its generated Jitsi room slug. The same unique name is passed to its Whiteboard, and its Messages chat title combines that name with the creation date.
-- Session reclaim allows a user to disconnect their previous active session.
+- API calls require a valid Cognis access token, and meeting details are returned only to authorized participants or scoped share guests.
+- Meeting passwords are generated per meeting record. Meeting display names include the generated Jitsi room slug; the same name identifies its Whiteboard and prefixes its dated Messages chat title.
+- Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes.
+- Session reclaim disconnects the user's previous active meeting session.
 
 ### Integration Contract
 
-- `bootstrap.js` is the only module entrypoint consumed by the platform.
-- The bootstrap ctx is the only integration bus for this module (API routes, UI registration, capabilities, and future CLI/DB wiring).
-- Direct imports from other modules or core internals are forbidden; integration must happen via ctx-provided surfaces.
-- Component-page callers pass a serializable `meetingId` in `focusState`; the embedded mount stays inside the supplied root and uses a frameless composer without duplicating the host navigation.
-- Meeting termination detection includes Jitsi `conference.destroyed` failures, the post-call Start Meeting action is immediately restored, and the embedded toolbar omits participant, performance, and background controls.
-- When the optional Nextcloud Whiteboard browser capability `whiteboard:uiGateway` is active, the meeting stage exposes a synchronized whiteboard component window that is persistent for participant meetings and disposable for participant-free meetings and keeps the uninterrupted meeting in picture-in-picture until the whiteboard is closed.
-- Whiteboard availability is discovered without mounting UI. A user click invokes `component-pages:spawn` with the meeting-stage element ID, and the returned handle is discarded when the window closes or the meeting page unmounts.
-- An opened Whiteboard remains mounted until the meeting closes or the highlighted Whiteboard button is selected again. Meetings with invited participants retain their resource-keyed canvas ID across later instances, while participant-free meetings remain disposable; provider loading and canvas preparation are repeated safely when SPA navigation changes the selected meeting.
-- If the Whiteboard gateway is absent from a cached provider catalog, Meetings forces one provider-catalog refresh before hiding the integration. Window teardown uses the broker handle or stage-scoped discard fallback; global `component-pages:discardAll` remains owned by the Cognis SPA shell.
-- Provider readiness is retried during SPA mounts, and each rendered meeting stage receives a collision-resistant destination ID so parked or stale DOM cannot capture a new component window. Whiteboards request overlay presentation rather than fullscreen presentation.
-- The spawned Whiteboard requests the core component-window `borderless` contract and frameless rendering. Cognis core now applies the matching `component-page-stage--borderless` state for the component handle lifecycle; Meetings only relaxes its fixed stage height and clipped overflow in response to that broker-owned state.
-- Meetings activates the Cognis core floating-window capability before mounting the Whiteboard component page, so picture-in-picture remains visible throughout asynchronous component startup without module-owned positioning or styling.
-- Whiteboard open state is stored only after the optional Whiteboard provider has supplied a canvas ID. The organizer may open it immediately; otherwise a strict majority of currently present non-organizer participants must request it. Once open, state polling automatically opens the same canvas for current and future meeting participants and moves their meeting into picture-in-picture. Starting or reclaiming the Jitsi instance preserves this per-meeting state; explicit meeting termination closes it. Initial loads and five-second state refreshes use the same public `whiteboardOpen` state shape.
-- The Whiteboard action is an anchor-style host control that switches from `btn-neutral` to `btn-confirm` while active. Organizer open-state synchronization completes before the component page mounts, preventing state polling from racing an in-progress first mount; automatic opens still reuse the already-synchronized state. Transient component-mount startup failures are retried internally before any failure toast is shown.
-- Meetings declares the core page-builder before its module stylesheet, obtains reusable browser utilities through the required `ui:reuse` capability, and loads `page-sections.css` through that validated resource surface. Core owns reusable button colors, animation, component-stage state, and stylesheet deduplication; module CSS is limited to the anchor’s Jitsi-specific geometry and disabled interaction.
-- The module retains `ensureStylesheetLoaded` as its stable local helper export, but delegates its implementation to the `page-styles.js` module obtained through `ui:reuse`. This keeps SPA dependency graphs valid when the route entry and helper modules are refreshed at different times.
+- `bootstrap.js` is the sole platform entrypoint, and ctx capabilities and flows are the only cross-component integration surface.
+- The Meetings SPA uses the Cognis router and page composer. Embedded callers pass a serializable `meetingId` in `focusState`; embedded mounts are frameless and do not duplicate host navigation.
+- Browser utilities and reusable styles are obtained through the required `ui:reuse` capability. The core page-builder supplies standard control presentation, while module CSS owns only Jitsi-specific layout.
+- The optional Whiteboard integration is exposed only when `whiteboard:uiGateway`, component-page, and floating-window capabilities are available. Participant meetings use a persistent resource canvas; participant-free meetings use a disposable canvas.
+- The organizer can open the Whiteboard immediately. Other participants require a strict majority of currently present non-organizer participants. The open state is persisted so current and later participants automatically open the same canvas and move the meeting into picture-in-picture.
+- Whiteboards spawn through the component-page broker as borderless overlay components. Cognis core owns component-window containment, borderless stage state, cleanup, and PiP positioning; Meetings relaxes its stage clipping only while the broker's borderless state is active.
+- Selecting the active Whiteboard control closes it for the meeting. If preparation or mounting fails, Meetings logs the failure, displays “Error loading whiteboard,” and disables the control for that browser mount so polling cannot repeatedly retry it. Refreshing or navigating away and back creates a new mount and permits another attempt.
