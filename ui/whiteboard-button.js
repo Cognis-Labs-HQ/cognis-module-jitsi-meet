@@ -31,10 +31,6 @@ function setButtonDisabled(button, disabled) {
     button?.setAttribute("aria-disabled", String(disabled));
 }
 
-function setBorderlessStageActive(frameWrap, active) {
-    frameWrap?.classList.toggle("component-page-stage--borderless", active);
-}
-
 async function ensureComponentPage(trigger, meetingId) {
     if (!trigger.componentPage) {
         trigger.componentPage = await trigger.requestComponentPage({
@@ -91,7 +87,6 @@ async function spawnComponentWindowWithRetry(
 }
 
 function closeComponentWindow(trigger) {
-    setBorderlessStageActive(trigger?.frameWrap, false);
     trigger?.releaseFloatingWindow?.();
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
@@ -317,7 +312,7 @@ export async function bindWhiteboardButton({
     const button = document.createElement("a");
     button.href = "#";
     button.setAttribute("role", "button");
-    button.className = "jitsi-whiteboard-button btn-neutral";
+    button.className = "jitsi-whiteboard-button btn-neutral btn-animated";
     button.setAttribute("aria-pressed", "false");
     button.textContent = i18n.t("module.jitsi_meet.whiteboard.open");
     setButtonDisabled(button, true);
@@ -432,7 +427,6 @@ export async function bindWhiteboardButton({
             setButtonDisabled(button, true);
             setButtonActive(button, true);
             trigger.componentWindowPending = true;
-            setBorderlessStageActive(frameWrap, true);
             void (async () => {
                 try {
                     const response = synchronizeOpen

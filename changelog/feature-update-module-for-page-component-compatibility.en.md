@@ -49,3 +49,5 @@ Meetings now mirrors an active borderless Whiteboard handle onto the meeting sta
 The Whiteboard control now renders as an anchor and uses the standard `btn-confirm` active treatment. Organizer open-state synchronization now finishes before component-page and PiP activation, removing the initial polling/mount race that produced repeated open-failure feedback. Transient component-mount startup failures are retried internally before any failure toast is shown.
 
 The anchor-based Whiteboard action now has complete module-owned control styling. It no longer renders as a bare underlined link when host button defaults or administration-only `btn-*` declarations are unavailable, while `btn-confirm` continues to select its active colors.
+
+Meetings now consumes Cognis core’s page-builder, reusable page-section stylesheet, and `ensurePageStylesheet` utility instead of duplicating button palettes, component-stage lifecycle toggling, and stylesheet injection. This also fixes the inactive Whiteboard anchor inheriting the global blue link color: `btn-neutral` and `btn-confirm` now come from the canonical core stylesheet bundle.

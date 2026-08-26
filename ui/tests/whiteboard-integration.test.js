@@ -15,6 +15,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "api/whiteboard-routes.js"),
         "utf8",
     );
+    const apiIndexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const storeSource = readFileSync(resolve(ROOT, "api/store.js"), "utf8");
     const meetingsRoutesSource = readFileSync(
         resolve(ROOT, "api/meetings-routes.js"),
@@ -22,6 +23,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     const buttonSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-button.js"),
+        "utf8",
+    );
+    const appIndexSource = readFileSync(
+        resolve(ROOT, "ui/app/index.js"),
         "utf8",
     );
     const appSource = readJitsiUiBundle();
@@ -91,8 +96,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /\.jitsi-whiteboard-button\s*\{[\s\S]*?display:\s*inline-flex;[\s\S]*?text-decoration:\s*none;/,
     );
     assert.match(
-        stylesheet,
-        /\.jitsi-whiteboard-button\.btn-confirm\s*\{[\s\S]*?color:\s*var\(--color-success-outline-text/,
+        apiIndexSource,
+        /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/styles\/reuse\/page-sections\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
     );
     assert.match(
         stylesheet,
@@ -129,14 +134,12 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         stylesheet,
         /\.jitsi-stage-frame-wrap\.component-page-stage--borderless\s*\{[\s\S]*?height:\s*auto;[\s\S]*?overflow:\s*visible;/,
     );
+    assert.match(buttonSource, /btn-neutral btn-animated/);
     assert.match(
-        buttonSource,
-        /setBorderlessStageActive\(frameWrap, true\)[\s\S]*?spawnComponentWindow/,
+        appIndexSource,
+        /import \{ ensurePageStylesheet \} from "\/static\/reuse\/page-styles\.js";/,
     );
-    assert.match(
-        buttonSource,
-        /closeComponentWindow\(trigger\)[\s\S]*?setBorderlessStageActive\(trigger\?\.frameWrap, false\)/,
-    );
+    assert.match(appIndexSource, /ensurePageStylesheet\(stylesheetUrl\)/);
     const lifecycleSource = readFileSync(
         resolve(ROOT, "api/meeting-lifecycle-routes.js"),
         "utf8",

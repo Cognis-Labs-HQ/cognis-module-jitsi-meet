@@ -83,21 +83,6 @@ function buildFileUrl(namespaceId, objectKey) {
     return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
 }
 
-export function ensureStylesheetLoaded(stylesheetUrl) {
-    if (!stylesheetUrl) return;
-    if (
-        document.querySelector(
-            `link[rel="stylesheet"][href="${CSS.escape(stylesheetUrl)}"]`,
-        )
-    ) {
-        return;
-    }
-    const stylesheetLink = document.createElement("link");
-    stylesheetLink.rel = "stylesheet";
-    stylesheetLink.href = stylesheetUrl;
-    document.head.append(stylesheetLink);
-}
-
 export async function loadMessageReactionsController(
     messageUiResources,
     i18n,

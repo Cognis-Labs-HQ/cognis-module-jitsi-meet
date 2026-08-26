@@ -35,35 +35,11 @@
     justify-content: center;
     min-height: 2.5rem;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
     border-radius: 10px;
-    background: transparent;
-    color: var(--text);
     font: inherit;
     line-height: 1.45;
     text-decoration: none;
     cursor: pointer;
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
-}
-
-.jitsi-whiteboard-button.btn-neutral:hover {
-    border-color: var(--border-strong);
-    background: var(--surface-soft);
-    color: var(--text);
-}
-
-.jitsi-whiteboard-button.btn-confirm {
-    border-color: var(--color-success-border);
-    color: var(--color-success-outline-text, var(--color-success-text));
-}
-
-.jitsi-whiteboard-button.btn-confirm:hover {
-    border-color: var(--color-success-outline-text, var(--color-success-text));
-    background: var(--color-success-hover-bg);
-    color: var(--color-success-outline-text, var(--color-success-text));
 }
 
 .jitsi-whiteboard-button.disabled {
