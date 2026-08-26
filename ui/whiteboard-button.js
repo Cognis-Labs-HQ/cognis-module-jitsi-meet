@@ -25,6 +25,10 @@ function setButtonActive(button, active) {
     button?.setAttribute("aria-pressed", String(active));
 }
 
+function setBorderlessStageActive(frameWrap, active) {
+    frameWrap?.classList.toggle("component-page-stage--borderless", active);
+}
+
 async function ensureComponentPage(trigger, meetingId) {
     if (!trigger.componentPage) {
         trigger.componentPage = await trigger.requestComponentPage({
@@ -59,6 +63,7 @@ function spawnComponentWindow(trigger, { meetingId, whiteboardId }) {
 }
 
 function closeComponentWindow(trigger) {
+    setBorderlessStageActive(trigger?.frameWrap, false);
     trigger?.releaseFloatingWindow?.();
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
@@ -394,6 +399,7 @@ export async function bindWhiteboardButton({
             button.disabled = true;
             setButtonActive(button, true);
             trigger.componentWindowPending = true;
+            setBorderlessStageActive(frameWrap, true);
             const meetingFrame = frameWrap.querySelector(".jitsi-stage-frame");
             if (meetingFrame instanceof HTMLElement) {
                 trigger.releaseFloatingWindow = makeFloatingWindow(

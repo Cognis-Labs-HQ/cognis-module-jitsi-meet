@@ -43,3 +43,5 @@ Meetings kini menyimpan status opsional per rapat `whiteboardOpen` hanya jika ka
 Memulai atau mengambil alih instans rapat tidak lagi mereset Papan Tulis per rapat yang sudah terbuka. Ini menghapus race siklus hidup bergabung yang menutup Papan Tulis rapat tanpa peserta pada pembaruan status lima detik berikutnya; penghentian rapat secara eksplisit tetap menutup Papan Tulis bersama.
 
 Endpoint status lima detik kini mengembalikan bentuk status rapat publik yang sama dengan pemuatan rapat awal. Endpoint memetakan flag Papan Tulis internal yang tersimpan ke `whiteboardOpen`, sehingga polling tidak menganggap Papan Tulis rapat tanpa peserta yang terbuka sebagai tidak ada lalu menutup jendela komponennya.
+
+Meetings kini mencerminkan handle Papan Tulis tanpa bingkai yang aktif ke panggung rapat sebagai `component-page-stage--borderless`. Hanya selama handle tersebut aktif, tinggi rapat tetap dan overflow panggung yang terpotong dilonggarkan agar kanvas komponen dapat memperbesar panggung; penutupan atau kegagalan pembukaan komponen memulihkan tata letak Jitsi bawaan.

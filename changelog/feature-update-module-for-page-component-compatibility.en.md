@@ -43,3 +43,5 @@ Meetings now persists an optional per-meeting `whiteboardOpen` state only when a
 Starting or reclaiming a meeting instance no longer resets an already-open per-meeting Whiteboard. This removes the join-lifecycle race that closed participant-free meeting Whiteboards on the next five-second state refresh; explicit meeting termination still closes the shared Whiteboard.
 
 The five-second state endpoint now returns the same public meeting-state shape as initial meeting loads. It maps the persisted internal Whiteboard flag to `whiteboardOpen`, preventing polling from treating an open participant-free Whiteboard as absent and closing its component window.
+
+Meetings now mirrors an active borderless Whiteboard handle onto the meeting stage as `component-page-stage--borderless`. Only while that handle is active, the fixed meeting height and clipped stage overflow are relaxed so the component canvas can grow the stage; closing or failing the component spawn restores the default Jitsi layout.
