@@ -23,6 +23,7 @@ function getParticipantHandles(meeting) {
 function syncButtonStyle(button) {
     if (!button) return;
     const confirmed = button.getAttribute("aria-pressed") === "true";
+    button.classList.toggle("active", confirmed);
     button.classList.toggle("btn-confirm", confirmed);
     button.classList.toggle("btn-neutral", !confirmed);
 }

@@ -67,6 +67,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /setButtonActive\([\s\S]*?whiteboardOpen === true[\s\S]*?componentWindowPending/,
     );
+    assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
         buttonSource,
         /disposableCanvas = participantHandles\.length === 0/,
