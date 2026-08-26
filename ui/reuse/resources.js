@@ -13,4 +13,5 @@ if (
 export { uiCtx };
 
 export const importReuseModule = (path) => reuseResources.importModule(path);
-export const loadReuseStylesheet = () => reuseResources.loadCommonStyles();
+export const loadCommonStyles = () => reuseResources.loadCommonStyles();
+export const loadReuseStylesheet = loadCommonStyles;

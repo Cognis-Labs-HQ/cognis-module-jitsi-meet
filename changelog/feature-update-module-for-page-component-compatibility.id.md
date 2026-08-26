@@ -64,4 +64,4 @@ Tautan Papan Tulis tidak lagi membawa kelas presentasi khusus modul. Tampilan ba
 
 SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:reuse` sebelum merender, alih-alih hanya memuat `page-sections.css`. Dengan demikian, seluruh katalog stylesheet Cognis core, termasuk tampilan tombol standar, tersedia setelah navigasi langsung maupun navigasi SPA.
 
-Ekspor pemuat stylesheet modul mempertahankan nama stabil `loadReuseStylesheet` sambil mendelegasikan ke `loadCommonStyles()` milik core. Skrip entri Meetings yang aktif maupun yang sudah tersimpan dalam cache kini menemukan ekspor bernama yang sama selama navigasi SPA.
+Fasad reuse modul mengekspor `loadCommonStyles` serta nama `loadReuseStylesheet` yang telah dipublikasikan sebelumnya, dan keduanya memakai pemuat core yang sama. Skrip entri Meetings terkini maupun yang sudah tersimpan dalam cache tetap kompatibel selama navigasi SPA dengan versi campuran tanpa memuat stylesheet dua kali.

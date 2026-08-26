@@ -1,7 +1,7 @@
 import { logUi, openErrorPopup } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
 import { showToast } from "../reuse/feedback.js";
-import { importReuseModule, loadReuseStylesheet } from "../reuse/resources.js";
+import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
@@ -74,7 +74,7 @@ export async function mount(
         focusState = null,
     } = {},
 ) {
-    await loadReuseStylesheet();
+    await loadCommonStyles();
     root.classList.add("jitsi-route-root");
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =

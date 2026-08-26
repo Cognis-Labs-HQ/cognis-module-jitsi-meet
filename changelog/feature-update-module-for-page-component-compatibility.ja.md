@@ -64,4 +64,4 @@ Whiteboard アンカーからモジュール固有の表示クラスを削除し
 
 Meetings SPA は `page-sections.css` だけを読み込む代わりに、描画前に `ui:reuse` 機能の `loadCommonStyles()` 契約を呼び出すようになりました。これにより、標準ボタン表示を含む Cognis core の完全なスタイルシートカタログが、直接ナビゲーションと SPA ナビゲーションのどちらでも利用できます。
 
-モジュールのスタイルシートローダーは安定したエクスポート名 `loadReuseStylesheet` を維持しながら、core の `loadCommonStyles()` に委譲します。これにより、現在の Meetings エントリスクリプトとキャッシュ済みのスクリプトのどちらも、SPA ナビゲーション時に同じ名前付きエクスポートを解決できます。
+モジュールの再利用ファサードは、同じ core ローダーを使う `loadCommonStyles` と、以前に公開した `loadReuseStylesheet` の両方をエクスポートします。これにより、スタイルシートを重複して読み込むことなく、現行およびキャッシュ済みの Meetings エントリスクリプトが混在バージョンの SPA ナビゲーションでも互換性を保ちます。

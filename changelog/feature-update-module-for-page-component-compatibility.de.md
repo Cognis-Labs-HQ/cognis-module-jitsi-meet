@@ -64,4 +64,4 @@ Der Whiteboard-Anker trägt keine modulspezifische Darstellungsklasse mehr. Sein
 
 Die Meetings-SPA ruft jetzt vor der Darstellung den Vertrag `loadCommonStyles()` der Fähigkeit `ui:reuse` auf, statt nur `page-sections.css` zu laden. Damit steht der vollständige Cognis-Core-Stylesheet-Katalog einschließlich der Standarddarstellung von Schaltflächen nach direkter Navigation und SPA-Navigation zur Verfügung.
 
-Der Stylesheet-Loader des Moduls behält den stabilen Exportnamen `loadReuseStylesheet` bei und delegiert weiterhin an `loadCommonStyles()` des Core. Aktuelle und bereits zwischengespeicherte Meetings-Einstiegsskripte lösen dadurch bei der SPA-Navigation denselben benannten Export auf.
+Die Wiederverwendungsfassade des Moduls exportiert sowohl `loadCommonStyles` als auch den zuvor veröffentlichten Namen `loadReuseStylesheet`; beide verwenden denselben Core-Loader. Damit bleiben aktuelle und bereits zwischengespeicherte Meetings-Einstiegsskripte bei einer SPA-Navigation mit gemischten Versionen kompatibel, ohne Stylesheets doppelt zu laden.

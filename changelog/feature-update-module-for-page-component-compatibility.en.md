@@ -64,4 +64,4 @@ The Whiteboard anchor no longer carries a module-specific presentation class. It
 
 The Meetings SPA now calls the `ui:reuse` capability's `loadCommonStyles()` contract before rendering instead of loading only `page-sections.css`. This ensures the complete Cognis core stylesheet catalog, including standard button presentation, is available after direct and SPA navigation.
 
-The module's stylesheet-loader export retains the stable `loadReuseStylesheet` name while delegating to core `loadCommonStyles()`. Current and already-cached Meetings entry scripts therefore resolve the same named export during SPA navigation.
+The module's reuse facade exports both `loadCommonStyles` and the previously published `loadReuseStylesheet` name, backed by the same core loader. This keeps current and already-cached Meetings entry scripts compatible during mixed-version SPA navigation without duplicating stylesheet loading.
