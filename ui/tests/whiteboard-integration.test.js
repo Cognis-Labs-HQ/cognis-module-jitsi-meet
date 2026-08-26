@@ -86,6 +86,18 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /document\.createElement\("a"\)/);
     assert.match(buttonSource, /classList\.toggle\("btn-confirm", active\)/);
     assert.match(buttonSource, /aria-disabled/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-whiteboard-button\s*\{[\s\S]*?display:\s*inline-flex;[\s\S]*?text-decoration:\s*none;/,
+    );
+    assert.match(
+        stylesheet,
+        /\.jitsi-whiteboard-button\.btn-confirm\s*\{[\s\S]*?color:\s*var\(--color-success-outline-text/,
+    );
+    assert.match(
+        stylesheet,
+        /\.jitsi-whiteboard-button\.disabled\s*\{[\s\S]*?pointer-events:\s*none;/,
+    );
     assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);

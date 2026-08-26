@@ -47,3 +47,5 @@ The five-second state endpoint now returns the same public meeting-state shape a
 Meetings now mirrors an active borderless Whiteboard handle onto the meeting stage as `component-page-stage--borderless`. Only while that handle is active, the fixed meeting height and clipped stage overflow are relaxed so the component canvas can grow the stage; closing or failing the component spawn restores the default Jitsi layout.
 
 The Whiteboard control now renders as an anchor and uses the standard `btn-confirm` active treatment. Organizer open-state synchronization now finishes before component-page and PiP activation, removing the initial polling/mount race that produced repeated open-failure feedback. Transient component-mount startup failures are retried internally before any failure toast is shown.
+
+The anchor-based Whiteboard action now has complete module-owned control styling. It no longer renders as a bare underlined link when host button defaults or administration-only `btn-*` declarations are unavailable, while `btn-confirm` continues to select its active colors.
