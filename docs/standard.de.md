@@ -12,7 +12,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerau
 ## Technische Spezifikation
 
 - API-Aufrufe erfordern ein gültiges Cognis-Zugriffstoken; Besprechungsdetails werden nur autorisierten Teilnehmern oder begrenzten Freigabegästen zurückgegeben.
-- Kennwörter werden pro Besprechungsdatensatz erzeugt. Jitsi erzeugt den Raumnamen, wenn der Organisator eine neue Besprechung öffnet; Cognis übernimmt diesen Namen anschließend für die Whiteboard-Ressource und den undatierten Messages-Chat. Andere Besprechungsflächen verwenden weiterhin „Cognis Classroom“, wenn die Raumidentität keinen Nutzen bietet. Teilnehmerlose, verwerfbare Besprechungen erstellen keine Messages-Chats, und ein zuvor zugeordneter Chat wird beim Beenden der Besprechung dauerhaft gelöscht.
+- Kennwörter werden pro Besprechungsdatensatz erzeugt. Jitsi erzeugt den Raumnamen, wenn der Organisator eine neue Besprechung öffnet; Cognis übernimmt diesen Namen anschließend für die Whiteboard-Ressource und den undatierten Messages-Chat. Andere Besprechungsflächen verwenden weiterhin „Cognis Classroom“, wenn die Raumidentität keinen Nutzen bietet. Teilnehmerlose, verwerfbare Besprechungen erstellen keine Messages-Chats, und ein zuvor zugeordneter Chat wird beim Beenden der Besprechung dauerhaft gelöscht. Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviertem Modul verfügbar, damit Administratoren eine ungültige Jitsi-URL löschen können.
 - Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen.
 - Die Sitzungswiederaufnahme trennt die vorherige aktive Besprechungssitzung des Benutzers.
 

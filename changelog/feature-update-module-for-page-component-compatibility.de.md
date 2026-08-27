@@ -73,3 +73,5 @@ Die Whiteboard-Provider-Erkennung befindet sich jetzt in einem fokussierten Prov
 Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht mehr im Digest-Inventar der Laufzeitdateien enthalten.
 
 Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Das Modul enthält keinen Besprechungsnamengenerator, keine kopierten Wortlisten und keine Generatorlizenz mehr. Bevor Jitsi die Raumidentität meldet, zeigen Flächen ohne Nutzen daraus weiterhin „Cognis Classroom“ an.
+
+Das Löschen der Konfiguration ist jetzt ausdrücklich als reine Administratorroute registriert, die auch bei deaktiviertem Modul einschließlich des Route-Satzes mit eingeschränkten Capabilities verfügbar bleibt.

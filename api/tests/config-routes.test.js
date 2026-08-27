@@ -15,20 +15,24 @@ function createResponse() {
 
 test("config endpoint polls and persists the module-owned configuration", async () => {
     const handlers = {};
+    const routeOptions = {};
     const operations = [];
     let config = {
         instanceUrl: "https://meet.example.test",
     };
     registerMeetingConfigRoutes({
         router: {
-            get(path, handler) {
+            get(path, handler, options) {
                 handlers[`GET ${path}`] = handler;
+                routeOptions[`GET ${path}`] = options;
             },
-            put(path, handler) {
+            put(path, handler, options) {
                 handlers[`PUT ${path}`] = handler;
+                routeOptions[`PUT ${path}`] = options;
             },
-            delete(path, handler) {
+            delete(path, handler, options) {
                 handlers[`DELETE ${path}`] = handler;
+                routeOptions[`DELETE ${path}`] = options;
             },
         },
         store: {
@@ -57,6 +61,10 @@ test("config endpoint polls and persists the module-owned configuration", async 
         sendError: () => assert.fail("valid config must not be rejected"),
         normalizeHttpUrl: (value) => value,
         registerConfiguredJitsiOrigin: () => {},
+    });
+    assert.deepEqual(routeOptions["DELETE /api/v1/modules/jitsi-meet/config"], {
+        access: { minRole: "admin" },
+        allowWhenDisabled: true,
     });
 
     const getResponse = createResponse();

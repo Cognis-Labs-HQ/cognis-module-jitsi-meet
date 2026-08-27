@@ -230,17 +230,26 @@ export function registerApiRoutes(router, ctx) {
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
-        router.get("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
-            unavailablePayload(res);
-        });
-        router.put("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
-            unavailablePayload(res);
-        });
+        router.get(
+            "/api/v1/modules/jitsi-meet/config",
+            async (_req, res) => {
+                unavailablePayload(res);
+            },
+            { access: { minRole: "user" }, allowWhenDisabled: true },
+        );
+        router.put(
+            "/api/v1/modules/jitsi-meet/config",
+            async (_req, res) => {
+                unavailablePayload(res);
+            },
+            { access: { minRole: "admin" }, allowWhenDisabled: true },
+        );
         router.delete(
             "/api/v1/modules/jitsi-meet/config",
             async (_req, res) => {
                 unavailablePayload(res);
             },
+            { access: { minRole: "admin" }, allowWhenDisabled: true },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",

@@ -73,3 +73,5 @@ Penemuan penyedia Papan Tulis kini berada dalam modul penyedia yang terfokus, se
 Dokumen changelog tetap menjadi metadata rilis repositori dan tidak lagi disertakan dalam inventaris digest berkas runtime.
 
 Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai dengan tanggung jawab siklus hidup kontrolnya yang lebih luas. Modul tidak lagi memuat pembuat nama rapat, kumpulan kata salinan, atau lisensi generator. Sebelum Jitsi melaporkan identitas ruang, permukaan yang tidak memerlukannya tetap menampilkan “Cognis Classroom”.
+
+Penghapusan konfigurasi kini didaftarkan secara eksplisit sebagai rute khusus administrator yang tetap tersedia saat modul dinonaktifkan, termasuk pada kumpulan rute dengan kapabilitas terbatas.

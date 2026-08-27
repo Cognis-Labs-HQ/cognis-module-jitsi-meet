@@ -27,8 +27,8 @@ function createScopedRuntime() {
             uiContributions.push(record);
             scope.uiContributions.push(record);
         };
-        const registerRoute = (method, path, handler) => {
-            const record = { method, path, handler };
+        const registerRoute = (method, path, handler, options) => {
+            const record = { method, path, handler, options };
             routes.push(record);
             scope.routes.push(record);
         };
@@ -53,11 +53,14 @@ function createScopedRuntime() {
                 },
             },
             router: {
-                get: (path, handler) => registerRoute("GET", path, handler),
-                put: (path, handler) => registerRoute("PUT", path, handler),
-                post: (path, handler) => registerRoute("POST", path, handler),
-                delete: (path, handler) =>
-                    registerRoute("DELETE", path, handler),
+                get: (path, handler, options) =>
+                    registerRoute("GET", path, handler, options),
+                put: (path, handler, options) =>
+                    registerRoute("PUT", path, handler, options),
+                post: (path, handler, options) =>
+                    registerRoute("POST", path, handler, options),
+                delete: (path, handler, options) =>
+                    registerRoute("DELETE", path, handler, options),
             },
             registerStaticDir: (prefix, directory) =>
                 registerUiContribution("static", { prefix, directory }),
@@ -96,6 +99,11 @@ function createScopedRuntime() {
             ),
             hookCount: hooks.length,
             routeCount: routes.length,
+            routes: routes.map(({ method, path, options }) => ({
+                method,
+                path,
+                options,
+            })),
             uiContributionCount: uiContributions.length,
             uiContributions: uiContributions.map(({ type, contribution }) => ({
                 type,
@@ -117,6 +125,14 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         "create-meeting",
     ]);
     assert.ok(firstEnabledSnapshot.routeCount > 0);
+    assert.deepEqual(
+        firstEnabledSnapshot.routes.find(
+            ({ method, path }) =>
+                method === "DELETE" &&
+                path === "/api/v1/modules/jitsi-meet/config",
+        )?.options,
+        { access: { minRole: "admin" }, allowWhenDisabled: true },
+    );
     assert.ok(firstEnabledSnapshot.uiContributionCount > 0);
     assert.deepEqual(
         firstEnabledSnapshot.uiContributions
