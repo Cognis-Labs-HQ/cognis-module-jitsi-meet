@@ -8,12 +8,9 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import {
-    buildMeetingName,
-    generateMeetingName,
-    normalizeMeetingPrefix,
-} from "./meeting-values.js";
+import { buildMeetingName } from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
+import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
     decryptPayload,
     deriveScopedKey,
@@ -28,15 +25,6 @@ const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 // participant who simply isn't focused on the tab is never treated as
 // "gone" for the purposes of the alone-in-meeting prompt.
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
-const DEFAULT_MEETING_SLUG_PREFIX = "cognis-classroom";
-
-function buildRoomSlug(prefix) {
-    const readablePrefix =
-        normalizeMeetingPrefix(prefix) || DEFAULT_MEETING_SLUG_PREFIX;
-    const entropy = randomBytes(4).toString("hex");
-    return `${readablePrefix}-${entropy}`;
-}
-
 function buildParticipantKey(usernames, classroomId = null) {
     const payload = JSON.stringify({
         classroomId: classroomId ? String(classroomId) : null,
@@ -57,7 +45,6 @@ export class JitsiMeetStore {
             columns: [
                 { name: "id", type: "text", primaryKey: true },
                 { name: "instance_url", type: "text" },
-                { name: "meeting_prefix", type: "text" },
                 {
                     name: "updated_at",
                     type: "timestamp",
@@ -222,16 +209,12 @@ export class JitsiMeetStore {
         const row = result.rows?.[0];
         return {
             instanceUrl: row?.instance_url ? String(row.instance_url) : "",
-            meetingPrefix: row?.meeting_prefix
-                ? String(row.meeting_prefix)
-                : "",
             updatedAt: readDbTimestampValue(row?.updated_at),
         };
     }
 
-    async saveConfig({ instanceUrl, meetingPrefix }) {
+    async saveConfig({ instanceUrl }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
-        const normalizedPrefix = normalizeMeetingPrefix(meetingPrefix);
         const previousConfig = await this.getConfig();
         const updatedAt = new Date().toISOString();
         const instanceChanged = Boolean(
@@ -259,7 +242,6 @@ export class JitsiMeetStore {
                 values: {
                     id: "default",
                     instance_url: normalizedInstanceUrl,
-                    meeting_prefix: normalizedPrefix,
                     updated_at: updatedAt,
                 },
                 conflict: {
@@ -271,7 +253,6 @@ export class JitsiMeetStore {
 
         return {
             instanceUrl: normalizedInstanceUrl ?? "",
-            meetingPrefix: normalizedPrefix,
             updatedAt,
             invalidatedMeetings: instanceChanged,
         };
@@ -324,6 +305,7 @@ export class JitsiMeetStore {
             id: String(row.id),
             participantKey: String(participantKey),
             meetingUrl: row.meeting_url ? String(row.meeting_url) : "",
+            roomSlug: row.room_slug ? String(row.room_slug) : "",
             meetingPassword,
             meetingName: buildMeetingName(row.room_slug, row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
@@ -407,7 +389,6 @@ export class JitsiMeetStore {
 
     async createMeeting({
         instanceUrl,
-        meetingPrefix,
         usernames,
         classroomId,
         createdBy,
@@ -453,10 +434,9 @@ export class JitsiMeetStore {
         }
 
         const meetingId = randomUUID();
-        const prefix = normalizeMeetingPrefix(meetingPrefix);
-        const meetingSlug = buildRoomSlug(prefix);
-        const meetingName = generateMeetingName();
-        const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
+        const meetingSlug = "";
+        const meetingName = "Cognis Classroom";
+        const meetingUrl = normalizedInstanceUrl;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
             `jitsi:meeting:${meetingId}:password`,
@@ -533,6 +513,16 @@ export class JitsiMeetStore {
             ...(createdMeeting ?? {}),
             reused: false,
         };
+    }
+
+    async captureMeetingIdentity(meetingId, roomName, instanceUrl) {
+        return captureMeetingIdentity({
+            db: this.db,
+            meetingId,
+            roomName,
+            instanceUrl,
+            getMeetingById: (id) => this.getMeetingById(id),
+        });
     }
 
     async claimMeetingPassword(meetingId, username) {

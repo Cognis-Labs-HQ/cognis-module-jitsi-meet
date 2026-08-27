@@ -25,6 +25,7 @@ test("canvas preparation discards a completion after the meeting changes", async
         meeting: {
             id: "meeting-a",
             meetingName: "Original Meeting Name",
+            roomSlug: "OriginalMeetingName",
             createdBy: "alice",
             participants: ["alice", "bob"],
         },
@@ -34,6 +35,7 @@ test("canvas preparation discards a completion after the meeting changes", async
     state.meeting = {
         id: "meeting-b",
         meetingName: "Replacement Meeting Name",
+        roomSlug: "ReplacementMeetingName",
         createdBy: "carol",
         participants: ["carol", "dana"],
     };
@@ -43,6 +45,8 @@ test("canvas preparation discards a completion after the meeting changes", async
 
     assert.deepEqual(requests, [
         {
+            resourceType: "meeting",
+            resourceId: "Original Meeting Name",
             title: "Original Meeting Name",
             participantHandles: ["alice", "bob"],
         },

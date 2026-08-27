@@ -137,10 +137,3 @@ test("source does not use Math.random for generated values", () => {
         .map((path) => relative(ROOT, path));
     assert.deepEqual(violations, []);
 });
-
-test("meeting name generation has no undeployed package dependency", () => {
-    const source = readFileSync(resolve(ROOT, "api/meeting-values.js"), "utf8");
-    const packageJson = JSON.parse(readFileSync(resolve(ROOT, "package.json")));
-    assert.match(source, /from "\.\/meeting-name-generator\.js"/);
-    assert.equal(packageJson.dependencies, undefined);
-});

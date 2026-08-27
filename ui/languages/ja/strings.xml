@@ -61,8 +61,6 @@
   <string name="module.jitsi_meet.participants.add_selected">選択を追加</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi インスタンス URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Jitsi デプロイのベース URL を完全な形式で入力してください。</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">任意のミーティング URI プレフィックス</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">ミーティング URL 生成時に使う任意のパスプレフィックスです。</string>
   <string name="module.jitsi_meet.admin.meetings.heading">ミーティング</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">リアルタイム ミーティング状況</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">アクティブなミーティング</string>

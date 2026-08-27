@@ -66,10 +66,10 @@ The Meetings SPA now calls the `ui:reuse` capability's `loadCommonStyles()` cont
 
 The Whiteboard action now uses the same native `<button>` and core `btn-*` contract as the adjacent Share action, including the native disabled state. Borderless spawns also forward the document-scroll layout contract in their component context, and the active Jitsi stage uses a content-sized grid row with visible overflow so the embedded canvas can expand instead of creating a nested vertical scroller.
 
-Meeting names are now generated as five-word phrases from compact, reviewed word pools using Node Crypto. Whiteboard preparation binds asynchronous results to the original meeting, pending consensus cannot be bypassed through a proposed canvas mapping, and the state API rejects non-boolean active values.
+New meetings now let the Jitsi iframe API generate its default room name. Cognis captures that name after the organizer joins and uses it for the Messages chat and Whiteboard resource. Whiteboard preparation binds asynchronous results to the original meeting, pending consensus cannot be bypassed through a proposed canvas mapping, and the state API rejects non-boolean active values.
 
 Whiteboard provider discovery now lives in a focused provider module, while canvas preparation, component spawning, and keyring coordination live in a session module. The button module is limited to control rendering and interaction orchestration.
 
 Changelog documents remain repository release metadata and are no longer included in the runtime file digest inventory.
 
-The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. Meeting-name generation is repository-local and uses only Node built-ins, so installed-module validation does not require undeployed npm packages.
+The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. The module no longer contains a meeting-name generator, copied word pools, or a generator license. Before Jitsi reports the room identity, surfaces that do not benefit from it continue to display “Cognis Classroom”.

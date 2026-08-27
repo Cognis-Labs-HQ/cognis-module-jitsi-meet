@@ -6,7 +6,7 @@ Repositori ini berisi modul eksternal Jitsi Meet untuk Cognis. Modul ini menyedi
 
 ## Instalasi
 
-Tambahkan repositori ini melalui **Modul → Sumber Modul** di Cognis, pasang modul, tinjau kapabilitas dan dependensi yang diminta, lalu aktifkan secara terpisah. Aktivasi mendaftarkan rute aplikasi `/meetings` dan `/meeting`, entri navigasi Rapat, bagian administrasi, aset peramban statis, API, kapabilitas, dan hook flow. Penonaktifan menghapus kontribusi bercakupan tersebut. Atur URL instans Jitsi dan prefiks rapat opsional melalui popup Pengaturan modul yang terpasang. Cognis merender bidang yang dideklarasikan dalam manifest, sedangkan modul ini memvalidasi dan menyimpan perubahan melalui endpoint konfigurasi GET dan PUT.
+Tambahkan repositori ini melalui **Modul → Sumber Modul** di Cognis, pasang modul, tinjau kapabilitas dan dependensi yang diminta, lalu aktifkan secara terpisah. Aktivasi mendaftarkan rute aplikasi `/meetings` dan `/meeting`, entri navigasi Rapat, bagian administrasi, aset peramban statis, API, kapabilitas, dan hook flow. Penonaktifan menghapus kontribusi bercakupan tersebut. Atur URL instans Jitsi melalui popup Pengaturan modul yang terpasang. Cognis merender bidang yang dideklarasikan dalam manifest, sedangkan modul ini memvalidasi dan menyimpan perubahan melalui endpoint konfigurasi GET dan PUT.
 
 ## Kapabilitas dan dependensi
 

@@ -137,7 +137,11 @@ export async function ensureWhiteboardKeyringUnlocked(trigger, state) {
 }
 
 export function prepareMeetingCanvas(trigger, state) {
-    if (trigger.preparedWhiteboardId || !state.meeting?.id) {
+    if (
+        trigger.preparedWhiteboardId ||
+        !state.meeting?.id ||
+        !state.meeting?.roomSlug
+    ) {
         return Promise.resolve();
     }
     if (trigger.preparationFailedMeetingId === state.meeting.id) {
@@ -160,11 +164,13 @@ export function prepareMeetingCanvas(trigger, state) {
         disposableCanvas
             ? trigger.whiteboardGateway.createDisposableCanvas({
                   resourceType: "meeting",
-                  resourceId: meetingId,
+                  resourceId: meetingName,
                   title: meetingName,
                   participantHandles,
               })
             : trigger.whiteboardGateway.createCanvas({
+                  resourceType: "meeting",
+                  resourceId: meetingName,
                   title: meetingName,
                   participantHandles,
               })

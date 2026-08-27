@@ -6,7 +6,7 @@ Dieses Repository enthält das externe Jitsi-Meet-Modul für Cognis. Es ermögli
 
 ## Installation
 
-Füge dieses Repository in Cognis über **Module → Modulquellen** hinzu, installiere das Modul, prüfe die angeforderten Fähigkeiten und Abhängigkeiten und aktiviere es anschließend separat. Beim Aktivieren werden die Anwendungsrouten `/meetings` und `/meeting`, der Navigationseintrag „Besprechungen“, der Administrationsbereich, statische Browserressourcen, APIs, Fähigkeiten und Flow-Hooks registriert. Beim Deaktivieren werden diese bereichsgebundenen Beiträge entfernt. Konfiguriere die URL der Jitsi-Instanz und das optionale Besprechungspräfix im Einstellungsdialog des installierten Moduls. Cognis rendert die im Manifest deklarierten Felder; dieses Modul validiert und speichert Änderungen über seinen GET- und PUT-Konfigurationsendpunkt.
+Füge dieses Repository in Cognis über **Module → Modulquellen** hinzu, installiere das Modul, prüfe die angeforderten Fähigkeiten und Abhängigkeiten und aktiviere es anschließend separat. Beim Aktivieren werden die Anwendungsrouten `/meetings` und `/meeting`, der Navigationseintrag „Besprechungen“, der Administrationsbereich, statische Browserressourcen, APIs, Fähigkeiten und Flow-Hooks registriert. Beim Deaktivieren werden diese bereichsgebundenen Beiträge entfernt. Konfiguriere die URL der Jitsi-Instanz im Einstellungsdialog des installierten Moduls. Cognis rendert die im Manifest deklarierten Felder; dieses Modul validiert und speichert Änderungen über seinen GET- und PUT-Konfigurationsendpunkt.
 
 ## Fähigkeiten und Abhängigkeiten
 

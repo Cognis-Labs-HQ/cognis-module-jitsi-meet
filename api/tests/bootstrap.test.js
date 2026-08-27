@@ -205,15 +205,7 @@ test("manifest exposes localized configuration metadata for core rendering", asy
             type,
             required,
         })),
-        [
-            { key: "instanceUrl", type: "string", required: true },
-            { key: "meetingPrefix", type: "string", required: false },
-        ],
-    );
-    assert.equal(
-        manifest.ui.preferences.find(({ key }) => key === "meetingPrefix")
-            .default,
-        "",
+        [{ key: "instanceUrl", type: "string", required: true }],
     );
     assert.equal(manifest.ui.componentConfig, undefined);
     assert.equal(

@@ -80,11 +80,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(buttonSource, /saveCanvasToParticipants/);
     assert.match(
         buttonSource,
-        /createCanvas\(\{[\s\S]*?title:\s*meetingName,[\s\S]*?participantHandles/,
+        /createCanvas\(\{[\s\S]*?resourceId:\s*meetingName,[\s\S]*?title:\s*meetingName,[\s\S]*?participantHandles/,
     );
     assert.match(
         buttonSource,
-        /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingId/,
+        /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingName/,
     );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
     assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);

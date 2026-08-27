@@ -177,7 +177,6 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     await store.ensureSchema();
     const createdMeeting = await store.createMeeting({
         instanceUrl: "https://meet.example.com",
-        meetingPrefix: "classroom",
         usernames: ["alice", "bob", "carol"],
         classroomId: null,
         createdBy: "alice",
@@ -188,7 +187,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     assert.equal(mockDb.insertedMeetingRows.length, 1);
     assert.ok(mockDb.insertedMeetingRows[0].participant_key);
     assert.ok(mockDb.insertedMeetingRows[0].meeting_url);
-    assert.ok(mockDb.insertedMeetingRows[0].room_slug);
+    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
     assert.ok(mockDb.insertedMeetingRows[0].meeting_password_iv);
     assert.notEqual(
         mockDb.insertedMeetingRows[0].meeting_password,
@@ -199,23 +198,24 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
-    assert.match(
-        String(mockDb.insertedMeetingRows[0].room_slug),
-        /^classroom-[a-f0-9]{8}$/,
-    );
-    assert.match(
+    assert.equal(
         mockDb.insertedMeetingRows[0].meeting_name,
-        /^[A-Z][a-z]+(?: [A-Z][a-z]+){3,4}$/,
-    );
-    assert.doesNotMatch(
-        mockDb.insertedMeetingRows[0].meeting_name,
-        /^Cognis Classroom/,
+        "Cognis Classroom",
     );
     assert.equal(
-        String(mockDb.insertedMeetingRows[0].meeting_url).endsWith(
-            `/${mockDb.insertedMeetingRows[0].room_slug}`,
-        ),
-        true,
+        mockDb.insertedMeetingRows[0].meeting_url,
+        "https://meet.example.com",
+    );
+    const capturedMeeting = await store.captureMeetingIdentity(
+        createdMeeting.id,
+        "BrightOttersMeetSafely",
+        "https://meet.example.com",
+    );
+    assert.equal(capturedMeeting.roomSlug, "BrightOttersMeetSafely");
+    assert.equal(capturedMeeting.meetingName, "BrightOttersMeetSafely");
+    assert.equal(
+        capturedMeeting.meetingUrl,
+        "https://meet.example.com/BrightOttersMeetSafely",
     );
     assert.equal(createdMeeting?.reused, false);
     assert.equal(
@@ -233,24 +233,20 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     );
 });
 
-test("jitsi store meeting creation falls back to a readable default slug", async () => {
+test("jitsi store meeting creation defers its room identity to Jitsi", async () => {
     const mockDb = createMockJitsiDb();
     const store = new JitsiMeetStore({ db: mockDb });
 
     await store.ensureSchema();
     await store.createMeeting({
         instanceUrl: "https://meet.example.com",
-        meetingPrefix: "",
         usernames: ["alice", "bob"],
         classroomId: null,
         createdBy: "alice",
         chatRoomId: null,
     });
 
-    assert.match(
-        String(mockDb.insertedMeetingRows[0].room_slug),
-        /^cognis-classroom-[a-f0-9]{8}$/,
-    );
+    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
 });
 
 test("jitsi store reconnects a reused meeting to its resolved chat room", async () => {
@@ -288,7 +284,6 @@ test("jitsi store reconnects a reused meeting to its resolved chat room", async 
 
     const meeting = await store.createMeeting({
         instanceUrl: "https://meet.example.com",
-        meetingPrefix: "classroom",
         usernames: ["alice", "bob"],
         classroomId: null,
         createdBy: "alice",
@@ -361,7 +356,6 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
                     rows: [
                         {
                             instance_url: "https://old.example.com",
-                            meeting_prefix: "old",
                             updated_at: "2026-01-01T00:00:00.000Z",
                         },
                     ],
@@ -374,7 +368,6 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
 
     const saved = await store.saveConfig({
         instanceUrl: "https://new.example.com",
-        meetingPrefix: "classroom",
     });
 
     assert.equal(saved.invalidatedMeetings, true);

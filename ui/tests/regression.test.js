@@ -184,13 +184,12 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
     assert.match(cssSource, /\.jitsi-participant-avatar-img/);
 });
 
-test("jitsi meeting group chats use the unique meeting name without a date", () => {
+test("jitsi meeting group chats use the captured Jitsi room name without a date", () => {
     const source = readJitsiApiBundle();
     assert.match(source, /function buildMeetingChatTitle\(meetingName\)/);
-    assert.match(source, /buildMeetingChatTitle\([\s\S]*meeting\.meetingName/);
-    assert.match(source, /title:\s*meetingChatTitle/);
+    assert.match(source, /title:\s*buildMeetingChatTitle\(roomName\)/);
     assert.doesNotMatch(source, /new Date\(parsedCreatedAt\)/);
-    assert.match(source, /const hasInvitedParticipants/);
+    assert.match(source, /participants\.length > 1/);
 });
 
 test("jitsi chat loads room keys through the messages adapter loading flow", () => {
@@ -565,8 +564,9 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
-        /addEventListener\("videoConferenceJoined", \(event\) => \{[\s\S]*if \(state\.jitsiApi !== apiInstance\) return;[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
+        /addEventListener\("videoConferenceJoined", async \(event\) => \{[\s\S]*meetings\/identity[\s\S]*roomName: capturedRoomName[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
     );
+    assert.match(embedSource, /\.\.\.\(roomName \? \{ roomName \} : \{\}\)/);
     assert.doesNotMatch(
         embedSource,
         /frame\.hidden = false;[\s\S]*await callbacks\.keepPresenceAlive\(true\);/,

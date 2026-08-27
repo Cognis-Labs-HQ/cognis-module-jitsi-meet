@@ -61,8 +61,6 @@
   <string name="module.jitsi_meet.participants.add_selected">Ausgewählte Hinzufügen</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi-Instanz-URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Gib die vollständige Basis-URL deiner Jitsi-Instanz ein.</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">Optionales Meeting-URI-Präfix</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Optionales Pfadpräfix, das beim Erzeugen von Meeting-URLs genutzt wird.</string>
   <string name="module.jitsi_meet.admin.meetings.heading">Meetings</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">Meeting-Aktivität in Echtzeit</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">Aktive Meetings</string>

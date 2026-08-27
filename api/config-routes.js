@@ -6,7 +6,6 @@ export function registerMeetingConfigRoutes({
     sendJson,
     sendError,
     normalizeHttpUrl,
-    normalizeMeetingPrefix,
     registerConfiguredJitsiOrigin,
     registerScriptOrigins,
     log,
@@ -56,19 +55,14 @@ export function registerMeetingConfigRoutes({
                 );
                 return;
             }
-            const meetingPrefix = normalizeMeetingPrefix(
-                body.meetingPrefix ?? "",
-            );
             const saved = await store.saveConfig({
                 instanceUrl,
-                meetingPrefix,
             });
             registerConfiguredJitsiOrigin(registerScriptOrigins, saved);
             log?.("info", "Jitsi Meet configuration updated.", {
                 component: "jitsi-meet-module",
                 operation: "save_config",
                 hasInstanceUrl: Boolean(saved.instanceUrl),
-                hasMeetingPrefix: Boolean(saved.meetingPrefix),
             });
             sendJson(res, 200, {
                 data: saved,

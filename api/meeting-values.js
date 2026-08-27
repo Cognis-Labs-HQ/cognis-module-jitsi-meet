@@ -1,19 +1,12 @@
-export { generateMeetingName } from "./meeting-name-generator.js";
-
-const DEFAULT_MEETING_PREFIX_MAX_LENGTH = 48;
+const DEFAULT_MEETING_NAME = "Cognis Classroom";
 
 export function buildMeetingName(roomSlug, storedMeetingName = "") {
     const normalizedStoredName = String(storedMeetingName ?? "").trim();
-    return normalizedStoredName || String(roomSlug ?? "").trim();
-}
-
-export function normalizeMeetingPrefix(rawPrefix) {
-    return String(rawPrefix ?? "")
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, DEFAULT_MEETING_PREFIX_MAX_LENGTH);
+    return (
+        normalizedStoredName ||
+        String(roomSlug ?? "").trim() ||
+        DEFAULT_MEETING_NAME
+    );
 }
 
 export function isModeratorRole(role) {
