@@ -137,3 +137,9 @@ test("source does not use Math.random for generated values", () => {
         .map((path) => relative(ROOT, path));
     assert.deepEqual(violations, []);
 });
+
+test("meeting name generation is bundled for dependency-free module startup", () => {
+    const source = readFileSync(resolve(ROOT, "api/meeting-values.js"), "utf8");
+    assert.match(source, /from "\.\/vendor\/generate-passphrase\/index\.mjs"/);
+    assert.doesNotMatch(source, /from "generate-passphrase"/);
+});

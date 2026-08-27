@@ -1,6 +1,6 @@
 import { showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
-import { closeMeetingWhiteboard } from "../whiteboard-button.js";
+import { closeMeetingWhiteboard } from "../whiteboard-control.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {

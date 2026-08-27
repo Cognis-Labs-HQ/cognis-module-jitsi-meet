@@ -3,7 +3,7 @@ import { syncShareButtonAvailability as syncMountedShareButtonAvailability } fro
 import {
     syncMeetingWhiteboardComponent,
     syncWhiteboardButtonAvailability,
-} from "../whiteboard-button.js";
+} from "../whiteboard-control.js";
 
 export function createMountUtilities({ root, state }) {
     function isMeetingActive() {

@@ -71,3 +71,5 @@ Meeting names are now generated as four words by a maintained, cryptographically
 Whiteboard provider discovery now lives in a focused provider module, while canvas preparation, component spawning, and keyring coordination live in a session module. The button module is limited to control rendering and interaction orchestration.
 
 Changelog documents remain repository release metadata and are no longer included in the runtime file digest inventory.
+
+The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. The reviewed `generate-passphrase` runtime and word list are bundled with the module, so enabling an installed module no longer depends on an undeployed `node_modules` directory.

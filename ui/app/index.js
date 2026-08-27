@@ -24,7 +24,7 @@ import { createMeetingSearchGroups } from "./meeting-search.js";
 import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
-} from "../whiteboard-button.js";
+} from "../whiteboard-control.js";
 
 const [
     { apiFetch },

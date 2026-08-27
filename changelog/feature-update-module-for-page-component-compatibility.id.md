@@ -71,3 +71,5 @@ Nama rapat kini dibuat sebagai empat kata oleh paket frasa sandi terpelihara yan
 Penemuan penyedia Papan Tulis kini berada dalam modul penyedia yang terfokus, sedangkan persiapan kanvas, pembuatan komponen, dan koordinasi keyring berada dalam modul sesi. Modul tombol dibatasi pada perenderan kontrol dan orkestrasi interaksi.
 
 Dokumen changelog tetap menjadi metadata rilis repositori dan tidak lagi disertakan dalam inventaris digest berkas runtime.
+
+Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai dengan tanggung jawab siklus hidup kontrolnya yang lebih luas. Runtime dan daftar kata `generate-passphrase` yang telah ditinjau kini dibundel bersama modul, sehingga pengaktifan modul terpasang tidak lagi bergantung pada direktori `node_modules` yang tidak diterapkan.

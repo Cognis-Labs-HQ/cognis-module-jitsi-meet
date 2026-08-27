@@ -71,3 +71,5 @@ Besprechungsnamen werden jetzt von einem gepflegten, kryptografisch sicheren Pas
 Die Whiteboard-Provider-Erkennung befindet sich jetzt in einem fokussierten Provider-Modul; Canvas-Vorbereitung, Komponentenstart und Schlüsselbund-Koordination liegen in einem Sitzungsmodul. Das Schaltflächenmodul ist auf Darstellung und Interaktionssteuerung beschränkt.
 
 Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht mehr im Digest-Inventar der Laufzeitdateien enthalten.
+
+Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Die geprüfte `generate-passphrase`-Laufzeit und Wortliste werden mit dem Modul gebündelt, sodass die Aktivierung eines installierten Moduls nicht mehr von einem nicht bereitgestellten `node_modules`-Verzeichnis abhängt.

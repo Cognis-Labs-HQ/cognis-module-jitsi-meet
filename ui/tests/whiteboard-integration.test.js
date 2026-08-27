@@ -22,7 +22,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const buttonSource = [
-        "whiteboard-button.js",
+        "whiteboard-control.js",
         "whiteboard-provider.js",
         "whiteboard-session.js",
     ]
