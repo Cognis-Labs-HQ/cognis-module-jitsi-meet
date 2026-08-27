@@ -233,28 +233,38 @@ function prepareMeetingCanvas(trigger, state) {
         return Promise.resolve();
     }
     if (trigger.preparationPromise) return trigger.preparationPromise;
-    const participantHandles = getParticipantHandles(state.meeting);
-    trigger.disposableCanvas = !meetingHasInvitedParticipants(state.meeting);
+    const meeting = state.meeting;
+    const meetingId = meeting.id;
+    const meetingName = meeting.meetingName;
+    const participantHandles = getParticipantHandles(meeting);
+    trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
+    const disposableCanvas = trigger.disposableCanvas;
     if (
-        !trigger.disposableCanvas &&
+        !disposableCanvas &&
         typeof trigger.whiteboardGateway.createCanvas !== "function"
     ) {
         throw new Error("whiteboard_persistent_canvas_unavailable");
     }
-    trigger.preparationPromise = (
-        trigger.disposableCanvas
+    const preparationPromise = (
+        disposableCanvas
             ? trigger.whiteboardGateway.createDisposableCanvas({
                   resourceType: "meeting",
-                  resourceId: state.meeting.id,
-                  title: state.meeting.meetingName,
+                  resourceId: meetingId,
+                  title: meetingName,
                   participantHandles,
               })
             : trigger.whiteboardGateway.createCanvas({
-                  title: state.meeting.meetingName,
+                  title: meetingName,
                   participantHandles,
               })
     )
         .then((canvas) => {
+            if (
+                state.meeting?.id !== meetingId ||
+                trigger.preparedMeetingId !== meetingId
+            ) {
+                return;
+            }
             trigger.preparedWhiteboardId = String(
                 canvas?.whiteboardId ?? canvas?.id ?? "",
             ).trim();
@@ -262,12 +272,15 @@ function prepareMeetingCanvas(trigger, state) {
                 throw new Error("whiteboard_id_missing");
             }
             trigger.preparationFailedMeetingId = "";
-            trigger.preparedMeetingId = state.meeting.id;
+            trigger.preparedMeetingId = meetingId;
         })
         .finally(() => {
-            trigger.preparationPromise = null;
+            if (trigger.preparationPromise === preparationPromise) {
+                trigger.preparationPromise = null;
+            }
         });
-    return trigger.preparationPromise;
+    trigger.preparationPromise = preparationPromise;
+    return preparationPromise;
 }
 
 export function syncWhiteboardButtonAvailability({ root, state }) {

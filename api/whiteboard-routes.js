@@ -75,7 +75,11 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
-            const active = body.active === true;
+            if (typeof body.active !== "boolean") {
+                sendError(res, 400, "bad_request", "active must be a boolean.");
+                return;
+            }
+            const active = body.active;
             const whiteboardId = String(body.whiteboardId ?? "").trim();
             const whiteboardDisposable = body.disposable;
             if (active && !whiteboardId) {
@@ -106,6 +110,7 @@ export function registerMeetingWhiteboardRoutes({
                 active &&
                 currentState.whiteboardId === whiteboardId &&
                 currentState.whiteboardDisposable === false &&
+                (currentState.whiteboardOpenVotes ?? []).length === 0 &&
                 (await store.listParticipants(resolved.meeting.id)).some(
                     (username) => username !== resolved.meeting.createdBy,
                 );

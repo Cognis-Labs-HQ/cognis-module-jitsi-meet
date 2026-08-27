@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.30",
+    "version": "1.5.31",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -152,7 +152,7 @@
         },
         {
             "path": "api/meeting-values.js",
-            "sha256": "06920a33fcb0665e8ab0c4acc683ea1909f572aeacfddcf3e7ac4199a7edbf2b"
+            "sha256": "78f9b45eced492356f750bda7d6d8fcb9dfa35ea207a63e0bbb5012890129715"
         },
         {
             "path": "api/meetings-routes.js",
@@ -260,7 +260,7 @@
         },
         {
             "path": "api/tests/whiteboard-routes.test.js",
-            "sha256": "51c0836e80c9402e9ff6626b847c3d8c90f2fa1d56935a899edb433c8ed98894"
+            "sha256": "659335794c655cadc191b8cb7ba0dde333b7c8ba4045b897ea106d993df4b4e4"
         },
         {
             "path": "api/ui-resources.js",
@@ -268,7 +268,7 @@
         },
         {
             "path": "api/whiteboard-routes.js",
-            "sha256": "0bf0b5ae4e02a1577dea1b8fab46987a85a8de0a0b6ee759b42b1a84fa7c41e3"
+            "sha256": "c4c7e9a050f3dae08a1fc32a3a7d77d30cc33fabd1483cd6cecb4d064023b9a1"
         },
         {
             "path": "assets/banner.png",
@@ -281,182 +281,6 @@
         {
             "path": "bootstrap.js",
             "sha256": "c610853be8a6227c4db977c072064583390235d37a03ddb4b315422febb43528"
-        },
-        {
-            "path": "changelog/fix-meeting-identities-and-disposable-chats.de.md",
-            "sha256": "c33c8848dd9f1eac6f7544f9ffe547ad4d33dcc94a60aa72b395c980417a4047"
-        },
-        {
-            "path": "changelog/fix-meeting-identities-and-disposable-chats.en.md",
-            "sha256": "cabf2f84f7632bf8e38941efd2e45b2dd26e91ed042ae05c8a0940d663fce0ab"
-        },
-        {
-            "path": "changelog/fix-meeting-identities-and-disposable-chats.id.md",
-            "sha256": "dbde6f55c12ec71df2963bf7694b8ae71751441b0ca17dbf67a89b22dadf368d"
-        },
-        {
-            "path": "changelog/fix-meeting-identities-and-disposable-chats.ja.md",
-            "sha256": "69d99af14903ab0d0840e27549b9b6ce2d46a7a31d432a4b12bae556e2df7fe4"
-        },
-        {
-            "path": "changelog/fix-participant-whiteboard-persistence.de.md",
-            "sha256": "6866245d7ea8d98ea5b4067fdf5f7b255f23137193b6187e98c3abce0c716594"
-        },
-        {
-            "path": "changelog/fix-participant-whiteboard-persistence.en.md",
-            "sha256": "3241e543d093ef5c4de31249e27798eb9d843e539717577eabb8287ca12890ec"
-        },
-        {
-            "path": "changelog/fix-participant-whiteboard-persistence.id.md",
-            "sha256": "86b93ca9cb35504d42c617d04bbcf2f430876bce58ce72b24e85846e0260b790"
-        },
-        {
-            "path": "changelog/fix-participant-whiteboard-persistence.ja.md",
-            "sha256": "ab8ceb11e4f067c7c4a96844e61bca4c39f6013213e039b4299d44652d9a0a42"
-        },
-        {
-            "path": "changelog/fix-whiteboard-active-class.de.md",
-            "sha256": "78da3b7f5049cec7139452262c1a7de3e4d4edcc3ce20bfcb252fd1679c5de07"
-        },
-        {
-            "path": "changelog/fix-whiteboard-active-class.en.md",
-            "sha256": "0ae2989c39931e3dd8382926ad927b0582ef498c84675323fa9e2c44ed30dbe9"
-        },
-        {
-            "path": "changelog/fix-whiteboard-active-class.id.md",
-            "sha256": "8be0d5b187b89af11f6cdd5e7a547efc71c2fa3bace7fc740134ea6a017c3624"
-        },
-        {
-            "path": "changelog/fix-whiteboard-active-class.ja.md",
-            "sha256": "c48ad469b7e6b6830bed3bb7de47a193c014bb5ebd7be74b30bd60f2648769ad"
-        },
-        {
-            "path": "changelog/fix-whiteboard-button-discovery.de.md",
-            "sha256": "5a0ad1aaf34887ed220fb02f9d642b1a3a7e1b68d906e299704fd02676853e26"
-        },
-        {
-            "path": "changelog/fix-whiteboard-button-discovery.en.md",
-            "sha256": "1c71a80453b210293d34f97e7fceff4118838be8e028d088d7784e75d634c543"
-        },
-        {
-            "path": "changelog/fix-whiteboard-button-discovery.id.md",
-            "sha256": "d808b50f5d52bddc1e143e80902c3bbce1eaca81e437663c7e58ea2a7197c72b"
-        },
-        {
-            "path": "changelog/fix-whiteboard-button-discovery.ja.md",
-            "sha256": "6a92e2d3eb066ec35f30c68b7b8320a83fe93c63fd4d5e1a77acb9cc62c84c3c"
-        },
-        {
-            "path": "changelog/fix-whiteboard-css-scope.de.md",
-            "sha256": "0cdc8ff1d22ce9d224d47d6d5f62ff850fb5a77a44f0d44d2a1b755a9dbc39c0"
-        },
-        {
-            "path": "changelog/fix-whiteboard-css-scope.en.md",
-            "sha256": "cc823459946b7f61c564747ed1536e2006bfa3b2b07c6e5f612bdd29770e2ba4"
-        },
-        {
-            "path": "changelog/fix-whiteboard-css-scope.id.md",
-            "sha256": "c8ac21efa8349040dd7458df76e9c6a135b1c20980d669452171a1d360eba610"
-        },
-        {
-            "path": "changelog/fix-whiteboard-css-scope.ja.md",
-            "sha256": "2ecfe5d72eda43752c981773e24f1dd512d229ecbd2baab5fc6efc33516a5c6a"
-        },
-        {
-            "path": "changelog/fix-whiteboard-keyring-popup.de.md",
-            "sha256": "1975f23900d16ea16663aa1402a468077c9d769f683c46246619dcd169f88a61"
-        },
-        {
-            "path": "changelog/fix-whiteboard-keyring-popup.en.md",
-            "sha256": "2ea4b31aecaebd975e323e58e838fe790ad505c1b680471a0135519947713579"
-        },
-        {
-            "path": "changelog/fix-whiteboard-keyring-popup.id.md",
-            "sha256": "f9d88a6f743ffe18b8d005bfe88c8a41004f9c579ec08a16e269f76778a01c43"
-        },
-        {
-            "path": "changelog/fix-whiteboard-keyring-popup.ja.md",
-            "sha256": "5a03edccd10844f1cc8cbed2e712e14dbf6db4717f19e5643de9b4dc40dc8d30"
-        },
-        {
-            "path": "changelog/fix-whiteboard-mapping-type.de.md",
-            "sha256": "938fcdd7284757f8bb89f7b53a1ed98689e2ae3a5cf9244c70b4fe1202fc9627"
-        },
-        {
-            "path": "changelog/fix-whiteboard-mapping-type.en.md",
-            "sha256": "5558a09b34e307cbd2ca77a547bbfbf2a3ef76f64a025b42c951009d284900a7"
-        },
-        {
-            "path": "changelog/fix-whiteboard-mapping-type.id.md",
-            "sha256": "519fbb319d115f9e87caa53cbc225f0c82b56ae1c23572de327bee6beb8c19c7"
-        },
-        {
-            "path": "changelog/fix-whiteboard-mapping-type.ja.md",
-            "sha256": "cddce8a1ecbb6da45f2715f71c11a2e91334776cbb7511f9b1558de6c9824618"
-        },
-        {
-            "path": "changelog/fix-whiteboard-open-indicator.de.md",
-            "sha256": "5c1f981eb745965cb89877f7e74df2cd58e679677f1abd69f8031a52c0c309db"
-        },
-        {
-            "path": "changelog/fix-whiteboard-open-indicator.en.md",
-            "sha256": "4707791c798b7872079e726f0d8e56d8c5a180fde6c88e3403ffaa018cd5053e"
-        },
-        {
-            "path": "changelog/fix-whiteboard-open-indicator.id.md",
-            "sha256": "8ee098187f048d18c50198f5835ebcd15bd1c2a29d1cc2bf41ddfb0eb7072b46"
-        },
-        {
-            "path": "changelog/fix-whiteboard-open-indicator.ja.md",
-            "sha256": "b6a63a38120ec0f28591263d1da6fe1893b2fbd73200f7a672af95046a825051"
-        },
-        {
-            "path": "changelog/fix-whiteboard-participant-synchronization.de.md",
-            "sha256": "d2af1cfc25ffec7ebd1fc48b1f4f5ab7244af99f6f8537de14a27b9d8d3b1397"
-        },
-        {
-            "path": "changelog/fix-whiteboard-participant-synchronization.en.md",
-            "sha256": "2a2809e300ab3c830c6426ac7faa60478d555d19b4d014cc0812894c6a3f762a"
-        },
-        {
-            "path": "changelog/fix-whiteboard-participant-synchronization.id.md",
-            "sha256": "8a594de7d284811e2c11651734c64f173f93ec618895556af2a0f84b099d5e4e"
-        },
-        {
-            "path": "changelog/fix-whiteboard-participant-synchronization.ja.md",
-            "sha256": "37f5aa252caa76ff7f368c8cc8bb34734a7db494b142d9562a86ed9dbe1039ab"
-        },
-        {
-            "path": "changelog/fix-whiteboard-shell-cleanup.de.md",
-            "sha256": "74f5fd0358134ce13d8c4ffee4f4524620f04ccdc45a7908a416bcb80bcd0a1b"
-        },
-        {
-            "path": "changelog/fix-whiteboard-shell-cleanup.en.md",
-            "sha256": "cd8bf683ecfbcaf7f52a78f550c2c50b078fd289bebf5d53f0d121a9b041a581"
-        },
-        {
-            "path": "changelog/fix-whiteboard-shell-cleanup.id.md",
-            "sha256": "39b7f6682267d63af8e49dca0d3328c079d4f456b27d077d0fb8b9195672e984"
-        },
-        {
-            "path": "changelog/fix-whiteboard-shell-cleanup.ja.md",
-            "sha256": "af0e2dde01978b646fcd9661a22fd429e3be5bcaaf0112534b744307376b3fdc"
-        },
-        {
-            "path": "changelog/integrate-whiteboard-persistent-gateway.de.md",
-            "sha256": "fee9f394c9b6058a124f941523040171be8747ae263842b7bb4c9c7978e09ebb"
-        },
-        {
-            "path": "changelog/integrate-whiteboard-persistent-gateway.en.md",
-            "sha256": "fde1e3d6b462b278bcffdf9b787be17fc0a3765d67cda8b8bb32ab9a43105abe"
-        },
-        {
-            "path": "changelog/integrate-whiteboard-persistent-gateway.id.md",
-            "sha256": "024e99e42d3531be9244470a46d8bb2fd3d8e454b2395caa4343f650e3c7177c"
-        },
-        {
-            "path": "changelog/integrate-whiteboard-persistent-gateway.ja.md",
-            "sha256": "ee89309ff855d38eec061679293d566b1dc3317d8fce1fa21026bed67b1e53ec"
         },
         {
             "path": "cli/index.js",
@@ -480,11 +304,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "3d98211cec5864cda64e1c65b5b6caa2b0ca8ceb3540a8dcf516ba45415f891a"
+            "sha256": "bcde6254dcc7bc28a9bb80b6c809fab1dc74764a06ed5b7feb2497fa85ec7af9"
         },
         {
             "path": "package.json",
-            "sha256": "786bab303eb21d51f8647ed89d84df071894b8792a29f3f5048b8b874f9917f7"
+            "sha256": "6478f2614c2407fb83576934eaa75243de8a45c306497202f0925f25634d718b"
         },
         {
             "path": "routes.json",
@@ -620,11 +444,11 @@
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "7f3f7de12b3e0e9e197eee1a2383aad9be64e0a71d9130f5ccddf8dc36bf1db4"
+            "sha256": "307b3278b7d23c641a360720f21fe47baf89df4916a8a0af7e597e91b17d47e6"
         },
         {
             "path": "ui/whiteboard-button.js",
-            "sha256": "f25842e4a699fcad68dd0632b08a1e673b4353a855d72879f308eba364ce507f"
+            "sha256": "19589d462a6943d4a4c53fb332ac7e1b33ad0f98e9d929e6182b343b03cfcb86"
         }
     ]
 }

@@ -1,50 +1,13 @@
-import { randomBytes } from "node:crypto";
+import { generate } from "generate-passphrase";
 
 const DEFAULT_MEETING_PREFIX_MAX_LENGTH = 48;
-const MEETING_NAME_PREFIXES = [
-    "Amber",
-    "Azure",
-    "Bright",
-    "Calm",
-    "Clear",
-    "Coral",
-    "Gentle",
-    "Golden",
-    "Grand",
-    "Green",
-    "Happy",
-    "Quiet",
-    "Silver",
-    "Soft",
-    "Sunny",
-    "Warm",
-];
-const MEETING_NAME_SUFFIXES = [
-    "Brook",
-    "Cloud",
-    "Field",
-    "Forest",
-    "Harbor",
-    "Hill",
-    "Lake",
-    "Meadow",
-    "Moon",
-    "River",
-    "Sky",
-    "Star",
-    "Stone",
-    "Summit",
-    "Valley",
-    "Willow",
-];
-
 export function generateMeetingName() {
-    const entropy = randomBytes(8);
-    return Array.from({ length: 4 }, (_, index) => {
-        const prefix = MEETING_NAME_PREFIXES[entropy[index * 2] & 15];
-        const suffix = MEETING_NAME_SUFFIXES[entropy[index * 2 + 1] & 15];
-        return `${prefix}${suffix.toLowerCase()}`;
-    }).join(" ");
+    return generate({
+        length: 4,
+        numbers: false,
+        separator: " ",
+        titlecase: true,
+    });
 }
 
 export function buildMeetingName(roomSlug, storedMeetingName = "") {

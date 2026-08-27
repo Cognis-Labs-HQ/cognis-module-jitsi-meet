@@ -65,3 +65,85 @@ Der Whiteboard-Anker trägt keine modulspezifische Darstellungsklasse mehr. Sein
 Die Meetings-SPA ruft jetzt vor der Darstellung den Vertrag `loadCommonStyles()` der Fähigkeit `ui:reuse` auf, statt nur `page-sections.css` zu laden. Damit steht der vollständige Cognis-Core-Stylesheet-Katalog einschließlich der Standarddarstellung von Schaltflächen nach direkter Navigation und SPA-Navigation zur Verfügung.
 
 Die Whiteboard-Aktion verwendet jetzt denselben nativen `<button>`- und Core-`btn-*`-Vertrag wie die benachbarte Teilen-Aktion, einschließlich des nativen Deaktiviert-Zustands. Randlose Einbindungen leiten außerdem den Dokument-Scroll-Layoutvertrag im Komponentenkontext weiter, und die aktive Jitsi-Bühne verwendet eine inhaltsgroße Rasterzeile mit sichtbarem Überlauf, damit sich die eingebettete Zeichenfläche ausdehnen kann, statt einen verschachtelten vertikalen Bildlauf zu erzeugen.
+
+Besprechungsnamen werden jetzt von einem gepflegten, kryptografisch sicheren Passphrasenpaket als vier Wörter erzeugt. Die Whiteboard-Vorbereitung bindet asynchrone Ergebnisse an die ursprüngliche Besprechung, ausstehende Abstimmungen können nicht über eine vorgeschlagene Canvas-Zuordnung umgangen werden, und die Status-API lehnt nicht boolesche Aktivwerte ab.
+
+## Deinstallationsbereinigung und lokalisierte Metadaten hinzufügen
+
+Jitsi Meet entfernt nun bei der Deinstallation seine gespeicherte Konfiguration und kann auf Wunsch auch alle gespeicherten Meeting-Inhalte löschen. Die Metadaten im Modul-Store werden jetzt über moduleigene Sprachschlüssel übersetzt.
+
+## Chats für einmalige Besprechungen löschen
+
+Wenn eine Besprechung nur aus dem Ersteller und einem Freigabelink besteht, wird beim Schließen jetzt auch der zugehörige Nachrichten-Chat des Erstellers gelöscht. Falls das Löschen des Chats fehlschlägt, bleibt der Besprechungseintrag erhalten, damit die Bereinigung sicher wiederholt werden kann.
+
+## Moduleinstellungen
+
+## Vom Kern dargestellte Konfiguration
+
+Cognis stellt nun die im Manifest deklarierten Einstellungen dar und tauscht Werte über den moduleigenen GET- und PUT-Konfigurationsendpunkt aus. Browser-Protokollierung, Hinweise und schwerwiegende Fehlerberichte verwenden die Host-Fähigkeiten.
+
+## Qualitätsstandards
+
+Das Modul verwendet nun die Cognis-Prettier-Konfiguration sowie eigenständige Prüfungen für Struktur, Lokalisierung, Benennung und Dokumentationskonventionen.
+
+## Lokalisierte Dokumentvorlagen
+
+Die Dokumentvorlagen für Mitwirkende enthalten nun deutsche, englische, indonesische und japanische Varianten aus dem Cognis-Standard.
+
+## Teilen-UI-Gateway in das Besprechungsmodul integrieren
+
+Die Schaltfläche zum Teilen einer Besprechung wird jetzt über die Container-Schnittstelle des zentralen Teilen-UI-Gateways eingebunden. Symbol, lokalisierte Beschriftung, Darstellung, Gastverhalten und Abbau entsprechen damit dem etablierten Cognis-Verhalten. Die Besprechungsseite bleibt außerdem verwendbar, wenn das Gateway den Auslöser für den aktuellen Freigabekontext ausblendet.
+
+Besitzer können zudem einer aktiven Besprechung beitreten, wenn nur ein Gast über einen Freigabelink anwesend ist.
+
+## Lokalisierte README-Varianten
+
+Deutsche, englische, indonesische und japanische README-Varianten mit einem englischen `README.md`-Symlink sowie eine Regressionsprüfung für die URL des Manifest-Sprachpakets wurden hinzugefügt.
+
+## Besprechungsnamen und verwerfbare Chats korrigiert
+
+Besprechungen verwenden jetzt einheitlich eindeutige Vier-Wort-Namen für Whiteboards und undatierte Messages-Chats. Teilnehmerlose, verwerfbare Besprechungen erstellen keine Chats mehr, und vorhandene zugehörige Chats werden beim Ende dauerhaft gelöscht. Außerdem behält die Whiteboard-Schaltfläche ihren aktiven Zustand bei Neudarstellungen bei.
+
+## Meeting-Freigabeschaltfläche wiederhergestellt
+
+Das Meeting-Fenster deklariert nun die verwendete Freigabe-Popup-Fähigkeit. Dadurch kann Cognis nach dem Beitritt eines Teilnehmers die Schaltfläche „Teilen“ bereitstellen und den Standard-Freigabedialog öffnen.
+
+## Dauerhafte Teilnehmer-Whiteboards korrigiert
+
+Besprechungsdaten geben jetzt ausdrücklich an, ob eingeladene Teilnehmer vorhanden sind. Teilnehmerbesprechungen erfordern die dauerhafte Canvas-Factory des Providers und greifen niemals auf verwerfbare Erstellung zurück, sodass die automatische Speicherung ihrer zugeordneten Arbeitsflächen erhalten bleibt.
+
+## Aktive Whiteboard-Klasse korrigiert
+
+Die Whiteboard-Schaltfläche erhält jetzt die Standardklasse `active`, solange ihr Komponentenfenster geöffnet ist. Damit entspricht sie ausgewählten Navigationselementen und behält die Markierung bei Neudarstellungen der Besprechung bei.
+
+## Erkennung der Whiteboard-Schaltfläche korrigiert
+
+Die Whiteboard-Schaltfläche hängt jetzt nur noch von der grundlegenden Canvas-Factory des Providers und den Komponentenfenster-Fähigkeiten ab. Optionale Methoden für dauerhafte Canvas und Teilnehmerspeicherung lassen das Steuerelement beim Laden oder Aktualisieren von Provider-Versionen nicht mehr verschwinden.
+
+## Whiteboard-CSS-Integration reduziert
+
+Meetings fügt keine Whiteboard-spezifischen Darstellungsklassen mehr hinzu und überschreibt das gemeinsame Komponentenfenster nicht mehr. Das Steuerelement verwendet importierte Schaltflächenzustände und die Komponente importierte Broker-Klassen, sodass ihr Stylesheet spätere SPA-Seiten nicht beeinflusst.
+
+## Schlüsselbund-Popup für Whiteboards korrigiert
+
+Meetings fordert den Schlüsselbundzugriff jetzt auf der übergeordneten Seite an, bevor ein Whiteboard-Komponentenfenster eingebunden wird. Ein gesperrter Schlüsselbund kann dadurch sein Entsperr-Popup anzeigen, statt das Laden der Komponente mit einer unbehandelten Autorisierungsantwort abzubrechen.
+
+## Whiteboard-Zuordnungstyp korrigiert
+
+Meetings speichert jetzt, ob jedes zugeordnete Whiteboard verwerfbar ist. Teilnehmerbesprechungen verwerfen unbekannte oder verwerfbare Zuordnungen älterer Integrationen und fordern eine neue dauerhafte Arbeitsfläche an, statt eine verwerfbare Arbeitsfläche mit deaktivierter automatischer Speicherung erneut zu öffnen.
+
+## Anzeige für geöffnetes Whiteboard korrigiert
+
+Ein geöffnetes Whiteboard gibt seinem Besprechungs-Steuerelement jetzt eine akzenthinterlegte aktive Darstellung und ändert die Beschriftung in „Whiteboard schließen“. Damit wird sichtbar und textlich erkennbar, dass die Auswahl die aktuelle Arbeitsfläche schließt.
+
+## Whiteboard-Synchronisierung für Teilnehmer korrigiert
+
+Meetings verwenden verwerfbare Arbeitsflächen jetzt nur für teilnehmerlose Sitzungen. Dauerhafte Besprechungs-Whiteboards werden für alle Teilnehmer gespeichert und über ihre Besprechungszuordnung automatisch erneut geöffnet, während die Steuerelemente von Organisator und Teilnehmern dem synchronisierten Öffnungszustand folgen.
+
+## Bereinigung der Whiteboard-Seiten-Shell korrigiert
+
+Whiteboard-Komponentenfenster begrenzen ihre randlose Darstellung jetzt auf die Meetings-Bühne. Beim Schließen der Komponente oder beim Wegnavigieren wird dieser lokale Zustand synchron entfernt, und die gemeinsame Cognis-Seiten-Shell wird nicht mehr in den randlosen Broker-Modus versetzt.
+
+## Dauerhaftes Whiteboard-Gateway integriert
+
+Teilnehmerbesprechungen rufen jetzt die vom aktualisierten Gateway bereitgestellte Whiteboard-Provider-Methode `createCanvas` genau mit dem Besprechungstitel und den Kennungen der eingeladenen Teilnehmer auf. Teilnehmerlose Besprechungen verwenden weiterhin die ressourcengebundene Methode `createDisposableCanvas`.

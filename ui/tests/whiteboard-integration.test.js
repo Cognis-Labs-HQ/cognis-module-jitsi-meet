@@ -68,7 +68,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /createCanvas/);
     assert.match(
         buttonSource,
-        /!trigger\.disposableCanvas[\s\S]*?typeof trigger\.whiteboardGateway\.createCanvas !== "function"[\s\S]*?whiteboard_persistent_canvas_unavailable/,
+        /!disposableCanvas[\s\S]*?typeof trigger\.whiteboardGateway\.createCanvas !== "function"[\s\S]*?whiteboard_persistent_canvas_unavailable/,
     );
     assert.doesNotMatch(
         buttonSource,
@@ -77,11 +77,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(buttonSource, /saveCanvasToParticipants/);
     assert.match(
         buttonSource,
-        /createCanvas\(\{[\s\S]*?title:\s*state\.meeting\.meetingName,[\s\S]*?participantHandles/,
+        /createCanvas\(\{[\s\S]*?title:\s*meetingName,[\s\S]*?participantHandles/,
     );
     assert.match(
         buttonSource,
-        /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*state\.meeting\.id/,
+        /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingId/,
     );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
     assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);
@@ -89,7 +89,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /await ensureWhiteboardKeyringUnlocked\(trigger, state\)[\s\S]*?unlock_meeting_whiteboard_keyring[\s\S]*?const response = synchronizeOpen/,
     );
-    assert.match(buttonSource, /title:\s*state\.meeting\.meetingName/);
     assert.match(buttonSource, /title:\s*meetingName/);
     assert.match(
         buttonSource,
@@ -167,6 +166,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
     assert.match(buttonSource, /whiteboardId/);
+    assert.match(
+        buttonSource,
+        /const meeting = state\.meeting;[\s\S]*?const meetingId = meeting\.id;[\s\S]*?state\.meeting\?\.id !== meetingId[\s\S]*?trigger\.preparedMeetingId !== meetingId/,
+    );
     assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
     assert.match(buttonSource, /componentWindow\?\.discard/);
     assert.match(buttonSource, /ui:ensureProvidersLoaded/);

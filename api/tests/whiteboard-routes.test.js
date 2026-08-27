@@ -125,6 +125,26 @@ test("meeting whiteboard state rejects malformed and unauthorized requests", asy
     assert.equal(malformedResponse.status, 400);
     assert.equal(malformed.stateUpdates.length, 0);
 
+    for (const active of [undefined, "true", 1, null]) {
+        const invalidActive = createRoutes();
+        const invalidActiveResponse = createRecorder();
+        await invalidActive.handlers.get(
+            "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+        )(
+            {
+                body: {
+                    meetingId: "meeting-1",
+                    whiteboardId: "board-1",
+                    disposable: false,
+                    active,
+                },
+            },
+            invalidActiveResponse,
+        );
+        assert.equal(invalidActiveResponse.status, 400);
+        assert.equal(invalidActive.stateUpdates.length, 0);
+    }
+
     const forbidden = createRoutes({ authorized: false });
     const forbiddenResponse = createRecorder();
     await forbidden.handlers.get(
@@ -208,6 +228,41 @@ test("meeting participants reach consensus before opening a whiteboard", async (
     );
     assert.equal(secondResponse.body.data.whiteboardOpen, true);
     assert.equal(secondResponse.body.data.voteCount, 2);
+});
+
+test("a proposed canvas cannot bypass pending consensus", async () => {
+    const state = {
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+        whiteboardOpenVotes: ["bob"],
+    };
+    const routes = createRoutes({
+        requesterUsername: "bob",
+        organizerUsername: "alice",
+        participants: ["alice", "bob", "carol"],
+        presence: [{ username: "bob" }, { username: "carol" }],
+        state,
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.body.data.whiteboardOpen, false);
+    assert.equal(response.body.data.pendingConsensus, true);
+    assert.equal(response.body.data.voteCount, 1);
+    assert.equal(response.body.data.votesRequired, 2);
 });
 
 test("a mapped participant canvas reopens without another consensus vote", async () => {
