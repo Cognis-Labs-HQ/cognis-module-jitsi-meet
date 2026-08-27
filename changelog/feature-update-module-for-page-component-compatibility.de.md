@@ -66,10 +66,10 @@ Die Meetings-SPA ruft jetzt vor der Darstellung den Vertrag `loadCommonStyles()`
 
 Die Whiteboard-Aktion verwendet jetzt denselben nativen `<button>`- und Core-`btn-*`-Vertrag wie die benachbarte Teilen-Aktion, einschließlich des nativen Deaktiviert-Zustands. Randlose Einbindungen leiten außerdem den Dokument-Scroll-Layoutvertrag im Komponentenkontext weiter, und die aktive Jitsi-Bühne verwendet eine inhaltsgroße Rasterzeile mit sichtbarem Überlauf, damit sich die eingebettete Zeichenfläche ausdehnen kann, statt einen verschachtelten vertikalen Bildlauf zu erzeugen.
 
-Besprechungsnamen werden jetzt von einem gepflegten, kryptografisch sicheren Passphrasenpaket als vier Wörter erzeugt. Die Whiteboard-Vorbereitung bindet asynchrone Ergebnisse an die ursprüngliche Besprechung, ausstehende Abstimmungen können nicht über eine vorgeschlagene Canvas-Zuordnung umgangen werden, und die Status-API lehnt nicht boolesche Aktivwerte ab.
+Besprechungsnamen werden jetzt mit Node Crypto als Fünf-Wort-Phrasen aus kompakten, geprüften Wortlisten erzeugt. Die Whiteboard-Vorbereitung bindet asynchrone Ergebnisse an die ursprüngliche Besprechung, ausstehende Abstimmungen können nicht über eine vorgeschlagene Canvas-Zuordnung umgangen werden, und die Status-API lehnt nicht boolesche Aktivwerte ab.
 
 Die Whiteboard-Provider-Erkennung befindet sich jetzt in einem fokussierten Provider-Modul; Canvas-Vorbereitung, Komponentenstart und Schlüsselbund-Koordination liegen in einem Sitzungsmodul. Das Schaltflächenmodul ist auf Darstellung und Interaktionssteuerung beschränkt.
 
 Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht mehr im Digest-Inventar der Laufzeitdateien enthalten.
 
-Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Besprechungsnamen verwenden die deklarierte Produktionsabhängigkeit `generate-passphrase` direkt; ihr großes generiertes Wörterbuch wird nicht mehr in diesem Repository mitgeführt.
+Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Die Besprechungsnamenerzeugung ist repositorylokal und verwendet nur Node-Bordmittel, sodass die Validierung installierter Module keine nicht bereitgestellten npm-Pakete benötigt.

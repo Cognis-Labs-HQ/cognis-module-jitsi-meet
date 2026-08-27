@@ -66,10 +66,10 @@ SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:re
 
 Tindakan Papan Tulis kini menggunakan kontrak `<button>` native dan `btn-*` core yang sama seperti tindakan Bagikan di sebelahnya, termasuk status nonaktif native. Spawn tanpa bingkai juga meneruskan kontrak tata letak pengguliran dokumen dalam konteks komponen, dan stage Jitsi aktif memakai baris grid berukuran konten dengan luapan terlihat agar kanvas tertanam dapat membesar tanpa membuat penggulir vertikal bertingkat.
 
-Nama rapat kini dibuat sebagai empat kata oleh paket frasa sandi terpelihara yang aman secara kriptografis. Persiapan Papan Tulis mengikat hasil asinkron ke rapat asal, konsensus yang tertunda tidak dapat dilewati melalui pemetaan kanvas yang diusulkan, dan API status menolak nilai aktif non-boolean.
+Nama rapat kini dibuat sebagai frasa lima kata dari kumpulan kata ringkas yang telah ditinjau menggunakan Node Crypto. Persiapan Papan Tulis mengikat hasil asinkron ke rapat asal, konsensus yang tertunda tidak dapat dilewati melalui pemetaan kanvas yang diusulkan, dan API status menolak nilai aktif non-boolean.
 
 Penemuan penyedia Papan Tulis kini berada dalam modul penyedia yang terfokus, sedangkan persiapan kanvas, pembuatan komponen, dan koordinasi keyring berada dalam modul sesi. Modul tombol dibatasi pada perenderan kontrol dan orkestrasi interaksi.
 
 Dokumen changelog tetap menjadi metadata rilis repositori dan tidak lagi disertakan dalam inventaris digest berkas runtime.
 
-Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai dengan tanggung jawab siklus hidup kontrolnya yang lebih luas. Nama rapat menggunakan dependensi produksi `generate-passphrase` yang dideklarasikan secara langsung; kamus besar hasil generasinya tidak lagi disertakan dalam repositori ini.
+Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai dengan tanggung jawab siklus hidup kontrolnya yang lebih luas. Pembuatan nama rapat bersifat lokal di repositori dan hanya menggunakan bawaan Node, sehingga validasi modul terpasang tidak memerlukan paket npm yang tidak diterapkan.

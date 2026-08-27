@@ -12,7 +12,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 ## Technical Specification
 
 - API calls require a valid Cognis access token, and meeting details are returned only to authorized participants or scoped share guests.
-- Meeting passwords are generated per meeting record. Meeting display names are unique four-word phrases without a product prefix; the same name identifies the Whiteboard and the undated Messages chat. Participant-free disposable meetings do not create Messages chats, and any previously associated chat is permanently deleted when the meeting ends.
+- Meeting passwords are generated per meeting record. Meeting display names are unique five-word phrases without a product prefix; the same name identifies the Whiteboard and the undated Messages chat. Participant-free disposable meetings do not create Messages chats, and any previously associated chat is permanently deleted when the meeting ends.
 - Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes.
 - Session reclaim disconnects the user's previous active meeting session.
 

@@ -1,14 +1,6 @@
-import { generate } from "generate-passphrase";
+export { generateMeetingName } from "./meeting-name-generator.js";
 
 const DEFAULT_MEETING_PREFIX_MAX_LENGTH = 48;
-export function generateMeetingName() {
-    return generate({
-        length: 4,
-        numbers: false,
-        separator: " ",
-        titlecase: true,
-    });
-}
 
 export function buildMeetingName(roomSlug, storedMeetingName = "") {
     const normalizedStoredName = String(storedMeetingName ?? "").trim();
