@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.31",
+    "version": "1.5.32",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -283,6 +283,118 @@
             "sha256": "c610853be8a6227c4db977c072064583390235d37a03ddb4b315422febb43528"
         },
         {
+            "path": "changelog/feature-add-uninstall-cleanup-and-localized-metadata.de.md",
+            "sha256": "81e0a76462a0445f8c6ad62e8ded70025c1059093712f2fc7ebc5459972849a5"
+        },
+        {
+            "path": "changelog/feature-add-uninstall-cleanup-and-localized-metadata.en.md",
+            "sha256": "68e68d674e82e58c644bcfbf70cf47296f999dab759c19834e34a171f641a691"
+        },
+        {
+            "path": "changelog/feature-add-uninstall-cleanup-and-localized-metadata.id.md",
+            "sha256": "b82f40d032a9cf50997583eae21815b8789446314c04642708d280673a52f997"
+        },
+        {
+            "path": "changelog/feature-add-uninstall-cleanup-and-localized-metadata.ja.md",
+            "sha256": "0bfdd7189a167542a13be63feb46385117ea399edfe8dd9f8808e0fa930f5d02"
+        },
+        {
+            "path": "changelog/feature-delete-chat-on-meeting-deletion.de.md",
+            "sha256": "401033bf75dff5b66273736869ecbafb1a38ba354512ceb877dda0f1fdb67371"
+        },
+        {
+            "path": "changelog/feature-delete-chat-on-meeting-deletion.en.md",
+            "sha256": "d69063aafde2e80cb482a3d5e1e41f49e3ff7d84f4383f09d4da4edfcee50dc4"
+        },
+        {
+            "path": "changelog/feature-delete-chat-on-meeting-deletion.id.md",
+            "sha256": "659fb819920b29fa57c5f224f9417db10e01588b7709425deb14e89f29dab965"
+        },
+        {
+            "path": "changelog/feature-delete-chat-on-meeting-deletion.ja.md",
+            "sha256": "a542f555f8ac8b49c93ccdc1fad936aefa2e28ecb0e0bb679ff73ecc4038562b"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.de.md",
+            "sha256": "c65ad4c7405f018858ac386175e34c654c7f24c5ecafeebdaf8ec4d84aa0a7e7"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.en.md",
+            "sha256": "8f3933cada10ff3146d892d2dc469edbbc93203519acbb20110128e314cdbbec"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.id.md",
+            "sha256": "1c4b48f2781fa3c37e010ab0c0fa62f195525050b21ef88c15fd5b72ff9e0529"
+        },
+        {
+            "path": "changelog/feature-ensure-manifest-keys-as-sole-config-source.ja.md",
+            "sha256": "3182d26815b5cb9d0193e9eab0c3391a308e9948f403c052307ecc22ca0cc69f"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.de.md",
+            "sha256": "478cb6eaa7b77ef0a792314201b830f84f38e2a3b7f17aa2b3751f9404374c48"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.en.md",
+            "sha256": "98705f36977ef20f132c9736b34bfa40c42854c044491723197a1c538ef45dec"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.id.md",
+            "sha256": "288bdec14acec748a2da8ec82f3473d9c1335d3d9baf0108a1dcfa746c7fabc0"
+        },
+        {
+            "path": "changelog/feature-integrate-share-uigateway-in-meeting-module.ja.md",
+            "sha256": "dec2ecde4dab5f4919ab16945dcf9cab5228f6549b55184b5e37f0c278b5dfb8"
+        },
+        {
+            "path": "changelog/feature-localize-readme-variants.de.md",
+            "sha256": "0823473667e1164c27555387620eb449a7d220c34cdcc072f620197f945f0965"
+        },
+        {
+            "path": "changelog/feature-localize-readme-variants.en.md",
+            "sha256": "fb56c9146bee5a3f6714cb5bed4da1f0c4f5c7a51f923da6f3b21db5409d4023"
+        },
+        {
+            "path": "changelog/feature-localize-readme-variants.id.md",
+            "sha256": "a76f99ce81852735639c278a5ca2c321d2de537d97f4af776229e0f3344b0264"
+        },
+        {
+            "path": "changelog/feature-localize-readme-variants.ja.md",
+            "sha256": "971c4c10505d2507e53641dd4807e9950a3a897881a3333a794645fcb4f3aabb"
+        },
+        {
+            "path": "changelog/feature-update-module-for-page-component-compatibility.de.md",
+            "sha256": "4fff27abd19bb30abed90c681bc11e4e45fe282eba84cdfd1f247ad6d4f3933a"
+        },
+        {
+            "path": "changelog/feature-update-module-for-page-component-compatibility.en.md",
+            "sha256": "380b371dd7043e9b50fae9fedb6c4d4fa014424a53ce1d28c8746d0cc6b43e7a"
+        },
+        {
+            "path": "changelog/feature-update-module-for-page-component-compatibility.id.md",
+            "sha256": "baee1c73441708d72224dd5559663446c89b1704c97d3b9978197600964183cc"
+        },
+        {
+            "path": "changelog/feature-update-module-for-page-component-compatibility.ja.md",
+            "sha256": "2880adfc3d219cad8ffc045ddae0b8364e58a85a2488e31fba465325fcab4e54"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.de.md",
+            "sha256": "07a3d5d2fbd09ef1640aa6bd54b5192f2e1b0b54d0c858ce09342cb18a44064c"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.en.md",
+            "sha256": "442ea7710c29108a2dd54ba4f449dbf0c2de778c91512eb6153c2965123bb8ba"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.id.md",
+            "sha256": "a480552d80e00ae87d6d5bbc74c5ef27ef76ffe28116f518054392d2d9290385"
+        },
+        {
+            "path": "changelog/fix-meeting-share-button.ja.md",
+            "sha256": "5bf31cd29b66b2f289531e72bb08916c6db96f887ff8c8f61a421aacfa061237"
+        },
+        {
             "path": "cli/index.js",
             "sha256": "70ceff9174b6c846159be8d934142c62bc9ab9a9c6e8b7ee73fd0026de9ebf01"
         },
@@ -304,11 +416,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "bcde6254dcc7bc28a9bb80b6c809fab1dc74764a06ed5b7feb2497fa85ec7af9"
+            "sha256": "0e4e2e6bd4b3dcb1ceae29c088fa5ffb2f3008ff4ed1b2e892394da624c4fb6b"
         },
         {
             "path": "package.json",
-            "sha256": "6478f2614c2407fb83576934eaa75243de8a45c306497202f0925f25634d718b"
+            "sha256": "ebca048bd38ba3a68396a48a5ca81e969bac91263b0e17194f96a0ba78084942"
         },
         {
             "path": "routes.json",
@@ -444,11 +556,23 @@
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "307b3278b7d23c641a360720f21fe47baf89df4916a8a0af7e597e91b17d47e6"
+            "sha256": "571c78c3ee18ff33180b7391879a0f95eb76ca1b59d57b32e51f8fe01d380913"
+        },
+        {
+            "path": "ui/tests/whiteboard-session.test.js",
+            "sha256": "a345b07053c42b3f2949bd8f42faed30e7d95b4d95facbb6b7b014f9778f7242"
         },
         {
             "path": "ui/whiteboard-button.js",
-            "sha256": "19589d462a6943d4a4c53fb332ac7e1b33ad0f98e9d929e6182b343b03cfcb86"
+            "sha256": "161572b840246ae7203579cb00335e1c17140ffdca43329499caa18978680a51"
+        },
+        {
+            "path": "ui/whiteboard-provider.js",
+            "sha256": "3e07db866e28e5b9762da84b4b2d19779e5aaee0117c01cbd413edcd89fe9c1c"
+        },
+        {
+            "path": "ui/whiteboard-session.js",
+            "sha256": "22af1bdb333a018f41d3bdb871c69524e88743cede49cb04ed968fe6fd0c1354"
         }
     ]
 }

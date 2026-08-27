@@ -21,10 +21,13 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "api/meetings-routes.js"),
         "utf8",
     );
-    const buttonSource = readFileSync(
-        resolve(ROOT, "ui/whiteboard-button.js"),
-        "utf8",
-    );
+    const buttonSource = [
+        "whiteboard-button.js",
+        "whiteboard-provider.js",
+        "whiteboard-session.js",
+    ]
+        .map((file) => readFileSync(resolve(ROOT, "ui", file), "utf8"))
+        .join("\n");
     const helpersSource = readFileSync(
         resolve(ROOT, "ui/jitsi-helpers.js"),
         "utf8",

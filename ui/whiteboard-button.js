@@ -1,34 +1,15 @@
 import { logUi, showToast } from "./reuse/feedback.js";
 import { uiCtx } from "./reuse/resources.js";
-
-const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
-const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
-const WHITEBOARD_UI_GATEWAY = "whiteboard:uiGateway";
+import { resolveWhiteboardCapabilities } from "./whiteboard-provider.js";
+import {
+    ensureComponentPage,
+    ensureWhiteboardKeyringUnlocked,
+    meetingHasInvitedParticipants,
+    prepareMeetingCanvas,
+    spawnComponentWindowWithRetry,
+} from "./whiteboard-session.js";
 const mountedWhiteboardButtons = new WeakMap();
 let componentStageSequence = 0;
-
-function getParticipantHandles(meeting) {
-    return (meeting?.participants ?? [])
-        .map((participant) =>
-            String(
-                participant?.username ??
-                    participant?.handle ??
-                    participant ??
-                    "",
-            ).trim(),
-        )
-        .filter(Boolean);
-}
-
-function meetingHasInvitedParticipants(meeting) {
-    if (typeof meeting?.hasInvitedParticipants === "boolean") {
-        return meeting.hasInvitedParticipants;
-    }
-    const organizerHandle = String(meeting?.createdBy ?? "").trim();
-    return getParticipantHandles(meeting).some(
-        (handle) => !organizerHandle || handle !== organizerHandle,
-    );
-}
 
 function syncButtonStyle(button) {
     if (!button) return;
@@ -49,79 +30,6 @@ function setButtonActive(button, active) {
 function setButtonDisabled(button, disabled) {
     if (button instanceof HTMLButtonElement) button.disabled = disabled;
     button?.setAttribute("aria-disabled", String(disabled));
-}
-
-async function ensureComponentPage(trigger, meetingId) {
-    if (!trigger.componentPage) {
-        trigger.componentPage = await trigger.requestComponentPage({
-            componentUuid: WHITEBOARD_MODULE_UUID,
-            routeId: WHITEBOARD_ROUTE_ID,
-            mode: "overlay",
-            context: { meetingId },
-        });
-    }
-    if (!trigger.componentPage) {
-        throw new Error("whiteboard_component_page_unavailable");
-    }
-    return trigger.componentPage;
-}
-
-function spawnComponentWindow(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
-    return trigger.spawnComponentPage({
-        componentUuid: WHITEBOARD_MODULE_UUID,
-        routeId: WHITEBOARD_ROUTE_ID,
-        mode: "overlay",
-        elementId: trigger.frameWrap.id,
-        context: {
-            meetingId,
-            title: meetingName,
-            whiteboardId,
-            instantCanvas: trigger.disposableCanvas,
-            disposable: trigger.disposableCanvas,
-            frameless: true,
-            borderless: true,
-            contentScrolling: false,
-            layout: {
-                borderless: true,
-                fillParent: true,
-                scrollOwner: "document",
-            },
-        },
-        signal: trigger.signal,
-    });
-}
-
-async function spawnComponentWindowWithRetry(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
-    let lastError;
-    for (let attempt = 0; attempt < 4; attempt += 1) {
-        try {
-            const componentWindow = await spawnComponentWindow(trigger, {
-                meetingId,
-                meetingName,
-                whiteboardId,
-            });
-            if (componentWindow) return componentWindow;
-            lastError = new Error("whiteboard_component_window_unavailable");
-        } catch (error) {
-            lastError = error;
-        }
-        if (trigger.signal?.aborted) throw lastError;
-        if (
-            String(lastError?.message ?? lastError).includes(
-                "Failed to fetch dynamically imported module",
-            )
-        ) {
-            break;
-        }
-        if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
-    }
-    throw lastError;
 }
 
 function closeComponentWindow(trigger) {
@@ -154,133 +62,6 @@ async function disableWhiteboardAfterError(trigger, state, error, operation) {
     showToast(trigger.i18n.t("module.jitsi_meet.whiteboard.load_failed"), {
         variant: "error",
     });
-}
-
-function waitForProviderRetry(signal, delayMs) {
-    return new Promise((resolve) => {
-        if (signal?.aborted) {
-            resolve();
-            return;
-        }
-        const timeoutId = setTimeout(resolve, delayMs);
-        signal?.addEventListener(
-            "abort",
-            () => {
-                clearTimeout(timeoutId);
-                resolve();
-            },
-            { once: true },
-        );
-    });
-}
-
-async function resolveWhiteboardCapabilities(signal) {
-    const ensureProvidersLoaded = uiCtx.capabilities.get(
-        "ui:ensureProvidersLoaded",
-    );
-    const readCapabilities = () => ({
-        discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
-        isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
-        makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
-        requestKeyringUnlock: uiCtx.capabilities.get("keyring:requestUnlock"),
-        spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
-        whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
-    });
-    let capabilities = readCapabilities();
-    for (let attempt = 0; attempt < 3 && !signal?.aborted; attempt += 1) {
-        if (typeof ensureProvidersLoaded === "function") {
-            await ensureProvidersLoaded({ force: attempt > 0 });
-        }
-        capabilities = readCapabilities();
-        if (
-            typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
-                "function" &&
-            typeof capabilities.spawnComponentPage === "function" &&
-            typeof capabilities.makeFloatingWindow === "function"
-        ) {
-            return capabilities;
-        }
-        if (attempt < 2) await waitForProviderRetry(signal, 150);
-    }
-    return capabilities;
-}
-
-async function ensureWhiteboardKeyringUnlocked(trigger, state) {
-    if (trigger.isKeyringUnlocked?.() === true) return true;
-    if (typeof trigger.requestKeyringUnlock !== "function") return true;
-    const meetingName = state.meeting?.meetingName || state.meeting?.id || "";
-    return Boolean(
-        await trigger.requestKeyringUnlock({
-            request: {
-                component: trigger.i18n.t(
-                    "module.jitsi_meet.whiteboard.keyring_component",
-                ),
-                action: trigger.i18n.t(
-                    "module.jitsi_meet.whiteboard.keyring_action",
-                ),
-                process: trigger.i18n
-                    .t("module.jitsi_meet.whiteboard.keyring_process")
-                    .replace("{{meeting}}", meetingName),
-            },
-        }),
-    );
-}
-
-function prepareMeetingCanvas(trigger, state) {
-    if (trigger.preparedWhiteboardId || !state.meeting?.id)
-        return Promise.resolve();
-    if (trigger.preparationFailedMeetingId === state.meeting.id) {
-        return Promise.resolve();
-    }
-    if (trigger.preparationPromise) return trigger.preparationPromise;
-    const meeting = state.meeting;
-    const meetingId = meeting.id;
-    const meetingName = meeting.meetingName;
-    const participantHandles = getParticipantHandles(meeting);
-    trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
-    const disposableCanvas = trigger.disposableCanvas;
-    if (
-        !disposableCanvas &&
-        typeof trigger.whiteboardGateway.createCanvas !== "function"
-    ) {
-        throw new Error("whiteboard_persistent_canvas_unavailable");
-    }
-    const preparationPromise = (
-        disposableCanvas
-            ? trigger.whiteboardGateway.createDisposableCanvas({
-                  resourceType: "meeting",
-                  resourceId: meetingId,
-                  title: meetingName,
-                  participantHandles,
-              })
-            : trigger.whiteboardGateway.createCanvas({
-                  title: meetingName,
-                  participantHandles,
-              })
-    )
-        .then((canvas) => {
-            if (
-                state.meeting?.id !== meetingId ||
-                trigger.preparedMeetingId !== meetingId
-            ) {
-                return;
-            }
-            trigger.preparedWhiteboardId = String(
-                canvas?.whiteboardId ?? canvas?.id ?? "",
-            ).trim();
-            if (!trigger.preparedWhiteboardId) {
-                throw new Error("whiteboard_id_missing");
-            }
-            trigger.preparationFailedMeetingId = "";
-            trigger.preparedMeetingId = meetingId;
-        })
-        .finally(() => {
-            if (trigger.preparationPromise === preparationPromise) {
-                trigger.preparationPromise = null;
-            }
-        });
-    trigger.preparationPromise = preparationPromise;
-    return preparationPromise;
 }
 
 export function syncWhiteboardButtonAvailability({ root, state }) {
