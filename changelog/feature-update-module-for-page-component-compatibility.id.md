@@ -69,3 +69,5 @@ Tindakan Papan Tulis kini menggunakan kontrak `<button>` native dan `btn-*` core
 Nama rapat kini dibuat sebagai empat kata oleh paket frasa sandi terpelihara yang aman secara kriptografis. Persiapan Papan Tulis mengikat hasil asinkron ke rapat asal, konsensus yang tertunda tidak dapat dilewati melalui pemetaan kanvas yang diusulkan, dan API status menolak nilai aktif non-boolean.
 
 Penemuan penyedia Papan Tulis kini berada dalam modul penyedia yang terfokus, sedangkan persiapan kanvas, pembuatan komponen, dan koordinasi keyring berada dalam modul sesi. Modul tombol dibatasi pada perenderan kontrol dan orkestrasi interaksi.
+
+Dokumen changelog tetap menjadi metadata rilis repositori dan tidak lagi disertakan dalam inventaris digest berkas runtime.

@@ -69,3 +69,5 @@ The Whiteboard action now uses the same native `<button>` and core `btn-*` contr
 Meeting names are now generated as four words by a maintained, cryptographically secure passphrase package. Whiteboard preparation binds asynchronous results to the original meeting, pending consensus cannot be bypassed through a proposed canvas mapping, and the state API rejects non-boolean active values.
 
 Whiteboard provider discovery now lives in a focused provider module, while canvas preparation, component spawning, and keyring coordination live in a session module. The button module is limited to control rendering and interaction orchestration.
+
+Changelog documents remain repository release metadata and are no longer included in the runtime file digest inventory.

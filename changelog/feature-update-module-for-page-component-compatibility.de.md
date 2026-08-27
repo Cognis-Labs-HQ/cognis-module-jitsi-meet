@@ -69,3 +69,5 @@ Die Whiteboard-Aktion verwendet jetzt denselben nativen `<button>`- und Core-`bt
 Besprechungsnamen werden jetzt von einem gepflegten, kryptografisch sicheren Passphrasenpaket als vier Wörter erzeugt. Die Whiteboard-Vorbereitung bindet asynchrone Ergebnisse an die ursprüngliche Besprechung, ausstehende Abstimmungen können nicht über eine vorgeschlagene Canvas-Zuordnung umgangen werden, und die Status-API lehnt nicht boolesche Aktivwerte ab.
 
 Die Whiteboard-Provider-Erkennung befindet sich jetzt in einem fokussierten Provider-Modul; Canvas-Vorbereitung, Komponentenstart und Schlüsselbund-Koordination liegen in einem Sitzungsmodul. Das Schaltflächenmodul ist auf Darstellung und Interaktionssteuerung beschränkt.
+
+Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht mehr im Digest-Inventar der Laufzeitdateien enthalten.
