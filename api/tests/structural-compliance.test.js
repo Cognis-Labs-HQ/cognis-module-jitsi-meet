@@ -138,8 +138,9 @@ test("source does not use Math.random for generated values", () => {
     assert.deepEqual(violations, []);
 });
 
-test("meeting name generation is bundled for dependency-free module startup", () => {
+test("meeting name generation uses its declared package", () => {
     const source = readFileSync(resolve(ROOT, "api/meeting-values.js"), "utf8");
-    assert.match(source, /from "\.\/vendor\/generate-passphrase\/index\.mjs"/);
-    assert.doesNotMatch(source, /from "generate-passphrase"/);
+    const packageJson = JSON.parse(readFileSync(resolve(ROOT, "package.json")));
+    assert.match(source, /from "generate-passphrase"/);
+    assert.equal(packageJson.dependencies["generate-passphrase"], "^1.3.0");
 });

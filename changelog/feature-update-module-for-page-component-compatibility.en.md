@@ -72,4 +72,4 @@ Whiteboard provider discovery now lives in a focused provider module, while canv
 
 Changelog documents remain repository release metadata and are no longer included in the runtime file digest inventory.
 
-The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. The reviewed `generate-passphrase` runtime and word list are bundled with the module, so enabling an installed module no longer depends on an undeployed `node_modules` directory.
+The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. Meeting names use the declared `generate-passphrase` production dependency directly; its large generated dictionary is no longer vendored in this repository.

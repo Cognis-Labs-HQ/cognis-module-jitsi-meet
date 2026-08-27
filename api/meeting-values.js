@@ -1,4 +1,4 @@
-import { generate } from "./vendor/generate-passphrase/index.mjs";
+import { generate } from "generate-passphrase";
 
 const DEFAULT_MEETING_PREFIX_MAX_LENGTH = 48;
 export function generateMeetingName() {

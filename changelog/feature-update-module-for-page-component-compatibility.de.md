@@ -72,4 +72,4 @@ Die Whiteboard-Provider-Erkennung befindet sich jetzt in einem fokussierten Prov
 
 Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht mehr im Digest-Inventar der Laufzeitdateien enthalten.
 
-Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Die geprüfte `generate-passphrase`-Laufzeit und Wortliste werden mit dem Modul gebündelt, sodass die Aktivierung eines installierten Moduls nicht mehr von einem nicht bereitgestellten `node_modules`-Verzeichnis abhängt.
+Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Besprechungsnamen verwenden die deklarierte Produktionsabhängigkeit `generate-passphrase` direkt; ihr großes generiertes Wörterbuch wird nicht mehr in diesem Repository mitgeführt.
