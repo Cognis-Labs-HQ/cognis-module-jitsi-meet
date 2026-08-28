@@ -27,7 +27,6 @@ import {
 } from "./reuse/meeting-access.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
-const MEETING_TITLE = "Cognis Classroom";
 const LIVELINESS_TIMEOUT_MS = 5000;
 
 function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
@@ -72,8 +71,7 @@ function sendError(res, status, code, message) {
 }
 
 function buildMeetingChatTitle(meetingName) {
-    const normalizedMeetingName = String(meetingName ?? "").trim();
-    return normalizedMeetingName || MEETING_TITLE;
+    return String(meetingName ?? "").trim();
 }
 
 function buildMeetingActionUrl(meetingId) {
@@ -287,6 +285,7 @@ export function registerApiRoutes(router, ctx) {
         });
         for (const routePath of [
             "/api/v1/modules/jitsi-meet/meetings/create",
+            "/api/v1/modules/jitsi-meet/meetings/identity",
             "/api/v1/modules/jitsi-meet/meetings/get",
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",

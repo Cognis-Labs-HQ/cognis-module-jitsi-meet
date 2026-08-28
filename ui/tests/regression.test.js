@@ -186,10 +186,7 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
 
 test("jitsi meeting group chats use the unique stored meeting title", () => {
     const source = readJitsiApiBundle();
-    assert.match(
-        source,
-        /title:\s*buildMeetingChatTitle\(meeting\.meetingName\)/,
-    );
+    assert.match(source, /title:\s*buildMeetingChatTitle\(roomName\)/);
     assert.doesNotMatch(source, /new Date\(parsedCreatedAt\)/);
     assert.match(source, /allowSingleMember:\s*true/);
     assert.doesNotMatch(source, /participantUsernames\.length > 1/);
@@ -614,11 +611,14 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
-        /addEventListener\("videoConferenceJoined", \(event\) => \{[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
+        /addEventListener\("videoConferenceJoined", async \(event\) => \{[\s\S]*meetings\/identity[\s\S]*roomName: capturedRoomName[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
     );
-    assert.match(embedSource, /if \(!meetingHost \|\| !roomName\)/);
-    assert.match(embedSource, /roomName,\s*parentNode: frame/);
-    assert.doesNotMatch(embedSource, /GENERATE_ROOMNAMES_ON_WELCOME_PAGE/);
+    assert.match(
+        embedSource,
+        /GENERATE_ROOMNAMES_ON_WELCOME_PAGE:\s*!roomName/,
+    );
+    assert.match(embedSource, /Jitsi iframe load timed out/);
+    assert.match(embedSource, /capturedMeeting\.roomSlug !== capturedRoomName/);
     assert.match(embedSource, /operation:\s*"open_jitsi_meeting_embed"/);
     assert.doesNotMatch(
         embedSource,

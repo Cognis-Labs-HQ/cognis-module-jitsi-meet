@@ -239,7 +239,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     assert.equal(mockDb.insertedMeetingRows.length, 1);
     assert.ok(mockDb.insertedMeetingRows[0].participant_key);
     assert.ok(mockDb.insertedMeetingRows[0].meeting_url);
-    assert.match(mockDb.insertedMeetingRows[0].room_slug, /^[a-f0-9]{32}$/);
+    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
     assert.ok(mockDb.insertedMeetingRows[0].meeting_password_iv);
     assert.notEqual(
         mockDb.insertedMeetingRows[0].meeting_password,
@@ -250,13 +250,21 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
-    assert.match(
-        mockDb.insertedMeetingRows[0].meeting_name,
-        /^2026-08-01 09:30 UTC · [A-F0-9]{6}$/,
-    );
+    assert.equal(mockDb.insertedMeetingRows[0].meeting_name, "");
     assert.equal(
         mockDb.insertedMeetingRows[0].meeting_url,
-        `https://meet.example.com/${mockDb.insertedMeetingRows[0].room_slug}`,
+        `https://meet.example.com/#cognisMeeting=${createdMeeting.id}`,
+    );
+    const capturedMeeting = await store.captureMeetingIdentity(
+        createdMeeting.id,
+        "BrightOttersMeetSafely",
+        "https://meet.example.com",
+    );
+    assert.equal(capturedMeeting.roomSlug, "BrightOttersMeetSafely");
+    assert.equal(capturedMeeting.meetingName, "BrightOttersMeetSafely");
+    assert.equal(
+        capturedMeeting.meetingUrl,
+        "https://meet.example.com/BrightOttersMeetSafely",
     );
     assert.equal(createdMeeting?.reused, false);
     assert.equal(
@@ -274,7 +282,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     );
 });
 
-test("jitsi store gives every meeting a unique iframe room identity", async () => {
+test("jitsi store gives pending meetings unique database URLs", async () => {
     const mockDb = createMockJitsiDb();
     const store = new JitsiMeetStore({ db: mockDb });
 
@@ -294,12 +302,8 @@ test("jitsi store gives every meeting a unique iframe room identity", async () =
         chatRoomId: null,
     });
 
-    assert.match(mockDb.insertedMeetingRows[0].room_slug, /^[a-f0-9]{32}$/);
-    assert.match(mockDb.insertedMeetingRows[1].room_slug, /^[a-f0-9]{32}$/);
-    assert.notEqual(
-        mockDb.insertedMeetingRows[0].room_slug,
-        mockDb.insertedMeetingRows[1].room_slug,
-    );
+    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
+    assert.equal(mockDb.insertedMeetingRows[1].room_slug, "");
     assert.notEqual(firstMeeting.meetingUrl, secondMeeting.meetingUrl);
     assert.equal(
         new URL(firstMeeting.meetingUrl).origin,

@@ -95,14 +95,17 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
     assert.equal(logs[0][2].chatRoomId, "chat-1");
 });
 
-test("participant-free meeting creation provisions a share-ready chat", async () => {
+test("Jitsi identity capture provisions a share-ready participant-free chat", async () => {
     const handlers = new Map();
     const chatRequests = [];
     const meeting = {
         id: "meeting-1",
-        meetingName: "2026-08-28 18:30 UTC · A1B2C3",
+        meetingName: "",
+        roomSlug: "",
         chatRoomId: null,
+        classroomId: null,
         createdBy: "alice",
+        scheduledAt: "2026-08-28T18:30:00.000Z",
     };
     const store = {
         async ensureSchema() {},
@@ -119,6 +122,11 @@ test("participant-free meeting creation provisions a share-ready chat", async ()
             if (chatRoomId) meeting.chatRoomId = chatRoomId;
             return meeting;
         },
+        async captureMeetingIdentity(_meetingId, roomName) {
+            meeting.meetingName = roomName;
+            meeting.roomSlug = roomName;
+            return meeting;
+        },
         async listParticipants() {
             return ["alice"];
         },
@@ -130,15 +138,19 @@ test("participant-free meeting creation provisions a share-ready chat", async ()
         router: { post: (path, handler) => handlers.set(path, handler) },
         store,
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
-        readJson: async () => ({ participants: [] }),
+        readJson: async (req) => req.body ?? { participants: [] },
         sendJson: (res, status, body) => {
             res.writeHead(status);
             res.end(JSON.stringify(body));
         },
-        sendError: () => assert.fail("meeting creation returned an error"),
+        sendError: () => assert.fail("meeting lifecycle returned an error"),
         profileStore: {},
         resolveRequesterUsername: async () => "alice",
         resolveRequestedParticipants: async () => [],
+        resolveMeetingPayload: async () => ({
+            meeting,
+            requesterUsername: "alice",
+        }),
         hasMinRole: () => false,
         resolveGroupChat: async (request) => {
             chatRequests.push(request);
@@ -150,19 +162,36 @@ test("participant-free meeting creation provisions a share-ready chat", async ()
             chatUrl,
         }),
         dispatchMeetingNotifications: async () => {},
+        log: () => {},
     });
-    const response = createRecorder();
-
+    const createResponse = createRecorder();
     await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
-        {},
-        response,
+        { body: { participants: [] } },
+        createResponse,
+    );
+    assert.equal(createResponse.status, 200);
+    assert.equal(chatRequests.length, 0);
+
+    const identityResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/identity")(
+        {
+            body: {
+                meetingId: "meeting-1",
+                roomName: "BrightOttersMeetSafely",
+            },
+        },
+        identityResponse,
     );
 
-    assert.equal(response.status, 200);
+    assert.equal(identityResponse.status, 200);
     assert.equal(chatRequests.length, 1);
     assert.deepEqual(chatRequests[0].usernames, ["alice"]);
     assert.equal(chatRequests[0].allowSingleMember, true);
-    assert.equal(chatRequests[0].title, meeting.meetingName);
-    assert.equal(response.body.data.chatRoomId, "chat-1");
-    assert.equal(response.body.data.chatUrl, "/messages/chat-1");
+    assert.equal(chatRequests[0].title, "BrightOttersMeetSafely");
+    assert.equal(
+        identityResponse.body.data.meetingName,
+        "BrightOttersMeetSafely",
+    );
+    assert.equal(identityResponse.body.data.chatRoomId, "chat-1");
+    assert.equal(identityResponse.body.data.chatUrl, "/messages/chat-1");
 });
