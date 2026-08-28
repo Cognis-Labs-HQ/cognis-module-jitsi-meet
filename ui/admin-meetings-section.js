@@ -1,4 +1,6 @@
-import { formatDateTime } from "/static/reuse/timestamp.js";
+import { importReuseModule } from "./reuse/resources.js";
+
+const { formatDateTime } = await importReuseModule("timestamp.js");
 
 const REFRESH_INTERVAL_MS = 2500;
 const TABLE_COLUMN_COUNT = 5;

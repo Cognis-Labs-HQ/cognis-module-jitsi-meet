@@ -96,6 +96,8 @@ Use the repository Prettier configuration: four-space indentation, double quotes
 
 Every behavior change requires appropriate tests, logging, and documentation. Keep documentation variants synchronized. Do not add AI reasoning, session notes, or process commentary to product-facing files.
 
+Standard documentation describes the module's current supported behavior and integration contract. Keep it concise and cohesive by updating existing sections instead of appending a running history of fixes. Release chronology, superseded behavior, migration notes, and implementation history belong only in `changelog/`.
+
 ## Review discipline
 
 Treat human and automated review comments as actionable engineering feedback. Implement technically sound corrections unless they conflict with a higher-priority instruction or architectural requirement. Record any intentionally deferred review item in root `TODO.md` with a concrete technical reason.

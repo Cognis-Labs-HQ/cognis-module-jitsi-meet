@@ -1,5 +1,9 @@
 import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
+import {
+    syncMeetingWhiteboardComponent,
+    syncWhiteboardButtonAvailability,
+} from "../whiteboard-control.js";
 
 export function createMountUtilities({ root, state }) {
     function isMeetingActive() {
@@ -53,6 +57,8 @@ export function createMountUtilities({ root, state }) {
      */
     function syncShareButtonAvailability() {
         syncMountedShareButtonAvailability({ root, state });
+        syncWhiteboardButtonAvailability({ root, state });
+        void syncMeetingWhiteboardComponent({ root, state });
     }
 
     function updatePreflightIndicator() {
@@ -150,7 +156,6 @@ export function createMountUtilities({ root, state }) {
         }
         if (startButton instanceof HTMLButtonElement) {
             startButton.disabled = !canStart;
-            startButton.classList.toggle("jitsi-start-ready", canStart);
         }
         if (authButton instanceof HTMLElement) {
             authButton.hidden = !showAuth;

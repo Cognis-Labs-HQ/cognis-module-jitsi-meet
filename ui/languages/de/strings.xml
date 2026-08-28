@@ -61,8 +61,6 @@
   <string name="module.jitsi_meet.participants.add_selected">Ausgewählte Hinzufügen</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi-Instanz-URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Gib die vollständige Basis-URL deiner Jitsi-Instanz ein.</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">Optionales Meeting-URI-Präfix</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">Optionales Pfadpräfix, das beim Erzeugen von Meeting-URLs genutzt wird.</string>
   <string name="module.jitsi_meet.admin.meetings.heading">Meetings</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">Meeting-Aktivität in Echtzeit</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">Aktive Meetings</string>
@@ -115,6 +113,15 @@
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
   <string name="module.jitsi_meet.summary">Sichere, in Cognis integrierte Videobesprechungen.</string>
   <string name="module.jitsi_meet.description">Jitsi-Besprechungen in Cognis erstellen, ihnen beitreten, sie moderieren und teilen.</string>
+  <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.close">Whiteboard schließen</string>
+  <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
+  <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
+  <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>
+  <string name="module.jitsi_meet.whiteboard.consensus_pending">Warten auf die Zustimmung der Teilnehmer zum Öffnen des Whiteboards.</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_action">auf das Whiteboard zuzugreifen</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_process">das Whiteboard für die Besprechung {{meeting}}</string>
   <string name="module.jitsi_meet.category_collaboration">Zusammenarbeit</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>

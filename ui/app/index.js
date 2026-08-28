@@ -1,22 +1,11 @@
 import { logUi, openErrorPopup } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { apiFetch } from "/static/reuse/api-client.js";
-import { applyDocumentTitle, createI18n } from "/static/reuse/i18n.js";
-import { createPageComposer } from "/static/reuse/page-composer/index.js";
-import { registerSearchIndex } from "/static/reuse/search-util/popup.js";
-import { mountWhenDirect } from "/static/reuse/page-entry.js";
-import { openSearchPopup } from "/static/reuse/search-util/popup.js";
 import { showToast } from "../reuse/feedback.js";
-import { normalizeUsername } from "/static/reuse/value-normalizers.js";
-import {
-    getShareContext,
-    ensureFullAccountSession,
-} from "/static/reuse/auth-session.js";
+import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
 import {
-    ensureStylesheetLoaded,
     fetchCurrentProfile,
     fetchParticipants,
     loadMessageReactionsController,
@@ -30,6 +19,29 @@ import { createEmbedHandlers } from "./meeting-room.js";
 import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
 import { handleProfileAvatarError } from "./profile-avatars.js";
+import { createMeetingSearchGroups } from "./meeting-search.js";
+import {
+    bindWhiteboardButton,
+    syncMeetingWhiteboardComponent,
+} from "../whiteboard-control.js";
+
+const [
+    { apiFetch },
+    { getShareContext, ensureFullAccountSession },
+    { applyDocumentTitle, createI18n },
+    { createPageComposer },
+    { mountWhenDirect },
+    { registerSearchIndex, openSearchPopup },
+    { normalizeUsername },
+] = await Promise.all([
+    importReuseModule("api-client.js"),
+    importReuseModule("auth-session.js"),
+    importReuseModule("i18n.js"),
+    importReuseModule("page-composer/index.js"),
+    importReuseModule("page-entry.js"),
+    importReuseModule("search-util/popup.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
@@ -49,13 +61,19 @@ const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
  * resharing controls.
  *
  * @param {HTMLElement} root - Page mount root (usually #app).
- * @param {{ signal?: AbortSignal, requestedMeetingId?: string, shareContext?: object }} [options] - Router lifecycle options.
+ * @param {{ signal?: AbortSignal, requestedMeetingId?: string, shareContext?: object, focusState?: object }} [options] - Router and component-page lifecycle options.
  * @returns {Promise<void>}
  */
 export async function mount(
     root,
-    { signal, requestedMeetingId = "", shareContext: routedShareContext } = {},
+    {
+        signal,
+        requestedMeetingId = "",
+        shareContext: routedShareContext,
+        focusState = null,
+    } = {},
 ) {
+    await loadCommonStyles();
     root.classList.add("jitsi-route-root");
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
@@ -67,14 +85,12 @@ export async function mount(
     if (!limitedShareView) await ensureFullAccountSession();
     const resolvedMeetingId =
         requestedMeetingId ||
+        String(focusState?.meetingId ?? "") ||
         (inShareView ? String(shareContext?.resourceId ?? "") : "");
     const messageUiResources = await loadMessageUiResources();
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
         ? await import(messageUiResources.chatLoadingModuleUrl)
         : null;
-    for (const stylesheetUrl of messageUiResources.stylesheetUrls) {
-        ensureStylesheetLoaded(stylesheetUrl);
-    }
     const i18n = await createI18n({
         componentStringBaseUrls: messageUiResources.languageBaseUrls,
     });
@@ -141,52 +157,10 @@ export async function mount(
         recoveringMeetingSession: false,
         promptShareOnJoin: false,
     };
-    function collectMeetingSearchGroups() {
-        const meetings = [
-            ...(Array.isArray(state.activeMeetings)
-                ? state.activeMeetings
-                : []),
-            ...(state.meeting?.id ? [state.meeting] : []),
-        ];
-        const seenIds = new Set();
-        const items = [];
-        for (const meeting of meetings) {
-            const meetingId = normalizeMeetingId(meeting?.id);
-            if (!meetingId || seenIds.has(meetingId)) continue;
-            seenIds.add(meetingId);
-            const title = String(
-                meeting?.meetingName ?? i18n.t("ui.reuse.meeting"),
-            ).trim();
-            const owner = String(
-                meeting?.startedBy?.displayName ??
-                    meeting?.startedBy?.username ??
-                    meeting?.createdBy ??
-                    "",
-            ).trim();
-            const timeLabel = String(
-                meeting?.scheduledAt ?? meeting?.createdAt ?? "",
-            ).trim();
-            items.push({
-                id: `meeting:${meetingId}`,
-                label: title,
-                description: [timeLabel, owner].filter(Boolean).join(" · "),
-                url: `/meetings?meetingId=${encodeURIComponent(meetingId)}`,
-                resultClass: "page",
-                searchText: [
-                    title,
-                    owner,
-                    timeLabel,
-                    meeting?.meetingUrl,
-                    meeting?.scheduledAt,
-                    meeting?.createdAt,
-                ]
-                    .filter(Boolean)
-                    .join(" "),
-            });
-        }
-        return items.length ? [{ category: "Meetings", items }] : [];
-    }
-    registerSearchIndex("jitsi-meetings", collectMeetingSearchGroups);
+    registerSearchIndex(
+        "jitsi-meetings",
+        createMeetingSearchGroups(state, i18n),
+    );
     const {
         clearTimers,
         deferAloneParticipantPrompt,
@@ -205,6 +179,8 @@ export async function mount(
         });
     }
     const callbacks = {
+        syncMeetingWhiteboardComponent: () =>
+            syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>
             openMeetingSharePopup({
                 state,
@@ -933,7 +909,7 @@ export async function mount(
     }));
 
     const composer = createPageComposer(root, {
-        allowCustomization: !limitedShareView,
+        allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,
         elements,
         preferenceKey: "meetings-layout-v3",
@@ -942,13 +918,13 @@ export async function mount(
             title: i18n.t("ui.reuse.meetings"),
             subtitle: i18n.t("module.jitsi_meet.page.subtitle"),
         },
-        showTopbar: true,
-        showNavbar: !limitedShareView,
-        showFooter: true,
-        showThemeToggle: true,
+        showTopbar: !focusState,
+        showNavbar: !limitedShareView && !focusState,
+        showFooter: !focusState,
+        showThemeToggle: !focusState,
         requireAccountSession: !limitedShareView,
-        persistLayoutPreferences: !limitedShareView,
-        frameless: false,
+        persistLayoutPreferences: !limitedShareView && !focusState,
+        frameless: Boolean(focusState),
         onRender: (...args) => {
             bindInteractiveHandlers(...args);
             if (!inShareView) {
@@ -958,6 +934,13 @@ export async function mount(
                     state,
                     i18n,
                     deferAloneParticipantPrompt,
+                });
+                void bindWhiteboardButton({
+                    root,
+                    signal,
+                    state,
+                    i18n,
+                    apiFetch,
                 });
             }
         },

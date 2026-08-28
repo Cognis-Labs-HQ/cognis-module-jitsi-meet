@@ -1,0 +1,99 @@
+# Memperbarui modul untuk kompatibilitas halaman komponen
+
+Rute SPA Rapat kini secara eksplisit mengizinkan penggunaan sebagai halaman komponen Cognis. Komponen lain dapat menemukannya melalui UUID modul Jitsi Meet dan ID rute stabil untuk tampilan overlay, layar penuh, atau gambar-dalam-gambar.
+
+Pemanggil tertanam dapat memberikan pengenal rapat yang dapat diserialkan melalui `focusState`. Halaman dipasang di dalam root yang diberikan dengan composer tanpa bingkai sehingga navigasi host, footer, dan kontrol tema tidak digandakan.
+
+Pengenal rute halaman komponen menggunakan nama yang dipisahkan titik agar pemanggil dapat menemukannya sesuai konvensi ID rute kanonis platform.
+
+Siklus hidup rapat kini memperlakukan kegagalan Jitsi `conference.destroyed` sebagai rapat yang ditutup dan segera memulihkan tindakan Mulai Rapat setelah keluar. Fungsi peserta, performa, dan latar belakang dihapus dari toolbar Jitsi tertanam.
+
+Saat kapabilitas ctx Nextcloud Whiteboard opsional tersedia, tombol Papan Tulis membuat kanvas sementara dan membuka jendela komponennya yang tersinkron di panggung rapat. Rapat langsung berpindah ke gambar-dalam-gambar tanpa memutus koneksi, dan menutup papan tulis memulihkan tampilan rapat biasa.
+
+Integrasi tidak lagi memanggil rute API Jitsi untuk membuat papan tulis melalui modul lain. Tombol Papan Tulis hanya disediakan ketika modul Papan Tulis menyumbangkan kapabilitas CTX browser opsional `whiteboard:uiGateway`, dengan metode `createDisposableCanvas` yang menangani pembuatan oleh penyedia. Jitsi hanya menyimpan endpoint status jendela aktif lokal rapat.
+
+Penemuan Papan Tulis kini memakai `component-pages:request` tanpa memasang UI. Setelah kanvas sementara disiapkan, aktivasi tombol oleh pengguna memanggil `component-pages:spawn` secara sinkron dengan ID panggung Jendela Rapat. Broker menangani pembatasan, pemblokiran navigasi, pembersihan penyedia, dan handle pembuangan yang dikembalikan. Gambar-dalam-gambar rapat merespons status broker `component-page-stage` tanpa pemosisian jendela komponen khusus.
+
+Penekanan tombol Papan Tulis berulang tidak lagi membuang kanvas yang terbuka. Rapat peserta mempertahankan ID kanvas stabil berbasis sumber daya di seluruh instans rapat, rapat tanpa peserta tetap sementara, jendela broker dan halaman tertanam memenuhi panggung, serta pemasangan ulang SPA secara eksplisit memastikan penyedia UI dimuat dan menyiapkan kanvas untuk rapat saat ini.
+
+Meetings kini mencoba ulang gateway Papan Tulis yang hilang dengan memaksa satu kali penyegaran katalog penyedia host, memperbaiki katalog usang setelah startup atau pembaruan modul tanpa siklus nonaktif/aktif. Jendela komponen memakai handle pembuangan broker dengan fallback berbasis panggung, sedangkan pembersihan seluruh rute melalui `component-pages:discardAll` tetap menjadi tanggung jawab shell SPA.
+
+Pemasangan SPA kini mencoba ulang kesiapan penyedia, memberikan setiap panggung rapat yang baru diikat ID tujuan tahan benturan, dan meminta Papan Tulis dalam mode overlay. Ini mencegah DOM Meetings yang diparkir atau usang menerima pemasangan dan mencegah kanvas terbatas diperlakukan sebagai halaman layar penuh.
+
+Papan Tulis yang dibuka kini meminta tampilan tanpa bingkai dan memakai penggantian jarak berbasis panggung untuk ruang kerja, panel, bagian, kisi, dan widget agar kanvas meluas ke area Jendela Rapat yang tersedia sambil mempertahankan gambar-dalam-gambar rapat.
+
+PiP rapat kini sepenuhnya dimiliki broker halaman komponen Cognis. Modul memanggil kapabilitas jendela mengambang inti tanpa membawa kode atau gaya pemosisian PiP. Aktivasi Papan Tulis kini tetap tertunda hingga pemasangan komponen dan sinkronisasi status selesai agar polling tidak membuang pemasangan yang sedang berlangsung.
+
+Presentasi Papan Tulis kini menandai kanvas sebagai sementara hanya untuk rapat tanpa peserta; rapat dengan peserta yang disiapkan membuka kanvas normal berbasis sumber daya.
+
+Kapabilitas jendela mengambang inti kini diaktifkan sebelum pemasangan halaman komponen asinkron dimulai. Ini memulihkan perilaku sebelumnya: rapat masuk ke PiP segera saat Papan Tulis mengambil alih panggung, bukan menunggu pemasangan Papan Tulis selesai.
+
+Pembuatan jendela komponen Papan Tulis kini menetapkan flag kontrak inti Cognis `borderless`, sehingga broker menghapus bingkai jendela luar sementara status fokus tanpa bingkai yang ada mengendalikan shell Papan Tulis tersemat.
+
+Tombol Papan Tulis langsung disorot selama jendela komponennya aktif. Memilih tombol yang disorot sekali lagi akan membuang jendela komponen, melepaskan gambar-dalam-gambar rapat, dan menyinkronkan tampilan rapat default.
+
+Rapat baru kini memperoleh nama tampilannya dari slug ruang Jitsi yang dibuat. Nama unik yang sama diteruskan ke Papan Tulis rapat, sedangkan chat Messages terkait memakai nama rapat unik yang diikuti tanggal pembuatannya.
+
+Jendela Papan Tulis tanpa bingkai kini memungkinkan panggung Jitsi tumbuh mengikuti kontennya, bukan memotongnya dalam area bertinggi tetap dengan overflow vertikal. Panggung merespons kelas host inti `app-page__main--component-borderless`, dan override margin jendela komponen milik modul yang berlebihan dihapus demi kontrak inti.
+
+Override tingkat host `app-page__main--component-borderless` telah dihapus. Overflow berasal dari aturan panggung Jitsi `overflow: hidden` yang dimuat lebih akhir dan menggantikan perilaku generik inti `component-page-stage`; perbaikan kini menargetkan `.jitsi-stage-frame-wrap.component-page-stage` secara langsung dan membiarkan anak tanpa bingkai menetapkan tinggi panggung otomatis.
+
+Meetings kini menyimpan status opsional per rapat `whiteboardOpen` hanya jika kanvas Papan Tulis ada. Penyelenggara langsung membukanya; non-penyelenggara mengumpulkan suara berbasis kehadiran hingga mayoritas mutlak setuju. Klien polling yang melihat status terbuka otomatis membuat kanvas bersama dan mengaktifkan PiP rapat, termasuk peserta yang bergabung kemudian.
+
+Memulai atau mengambil alih instans rapat tidak lagi mereset Papan Tulis per rapat yang sudah terbuka. Ini menghapus race siklus hidup bergabung yang menutup Papan Tulis rapat tanpa peserta pada pembaruan status lima detik berikutnya; penghentian rapat secara eksplisit tetap menutup Papan Tulis bersama.
+
+Endpoint status lima detik kini mengembalikan bentuk status rapat publik yang sama dengan pemuatan rapat awal. Endpoint memetakan flag Papan Tulis internal yang tersimpan ke `whiteboardOpen`, sehingga polling tidak menganggap Papan Tulis rapat tanpa peserta yang terbuka sebagai tidak ada lalu menutup jendela komponennya.
+
+Meetings kini mencerminkan handle Papan Tulis tanpa bingkai yang aktif ke panggung rapat sebagai `component-page-stage--borderless`. Hanya selama handle tersebut aktif, tinggi rapat tetap dan overflow panggung yang terpotong dilonggarkan agar kanvas komponen dapat memperbesar panggung; penutupan atau kegagalan pembukaan komponen memulihkan tata letak Jitsi bawaan.
+
+Kontrol Papan Tulis kini dirender sebagai tautan dan memakai tampilan aktif standar `btn-confirm`. Sinkronisasi status buka oleh penyelenggara kini selesai sebelum aktivasi halaman komponen dan PiP, menghilangkan kondisi balapan awal antara polling dan pemasangan yang menimbulkan umpan balik kegagalan buka berulang. Kegagalan awal pemasangan komponen yang bersifat sementara dicoba ulang secara internal sebelum toast kegagalan ditampilkan.
+
+Tindakan Papan Tulis berbasis tautan kini memiliki gaya kontrol milik modul yang lengkap. Kontrol tidak lagi tampil sebagai tautan bergaris bawah polos ketika bawaan tombol host atau deklarasi `btn-*` khusus administrasi tidak tersedia, sementara `btn-confirm` tetap memilih warna aktifnya.
+
+Meetings kini menggunakan page-builder, stylesheet bagian halaman yang dapat digunakan ulang, dan utilitas `ensurePageStylesheet` milik Cognis core alih-alih menduplikasi palet tombol, pengalihan siklus hidup stage komponen, dan injeksi stylesheet. Ini juga memperbaiki tautan Papan Tulis nonaktif yang mewarisi warna tautan biru global: `btn-neutral` dan `btn-confirm` kini berasal dari bundel stylesheet core kanonis.
+
+Meetings kini menggunakan kapabilitas `ui:reuse` yang baru dipublikasikan sebagai satu-satunya gateway browser menuju modul produksi di bawah `ui/reuse/` dan stylesheet reuse umum. Fasad kecil milik modul memvalidasi ketersediaan kapabilitas, setiap entrypoint UI hanya meminta utilitas yang digunakannya, `page-sections.css` dimuat melalui kapabilitas, dan injektor stylesheet duplikat telah dihapus.
+
+Ekspor lokal `ensureStylesheetLoaded` dipulihkan sebagai delegasi yang didukung `ui:reuse`, dan entrypoint Meetings saat ini menggunakan ekspor yang sama. Ini mencegah cache SPA campuran memuat entry rute lama terhadap modul helper yang lebih baru dan menggagalkan instansiasi modul karena ekspor bernama tidak ditemukan.
+
+Kegagalan pemasangan Papan Tulis kini dikunci untuk mount SPA Meetings saat ini. Kegagalan impor dinamis yang tidak dapat dicoba ulang dihentikan segera; semua kegagalan akhir saat persiapan atau pemasangan dicatat sekali, menampilkan “Terjadi kesalahan saat memuat papan tulis”, menonaktifkan kontrol Papan Tulis lokal, dan mencegah polling konsensus mencoba pemasangan lagi hingga pemuatan ulang atau remount SPA.
+
+Tindakan Papan Tulis tetap berupa tautan dan kini mendelegasikan semua status visual ke Cognis core: `btn-neutral` menjadi bawaan, sedangkan hover dan status aktif/terbuka memakai `btn-confirm`. Saat pointer meninggalkan kontrol, `btn-neutral` dipulihkan kecuali Papan Tulis masih aktif.
+
+Tautan Papan Tulis tidak lagi membawa kelas presentasi khusus modul. Tampilan bawaan, hover, dan aktifnya kini sepenuhnya berasal dari utilitas Cognis core `btn-neutral`, `btn-confirm`, dan `btn-animated`; modul hanya mempertahankan status ARIA semantik dan perilakunya.
+
+SPA Meetings kini memanggil kontrak `loadCommonStyles()` dari kapabilitas `ui:reuse` sebelum merender, alih-alih hanya memuat `page-sections.css`. Dengan demikian, seluruh katalog stylesheet Cognis core, termasuk tampilan tombol standar, tersedia setelah navigasi langsung maupun navigasi SPA.
+
+Tindakan Papan Tulis kini menggunakan kontrak `<button>` native dan `btn-*` core yang sama seperti tindakan Bagikan di sebelahnya, termasuk status nonaktif native. Spawn tanpa bingkai juga meneruskan kontrak tata letak pengguliran dokumen dalam konteks komponen, dan stage Jitsi aktif memakai baris grid berukuran konten dengan luapan terlihat agar kanvas tertanam dapat membesar tanpa membuat penggulir vertikal bertingkat.
+
+Rapat baru kini membiarkan API iframe Jitsi membuat nama ruang bawaannya. Cognis menangkap nama tersebut setelah penyelenggara bergabung dan menggunakannya untuk chat Messages serta sumber daya Papan Tulis. Persiapan Papan Tulis mengikat hasil asinkron ke rapat asal, konsensus yang tertunda tidak dapat dilewati melalui pemetaan kanvas yang diusulkan, dan API status menolak nilai aktif non-boolean.
+
+Penemuan penyedia Papan Tulis kini berada dalam modul penyedia yang terfokus, sedangkan persiapan kanvas, pembuatan komponen, dan koordinasi keyring berada dalam modul sesi. Modul tombol dibatasi pada perenderan kontrol dan orkestrasi interaksi.
+
+Dokumen changelog tetap menjadi metadata rilis repositori dan tidak lagi disertakan dalam inventaris digest berkas runtime.
+
+Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai dengan tanggung jawab siklus hidup kontrolnya yang lebih luas. Modul tidak lagi memuat pembuat nama rapat, kumpulan kata salinan, atau lisensi generator. Sebelum Jitsi melaporkan identitas ruang, permukaan yang tidak memerlukannya tetap menampilkan “Cognis Classroom”.
+
+Penghapusan konfigurasi kini didaftarkan secara eksplisit sebagai rute khusus administrator yang tetap tersedia saat modul dinonaktifkan, termasuk pada kumpulan rute dengan kapabilitas terbatas.
+
+Penyiapan skema pemasangan baru kini berbagi satu promise inisialisasi per eksekutor basis data. Permintaan konfigurasi dan siklus hidup yang bersamaan menunggu urutan pembuatan tabel yang sama alih-alih berlomba membuat tipe PostgreSQL.
+
+Manifest kini mendeklarasikan Nextcloud Whiteboard sebagai dependensi lunak opsional. Pemasangan Cognis yang memahami dependensi dapat menawarkan Papan Tulis bersama Rapat tanpa memblokir pemasangan atau pengaktifan ketika modul opsional tidak tersedia.
+
+Rapat baru tanpa identitas ruang yang telah ditangkap kini secara eksplisit menonaktifkan halaman sambutan Jitsi tertanam. Dengan demikian, Jitsi langsung membuat dan memasuki ruang acak sesuai perilaku ruang kosong yang didukung, alih-alih merender layar awalnya di dalam panggung rapat terbatas dan meninggalkan Cognis pada viewport kosong yang tidak dapat digunakan dan terus bergulir.
+
+Kontribusi SPA dan berbagi Meetings kembali menerbitkan jalur entry modul kanonis tanpa parameter dan menyerahkan seluruh pengelolaan versi cache aset kepada Cognis.
+
+Rapat yang masih menunggu kini menyimpan URL instans Jitsi unik dengan fragmen yang menggunakan UUID rapat yang sudah ada. Ini memenuhi skema `meeting_url` unik dan wajib tanpa membuat slug ruang, mencegah rapat baru bersamaan pada instans Jitsi yang sama berbenturan, dan diganti dengan URL ruang Jitsi kanonis setelah identitas ditangkap.
+
+Meetings tidak lagi mendaftarkan atau menyuntikkan stylesheet penyedia Messages secara dinamis karena gaya tersebut dapat bertahan setelah navigasi SPA dan mengubah halaman lain. Setiap selektor dalam `jitsi-meet.css` kini berakar di bawah `.jitsi-route-root` milik rute, nama animasinya khusus modul, dan aset lama `ui/styles/meetings.css` yang tidak digunakan telah dihapus.
+
+Siklus mulai rapat tidak lagi menonaktifkan rute sambutan Jitsi saat membuat iframe tanpa nama ruang yang telah ditangkap. Siklus ini kini mengaktifkan pembuat nama ruang milik halaman sambutan Jitsi, menghindari perulangan pengalihan ruang kosong yang tidak didukung dan dapat mengunci tab peramban, serta melaporkan kegagalan mulai sematan melalui pencatatan UI terstruktur dan umpan balik.
+
+Perbandingan lengkap dengan `master` menemukan bahwa rapat membeku setelah perubahan siklus hidup memanggil `JitsiMeetExternalAPI` tanpa nama ruang. Pembuatan rapat kini menetapkan pengenal ruang buram yang konkret dan acak secara kriptografis sebelum sematan dimulai, memulihkan pengaitan chat multipeserta secara langsung, dan mempertahankan “Cognis Classroom” sebagai judul bagi pengguna. Tindakan Mulai Rapat kini memakai kontrak core `btn-confirm btn-animated`, sedangkan judul modul memakai token tema core `--text` yang aktif.
+
+Rapat tanpa peserta kembali menyediakan chat Messages beranggota tunggal saat dibuat agar tamu tautan berbagi dapat menggunakannya kemudian; pembersihan rapat sekali pakai tetap menghapus chat tersebut setelah rapat berakhir. Rekaman rapat kini memakai judul yang dapat dibedakan, tersusun dari menit UTC terjadwal dan pengenal kriptografis singkat, lalu meneruskan judul unik yang sama ke chat, berbagi, dan Papan Tulis alih-alih mengulang label “Cognis Classroom” saja.
+
+Penamaan rapat kembali memakai alur halaman sambutan Jitsi yang didukung: iframe ruang kosong mengaktifkan `GENERATE_ROOMNAMES_ON_WELCOME_PAGE`, peristiwa `videoConferenceJoined` memberikan nama ruang yang dibuat, dan endpoint identitas khusus penyelenggara memvalidasi serta menyimpan nilai persis itu sebelum membuat chat beranggota tunggal yang siap dibagikan. Judul berbasis stempel waktu telah dihapus. Pengaman menolak identitas yang hilang atau tidak cocok, mencatat dan menampilkan toast untuk kegagalan penangkapan, membatasi waktu pemuatan iframe, dan membuang sematan yang gagal.
+
+Nama rapat kini hanya berasal dari kapabilitas host `reuse:generatePassphrase` sebagai empat kata berkapitalisasi judul yang dipisahkan tanda hubung. Pembuatan menyimpan nilai yang sama persis sebagai nama tampilan, slug ruang, dan URL, lalu browser selalu memberikannya ke `JitsiMeetExternalAPI`; mekanisme pembuatan halaman sambutan Jitsi dan penangkapan identitas telah dihapus. Chat Messages beranggota tunggal disediakan saat rapat dibuat. Rekaman rapat tersimpan yang tidak memenuhi kontrak nama hasil pembuatan ini diberi ulang nama dari kapabilitas saat inisialisasi skema sebelum dapat dibuka, sehingga judul stempel waktu yang dikodekan tidak mencapai Jitsi sebagai jalur ruang 404 yang tidak valid. Promise pemuatan iframe sementara, batas waktu, dan pembungkus kesalahan bergabung yang diperkenalkan bersama siklus nama buatan Jitsi yang telah digantikan telah dihapus. Siklus awal sematan kembali sama dengan cabang master sambil mempertahankan nama ruang hasil kapabilitas yang diteruskan secara eksplisit.

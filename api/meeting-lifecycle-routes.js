@@ -119,32 +119,45 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
-            let chatRoom = null;
-            if (typeof resolveGroupChat === "function") {
-                const meetingChatTitle = buildMeetingChatTitle();
-                chatRoom = await resolveGroupChat({
-                    usernames: normalizedInput.participantUsernames,
-                    title: meetingChatTitle,
-                    createdByAccountId: claims.sub,
-                    // Meetings are commonly created solo and shared out via a
-                    // guest link afterwards, so a chat room must exist even
-                    // with only the creator as a real member — otherwise
-                    // share-link guests can never be granted chat access.
-                    allowSingleMember: true,
-                }).catch(() => null);
-            }
-
-            const meeting = await store.createMeeting({
+            let meeting = await store.createMeeting({
                 instanceUrl: config.instanceUrl,
-                meetingPrefix: config.meetingPrefix,
                 usernames: normalizedInput.participantUsernames,
                 classroomId: normalizedInput.classroomId,
                 createdBy: requesterUsername,
-                chatRoomId: chatRoom?.roomId ?? null,
+                chatRoomId: null,
                 scheduledAt: body.scheduledAt,
             });
-
             const participants = await store.listParticipants(meeting.id);
+            let chatRoom = null;
+            if (!meeting.chatRoomId && typeof resolveGroupChat === "function") {
+                chatRoom = await resolveGroupChat({
+                    usernames: participants,
+                    title: buildMeetingChatTitle(meeting.meetingName),
+                    createdByAccountId: claims.sub,
+                    allowSingleMember: true,
+                }).catch((error) => {
+                    log?.("error", "Jitsi meeting chat creation failed.", {
+                        component: "jitsi-meet-module",
+                        operation: "create_meeting_chat",
+                        meetingId: meeting.id,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                    return null;
+                });
+                if (chatRoom?.roomId) {
+                    meeting = await store.createMeeting({
+                        instanceUrl: config.instanceUrl,
+                        usernames: participants,
+                        classroomId: meeting.classroomId,
+                        createdBy: meeting.createdBy,
+                        chatRoomId: chatRoom.roomId,
+                        scheduledAt: meeting.scheduledAt,
+                    });
+                }
+            }
             const state = await store.getMeetingState(meeting.id);
             const payload = await createMeetingPayload({
                 store,
@@ -595,6 +608,8 @@ export function registerMeetingLifecycleRoutes({
                         firstJoinedAt: null,
                         endedBy: resolved.requesterUsername,
                         endedAt: new Date().toISOString(),
+                        whiteboardActive: false,
+                        whiteboardOpenVotes: [],
                     });
                     await dispatchMeetingNotifications(resolved.participants, {
                         subject: "Meeting Ended",

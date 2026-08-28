@@ -7,7 +7,7 @@
  * @param {string} capabilityName
  * @returns {Function}
  */
-import { uiCtx } from "/static/reuse/ui-ctx.js";
+import { uiCtx } from "./resources.js";
 
 function requireCapability(capabilityName) {
     const capability = uiCtx.capabilities.get(capabilityName);

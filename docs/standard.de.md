@@ -1,30 +1,27 @@
 # Jitsi-Meet-Modul
 
-Das Jitsi-Meet-Modul bietet Cognis-native Meeting-Orchestrierung mit Teilnehmerauswahl, Wiederverwendung von Meeting-URLs, Sitzungsübernahme und Wiederverwendung von Nachrichten-Chaträumen.
+Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerauswahl, wiederverwendbaren Besprechungsräumen, Sitzungswiederaufnahme, Messages-Chat-Integration und einem optionalen gemeinsamen Whiteboard.
 
 ## Anwendungsbeispiele
 
-- Konfigurierbare Jitsi-Instanz-URL und optionales URI-Präfix, von Cognis aus dem Manifest dargestellt und über den moduleigenen Konfigurationsendpunkt gespeichert
-- Anwendungsrouten `/meetings` und `/meeting` mit:
-    - eine seitenspezifische Verfügbarkeitsprüfung, die beim Verlassen sofort endet
-    - Meeting-Bereich/Overlay
-    - Teilnehmerauswahl und Drag-and-Drop
-    - Chat-URL-Übergabe an den Messages-Adapter
-- Meeting-Persistenz in modulspezifischen Tabellen
-- Teilnehmergebundene API-Zugriffe per Benutzername
-- Classroom-Fallback-Autorisierung, wenn `classroom_id` gesetzt ist
-- Live-Meeting-Überwachung in Administration → Meetings
-- UUID-basierte Abhängigkeiten vom Social-Gateway, Profil-Adapter, Share-Gateway und Messages-Adapter sowie fähigkeitsbasierte Laufzeitanforderungen `auth:requireAuth` und `ui:profileAvatarRenderer`
+- Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.
+- Teilnehmer auswählen, Besprechungszugriff teilen und den Messages-Chat der Besprechung verwenden.
+- Aktive und bevorstehende Besprechungen unter Administration → Meetings überwachen.
+- Die Meetings-Route als Overlay-, Vollbild- oder Bild-in-Bild-Komponentenseite einbetten.
 
 ## Technische Spezifikation
 
-- API-Aufrufe erfordern ein gültiges Cognis-Access-Token.
-- Meeting-Details werden nur an berechtigte Teilnehmer ausgegeben.
-- Meeting-Passwörter werden pro Meeting-Datensatz generiert.
-- Die Sitzungsübernahme ermöglicht das Trennen einer vorherigen aktiven Sitzung.
+- API-Aufrufe erfordern ein gültiges Cognis-Zugriffstoken; Besprechungsdetails werden nur autorisierten Teilnehmern oder begrenzten Freigabegästen zurückgegeben.
+- Kennwörter werden pro Besprechungsdatensatz erzeugt. Besprechungsnamen sind Vier-Wort-Passphrasen in Titelschreibweise, die über die Host-Capability `reuse:generatePassphrase` erzeugt werden. Derselbe durch Bindestriche getrennte Name wird als Anzeigename und Jitsi-Raumkennung gespeichert, in die Besprechungs-URL aufgenommen und immer ausdrücklich an `JitsiMeetExternalAPI` übergeben; das Modul fordert Jitsi niemals auf, einen Raumnamen zu erzeugen oder zurückzumelden. Der Name wird außerdem an Besprechungslisten, Messages-Chats, Freigaben und Whiteboards weitergegeben. Teilnehmerlose Besprechungen erhalten bei der Erstellung einen Messages-Chat mit einem Mitglied, damit spätere Gäste über Freigabelinks teilnehmen können; dieser Chat wird beim Ende der verwerfbaren Besprechung dauerhaft gelöscht. Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviertem Modul verfügbar, damit Administratoren eine ungültige Jitsi-URL löschen können.
+- Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen. Die Schemainitialisierung bei Neuinstallationen wird pro Datenbank-Executor serialisiert, damit gleichzeitige Lebenszyklus- und Konfigurationsanfragen beim Erstellen von PostgreSQL-Tabellen nicht konkurrieren.
+- Die Sitzungswiederaufnahme trennt die vorherige aktive Besprechungssitzung des Benutzers.
 
 ### Integrationsvertrag
 
-- `bootstrap.js` ist der einzige vom Plattformkern genutzte Moduleinstieg.
-- Das Bootstrap-ctx ist der einzige Integrationsbus dieses Moduls (API-Routen, UI-Registrierung, Fähigkeiten sowie künftige CLI/DB-Anbindung).
-- Direkte Imports aus anderen Modulen oder Core-Interna sind verboten; Integration muss über ctx erfolgen.
+- `bootstrap.js` ist der einzige Plattform-Einstiegspunkt; ctx-Fähigkeiten und Flows sind die einzige komponentenübergreifende Integrationsoberfläche.
+- Die Meetings-SPA verwendet Cognis-Router und Page Composer. Eingebettete Aufrufer übergeben eine serialisierbare `meetingId` in `focusState`; eingebettete Mounts sind rahmenlos und duplizieren nicht die Host-Navigation.
+- Browser-Werkzeuge und der vollständige Katalog gemeinsamer Stylesheets werden vor der Darstellung der Meetings-Oberfläche über die erforderliche Fähigkeit `ui:reuse` geladen. Cognis Core liefert die Standarddarstellung der Steuerelemente; das Modul lädt keine Provider-eigenen Stylesheets und begrenzt jeden Modul-CSS-Selektor auf `.jitsi-route-root`. Nicht verwendete ältere Besprechungsstile werden nicht ausgeliefert.
+- Nextcloud Whiteboard ist als weiche Modulabhängigkeit deklariert, damit Administratoren es bei der Installation auswählen können, ohne es vorauszusetzen. Die optionale Integration erscheint, wenn die grundlegende Canvas-Factory `whiteboard:uiGateway` sowie Komponentenfenster- und Floating-Window-Fähigkeiten verfügbar sind; die Provider-Vertragsmethode `createCanvas` erstellt normale Arbeitsflächen mit den Kennungen der eingeladenen Teilnehmer, während nur teilnehmerlose Besprechungen `createDisposableCanvas` verwenden. Meetings greift niemals von dauerhafter auf verwerfbare Erstellung zurück und speichert den Zuordnungstyp, ersetzen unbekannte oder nicht passende ältere Zuordnungen und öffnen beim Laden der Besprechung automatisch die geprüfte dauerhafte Arbeitsfläche.
+- Der Organisator kann das Whiteboard sofort öffnen. Andere Teilnehmer benötigen eine strikte Mehrheit der aktuell anwesenden Nicht-Organisatoren. Der Öffnungszustand bleibt gespeichert, sodass aktuelle und spätere Teilnehmer dieselbe Arbeitsfläche automatisch öffnen und die Besprechung in Bild-in-Bild verschieben.
+- Bevor eine Whiteboard-Komponente geöffnet wird, fordert Meetings den Schlüsselbundzugriff auf der übergeordneten Seite an, damit eine Entsperrabfrage einen Popup-Host besitzt. Whiteboards werden anschließend über den Komponentenfenster-Broker als eingebettete Overlay-Komponenten mit dokumenteigenem Scrollen gestartet. Meetings verwendet die importierten Komponentenfenster- und Schaltflächenklassen, statt Darstellungsklassen hinzuzufügen oder die gemeinsame Seiten-Shell zu überschreiben.
+- Das Whiteboard-Steuerelement ist eine Standard-`<button>`-Schaltfläche wie das benachbarte Teilen-Steuerelement. Es verwendet standardmäßig die Core-Darstellung `btn-neutral` und im aktiven Zustand die importierten Zustände `active` und `btn-confirm`; außerdem ändert sich die Beschriftung in „Whiteboard schließen“. Die Auswahl des aktiven Steuerelements schließt es für die Besprechung. Schlägt Vorbereitung oder Einbindung fehl, protokolliert Meetings den Fehler, zeigt „Fehler beim Laden des Whiteboards“ und deaktiviert das Steuerelement für diesen Browser-Mount, damit Polling den Vorgang nicht wiederholt. Aktualisieren oder Weg- und Zurücknavigieren erzeugt einen neuen Mount und erlaubt einen weiteren Versuch.

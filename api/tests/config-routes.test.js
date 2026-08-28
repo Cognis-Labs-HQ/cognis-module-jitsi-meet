@@ -15,21 +15,24 @@ function createResponse() {
 
 test("config endpoint polls and persists the module-owned configuration", async () => {
     const handlers = {};
+    const routeOptions = {};
     const operations = [];
     let config = {
         instanceUrl: "https://meet.example.test",
-        meetingPrefix: "",
     };
     registerMeetingConfigRoutes({
         router: {
-            get(path, handler) {
+            get(path, handler, options) {
                 handlers[`GET ${path}`] = handler;
+                routeOptions[`GET ${path}`] = options;
             },
-            put(path, handler) {
+            put(path, handler, options) {
                 handlers[`PUT ${path}`] = handler;
+                routeOptions[`PUT ${path}`] = options;
             },
-            delete(path, handler) {
+            delete(path, handler, options) {
                 handlers[`DELETE ${path}`] = handler;
+                routeOptions[`DELETE ${path}`] = options;
             },
         },
         store: {
@@ -41,7 +44,7 @@ test("config endpoint polls and persists the module-owned configuration", async 
             },
             deleteConfig: async () => {
                 operations.push("delete_config");
-                config = { instanceUrl: "", meetingPrefix: "" };
+                config = { instanceUrl: "" };
             },
         },
         requireAuth: (_request, _response, role) => {
@@ -50,7 +53,6 @@ test("config endpoint polls and persists the module-owned configuration", async 
         },
         readJson: async () => ({
             instanceUrl: "https://broken.example.test",
-            meetingPrefix: " Team Room ",
         }),
         sendJson: (response, status, payload) => {
             response.writeHead(status);
@@ -58,8 +60,11 @@ test("config endpoint polls and persists the module-owned configuration", async 
         },
         sendError: () => assert.fail("valid config must not be rejected"),
         normalizeHttpUrl: (value) => value,
-        normalizeMeetingPrefix: () => "team-room",
         registerConfiguredJitsiOrigin: () => {},
+    });
+    assert.deepEqual(routeOptions["DELETE /api/v1/modules/jitsi-meet/config"], {
+        access: { minRole: "admin" },
+        allowWhenDisabled: true,
     });
 
     const getResponse = createResponse();
@@ -70,7 +75,6 @@ test("config endpoint polls and persists the module-owned configuration", async 
     await handlers["PUT /api/v1/modules/jitsi-meet/config"]({}, putResponse);
     assert.deepEqual(putResponse.payload.data, {
         instanceUrl: "https://broken.example.test",
-        meetingPrefix: "team-room",
     });
     assert.deepEqual(operations.slice(-2), [
         "authorize_admin",

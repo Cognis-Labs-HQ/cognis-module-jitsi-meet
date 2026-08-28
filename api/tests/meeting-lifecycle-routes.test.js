@@ -1,6 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { deleteDisposableMeeting } from "../meeting-lifecycle-routes.js";
+import {
+    deleteDisposableMeeting,
+    registerMeetingLifecycleRoutes,
+} from "../meeting-lifecycle-routes.js";
+
+function createRecorder() {
+    return {
+        status: 0,
+        body: null,
+        writeHead(status) {
+            this.status = status;
+        },
+        end(body) {
+            this.body = body ? JSON.parse(body) : null;
+        },
+    };
+}
 
 test("disposable meeting deletion erases its creator's associated chat", async () => {
     const operations = [];
@@ -77,4 +93,86 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
     assert.equal(logs[0][2].operation, "delete_disposable_meeting_chat");
     assert.equal(logs[0][2].meetingId, "meeting-1");
     assert.equal(logs[0][2].chatRoomId, "chat-1");
+});
+
+test("meeting creation provisions a share-ready participant-free chat", async () => {
+    const handlers = new Map();
+    const chatRequests = [];
+    const meeting = {
+        id: "meeting-1",
+        meetingName: "Bright-Otters-Meet-Safely",
+        roomSlug: "Bright-Otters-Meet-Safely",
+        chatRoomId: null,
+        classroomId: null,
+        createdBy: "alice",
+        scheduledAt: "2026-08-28T18:30:00.000Z",
+    };
+    const store = {
+        async ensureSchema() {},
+        async getConfig() {
+            return { instanceUrl: "https://meet.example.com" };
+        },
+        normalizeMeetingCreationInput({ creatorUsername }) {
+            return {
+                participantUsernames: [creatorUsername],
+                classroomId: null,
+            };
+        },
+        async createMeeting({ chatRoomId }) {
+            if (chatRoomId) meeting.chatRoomId = chatRoomId;
+            return meeting;
+        },
+        async listParticipants() {
+            return ["alice"];
+        },
+        async getMeetingState() {
+            return {};
+        },
+    };
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store,
+        requireAuth: () => ({ sub: "account-alice", role: "user" }),
+        readJson: async (req) => req.body ?? { participants: [] },
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("meeting lifecycle returned an error"),
+        profileStore: {},
+        resolveRequesterUsername: async () => "alice",
+        resolveRequestedParticipants: async () => [],
+        resolveMeetingPayload: async () => ({
+            meeting,
+            requesterUsername: "alice",
+        }),
+        hasMinRole: () => false,
+        resolveGroupChat: async (request) => {
+            chatRequests.push(request);
+            return { roomId: "chat-1", url: "/messages/chat-1" };
+        },
+        buildMeetingChatTitle: (name) => name,
+        createMeetingPayload: async ({ meeting: createdMeeting, chatUrl }) => ({
+            ...createdMeeting,
+            chatUrl,
+        }),
+        dispatchMeetingNotifications: async () => {},
+        log: () => {},
+    });
+    const createResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
+        { body: { participants: [] } },
+        createResponse,
+    );
+    assert.equal(createResponse.status, 200);
+    assert.equal(chatRequests.length, 1);
+    assert.deepEqual(chatRequests[0].usernames, ["alice"]);
+    assert.equal(chatRequests[0].allowSingleMember, true);
+    assert.equal(chatRequests[0].title, "Bright-Otters-Meet-Safely");
+    assert.equal(
+        createResponse.body.data.meetingName,
+        "Bright-Otters-Meet-Safely",
+    );
+    assert.equal(createResponse.body.data.chatRoomId, "chat-1");
+    assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
 });

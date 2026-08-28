@@ -8,15 +8,15 @@ import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
 import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
 import { normalizeHandleKey } from "./reuse/normalize-handle.js";
-import { isModeratorRole, normalizeMeetingPrefix } from "./meeting-values.js";
+import { isModeratorRole } from "./meeting-values.js";
 import {
     registerJitsiUiResourcesRoute,
     resolveMessagesUiResources,
-    resolveSharedMessagesStylesheetUrls,
 } from "./ui-resources.js";
 import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
 import {
     canAccessMeeting,
     createMeetingPayload,
@@ -27,7 +27,6 @@ import {
 } from "./reuse/meeting-access.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
-const MEETING_TITLE = "Cognis Classroom";
 const LIVELINESS_TIMEOUT_MS = 5000;
 
 function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
@@ -71,13 +70,8 @@ function sendError(res, status, code, message) {
     });
 }
 
-function buildMeetingChatTitle(createdAt = null) {
-    const parsedCreatedAt =
-        typeof createdAt === "string" ? Date.parse(createdAt) : Number.NaN;
-    const isoDate = Number.isFinite(parsedCreatedAt)
-        ? new Date(parsedCreatedAt).toISOString().slice(0, 10)
-        : new Date().toISOString().slice(0, 10);
-    return `${MEETING_TITLE} — ${isoDate}`;
+function buildMeetingChatTitle(meetingName) {
+    return String(meetingName ?? "").trim();
 }
 
 function buildMeetingActionUrl(meetingId) {
@@ -101,9 +95,6 @@ function appendMeetingLinkToBody(body, meetingId) {
 }
 
 export function registerUi(ctx) {
-    const messagesUiResources = resolveMessagesUiResources(ctx);
-    const sharedStylesheetUrls =
-        resolveSharedMessagesStylesheetUrls(messagesUiResources);
     const moduleUiRoot = path.join(ctx.moduleRoot, "ui");
     ctx.registerStaticDir("", moduleUiRoot);
     ctx.registerNavbarPlugin({
@@ -111,17 +102,22 @@ export function registerUi(ctx) {
         access: { minRole: "user" },
     });
     const meetingsStylesheets = [
-        ...sharedStylesheetUrls,
+        "/static/styles/page-builder.css",
         "/static/modules/jitsi-meet/jitsi-meet.css",
     ];
     for (const route of [
         {
-            id: "module-jitsi-meet-meetings",
+            id: "module.jitsi.meet.meetings",
             pattern: "^/meetings$",
             base: "/meetings",
+            componentPage: {
+                labelKey: "module.jitsi_meet.page_title",
+                descriptionKey: "module.jitsi_meet.description",
+                modes: ["overlay", "fullscreen", "pip"],
+            },
         },
         {
-            id: "module-jitsi-meet-meeting",
+            id: "module.jitsi.meet.meeting",
             pattern: "^/meeting$",
             base: "/meeting",
         },
@@ -148,6 +144,7 @@ export function registerApiRoutes(router, ctx) {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
     }
     const dbExecutor = ctx.getCapability("db:executor");
+    const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const systemCtx = ctx.getCapability("system:ctx");
     const profileStore = ctx.getCapability("social:profileStore");
     const messagesUiResources = resolveMessagesUiResources(ctx);
@@ -219,7 +216,11 @@ export function registerApiRoutes(router, ctx) {
         registerNotificationCategory("meetings", "Meetings");
     }
 
-    if (!dbExecutor || !profileStore) {
+    if (
+        !dbExecutor ||
+        !profileStore ||
+        typeof generatePassphrase !== "function"
+    ) {
         const unavailablePayload = (res) =>
             sendError(
                 res,
@@ -227,17 +228,26 @@ export function registerApiRoutes(router, ctx) {
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
-        router.get("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
-            unavailablePayload(res);
-        });
-        router.put("/api/v1/modules/jitsi-meet/config", async (_req, res) => {
-            unavailablePayload(res);
-        });
+        router.get(
+            "/api/v1/modules/jitsi-meet/config",
+            async (_req, res) => {
+                unavailablePayload(res);
+            },
+            { access: { minRole: "user" }, allowWhenDisabled: true },
+        );
+        router.put(
+            "/api/v1/modules/jitsi-meet/config",
+            async (_req, res) => {
+                unavailablePayload(res);
+            },
+            { access: { minRole: "admin" }, allowWhenDisabled: true },
+        );
         router.delete(
             "/api/v1/modules/jitsi-meet/config",
             async (_req, res) => {
                 unavailablePayload(res);
             },
+            { access: { minRole: "admin" }, allowWhenDisabled: true },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
@@ -382,7 +392,7 @@ export function registerApiRoutes(router, ctx) {
     const registerScriptOrigins = ctx.getCapability(
         "auth:registerPageScriptOrigins",
     );
-    const store = resolveStore(dbExecutor, log);
+    const store = resolveStore(dbExecutor, log, generatePassphrase);
     const runEnableTest = async () => {
         await store.ensureSchema();
         const config = await store.getConfig();
@@ -626,7 +636,6 @@ export function registerApiRoutes(router, ctx) {
         sendError,
         hasMinRole,
         normalizeHttpUrl,
-        normalizeMeetingPrefix,
         registerConfiguredJitsiOrigin,
         registerScriptOrigins,
         log,
@@ -649,6 +658,11 @@ export function registerApiRoutes(router, ctx) {
     registerMeetingConfigRoutes(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
+    registerMeetingWhiteboardRoutes({
+        ...routeContext,
+        ctx,
+        listClassroomParticipantHandles,
+    });
 
     registerMeetingRoutes({
         router,

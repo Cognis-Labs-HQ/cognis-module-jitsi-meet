@@ -8,7 +8,9 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { normalizeMeetingPrefix } from "./meeting-values.js";
+import { buildMeetingName } from "./meeting-values.js";
+import { generateMeetingName } from "./meeting-name.js";
+import { refreshGeneratedMeetingNames } from "./meeting-name-store.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -18,21 +20,8 @@ import {
 } from "./reuse/crypto.js";
 
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
-// Background/unfocused browser tabs are throttled by the browser and can
-// delay heartbeat pings (see HEARTBEAT_INTERVAL_MS client-side) well beyond
-// their nominal interval. This window must stay wide enough that a
-// participant who simply isn't focused on the tab is never treated as
-// "gone" for the purposes of the alone-in-meeting prompt.
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
-const DEFAULT_MEETING_SLUG_PREFIX = "cognis-classroom";
-
-function buildRoomSlug(prefix) {
-    const readablePrefix =
-        normalizeMeetingPrefix(prefix) || DEFAULT_MEETING_SLUG_PREFIX;
-    const entropy = randomBytes(4).toString("hex");
-    return `${readablePrefix}-${entropy}`;
-}
-
+const schemaInitializationByExecutor = new WeakMap();
 function buildParticipantKey(usernames, classroomId = null) {
     const payload = JSON.stringify({
         classroomId: classroomId ? String(classroomId) : null,
@@ -40,37 +29,34 @@ function buildParticipantKey(usernames, classroomId = null) {
     });
     return createHash("sha256").update(payload).digest("hex");
 }
-
-/**
- * Persistence layer for Jitsi module configuration, meetings, participants,
- * auth state, and active session presence.
- *
- * Public methods provide schema setup, meeting creation/query helpers,
- * participant/auth-state updates, and normalized response payload helpers used
- * by the Jitsi API routes.
- *
- * @param {{
- *   db: {
- *     ensureTable: (definition: object) => Promise<void>,
- *     executeCommand: (command: object) => Promise<{ rows?: Array<Record<string, unknown>> }>,
- *     transaction: (callback: (executor: object) => Promise<void>) => Promise<void>,
- *   },
- *   log?: (level: string, message: string, meta?: Record<string, unknown>) => void,
- * }} options
- */
 export class JitsiMeetStore {
-    constructor({ db, log }) {
+    constructor({ db, log, generatePassphrase }) {
         this.db = db;
         this.log = log;
+        this.generatePassphrase = generatePassphrase;
     }
-
     async ensureSchema() {
+        const existingInitialization = schemaInitializationByExecutor.get(
+            this.db,
+        );
+        if (existingInitialization) return existingInitialization;
+        const initialization = this.ensureSchemaTables().catch((error) => {
+            if (
+                schemaInitializationByExecutor.get(this.db) === initialization
+            ) {
+                schemaInitializationByExecutor.delete(this.db);
+            }
+            throw error;
+        });
+        schemaInitializationByExecutor.set(this.db, initialization);
+        return initialization;
+    }
+    async ensureSchemaTables() {
         await this.db.ensureTable({
             name: "jitsi_module_config",
             columns: [
                 { name: "id", type: "text", primaryKey: true },
                 { name: "instance_url", type: "text" },
-                { name: "meeting_prefix", type: "text" },
                 {
                     name: "updated_at",
                     type: "timestamp",
@@ -102,9 +88,8 @@ export class JitsiMeetStore {
                     name: "meeting_name",
                     type: "text",
                     notNull: true,
-                    default: "Cognis Classroom",
+                    default: "",
                 },
-                // Required by the schema and populated for all meeting rows.
                 { name: "room_slug", type: "text", notNull: true },
                 { name: "chat_room_id", type: "text" },
                 { name: "classroom_id", type: "text" },
@@ -159,6 +144,15 @@ export class JitsiMeetStore {
                 { name: "auth_completed_at", type: "timestamp" },
                 { name: "ended_by", type: "text" },
                 { name: "ended_at", type: "timestamp" },
+                { name: "whiteboard_id", type: "text" },
+                { name: "whiteboard_disposable", type: "integer" },
+                {
+                    name: "whiteboard_active",
+                    type: "integer",
+                    notNull: true,
+                    default: 0,
+                },
+                { name: "whiteboard_open_votes", type: "text" },
                 {
                     name: "updated_at",
                     type: "timestamp",
@@ -188,7 +182,19 @@ export class JitsiMeetStore {
         const meetings = await this.db.executeCommand({
             option: "SELECT",
             table: "jitsi_meetings",
-            columns: ["id", "meeting_password", "meeting_password_iv"],
+            columns: [
+                "id",
+                "meeting_url",
+                "meeting_name",
+                "meeting_password",
+                "meeting_password_iv",
+            ],
+        });
+        await refreshGeneratedMeetingNames({
+            db: this.db,
+            meetings: meetings.rows ?? [],
+            generatePassphrase: this.generatePassphrase,
+            log: this.log,
         });
         for (const meeting of meetings.rows ?? []) {
             if (
@@ -216,7 +222,6 @@ export class JitsiMeetStore {
             });
         }
     }
-
     async getConfig() {
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -227,16 +232,11 @@ export class JitsiMeetStore {
         const row = result.rows?.[0];
         return {
             instanceUrl: row?.instance_url ? String(row.instance_url) : "",
-            meetingPrefix: row?.meeting_prefix
-                ? String(row.meeting_prefix)
-                : "",
             updatedAt: readDbTimestampValue(row?.updated_at),
         };
     }
-
-    async saveConfig({ instanceUrl, meetingPrefix }) {
+    async saveConfig({ instanceUrl }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
-        const normalizedPrefix = normalizeMeetingPrefix(meetingPrefix);
         const previousConfig = await this.getConfig();
         const updatedAt = new Date().toISOString();
         const instanceChanged = Boolean(
@@ -264,7 +264,6 @@ export class JitsiMeetStore {
                 values: {
                     id: "default",
                     instance_url: normalizedInstanceUrl,
-                    meeting_prefix: normalizedPrefix,
                     updated_at: updatedAt,
                 },
                 conflict: {
@@ -276,12 +275,10 @@ export class JitsiMeetStore {
 
         return {
             instanceUrl: normalizedInstanceUrl ?? "",
-            meetingPrefix: normalizedPrefix,
             updatedAt,
             invalidatedMeetings: instanceChanged,
         };
     }
-
     async deleteConfig() {
         await this.db.executeCommand({
             option: "DELETE",
@@ -289,7 +286,6 @@ export class JitsiMeetStore {
             where: [{ column: "id", value: "default" }],
         });
     }
-
     async deleteAllData() {
         for (const table of [
             "jitsi_meeting_presence",
@@ -329,8 +325,9 @@ export class JitsiMeetStore {
             id: String(row.id),
             participantKey: String(participantKey),
             meetingUrl: row.meeting_url ? String(row.meeting_url) : "",
+            roomSlug: row.room_slug ? String(row.room_slug) : "",
             meetingPassword,
-            meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+            meetingName: buildMeetingName(row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
@@ -412,7 +409,6 @@ export class JitsiMeetStore {
 
     async createMeeting({
         instanceUrl,
-        meetingPrefix,
         usernames,
         classroomId,
         createdBy,
@@ -458,8 +454,8 @@ export class JitsiMeetStore {
         }
 
         const meetingId = randomUUID();
-        const prefix = normalizeMeetingPrefix(meetingPrefix);
-        const meetingSlug = buildRoomSlug(prefix);
+        const meetingName = generateMeetingName(this.generatePassphrase);
+        const meetingSlug = meetingName;
         const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
@@ -480,7 +476,6 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
-
         await this.db.transaction(async (executor) => {
             const meetingValues = {
                 id: meetingId,
@@ -488,7 +483,7 @@ export class JitsiMeetStore {
                 meeting_url: meetingUrl,
                 meeting_password: encryptedPassword.ciphertext,
                 meeting_password_iv: encryptedPassword.iv,
-                meeting_name: "Cognis Classroom",
+                meeting_name: meetingName,
                 room_slug: meetingSlug,
                 chat_room_id: chatRoomId ?? null,
                 classroom_id: normalizedClassroomId,
@@ -611,6 +606,10 @@ export class JitsiMeetStore {
                 updatedAt: null,
                 endedBy: null,
                 endedAt: null,
+                whiteboardId: null,
+                whiteboardDisposable: null,
+                whiteboardActive: false,
+                whiteboardOpenVotes: [],
             };
         }
         const instanceId = row.instance_id
@@ -645,6 +644,15 @@ export class JitsiMeetStore {
             updatedAt: readDbTimestampValue(row.updated_at),
             endedBy: row.ended_by ? String(row.ended_by) : null,
             endedAt: readDbTimestampValue(row.ended_at),
+            whiteboardId: row.whiteboard_id ? String(row.whiteboard_id) : null,
+            whiteboardDisposable:
+                row.whiteboard_disposable == null
+                    ? null
+                    : Number(row.whiteboard_disposable) === 1,
+            whiteboardActive: Number(row.whiteboard_active ?? 0) === 1,
+            whiteboardOpenVotes: JSON.parse(
+                row.whiteboard_open_votes ?? "[]",
+            ).map(String),
         };
     }
 
@@ -669,6 +677,17 @@ export class JitsiMeetStore {
                 updated_at: merged.updatedAt,
                 ended_by: merged.endedBy,
                 ended_at: merged.endedAt,
+                whiteboard_id: merged.whiteboardId,
+                whiteboard_disposable:
+                    merged.whiteboardDisposable == null
+                        ? null
+                        : merged.whiteboardDisposable
+                          ? 1
+                          : 0,
+                whiteboard_active: merged.whiteboardActive ? 1 : 0,
+                whiteboard_open_votes: JSON.stringify(
+                    merged.whiteboardOpenVotes ?? [],
+                ),
             },
             conflict: {
                 action: "update",
@@ -786,7 +805,7 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+                    meetingName: buildMeetingName(row.meeting_name),
                     classroomId: row.classroom_id
                         ? String(row.classroom_id)
                         : null,
@@ -857,9 +876,6 @@ export class JitsiMeetStore {
         return now - authStartMs >= AUTH_WAIT_TIMEOUT_MS;
     }
 
-    /**
-     * Builds the normalized meeting payload shape returned by API routes.
-     */
     buildMeetingPayload(meeting, participants, state, extra = {}) {
         return {
             id: meeting.id,
@@ -868,6 +884,10 @@ export class JitsiMeetStore {
             meetingPassword: extra.meetingPassword ?? "",
             classroomId: meeting.classroomId,
             chatRoomId: meeting.chatRoomId,
+            createdBy: meeting.createdBy,
+            hasInvitedParticipants: participants.some(
+                (username) => username !== meeting.createdBy,
+            ),
             participants,
             state: {
                 authRequired: state.authRequired,
@@ -878,6 +898,13 @@ export class JitsiMeetStore {
                 firstJoinedAt: state.firstJoinedAt,
                 endedBy: state.endedBy,
                 endedAt: state.endedAt,
+                ...(state.whiteboardId
+                    ? {
+                          whiteboardId: state.whiteboardId,
+                          whiteboardDisposable: state.whiteboardDisposable,
+                          whiteboardOpen: state.whiteboardActive,
+                      }
+                    : {}),
             },
             scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
             instanceUrl: extractUrlOrigin(meeting.meetingUrl),
@@ -902,7 +929,7 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: String(row.meeting_name ?? "Cognis Classroom"),
+                    meetingName: buildMeetingName(row.meeting_name),
                     createdBy: String(row.created_by),
                     scheduledAt:
                         readDbTimestampValue(row.scheduled_at) ??
@@ -942,17 +969,6 @@ export class JitsiMeetStore {
             );
     }
 
-    /**
-     * Normalizes meeting-creation input into a deduplicated participant list
-     * that always includes the creator, plus a sanitized classroomId value.
-     *
-     * @param {{
-     *   participants?: string[],
-     *   classroomId?: string | null,
-     *   creatorUsername: string,
-     * }} input
-     * @returns {{ participantUsernames: string[], classroomId: string | null }}
-     */
     normalizeMeetingCreationInput({
         participants,
         classroomId,

@@ -1,8 +1,5 @@
 import { showToast } from "../reuse/feedback.js";
-import { openPopup } from "/static/reuse/popup.js";
-import { escapeHtml } from "/static/reuse/escape-html.js";
-import { uiCtx } from "/static/reuse/ui-ctx.js";
-import { resolveUrlHost } from "/static/reuse/value-normalizers.js";
+import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import {
     loadJitsiExternalApi,
     resolveJitsiDefaultBackground,
@@ -10,6 +7,12 @@ import {
     resolveThemeMode,
 } from "../meeting-embed.js";
 import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "../constants.js";
+
+const [{ escapeHtml }, { openPopup }, { resolveUrlHost }] = await Promise.all([
+    importReuseModule("escape-html.js"),
+    importReuseModule("popup.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 export function createEmbedHandlers({
     root,

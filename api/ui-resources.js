@@ -28,27 +28,17 @@ export function resolveMessagesUiResources(ctx) {
     };
 }
 
-export function resolveSharedMessagesStylesheetUrls(messagesUiResources) {
-    return Array.isArray(messagesUiResources?.stylesheetUrls)
-        ? messagesUiResources.stylesheetUrls
-        : [];
-}
-
 export function buildJitsiUiResourcesPayload(messagesUiResources) {
     const extraLanguageUrls = Array.isArray(
         messagesUiResources?.languageBaseUrls,
     )
         ? messagesUiResources.languageBaseUrls
         : [];
-    const stylesheetUrls = Array.isArray(messagesUiResources?.stylesheetUrls)
-        ? messagesUiResources.stylesheetUrls
-        : [];
     return {
         languageBaseUrls: [
             ...JITSI_MODULE_LANGUAGE_BASE_URLS,
             ...extraLanguageUrls,
         ],
-        stylesheetUrls,
         reactionHelpersModuleUrl:
             typeof messagesUiResources?.reactionHelpersModuleUrl === "string"
                 ? messagesUiResources.reactionHelpersModuleUrl
@@ -67,7 +57,6 @@ export function buildJitsiUiResourcesPayload(messagesUiResources) {
 export function buildUnavailableJitsiUiResourcesPayload() {
     return {
         languageBaseUrls: JITSI_MODULE_LANGUAGE_BASE_URLS,
-        stylesheetUrls: [],
         reactionHelpersModuleUrl: null,
         chatLoadingModuleUrl: null,
         profileFileNamespace: null,

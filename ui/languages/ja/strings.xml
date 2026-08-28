@@ -61,8 +61,6 @@
   <string name="module.jitsi_meet.participants.add_selected">選択を追加</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi インスタンス URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Jitsi デプロイのベース URL を完全な形式で入力してください。</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix">任意のミーティング URI プレフィックス</string>
-  <string name="module.jitsi_meet.admin.config.meeting_prefix_description">ミーティング URL 生成時に使う任意のパスプレフィックスです。</string>
   <string name="module.jitsi_meet.admin.meetings.heading">ミーティング</string>
   <string name="module.jitsi_meet.admin.meetings.table_label">リアルタイム ミーティング状況</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">アクティブなミーティング</string>
@@ -115,6 +113,15 @@
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
   <string name="module.jitsi_meet.summary">Cognis に統合された安全なビデオミーティング。</string>
   <string name="module.jitsi_meet.description">Cognis から Jitsi ミーティングを作成、参加、管理、共有できます。</string>
+  <string name="module.jitsi_meet.whiteboard.open">ホワイトボード</string>
+  <string name="module.jitsi_meet.whiteboard.close">Whiteboard を閉じる</string>
+  <string name="module.jitsi_meet.whiteboard.description">このミーティング用の同期ホワイトボードを開きます。</string>
+  <string name="module.jitsi_meet.whiteboard.load_failed">ホワイトボードの読み込みエラー</string>
+  <string name="module.jitsi_meet.whiteboard.close_failed">ミーティングのホワイトボードを閉じられませんでした。</string>
+  <string name="module.jitsi_meet.whiteboard.consensus_pending">ホワイトボードを開くための参加者の合意を待っています。</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_action">ホワイトボードにアクセスする</string>
+  <string name="module.jitsi_meet.whiteboard.keyring_process">ミーティング {{meeting}} のホワイトボード</string>
   <string name="module.jitsi_meet.category_collaboration">コラボレーション</string>
   <string name="module.jitsi_meet.tag_video">ビデオ</string>
   <string name="module.jitsi_meet.tag_meetings">ミーティング</string>

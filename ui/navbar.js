@@ -1,5 +1,9 @@
-import { apiFetch } from "/static/reuse/api-client.js";
-import { createI18n } from "/static/reuse/i18n.js";
+import { importReuseModule } from "./reuse/resources.js";
+
+const [{ apiFetch }, { createI18n }] = await Promise.all([
+    importReuseModule("api-client.js"),
+    importReuseModule("i18n.js"),
+]);
 import { logUi } from "./reuse/feedback.js";
 
 const i18n = await createI18n({
