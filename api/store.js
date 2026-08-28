@@ -8,7 +8,11 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName, buildPendingMeetingUrl } from "./meeting-values.js";
+import {
+    buildMeetingName,
+    buildPendingMeetingUrl,
+    generateMeetingName,
+} from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
@@ -208,7 +212,6 @@ export class JitsiMeetStore {
             });
         }
     }
-
     async getConfig() {
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -222,7 +225,6 @@ export class JitsiMeetStore {
             updatedAt: readDbTimestampValue(row?.updated_at),
         };
     }
-
     async saveConfig({ instanceUrl }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
         const previousConfig = await this.getConfig();
@@ -267,7 +269,6 @@ export class JitsiMeetStore {
             invalidatedMeetings: instanceChanged,
         };
     }
-
     async deleteConfig() {
         await this.db.executeCommand({
             option: "DELETE",
@@ -275,7 +276,6 @@ export class JitsiMeetStore {
             where: [{ column: "id", value: "default" }],
         });
     }
-
     async deleteAllData() {
         for (const table of [
             "jitsi_meeting_presence",
@@ -468,7 +468,7 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
-        const meetingName = "";
+        const meetingName = generateMeetingName();
 
         await this.db.transaction(async (executor) => {
             const meetingValues = {

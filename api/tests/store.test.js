@@ -250,7 +250,10 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
-    assert.equal(mockDb.insertedMeetingRows[0].meeting_name, "");
+    assert.match(
+        mockDb.insertedMeetingRows[0].meeting_name,
+        /^[A-Z][a-z]+(?: [A-Z][a-z]+){3}$/,
+    );
     assert.equal(
         mockDb.insertedMeetingRows[0].meeting_url,
         `https://meet.example.com/#cognisMeeting=${createdMeeting.id}`,
@@ -261,7 +264,10 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "https://meet.example.com",
     );
     assert.equal(capturedMeeting.roomSlug, "BrightOttersMeetSafely");
-    assert.equal(capturedMeeting.meetingName, "BrightOttersMeetSafely");
+    assert.equal(
+        capturedMeeting.meetingName,
+        mockDb.insertedMeetingRows[0].meeting_name,
+    );
     assert.equal(
         capturedMeeting.meetingUrl,
         "https://meet.example.com/BrightOttersMeetSafely",

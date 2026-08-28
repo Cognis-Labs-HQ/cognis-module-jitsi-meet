@@ -17,7 +17,6 @@ export async function captureMeetingIdentity({
         table: "jitsi_meetings",
         set: {
             meeting_url: `${normalizedInstanceUrl}/${normalizedRoomName}`,
-            meeting_name: normalizedRoomName,
             room_slug: normalizedRoomName,
             updated_at: new Date().toISOString(),
         },
