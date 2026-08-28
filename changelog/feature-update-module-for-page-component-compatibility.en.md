@@ -79,3 +79,5 @@ Configuration deletion is now explicitly registered as an administrator-only rou
 Fresh-install schema setup now shares one initialization promise per database executor. Concurrent config and lifecycle requests wait for the same table-creation sequence instead of racing PostgreSQL type creation.
 
 The manifest now declares Nextcloud Whiteboard as an optional soft dependency. Cognis dependency-aware installation can offer Whiteboard alongside Meetings without blocking installation or enablement when the optional module is unavailable.
+
+Meetings now versions its SPA entry URL with the module release. This prevents Cognis development asset caching from reusing an earlier immutable entry module whose renamed relative imports no longer exist, which previously surfaced as a failed dynamic import for `/meetings`.

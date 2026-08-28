@@ -26,6 +26,7 @@ import {
     resolveRequestedParticipants,
     resolveShareGuestPresenceUsername,
 } from "./reuse/meeting-access.js";
+import { JITSI_MEET_APP_SCRIPT_URL } from "./ui-asset-urls.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const MEETING_TITLE = "Cognis Classroom";
@@ -131,7 +132,7 @@ export function registerUi(ctx) {
     ]) {
         ctx.registerSpaRoute({
             ...route,
-            scriptUrl: "/static/modules/jitsi-meet/app/index.js",
+            scriptUrl: JITSI_MEET_APP_SCRIPT_URL,
             stylesheets: meetingsStylesheets,
             access: { minRole: "user" },
         });

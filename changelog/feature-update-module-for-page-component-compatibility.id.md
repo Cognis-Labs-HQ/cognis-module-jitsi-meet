@@ -79,3 +79,5 @@ Penghapusan konfigurasi kini didaftarkan secara eksplisit sebagai rute khusus ad
 Penyiapan skema pemasangan baru kini berbagi satu promise inisialisasi per eksekutor basis data. Permintaan konfigurasi dan siklus hidup yang bersamaan menunggu urutan pembuatan tabel yang sama alih-alih berlomba membuat tipe PostgreSQL.
 
 Manifest kini mendeklarasikan Nextcloud Whiteboard sebagai dependensi lunak opsional. Pemasangan Cognis yang memahami dependensi dapat menawarkan Papan Tulis bersama Rapat tanpa memblokir pemasangan atau pengaktifan ketika modul opsional tidak tersedia.
+
+Meetings kini memberi versi rilis modul pada URL entry SPA. Hal ini mencegah cache aset pengembangan Cognis memakai kembali modul entry lama yang tidak dapat diubah ketika impor relatifnya yang telah diganti nama sudah tidak ada, yang sebelumnya muncul sebagai kegagalan impor dinamis untuk `/meetings`.

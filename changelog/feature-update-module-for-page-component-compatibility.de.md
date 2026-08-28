@@ -79,3 +79,5 @@ Das Löschen der Konfiguration ist jetzt ausdrücklich als reine Administratorro
 Die Schemainrichtung bei Neuinstallationen teilt jetzt ein Initialisierungs-Promise pro Datenbank-Executor. Gleichzeitige Konfigurations- und Lebenszyklusanfragen warten auf dieselbe Tabellenerstellung, statt bei der PostgreSQL-Typerstellung zu konkurrieren.
 
 Das Manifest deklariert Nextcloud Whiteboard jetzt als optionale weiche Abhängigkeit. Die abhängigkeitsbewusste Cognis-Installation kann Whiteboard zusammen mit Meetings anbieten, ohne Installation oder Aktivierung zu blockieren, wenn das optionale Modul nicht verfügbar ist.
+
+Meetings versieht die Einstieg-URL seiner SPA jetzt mit der Modulversion. Dadurch kann der Cognis-Entwicklungs-Asset-Cache kein früheres unveränderliches Einstiegsmodul wiederverwenden, dessen umbenannte relative Importe nicht mehr vorhanden sind; dies wurde zuvor als fehlgeschlagener dynamischer Import für `/meetings` angezeigt.

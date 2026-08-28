@@ -2,6 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
+import {
+    JITSI_MEET_APP_SCRIPT_URL,
+    JITSI_MEET_UI_VERSION,
+} from "../ui-asset-urls.js";
 
 function createScopedRuntime() {
     const capabilities = new Map([["auth:requireAuth", () => null]]);
@@ -140,6 +144,14 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
             .map(({ contribution }) => contribution.base),
         ["/meetings", "/meeting"],
     );
+    assert.ok(
+        firstEnabledSnapshot.uiContributions
+            .filter(({ type }) => type === "spa")
+            .every(
+                ({ contribution }) =>
+                    contribution.scriptUrl === JITSI_MEET_APP_SCRIPT_URL,
+            ),
+    );
     const componentPageRoute = firstEnabledSnapshot.uiContributions.find(
         ({ type, contribution }) =>
             type === "spa" && contribution.componentPage,
@@ -213,6 +225,18 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
 test("manifest exposes localized configuration metadata for core rendering", async () => {
     const manifest = JSON.parse(
         await readFile(new URL("../../manifest.json", import.meta.url), "utf8"),
+    );
+
+    assert.equal(JITSI_MEET_UI_VERSION, manifest.version);
+    const standaloneUi = await readFile(
+        new URL("../../ui/index.html", import.meta.url),
+        "utf8",
+    );
+    assert.match(
+        standaloneUi,
+        new RegExp(
+            `app/index\\.js\\?moduleVersion=${JITSI_MEET_UI_VERSION.replaceAll(".", "\\.")}`,
+        ),
     );
 
     assert.deepEqual(
