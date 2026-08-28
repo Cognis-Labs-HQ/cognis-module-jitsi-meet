@@ -567,6 +567,10 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
         /addEventListener\("videoConferenceJoined", async \(event\) => \{[\s\S]*meetings\/identity[\s\S]*roomName: capturedRoomName[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
     );
     assert.match(embedSource, /\.\.\.\(roomName \? \{ roomName \} : \{\}\)/);
+    assert.match(
+        embedSource,
+        /roomName[\s\S]*welcomePage:\s*\{[\s\S]*disabled:\s*true/,
+    );
     assert.doesNotMatch(
         embedSource,
         /frame\.hidden = false;[\s\S]*await callbacks\.keepPresenceAlive\(true\);/,

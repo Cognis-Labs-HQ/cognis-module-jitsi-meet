@@ -106,6 +106,13 @@ export function createEmbedHandlers({
             ...(roomName ? { roomName } : {}),
             parentNode: frame,
             configOverwrite: {
+                ...(roomName
+                    ? {}
+                    : {
+                          welcomePage: {
+                              disabled: true,
+                          },
+                      }),
                 prejoinConfig: {
                     enabled: false,
                 },

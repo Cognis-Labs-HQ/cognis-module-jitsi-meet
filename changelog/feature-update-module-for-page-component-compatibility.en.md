@@ -81,3 +81,5 @@ Fresh-install schema setup now shares one initialization promise per database ex
 The manifest now declares Nextcloud Whiteboard as an optional soft dependency. Cognis dependency-aware installation can offer Whiteboard alongside Meetings without blocking installation or enablement when the optional module is unavailable.
 
 Meetings now versions its SPA entry URL with the module release. This prevents Cognis development asset caching from reusing an earlier immutable entry module whose renamed relative imports no longer exist, which previously surfaced as a failed dynamic import for `/meetings`.
+
+New meetings without a captured room identity now explicitly disable Jitsi’s embedded welcome page. Jitsi therefore follows its supported empty-room behavior by generating and joining a random room immediately, instead of rendering its landing screen inside the constrained meeting stage and leaving Cognis on an unusable blank, scrolling viewport.
