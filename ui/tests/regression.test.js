@@ -184,12 +184,12 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
     assert.match(cssSource, /\.jitsi-participant-avatar-img/);
 });
 
-test("jitsi meeting group chats use the captured Jitsi room name without a date", () => {
+test("jitsi meeting group chats use the classroom title without a date", () => {
     const source = readJitsiApiBundle();
     assert.match(source, /function buildMeetingChatTitle\(meetingName\)/);
-    assert.match(source, /title:\s*buildMeetingChatTitle\(roomName\)/);
+    assert.match(source, /title:\s*buildMeetingChatTitle\(\)/);
     assert.doesNotMatch(source, /new Date\(parsedCreatedAt\)/);
-    assert.match(source, /participants\.length > 1/);
+    assert.match(source, /normalizedInput\.participantUsernames\.length > 1/);
 });
 
 test("jitsi chat loads room keys through the messages adapter loading flow", () => {
@@ -393,7 +393,16 @@ test("meetings UI recovers a live session after composer edit rerenders the ifra
 
 test("reclaim session button uses success outline styling", () => {
     const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /id="jitsi-reclaim-btn" class="btn-confirm"/);
+    assert.match(
+        source,
+        /id="jitsi-start-btn" class="btn-confirm btn-animated"/,
+    );
+    assert.match(
+        cssSource,
+        /\.jitsi-section-heading[\s\S]*color: var\(--text\)/,
+    );
 });
 
 test("find participants button uses confirm styling", () => {
@@ -424,6 +433,10 @@ test("meetings mini chat supports participant private-chat switching and return-
     assert.match(markupSource, /id="jitsi-chat-participant-strip"/);
     assert.match(markupSource, /id="jitsi-chat-return-btn"/);
     assert.match(markupSource, /<header class="jitsi-chat-header">/);
+    assert.match(
+        markupSource,
+        /id="jitsi-chat-heading" class="jitsi-section-heading"/,
+    );
     assert.match(appSource, /chatMode:\s*"meeting"/);
     assert.match(appSource, /lastMeetingChatRoomId/);
     assert.match(appSource, /async function activatePrivateChatForParticipant/);
@@ -598,17 +611,11 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
-        /addEventListener\("videoConferenceJoined", async \(event\) => \{[\s\S]*meetings\/identity[\s\S]*roomName: capturedRoomName[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
+        /addEventListener\("videoConferenceJoined", \(event\) => \{[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
     );
-    assert.match(embedSource, /\.\.\.\(roomName \? \{ roomName \} : \{\}\)/);
-    assert.match(
-        embedSource,
-        /GENERATE_ROOMNAMES_ON_WELCOME_PAGE:\s*!roomName/,
-    );
-    assert.doesNotMatch(
-        embedSource,
-        /welcomePage:\s*\{[\s\S]*disabled:\s*true/,
-    );
+    assert.match(embedSource, /if \(!meetingHost \|\| !roomName\)/);
+    assert.match(embedSource, /roomName,\s*parentNode: frame/);
+    assert.doesNotMatch(embedSource, /GENERATE_ROOMNAMES_ON_WELCOME_PAGE/);
     assert.match(embedSource, /operation:\s*"open_jitsi_meeting_embed"/);
     assert.doesNotMatch(
         embedSource,

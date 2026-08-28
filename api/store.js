@@ -8,9 +8,8 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName, buildPendingMeetingUrl } from "./meeting-values.js";
+import { buildMeetingName } from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
-import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
     decryptPayload,
     deriveScopedKey,
@@ -444,12 +443,9 @@ export class JitsiMeetStore {
         }
 
         const meetingId = randomUUID();
-        const meetingSlug = "";
+        const meetingSlug = meetingId.replaceAll("-", "");
         const meetingName = "Cognis Classroom";
-        const meetingUrl = buildPendingMeetingUrl(
-            normalizedInstanceUrl,
-            meetingId,
-        );
+        const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
             `jitsi:meeting:${meetingId}:password`,
@@ -526,16 +522,6 @@ export class JitsiMeetStore {
             ...(createdMeeting ?? {}),
             reused: false,
         };
-    }
-
-    async captureMeetingIdentity(meetingId, roomName, instanceUrl) {
-        return captureMeetingIdentity({
-            db: this.db,
-            meetingId,
-            roomName,
-            instanceUrl,
-            getMeetingById: (id) => this.getMeetingById(id),
-        });
     }
 
     async claimMeetingPassword(meetingId, username) {

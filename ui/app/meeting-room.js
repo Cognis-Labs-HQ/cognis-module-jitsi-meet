@@ -36,7 +36,7 @@ export function createEmbedHandlers({
             state.meeting.instanceUrl || state.meeting.meetingUrl,
         );
         const roomName = resolveRoomName(state.meeting);
-        if (!meetingHost) {
+        if (!meetingHost || !roomName) {
             showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                 variant: "error",
             });
@@ -103,7 +103,7 @@ export function createEmbedHandlers({
         const themeMode = resolveThemeMode();
         const defaultBackground = resolveJitsiDefaultBackground(themeMode);
         const apiInstance = new window.JitsiMeetExternalAPI(meetingHost, {
-            ...(roomName ? { roomName } : {}),
+            roomName,
             parentNode: frame,
             configOverwrite: {
                 prejoinConfig: {
@@ -117,7 +117,6 @@ export function createEmbedHandlers({
             },
             interfaceConfigOverwrite: {
                 DEFAULT_BACKGROUND: defaultBackground,
-                GENERATE_ROOMNAMES_ON_WELCOME_PAGE: !roomName,
             },
             userInfo: {
                 displayName: state.currentProfile?.displayName ?? "",
@@ -225,44 +224,8 @@ export function createEmbedHandlers({
                 reportTerminated: true,
             });
         };
-        apiInstance.addEventListener("videoConferenceJoined", async (event) => {
+        apiInstance.addEventListener("videoConferenceJoined", (event) => {
             if (state.jitsiApi !== apiInstance) return;
-            const capturedRoomName = String(event?.roomName ?? "").trim();
-            if (!state.meeting?.roomSlug && capturedRoomName) {
-                try {
-                    const identityResponse = await apiFetch(
-                        "/api/v1/modules/jitsi-meet/meetings/identity",
-                        {
-                            method: "POST",
-                            headers: { "content-type": "application/json" },
-                            body: JSON.stringify({
-                                meetingId: state.meeting.id,
-                                roomName: capturedRoomName,
-                            }),
-                        },
-                    );
-                    if (!identityResponse.ok) {
-                        throw new Error("meeting_identity_capture_failed");
-                    }
-                    const identityPayload = await identityResponse.json();
-                    state.meeting = identityPayload?.data ?? state.meeting;
-                    await callbacks.updateNativeChat();
-                } catch (error) {
-                    await logUi(
-                        "error",
-                        "Jitsi meeting identity capture failed.",
-                        {
-                            component: "module:jitsi-meet",
-                            operation: "capture_jitsi_meeting_identity",
-                            meetingId: state.meeting?.id,
-                            error:
-                                error instanceof Error
-                                    ? error.message
-                                    : String(error),
-                        },
-                    );
-                }
-            }
             state.jitsiParticipantId = callbacks.getParticipantId(event);
             state.jitsiConferenceJoined = true;
             state.jitsiModerator =

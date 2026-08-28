@@ -119,12 +119,35 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
-            let meeting = await store.createMeeting({
+            let chatRoom = null;
+            if (
+                normalizedInput.participantUsernames.length > 1 &&
+                typeof resolveGroupChat === "function"
+            ) {
+                chatRoom = await resolveGroupChat({
+                    usernames: normalizedInput.participantUsernames,
+                    title: buildMeetingChatTitle(),
+                    createdByAccountId: claims.sub,
+                    allowSingleMember: true,
+                }).catch((error) => {
+                    log?.("error", "Jitsi meeting chat creation failed.", {
+                        component: "jitsi-meet-module",
+                        operation: "create_meeting_chat",
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                    return null;
+                });
+            }
+
+            const meeting = await store.createMeeting({
                 instanceUrl: config.instanceUrl,
                 usernames: normalizedInput.participantUsernames,
                 classroomId: normalizedInput.classroomId,
                 createdBy: requesterUsername,
-                chatRoomId: null,
+                chatRoomId: chatRoom?.roomId ?? null,
                 scheduledAt: body.scheduledAt,
             });
             const participants = await store.listParticipants(meeting.id);
@@ -135,7 +158,11 @@ export function registerMeetingLifecycleRoutes({
                 state,
                 participants,
                 requesterUsername,
-                chatUrl: null,
+                chatUrl:
+                    chatRoom?.url ??
+                    (meeting.chatRoomId
+                        ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
+                        : null),
                 requiresReclaim: false,
             });
 
@@ -159,118 +186,6 @@ export function registerMeetingLifecycleRoutes({
                     ...payload,
                     reused: Boolean(meeting.reused),
                 },
-            });
-        },
-        { access: { minRole: "user" } },
-    );
-
-    router.post(
-        "/api/v1/modules/jitsi-meet/meetings/identity",
-        async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
-            if (!claims) return;
-            const body = await readJson(req);
-            const resolved = await resolveMeetingPayload({
-                body,
-                profileStore,
-                store,
-                claims,
-                res,
-                listClassroomParticipantHandles,
-                requesterAccountId: claims.sub,
-            });
-            if (!resolved) return;
-            if (resolved.requesterUsername !== resolved.meeting.createdBy) {
-                sendError(
-                    res,
-                    403,
-                    "forbidden",
-                    "Only the meeting organizer can capture its Jitsi identity.",
-                );
-                return;
-            }
-            const roomName = String(body.roomName ?? "").trim();
-            if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(roomName)) {
-                sendError(res, 400, "bad_request", "roomName is invalid.");
-                return;
-            }
-            if (
-                resolved.meeting.roomSlug &&
-                resolved.meeting.roomSlug !== roomName
-            ) {
-                sendError(
-                    res,
-                    409,
-                    "conflict",
-                    "The meeting already has a Jitsi room name.",
-                );
-                return;
-            }
-            const config = await store.getConfig();
-            let meeting = await store.captureMeetingIdentity(
-                resolved.meeting.id,
-                roomName,
-                config.instanceUrl,
-            );
-            const participants = await store.listParticipants(meeting.id);
-            let chatRoom = null;
-            if (
-                participants.length > 1 &&
-                !meeting.chatRoomId &&
-                typeof resolveGroupChat === "function"
-            ) {
-                chatRoom = await resolveGroupChat({
-                    usernames: participants,
-                    title: buildMeetingChatTitle(roomName),
-                    createdByAccountId: claims.sub,
-                    allowSingleMember: true,
-                }).catch((error) => {
-                    log?.("error", "Jitsi meeting chat creation failed.", {
-                        component: "jitsi-meet-module",
-                        operation: "create_captured_meeting_chat",
-                        meetingId: meeting.id,
-                        roomName,
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    });
-                    return null;
-                });
-                if (chatRoom?.roomId) {
-                    meeting = await store.createMeeting({
-                        instanceUrl: config.instanceUrl,
-                        usernames: participants,
-                        classroomId: meeting.classroomId,
-                        createdBy: meeting.createdBy,
-                        chatRoomId: chatRoom.roomId,
-                        scheduledAt: meeting.scheduledAt,
-                    });
-                }
-            }
-            const state = await store.getMeetingState(meeting.id);
-            log?.("info", "Jitsi meeting identity captured.", {
-                component: "jitsi-meet-module",
-                operation: "capture_jitsi_meeting_identity",
-                meetingId: meeting.id,
-                roomName,
-                chatRoomId: meeting.chatRoomId,
-            });
-            sendJson(res, 200, {
-                data: await createMeetingPayload({
-                    store,
-                    meeting,
-                    state,
-                    participants,
-                    requesterUsername: resolved.requesterUsername,
-                    chatUrl:
-                        chatRoom?.url ??
-                        (meeting.chatRoomId
-                            ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
-                            : null),
-                    requiresReclaim: false,
-                }),
             });
         },
         { access: { minRole: "user" } },

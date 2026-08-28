@@ -79,12 +79,6 @@
     justify-content: center;
 }
 
-.jitsi-route-root .jitsi-start-ready {
-    background: #2563eb;
-    border-color: #1d4ed8;
-    color: #ffffff;
-}
-
 .jitsi-route-root .jitsi-loading {
     display: inline-flex;
     align-items: center;
@@ -155,6 +149,10 @@
 
 .jitsi-route-root .jitsi-chat-header h3 {
     margin: 0;
+}
+
+.jitsi-route-root .jitsi-section-heading {
+    color: var(--text);
 }
 
 .jitsi-route-root .jitsi-chat-participant-strip {

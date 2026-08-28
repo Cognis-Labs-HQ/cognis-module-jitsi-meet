@@ -156,7 +156,6 @@ export function createMountUtilities({ root, state }) {
         }
         if (startButton instanceof HTMLButtonElement) {
             startButton.disabled = !canStart;
-            startButton.classList.toggle("jitsi-start-ready", canStart);
         }
         if (authButton instanceof HTMLElement) {
             authButton.hidden = !showAuth;

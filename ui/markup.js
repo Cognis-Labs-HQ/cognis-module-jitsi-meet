@@ -16,7 +16,7 @@ export function buildStageMarkup(i18n) {
           <h3 class="jitsi-overlay-title">${escapeHtml(i18n.t("module.jitsi_meet.overlay.title"))}</h3>
           <p id="jitsi-overlay-message" class="jitsi-overlay-message">${escapeHtml(i18n.t("module.jitsi_meet.overlay.select_participants"))}</p>
           <div class="jitsi-overlay-actions">
-            <button id="jitsi-start-btn" class="btn-animated" type="button" disabled>${escapeHtml(i18n.t("module.jitsi_meet.overlay.start_meeting"))}</button>
+            <button id="jitsi-start-btn" class="btn-confirm btn-animated" type="button" disabled>${escapeHtml(i18n.t("module.jitsi_meet.overlay.start_meeting"))}</button>
             <button id="jitsi-auth-btn" class="btn-cancel" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.overlay.authenticate"))}</button>
             <button id="jitsi-reclaim-btn" class="btn-confirm" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.overlay.remain_in_meeting"))}</button>
             <button id="jitsi-leave-alone-btn" class="btn-cancel" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.overlay.leave_meeting"))}</button>
@@ -36,7 +36,7 @@ export function buildChatMarkup(i18n) {
     return `
     <aside class="jitsi-chat-pane jitsi-chat-disabled card-elevated" aria-disabled="true">
       <header class="jitsi-chat-header">
-        <h3 id="jitsi-chat-heading">${escapeHtml(i18n.t("module.jitsi_meet.chat.heading"))}</h3>
+        <h3 id="jitsi-chat-heading" class="jitsi-section-heading">${escapeHtml(i18n.t("module.jitsi_meet.chat.heading"))}</h3>
         <button id="jitsi-chat-return-btn" class="jitsi-chat-return-btn" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.chat.return_to_meeting"))}</button>
       </header>
       <div id="jitsi-chat-participant-strip" class="jitsi-chat-participant-strip" role="list" aria-label="${escapeHtml(i18n.t("module.jitsi_meet.chat.participants"))}"></div>
