@@ -8,11 +8,8 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import {
-    buildMeetingName,
-    buildPendingMeetingUrl,
-    generateMeetingName,
-} from "./meeting-values.js";
+import { buildMeetingName, buildPendingMeetingUrl } from "./meeting-values.js";
+import { generateMeetingName } from "./meeting-name.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
@@ -33,9 +30,10 @@ function buildParticipantKey(usernames, classroomId = null) {
     return createHash("sha256").update(payload).digest("hex");
 }
 export class JitsiMeetStore {
-    constructor({ db, log }) {
+    constructor({ db, log, generatePassphrase }) {
         this.db = db;
         this.log = log;
+        this.generatePassphrase = generatePassphrase;
     }
     async ensureSchema() {
         const existingInitialization = schemaInitializationByExecutor.get(
@@ -468,7 +466,7 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
-        const meetingName = generateMeetingName();
+        const meetingName = generateMeetingName(this.generatePassphrase);
 
         await this.db.transaction(async (executor) => {
             const meetingValues = {

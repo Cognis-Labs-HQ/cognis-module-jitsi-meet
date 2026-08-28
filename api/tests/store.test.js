@@ -224,7 +224,14 @@ test("schema initialization can retry after a failed create", async () => {
 
 test("jitsi store meeting creation uses the modern column set", async () => {
     const mockDb = createMockJitsiDb();
-    const store = new JitsiMeetStore({ db: mockDb });
+    const passphraseRequests = [];
+    const store = new JitsiMeetStore({
+        db: mockDb,
+        generatePassphrase(options) {
+            passphraseRequests.push(options);
+            return "Amber Cedar Otter Willow";
+        },
+    });
 
     await store.ensureSchema();
     const createdMeeting = await store.createMeeting({
@@ -250,6 +257,13 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
+    assert.deepEqual(passphraseRequests, [
+        {
+            words: 4,
+            separator: " ",
+            capitalization: "titlecase",
+        },
+    ]);
     assert.match(
         mockDb.insertedMeetingRows[0].meeting_name,
         /^[A-Z][a-z]+(?: [A-Z][a-z]+){3}$/,
@@ -290,7 +304,10 @@ test("jitsi store meeting creation uses the modern column set", async () => {
 
 test("jitsi store gives pending meetings unique database URLs", async () => {
     const mockDb = createMockJitsiDb();
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        db: mockDb,
+        generatePassphrase: () => "Amber Cedar Otter Willow",
+    });
 
     await store.ensureSchema();
     const firstMeeting = await store.createMeeting({

@@ -144,6 +144,7 @@ export function registerApiRoutes(router, ctx) {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
     }
     const dbExecutor = ctx.getCapability("db:executor");
+    const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const systemCtx = ctx.getCapability("system:ctx");
     const profileStore = ctx.getCapability("social:profileStore");
     const messagesUiResources = resolveMessagesUiResources(ctx);
@@ -215,7 +216,11 @@ export function registerApiRoutes(router, ctx) {
         registerNotificationCategory("meetings", "Meetings");
     }
 
-    if (!dbExecutor || !profileStore) {
+    if (
+        !dbExecutor ||
+        !profileStore ||
+        typeof generatePassphrase !== "function"
+    ) {
         const unavailablePayload = (res) =>
             sendError(
                 res,
@@ -388,7 +393,7 @@ export function registerApiRoutes(router, ctx) {
     const registerScriptOrigins = ctx.getCapability(
         "auth:registerPageScriptOrigins",
     );
-    const store = resolveStore(dbExecutor, log);
+    const store = resolveStore(dbExecutor, log, generatePassphrase);
     const runEnableTest = async () => {
         await store.ensureSchema();
         const config = await store.getConfig();

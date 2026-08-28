@@ -1,14 +1,3 @@
-import { generate } from "generate-passphrase";
-
-export function generateMeetingName() {
-    return generate({
-        length: 4,
-        numbers: false,
-        separator: " ",
-        titlecase: true,
-    });
-}
-
 export function buildMeetingName(roomSlug, storedMeetingName = "") {
     const normalizedStoredName = String(storedMeetingName ?? "").trim();
     return normalizedStoredName || String(roomSlug ?? "").trim();

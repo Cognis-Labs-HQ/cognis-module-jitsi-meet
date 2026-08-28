@@ -96,4 +96,4 @@ Participant-free meetings once again provision a single-member Messages chat at 
 
 Meeting naming now uses Jitsi’s supported welcome-page flow again: an empty-room iframe enables `GENERATE_ROOMNAMES_ON_WELCOME_PAGE`, the `videoConferenceJoined` event supplies the generated room name, and the organizer-only identity endpoint validates and persists that exact value before creating even a single-member share-ready chat. Timestamp-based titles have been removed. Guardrails reject missing or mismatched captured identities, log and toast capture failures, time out iframe loading, and dispose failed embeds.
 
-Meeting display names now use the declared `generate-passphrase` package to create cryptographically secure four-word passphrases. Capturing Jitsi's separate room identifier no longer replaces that user-facing name.
+Meeting display names now use the host `reuse:generatePassphrase` capability to create cryptographically secure four-word passphrases without relying on an undeployed module-local package. Capturing Jitsi's separate room identifier no longer replaces that user-facing name.
