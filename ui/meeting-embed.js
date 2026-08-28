@@ -1,9 +1,7 @@
 import { JITSI_TOOLBAR_BUTTONS, MEETING_SUBJECT } from "./constants.js";
 import { importReuseModule } from "./reuse/resources.js";
 
-const { resolveUrlOrigin, resolveUrlPathSlug } = await importReuseModule(
-    "value-normalizers.js",
-);
+const { resolveUrlOrigin } = await importReuseModule("value-normalizers.js");
 
 let jitsiExternalApiLoader = null;
 
@@ -39,10 +37,7 @@ export function resolveJitsiDefaultBackground(explicitMode) {
 }
 
 export function resolveRoomName(meeting) {
-    if (typeof meeting?.roomSlug === "string" && meeting.roomSlug.trim()) {
-        return meeting.roomSlug.trim();
-    }
-    return resolveUrlPathSlug(meeting?.meetingUrl ?? "");
+    return String(meeting?.meetingName ?? "").trim();
 }
 
 export function buildMeetingJoinUrl(meetingUrl, profile) {

@@ -6,7 +6,7 @@ export function generateMeetingName(generatePassphrase) {
     }
     return generatePassphrase({
         words: 4,
-        separator: " ",
+        separator: "-",
         capitalization: "titlecase",
     });
 }

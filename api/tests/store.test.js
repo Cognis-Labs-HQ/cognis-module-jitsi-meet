@@ -229,7 +229,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         db: mockDb,
         generatePassphrase(options) {
             passphraseRequests.push(options);
-            return "Amber Cedar Otter Willow";
+            return "Amber-Cedar-Otter-Willow";
         },
     });
 
@@ -246,7 +246,6 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     assert.equal(mockDb.insertedMeetingRows.length, 1);
     assert.ok(mockDb.insertedMeetingRows[0].participant_key);
     assert.ok(mockDb.insertedMeetingRows[0].meeting_url);
-    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
     assert.ok(mockDb.insertedMeetingRows[0].meeting_password_iv);
     assert.notEqual(
         mockDb.insertedMeetingRows[0].meeting_password,
@@ -260,31 +259,21 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     assert.deepEqual(passphraseRequests, [
         {
             words: 4,
-            separator: " ",
+            separator: "-",
             capitalization: "titlecase",
         },
     ]);
-    assert.match(
+    assert.equal(
         mockDb.insertedMeetingRows[0].meeting_name,
-        /^[A-Z][a-z]+(?: [A-Z][a-z]+){3}$/,
+        "Amber-Cedar-Otter-Willow",
+    );
+    assert.equal(
+        mockDb.insertedMeetingRows[0].room_slug,
+        "Amber-Cedar-Otter-Willow",
     );
     assert.equal(
         mockDb.insertedMeetingRows[0].meeting_url,
-        `https://meet.example.com/#cognisMeeting=${createdMeeting.id}`,
-    );
-    const capturedMeeting = await store.captureMeetingIdentity(
-        createdMeeting.id,
-        "BrightOttersMeetSafely",
-        "https://meet.example.com",
-    );
-    assert.equal(capturedMeeting.roomSlug, "BrightOttersMeetSafely");
-    assert.equal(
-        capturedMeeting.meetingName,
-        mockDb.insertedMeetingRows[0].meeting_name,
-    );
-    assert.equal(
-        capturedMeeting.meetingUrl,
-        "https://meet.example.com/BrightOttersMeetSafely",
+        "https://meet.example.com/Amber-Cedar-Otter-Willow",
     );
     assert.equal(createdMeeting?.reused, false);
     assert.equal(
@@ -302,11 +291,15 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     );
 });
 
-test("jitsi store gives pending meetings unique database URLs", async () => {
+test("jitsi store gives generated meetings unique database URLs", async () => {
     const mockDb = createMockJitsiDb();
+    let passphraseIndex = 0;
     const store = new JitsiMeetStore({
         db: mockDb,
-        generatePassphrase: () => "Amber Cedar Otter Willow",
+        generatePassphrase: () =>
+            ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
+                passphraseIndex++
+            ],
     });
 
     await store.ensureSchema();
@@ -325,8 +318,14 @@ test("jitsi store gives pending meetings unique database URLs", async () => {
         chatRoomId: null,
     });
 
-    assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
-    assert.equal(mockDb.insertedMeetingRows[1].room_slug, "");
+    assert.equal(
+        mockDb.insertedMeetingRows[0].room_slug,
+        "Amber-Cedar-Otter-Willow",
+    );
+    assert.equal(
+        mockDb.insertedMeetingRows[1].room_slug,
+        "Bamboo-Cloud-Finch-River",
+    );
     assert.notEqual(firstMeeting.meetingUrl, secondMeeting.meetingUrl);
     assert.equal(
         new URL(firstMeeting.meetingUrl).origin,

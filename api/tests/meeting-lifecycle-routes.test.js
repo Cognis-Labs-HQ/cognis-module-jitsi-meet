@@ -95,13 +95,13 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
     assert.equal(logs[0][2].chatRoomId, "chat-1");
 });
 
-test("Jitsi identity capture provisions a share-ready participant-free chat", async () => {
+test("meeting creation provisions a share-ready participant-free chat", async () => {
     const handlers = new Map();
     const chatRequests = [];
     const meeting = {
         id: "meeting-1",
-        meetingName: "",
-        roomSlug: "",
+        meetingName: "Bright-Otters-Meet-Safely",
+        roomSlug: "Bright-Otters-Meet-Safely",
         chatRoomId: null,
         classroomId: null,
         createdBy: "alice",
@@ -120,11 +120,6 @@ test("Jitsi identity capture provisions a share-ready participant-free chat", as
         },
         async createMeeting({ chatRoomId }) {
             if (chatRoomId) meeting.chatRoomId = chatRoomId;
-            return meeting;
-        },
-        async captureMeetingIdentity(_meetingId, roomName) {
-            meeting.meetingName = roomName;
-            meeting.roomSlug = roomName;
             return meeting;
         },
         async listParticipants() {
@@ -170,28 +165,14 @@ test("Jitsi identity capture provisions a share-ready participant-free chat", as
         createResponse,
     );
     assert.equal(createResponse.status, 200);
-    assert.equal(chatRequests.length, 0);
-
-    const identityResponse = createRecorder();
-    await handlers.get("/api/v1/modules/jitsi-meet/meetings/identity")(
-        {
-            body: {
-                meetingId: "meeting-1",
-                roomName: "BrightOttersMeetSafely",
-            },
-        },
-        identityResponse,
-    );
-
-    assert.equal(identityResponse.status, 200);
     assert.equal(chatRequests.length, 1);
     assert.deepEqual(chatRequests[0].usernames, ["alice"]);
     assert.equal(chatRequests[0].allowSingleMember, true);
-    assert.equal(chatRequests[0].title, "BrightOttersMeetSafely");
+    assert.equal(chatRequests[0].title, "Bright-Otters-Meet-Safely");
     assert.equal(
-        identityResponse.body.data.meetingName,
-        "BrightOttersMeetSafely",
+        createResponse.body.data.meetingName,
+        "Bright-Otters-Meet-Safely",
     );
-    assert.equal(identityResponse.body.data.chatRoomId, "chat-1");
-    assert.equal(identityResponse.body.data.chatUrl, "/messages/chat-1");
+    assert.equal(createResponse.body.data.chatRoomId, "chat-1");
+    assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
 });

@@ -28,7 +28,6 @@ function readJitsiApiBundle() {
         .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
         .join("\n");
 }
-
 test("navbar mounts the ping request only on Meetings routes and aborts it on navigation", () => {
     const source = readFileSync(resolve(ROOT, "ui/navbar.js"), "utf8");
 
@@ -46,7 +45,6 @@ test("navbar mounts the ping request only on Meetings routes and aborts it on na
         /window\.addEventListener\("popstate", syncMeetingLink\)/,
     );
 });
-
 test("meeting chat polling respects cancelled keyring access", () => {
     const source = readFileSync(resolve(ROOT, "ui/app/chat.js"), "utf8");
     assert.match(source, /keyring:isAccessSuppressed/);
@@ -55,7 +53,6 @@ test("meeting chat polling respects cancelled keyring access", () => {
         /function startNativeChatPolling\(\)[\s\S]*keyring:isAccessSuppressed/,
     );
 });
-
 test("meeting share joins use the scoped guest access token", () => {
     const source = readFileSync(
         resolve(ROOT, "ui/app/meeting-room.js"),
@@ -186,7 +183,10 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
 
 test("jitsi meeting group chats use the unique stored meeting title", () => {
     const source = readJitsiApiBundle();
-    assert.match(source, /title:\s*buildMeetingChatTitle\(roomName\)/);
+    assert.match(
+        source,
+        /title:\s*buildMeetingChatTitle\(meeting\.meetingName\)/,
+    );
     assert.doesNotMatch(source, /new Date\(parsedCreatedAt\)/);
     assert.match(source, /allowSingleMember:\s*true/);
     assert.doesNotMatch(source, /participantUsernames\.length > 1/);
@@ -611,14 +611,13 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
-        /addEventListener\("videoConferenceJoined", async \(event\) => \{[\s\S]*meetings\/identity[\s\S]*roomName: capturedRoomName[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
+        /addEventListener\("videoConferenceJoined", \(event\) => \{[\s\S]*void callbacks\.keepPresenceAlive\(true\);/,
     );
     assert.match(
         embedSource,
-        /GENERATE_ROOMNAMES_ON_WELCOME_PAGE:\s*!roomName/,
+        /new window\.JitsiMeetExternalAPI\(meetingHost, \{[\s\S]*roomName,/,
     );
     assert.match(embedSource, /Jitsi iframe load timed out/);
-    assert.match(embedSource, /capturedMeeting\.roomSlug !== capturedRoomName/);
     assert.match(embedSource, /operation:\s*"open_jitsi_meeting_embed"/);
     assert.doesNotMatch(
         embedSource,

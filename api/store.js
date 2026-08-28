@@ -8,10 +8,9 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName, buildPendingMeetingUrl } from "./meeting-values.js";
+import { buildMeetingName } from "./meeting-values.js";
 import { generateMeetingName } from "./meeting-name.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
-import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
     decryptPayload,
     deriveScopedKey,
@@ -315,7 +314,7 @@ export class JitsiMeetStore {
             meetingUrl: row.meeting_url ? String(row.meeting_url) : "",
             roomSlug: row.room_slug ? String(row.room_slug) : "",
             meetingPassword,
-            meetingName: buildMeetingName(row.room_slug, row.meeting_name),
+            meetingName: buildMeetingName(row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
@@ -442,11 +441,9 @@ export class JitsiMeetStore {
         }
 
         const meetingId = randomUUID();
-        const meetingSlug = "";
-        const meetingUrl = buildPendingMeetingUrl(
-            normalizedInstanceUrl,
-            meetingId,
-        );
+        const meetingName = generateMeetingName(this.generatePassphrase);
+        const meetingSlug = meetingName;
+        const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
             `jitsi:meeting:${meetingId}:password`,
@@ -466,8 +463,6 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
-        const meetingName = generateMeetingName(this.generatePassphrase);
-
         await this.db.transaction(async (executor) => {
             const meetingValues = {
                 id: meetingId,
@@ -524,16 +519,6 @@ export class JitsiMeetStore {
             ...(createdMeeting ?? {}),
             reused: false,
         };
-    }
-
-    async captureMeetingIdentity(meetingId, roomName, instanceUrl) {
-        return captureMeetingIdentity({
-            db: this.db,
-            meetingId,
-            roomName,
-            instanceUrl,
-            getMeetingById: (id) => this.getMeetingById(id),
-        });
     }
 
     async claimMeetingPassword(meetingId, username) {
@@ -807,10 +792,7 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: buildMeetingName(
-                        row.room_slug,
-                        row.meeting_name,
-                    ),
+                    meetingName: buildMeetingName(row.meeting_name),
                     classroomId: row.classroom_id
                         ? String(row.classroom_id)
                         : null,
@@ -934,10 +916,7 @@ export class JitsiMeetStore {
                 const meeting = {
                     id: String(row.id),
                     meetingUrl: String(row.meeting_url),
-                    meetingName: buildMeetingName(
-                        row.room_slug,
-                        row.meeting_name,
-                    ),
+                    meetingName: buildMeetingName(row.meeting_name),
                     createdBy: String(row.created_by),
                     scheduledAt:
                         readDbTimestampValue(row.scheduled_at) ??
