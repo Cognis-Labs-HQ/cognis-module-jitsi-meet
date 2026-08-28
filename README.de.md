@@ -10,7 +10,7 @@ Füge dieses Repository in Cognis über **Module → Modulquellen** hinzu, insta
 
 ## Fähigkeiten und Abhängigkeiten
 
-Das Modul veröffentlicht `meeting:video`, `meeting:chat` und `meeting:moderation`. Laufzeitintegrationen werden über Cognis-`ctx`-Fähigkeiten und Flows aufgelöst. Das Manifest deklariert UUID-basierte Abhängigkeiten vom Social-Gateway, Profiladapter, Freigabe-Gateway und Nachrichtenadapter sowie eng begrenzte Laufzeitfähigkeiten. Es werden keine internen Cognis-Pakete oder Quellbaumimporte benötigt.
+Das Modul veröffentlicht `meeting:video`, `meeting:chat` und `meeting:moderation`. Laufzeitintegrationen werden über Cognis-`ctx`-Fähigkeiten und Flows aufgelöst. Das Manifest deklariert UUID-basierte Abhängigkeiten vom Social-Gateway, Profiladapter, Freigabe-Gateway und Nachrichtenadapter sowie eng begrenzte Laufzeitfähigkeiten. Nextcloud Whiteboard ist als optionale weiche Abhängigkeit deklariert, damit Cognis es bei der Installation anbieten kann, ohne Besprechungen zu blockieren, wenn es nicht verfügbar ist. Es werden keine internen Cognis-Pakete oder Quellbaumimporte benötigt.
 
 ## Entwicklung
 

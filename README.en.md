@@ -10,7 +10,7 @@ Add this repository through **Modules → Module Sources** in Cognis, install th
 
 ## Capabilities and dependencies
 
-The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its manifest declares UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, alongside the narrower runtime capability requirements. No Cognis internal package or source-tree import is required.
+The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its manifest declares UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, alongside the narrower runtime capability requirements. Nextcloud Whiteboard is declared as an optional soft dependency so Cognis can offer it during installation without blocking Meetings when it is unavailable. No Cognis internal package or source-tree import is required.
 
 ## Development
 

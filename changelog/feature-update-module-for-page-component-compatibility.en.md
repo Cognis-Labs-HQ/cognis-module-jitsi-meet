@@ -77,3 +77,5 @@ The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect i
 Configuration deletion is now explicitly registered as an administrator-only route that remains available while the module is disabled, including the reduced-capability route set.
 
 Fresh-install schema setup now shares one initialization promise per database executor. Concurrent config and lifecycle requests wait for the same table-creation sequence instead of racing PostgreSQL type creation.
+
+The manifest now declares Nextcloud Whiteboard as an optional soft dependency. Cognis dependency-aware installation can offer Whiteboard alongside Meetings without blocking installation or enablement when the optional module is unavailable.

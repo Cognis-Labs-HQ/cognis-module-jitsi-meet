@@ -10,7 +10,7 @@ Cognis の **モジュール → モジュールソース**からこのリポジ
 
 ## ケイパビリティと依存関係
 
-このモジュールは `meeting:video`、`meeting:chat`、`meeting:moderation` を公開します。ランタイム連携は Cognis の `ctx` ケイパビリティとフローを通じて解決されます。マニフェストでは、Social ゲートウェイ、Profile アダプター、Share ゲートウェイ、Messages アダプターへの UUID ベースの依存関係と、必要最小限のランタイムケイパビリティを宣言しています。Cognis の内部パッケージやソースツリーをインポートする必要はありません。
+このモジュールは `meeting:video`、`meeting:chat`、`meeting:moderation` を公開します。ランタイム連携は Cognis の `ctx` ケイパビリティとフローを通じて解決されます。マニフェストでは、Social ゲートウェイ、Profile アダプター、Share ゲートウェイ、Messages アダプターへの UUID ベースの依存関係と、必要最小限のランタイムケイパビリティを宣言しています。Nextcloud Whiteboard は任意のソフト依存関係として宣言されるため、利用できない場合に Meetings を妨げることなく、Cognis がインストール時に選択肢として提示できます。Cognis の内部パッケージやソースツリーをインポートする必要はありません。
 
 ## 開発
 

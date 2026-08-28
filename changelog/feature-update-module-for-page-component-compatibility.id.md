@@ -77,3 +77,5 @@ Orkestrator UI Papan Tulis kini bernama `whiteboard-control.js` agar sesuai deng
 Penghapusan konfigurasi kini didaftarkan secara eksplisit sebagai rute khusus administrator yang tetap tersedia saat modul dinonaktifkan, termasuk pada kumpulan rute dengan kapabilitas terbatas.
 
 Penyiapan skema pemasangan baru kini berbagi satu promise inisialisasi per eksekutor basis data. Permintaan konfigurasi dan siklus hidup yang bersamaan menunggu urutan pembuatan tabel yang sama alih-alih berlomba membuat tipe PostgreSQL.
+
+Manifest kini mendeklarasikan Nextcloud Whiteboard sebagai dependensi lunak opsional. Pemasangan Cognis yang memahami dependensi dapat menawarkan Papan Tulis bersama Rapat tanpa memblokir pemasangan atau pengaktifan ketika modul opsional tidak tersedia.

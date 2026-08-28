@@ -67,7 +67,21 @@ test("manifest dependencies use UUID references", () => {
     const manifest = JSON.parse(readFileSync(resolve(ROOT, "manifest.json")));
     const uuid =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    assert.ok(manifest.requires.every((reference) => uuid.test(reference)));
+    for (const dependencyType of [
+        "requires",
+        "hardDependencies",
+        "softDependencies",
+    ]) {
+        assert.ok(
+            (manifest[dependencyType] ?? []).every((reference) =>
+                uuid.test(reference),
+            ),
+            dependencyType,
+        );
+    }
+    assert.deepEqual(manifest.softDependencies, [
+        "5bb6105d-14d2-5d9d-a284-b2969fb4e35d",
+    ]);
 });
 
 test("external module metadata and declared files are consistent", () => {

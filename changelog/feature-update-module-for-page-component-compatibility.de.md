@@ -77,3 +77,5 @@ Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu 
 Das Löschen der Konfiguration ist jetzt ausdrücklich als reine Administratorroute registriert, die auch bei deaktiviertem Modul einschließlich des Route-Satzes mit eingeschränkten Capabilities verfügbar bleibt.
 
 Die Schemainrichtung bei Neuinstallationen teilt jetzt ein Initialisierungs-Promise pro Datenbank-Executor. Gleichzeitige Konfigurations- und Lebenszyklusanfragen warten auf dieselbe Tabellenerstellung, statt bei der PostgreSQL-Typerstellung zu konkurrieren.
+
+Das Manifest deklariert Nextcloud Whiteboard jetzt als optionale weiche Abhängigkeit. Die abhängigkeitsbewusste Cognis-Installation kann Whiteboard zusammen mit Meetings anbieten, ohne Installation oder Aktivierung zu blockieren, wenn das optionale Modul nicht verfügbar ist.

@@ -10,7 +10,7 @@ Tambahkan repositori ini melalui **Modul → Sumber Modul** di Cognis, pasang mo
 
 ## Kapabilitas dan dependensi
 
-Modul menerbitkan `meeting:video`, `meeting:chat`, dan `meeting:moderation`. Integrasi runtime diselesaikan melalui kapabilitas dan flow `ctx` Cognis. Manifest mendeklarasikan dependensi berbasis UUID pada gateway Sosial, adaptor Profil, gateway Berbagi, dan adaptor Pesan, beserta kebutuhan kapabilitas runtime yang lebih sempit. Tidak diperlukan impor paket internal atau pohon sumber Cognis.
+Modul menerbitkan `meeting:video`, `meeting:chat`, dan `meeting:moderation`. Integrasi runtime diselesaikan melalui kapabilitas dan flow `ctx` Cognis. Manifest mendeklarasikan dependensi berbasis UUID pada gateway Sosial, adaptor Profil, gateway Berbagi, dan adaptor Pesan, beserta kebutuhan kapabilitas runtime yang lebih sempit. Nextcloud Whiteboard dideklarasikan sebagai dependensi lunak opsional agar Cognis dapat menawarkannya saat pemasangan tanpa memblokir Rapat ketika modul itu tidak tersedia. Tidak diperlukan impor paket internal atau pohon sumber Cognis.
 
 ## Pengembangan
 
