@@ -1,4 +1,4 @@
-import { logUi, showToast } from "../reuse/feedback.js";
+import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import {
     loadJitsiExternalApi,
@@ -102,19 +102,9 @@ export function createEmbedHandlers({
         let submittedStoredPassword = false;
         const themeMode = resolveThemeMode();
         const defaultBackground = resolveJitsiDefaultBackground(themeMode);
-        let resolveEmbedLoaded;
-        let rejectEmbedLoaded;
-        const embedLoaded = new Promise((resolve, reject) => {
-            resolveEmbedLoaded = resolve;
-            rejectEmbedLoaded = reject;
-        });
-        const embedLoadTimeout = window.setTimeout(() => {
-            rejectEmbedLoaded(new Error("Jitsi iframe load timed out."));
-        }, 15000);
         const apiInstance = new window.JitsiMeetExternalAPI(meetingHost, {
             roomName,
             parentNode: frame,
-            onload: () => resolveEmbedLoaded(),
             configOverwrite: {
                 prejoinConfig: {
                     enabled: false,
@@ -298,11 +288,6 @@ export function createEmbedHandlers({
         apiInstance.addEventListener("readyToClose", handleMeetingLeft);
         callbacks.renderParticipants();
 
-        try {
-            await embedLoaded;
-        } finally {
-            window.clearTimeout(embedLoadTimeout);
-        }
         frame.hidden = false;
         utils.updateOverlay({
             message: i18n.t("module.jitsi_meet.overlay.in_meeting"),
@@ -373,27 +358,8 @@ export function createEmbedHandlers({
             return { trackingAllowed: false };
         }
 
-        try {
-            await openMeetingEmbed();
-            return { trackingAllowed: true };
-        } catch (error) {
-            callbacks.closeMeetingEmbed();
-            await logUi("error", "Jitsi meeting embed failed to open.", {
-                component: "module:jitsi-meet",
-                operation: "open_jitsi_meeting_embed",
-                meetingId: state.meeting?.id,
-                error: error instanceof Error ? error.message : String(error),
-            });
-            utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.join_failed"),
-                canStart: false,
-                visible: true,
-            });
-            showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
-                variant: "error",
-            });
-            return { trackingAllowed: false };
-        }
+        await openMeetingEmbed();
+        return { trackingAllowed: true };
     }
 
     async function prepareMeetingStart() {

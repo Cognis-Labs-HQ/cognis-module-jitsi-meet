@@ -71,7 +71,6 @@ test("meeting share joins use the scoped guest access token", () => {
         /suppliedMeetingPassword[\s\S]*!state\.shareAccessToken/,
     );
 });
-
 test("new meetings can start with an empty participant stage and prompt for a link share after joining", () => {
     const preflightSource = readFileSync(
         resolve(ROOT, "ui/app/participants.js"),
@@ -114,7 +113,6 @@ test("new meetings can start with an empty participant stage and prompt for a li
     );
     assert.match(meetingsSource, /participantCount > 0[\s\S]*ready_to_start/);
 });
-
 test("meeting link guests derive participants from the scoped meeting payload", () => {
     const chatSource = readFileSync(resolve(ROOT, "ui/app/chat.js"), "utf8");
     const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
@@ -617,8 +615,10 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
         embedSource,
         /new window\.JitsiMeetExternalAPI\(meetingHost, \{[\s\S]*roomName,/,
     );
-    assert.match(embedSource, /Jitsi iframe load timed out/);
-    assert.match(embedSource, /operation:\s*"open_jitsi_meeting_embed"/);
+    assert.match(
+        embedSource,
+        /await openMeetingEmbed\(\);\s*return \{ trackingAllowed: true \};/,
+    );
     assert.doesNotMatch(
         embedSource,
         /frame\.hidden = false;[\s\S]*await callbacks\.keepPresenceAlive\(true\);/,
