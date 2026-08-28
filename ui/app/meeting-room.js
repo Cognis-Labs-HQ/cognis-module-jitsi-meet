@@ -106,13 +106,6 @@ export function createEmbedHandlers({
             ...(roomName ? { roomName } : {}),
             parentNode: frame,
             configOverwrite: {
-                ...(roomName
-                    ? {}
-                    : {
-                          welcomePage: {
-                              disabled: true,
-                          },
-                      }),
                 prejoinConfig: {
                     enabled: false,
                 },
@@ -124,6 +117,7 @@ export function createEmbedHandlers({
             },
             interfaceConfigOverwrite: {
                 DEFAULT_BACKGROUND: defaultBackground,
+                GENERATE_ROOMNAMES_ON_WELCOME_PAGE: !roomName,
             },
             userInfo: {
                 displayName: state.currentProfile?.displayName ?? "",
@@ -401,8 +395,26 @@ export function createEmbedHandlers({
             return { trackingAllowed: false };
         }
 
-        await openMeetingEmbed();
-        return { trackingAllowed: true };
+        try {
+            await openMeetingEmbed();
+            return { trackingAllowed: true };
+        } catch (error) {
+            await logUi("error", "Jitsi meeting embed failed to open.", {
+                component: "module:jitsi-meet",
+                operation: "open_jitsi_meeting_embed",
+                meetingId: state.meeting?.id,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            utils.updateOverlay({
+                message: i18n.t("module.jitsi_meet.overlay.join_failed"),
+                canStart: false,
+                visible: true,
+            });
+            showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+                variant: "error",
+            });
+            return { trackingAllowed: false };
+        }
     }
 
     async function prepareMeetingStart() {

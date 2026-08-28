@@ -603,8 +603,13 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     assert.match(embedSource, /\.\.\.\(roomName \? \{ roomName \} : \{\}\)/);
     assert.match(
         embedSource,
-        /roomName[\s\S]*welcomePage:\s*\{[\s\S]*disabled:\s*true/,
+        /GENERATE_ROOMNAMES_ON_WELCOME_PAGE:\s*!roomName/,
     );
+    assert.doesNotMatch(
+        embedSource,
+        /welcomePage:\s*\{[\s\S]*disabled:\s*true/,
+    );
+    assert.match(embedSource, /operation:\s*"open_jitsi_meeting_embed"/);
     assert.doesNotMatch(
         embedSource,
         /frame\.hidden = false;[\s\S]*await callbacks\.keepPresenceAlive\(true\);/,
