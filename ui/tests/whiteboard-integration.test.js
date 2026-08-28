@@ -204,14 +204,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /button\.className = "btn-neutral btn-animated";/,
     );
     assert.match(appIndexSource, /await loadCommonStyles\(\)/);
-    assert.match(
-        appIndexSource,
-        /ensureStylesheetLoaded,[\s\S]*?from "\.\.\/jitsi-helpers\.js";/,
-    );
-    assert.match(
-        helpersSource,
-        /export function ensureStylesheetLoaded\(stylesheetUrl\)[\s\S]*?ensurePageStylesheet\(stylesheetUrl\)/,
-    );
+    assert.doesNotMatch(appIndexSource, /ensureStylesheetLoaded/);
+    assert.doesNotMatch(helpersSource, /ensurePageStylesheet/);
     assert.match(
         reuseResourcesSource,
         /uiCtx\.capabilities\.get\("ui:reuse"\)/,

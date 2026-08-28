@@ -85,3 +85,5 @@ Neue Besprechungen ohne übernommene Raumidentität deaktivieren jetzt ausdrück
 Die Meetings-SPA und Freigabebeiträge veröffentlichen wieder den kanonischen, nicht qualifizierten Modul-Einstiegspfad und überlassen die Versionierung des Asset-Caches vollständig Cognis.
 
 Ausstehende Besprechungen speichern jetzt eine eindeutige, durch ein Fragment ergänzte Jitsi-Instanz-URL, die ihren vorhandenen Besprechungs-UUID verwendet. Damit wird das eindeutige, nicht leere Schemafeld `meeting_url` ohne erfundenen Raum-Slug erfüllt, gleichzeitige neue Besprechungen derselben Jitsi-Instanz kollidieren nicht, und die URL wird nach der Identitätsübernahme durch die kanonische Jitsi-Raum-URL ersetzt.
+
+Meetings registriert oder injiziert keine Stylesheets des Messages-Providers mehr dynamisch, da diese nach der SPA-Navigation bestehen bleiben und fremde Seiten umgestalten konnten. Jeder Selektor in `jitsi-meet.css` ist jetzt unter der routeneigenen Klasse `.jitsi-route-root` verankert, der Animationsname ist modulspezifisch, und das ungenutzte ältere Asset `ui/styles/meetings.css` wurde entfernt.

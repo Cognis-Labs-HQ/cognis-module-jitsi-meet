@@ -7,21 +7,15 @@ import {
 import { importReuseModule } from "./reuse/resources.js";
 import { buildProfileAvatarMarkup } from "./app/profile-avatars.js";
 
-const [
-    { apiFetch },
-    { getShareContext },
-    { ensurePageStylesheet },
-    { normalizeUsername },
-] = await Promise.all([
-    importReuseModule("api-client.js"),
-    importReuseModule("auth-session.js"),
-    importReuseModule("page-styles.js"),
-    importReuseModule("value-normalizers.js"),
-]);
+const [{ apiFetch }, { getShareContext }, { normalizeUsername }] =
+    await Promise.all([
+        importReuseModule("api-client.js"),
+        importReuseModule("auth-session.js"),
+        importReuseModule("value-normalizers.js"),
+    ]);
 
 const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     languageBaseUrls: ["/static/modules/jitsi-meet/languages"],
-    stylesheetUrls: [],
     reactionHelpersModuleUrl: null,
     chatLoadingModuleUrl: null,
     profileFileNamespace: null,
@@ -50,11 +44,6 @@ export async function loadMessageUiResources() {
                   (entry) => typeof entry === "string" && entry.length > 0,
               )
             : FALLBACK_MESSAGE_UI_RESOURCES.languageBaseUrls;
-        const stylesheetUrls = Array.isArray(responseData.stylesheetUrls)
-            ? responseData.stylesheetUrls.filter(
-                  (entry) => typeof entry === "string" && entry.length > 0,
-              )
-            : [];
         const reactionHelpersModuleUrl =
             typeof responseData.reactionHelpersModuleUrl === "string" &&
             responseData.reactionHelpersModuleUrl.length > 0
@@ -70,7 +59,6 @@ export async function loadMessageUiResources() {
                 languageBaseUrls.length > 0
                     ? languageBaseUrls
                     : FALLBACK_MESSAGE_UI_RESOURCES.languageBaseUrls,
-            stylesheetUrls,
             reactionHelpersModuleUrl,
             chatLoadingModuleUrl,
             profileFileNamespace:
@@ -91,11 +79,6 @@ export async function loadMessageUiResources() {
 function buildFileUrl(namespaceId, objectKey) {
     if (!namespaceId || !objectKey) return "";
     return filesClient().resolveNamespacedFileUrl(namespaceId, objectKey);
-}
-
-export function ensureStylesheetLoaded(stylesheetUrl) {
-    if (!stylesheetUrl) return Promise.resolve();
-    return ensurePageStylesheet(stylesheetUrl);
 }
 
 export async function loadMessageReactionsController(

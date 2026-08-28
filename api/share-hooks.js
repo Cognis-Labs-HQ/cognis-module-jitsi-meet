@@ -4,11 +4,6 @@ import {
     getFirstMatchingStageResult,
     getFirstStageResult,
 } from "./reuse/flow-helpers.js";
-import {
-    resolveMessagesUiResources,
-    resolveSharedMessagesStylesheetUrls,
-} from "./ui-resources.js";
-
 /**
  * Determines whether an already-authenticated requester (identified by
  * their real account claims, not a share-guest token) already has direct
@@ -339,9 +334,6 @@ export function registerShareFlowHooks(ctx) {
                     mountScriptUrl: "/static/modules/jitsi-meet/app/index.js",
                     stringsBaseUrl: ["/static/modules/jitsi-meet/languages"],
                     stylesheetUrls: [
-                        ...resolveSharedMessagesStylesheetUrls(
-                            resolveMessagesUiResources(ctx),
-                        ),
                         "/static/modules/jitsi-meet/jitsi-meet.css",
                     ],
                 };

@@ -85,3 +85,5 @@ New meetings without a captured room identity now explicitly disable Jitsi’s e
 Meetings SPA and share contributions again publish the canonical unqualified module entry path and leave asset cache versioning entirely to Cognis.
 
 Pending meetings now store a unique fragment-qualified Jitsi instance URL keyed by their existing meeting UUID. This satisfies the non-null unique `meeting_url` schema without inventing a room slug, prevents concurrent new meetings on the same Jitsi instance from colliding, and is replaced by the canonical Jitsi room URL after identity capture.
+
+Meetings no longer registers or dynamically injects Messages provider stylesheets, which could persist after SPA navigation and restyle unrelated pages. Every selector in `jitsi-meet.css` is now anchored beneath the route-owned `.jitsi-route-root`, its animation name is module-specific, and the unused legacy `ui/styles/meetings.css` asset has been removed.

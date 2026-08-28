@@ -6,7 +6,6 @@ import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
 import {
-    ensureStylesheetLoaded,
     fetchCurrentProfile,
     fetchParticipants,
     loadMessageReactionsController,
@@ -92,9 +91,6 @@ export async function mount(
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
         ? await import(messageUiResources.chatLoadingModuleUrl)
         : null;
-    for (const stylesheetUrl of messageUiResources.stylesheetUrls) {
-        void ensureStylesheetLoaded(stylesheetUrl);
-    }
     const i18n = await createI18n({
         componentStringBaseUrls: messageUiResources.languageBaseUrls,
     });

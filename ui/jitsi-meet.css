@@ -1,11 +1,11 @@
-.jitsi-meeting-stage {
+.jitsi-route-root .jitsi-meeting-stage {
     height: 100%;
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
-.jitsi-stage-frame-wrap {
+.jitsi-route-root .jitsi-stage-frame-wrap {
     position: relative;
     display: grid;
     flex: 1 1 auto;
@@ -15,7 +15,7 @@
     background: rgba(15, 23, 42, 0.55);
 }
 
-.jitsi-stage-frame {
+.jitsi-route-root .jitsi-stage-frame {
     grid-area: 1 / 1;
     width: 100%;
     height: 100%;
@@ -23,13 +23,13 @@
     border: 0;
 }
 
-.jitsi-stage-actions {
+.jitsi-route-root .jitsi-stage-actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.jitsi-overlay {
+.jitsi-route-root .jitsi-overlay {
     position: absolute;
     inset: 0;
     display: flex;
@@ -48,11 +48,11 @@
     transition: outline 0.15s ease;
 }
 
-.jitsi-overlay[hidden] {
+.jitsi-route-root .jitsi-overlay[hidden] {
     display: none;
 }
 
-.jitsi-overlay.jitsi-drop-active {
+.jitsi-route-root .jitsi-overlay.jitsi-drop-active {
     outline: 3px solid #22c55e;
     outline-offset: -3px;
     background: linear-gradient(
@@ -62,45 +62,45 @@
     );
 }
 
-.jitsi-overlay-title {
+.jitsi-route-root .jitsi-overlay-title {
     margin: 0;
     font-size: 1.25rem;
 }
 
-.jitsi-overlay-message {
+.jitsi-route-root .jitsi-overlay-message {
     margin: 0;
     max-width: 52ch;
 }
 
-.jitsi-overlay-actions {
+.jitsi-route-root .jitsi-overlay-actions {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.jitsi-start-ready {
+.jitsi-route-root .jitsi-start-ready {
     background: #2563eb;
     border-color: #1d4ed8;
     color: #ffffff;
 }
 
-.jitsi-loading {
+.jitsi-route-root .jitsi-loading {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.jitsi-spinner {
+.jitsi-route-root .jitsi-spinner {
     width: 1rem;
     height: 1rem;
     border-radius: 999px;
     border: 2px solid rgba(255, 255, 255, 0.35);
     border-top-color: #ffffff;
-    animation: jitsi-spin 0.9s linear infinite;
+    animation: module-jitsi-meet-spin 0.9s linear infinite;
 }
 
-.jitsi-tick {
+.jitsi-route-root .jitsi-tick {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -114,11 +114,11 @@
     line-height: 1;
 }
 
-.jitsi-tick::after {
+.jitsi-route-root .jitsi-tick::after {
     content: "✓";
 }
 
-.jitsi-cross {
+.jitsi-route-root .jitsi-cross {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -132,11 +132,11 @@
     line-height: 1;
 }
 
-.jitsi-cross::after {
+.jitsi-route-root .jitsi-cross::after {
     content: "✕";
 }
 
-.jitsi-chat-pane {
+.jitsi-route-root .jitsi-chat-pane {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -146,18 +146,18 @@
         filter 0.15s ease;
 }
 
-.jitsi-chat-header {
+.jitsi-route-root .jitsi-chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem;
 }
 
-.jitsi-chat-header h3 {
+.jitsi-route-root .jitsi-chat-header h3 {
     margin: 0;
 }
 
-.jitsi-chat-participant-strip {
+.jitsi-route-root .jitsi-chat-participant-strip {
     display: flex;
     gap: 0.5rem;
     overflow-x: auto;
@@ -167,11 +167,11 @@
     -ms-overflow-style: none;
 }
 
-.jitsi-chat-participant-strip::-webkit-scrollbar {
+.jitsi-route-root .jitsi-chat-participant-strip::-webkit-scrollbar {
     display: none;
 }
 
-.jitsi-chat-participant-item {
+.jitsi-route-root .jitsi-chat-participant-item {
     border: 1px solid rgba(148, 163, 184, 0.4);
     background: rgba(15, 23, 42, 0.45);
     color: inherit;
@@ -187,32 +187,32 @@
     text-decoration: none;
 }
 
-.jitsi-chat-participant-item:hover,
-.jitsi-chat-participant-item.active {
+.jitsi-route-root .jitsi-chat-participant-item:hover,
+.jitsi-route-root .jitsi-chat-participant-item.active {
     border-color: rgba(34, 197, 94, 0.9);
     box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.55);
 }
 
-.jitsi-chat-participant-avatar,
-.jitsi-chat-participant-avatar-img,
-.jitsi-chat-participant-avatar-bubble {
+.jitsi-route-root .jitsi-chat-participant-avatar,
+.jitsi-route-root .jitsi-chat-participant-avatar-img,
+.jitsi-route-root .jitsi-chat-participant-avatar-bubble {
     width: 1.9rem;
     height: 1.9rem;
     border-radius: 999px;
 }
 
-.jitsi-chat-participant-avatar {
+.jitsi-route-root .jitsi-chat-participant-avatar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
-.jitsi-chat-participant-avatar-img {
+.jitsi-route-root .jitsi-chat-participant-avatar-img {
     object-fit: cover;
     display: block;
 }
 
-.jitsi-chat-participant-avatar-bubble {
+.jitsi-route-root .jitsi-chat-participant-avatar-bubble {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -222,7 +222,7 @@
     font-size: 0.82rem;
 }
 
-.jitsi-chat-return-btn {
+.jitsi-route-root .jitsi-chat-return-btn {
     border: 1px solid rgba(148, 163, 184, 0.45);
     background: rgba(15, 23, 42, 0.28);
     color: inherit;
@@ -234,22 +234,22 @@
     cursor: pointer;
 }
 
-.jitsi-chat-return-btn:hover {
+.jitsi-route-root .jitsi-chat-return-btn:hover {
     background: rgba(30, 41, 59, 0.38);
 }
 
-.jitsi-chat-pane.jitsi-chat-disabled {
+.jitsi-route-root .jitsi-chat-pane.jitsi-chat-disabled {
     opacity: 0.55;
     filter: grayscale(0.2);
 }
 
-.jitsi-chat-pane.jitsi-chat-disabled .jitsi-chat-thread,
-.jitsi-chat-pane.jitsi-chat-disabled .jitsi-chat-form {
+.jitsi-route-root .jitsi-chat-pane.jitsi-chat-disabled .jitsi-chat-thread,
+.jitsi-route-root .jitsi-chat-pane.jitsi-chat-disabled .jitsi-chat-form {
     pointer-events: none;
     user-select: none;
 }
 
-.jitsi-chat-thread {
+.jitsi-route-root .jitsi-chat-thread {
     width: 100%;
     flex: 1 1 auto;
     min-height: 16rem;
@@ -262,12 +262,12 @@
     gap: 0.6rem;
 }
 
-.jitsi-chat-empty {
+.jitsi-route-root .jitsi-chat-empty {
     margin: auto;
     color: var(--text-muted);
 }
 
-.jitsi-chat-message {
+.jitsi-route-root .jitsi-chat-message {
     padding: 0.55rem 0.75rem;
     border-radius: 0.65rem;
     border: 1px solid var(--color-border);
@@ -275,13 +275,13 @@
     color: var(--color-text);
 }
 
-.jitsi-chat-message-own {
+.jitsi-route-root .jitsi-chat-message-own {
     background: var(--color-accent);
     color: var(--color-accent-contrast);
     border-color: var(--color-accent);
 }
 
-.jitsi-chat-message-head {
+.jitsi-route-root .jitsi-chat-message-head {
     display: flex;
     justify-content: space-between;
     gap: 0.75rem;
@@ -289,53 +289,53 @@
     font-size: 0.8rem;
 }
 
-.jitsi-chat-message-head strong {
+.jitsi-route-root .jitsi-chat-message-head strong {
     color: var(--color-text-muted);
     font-weight: 600;
 }
 
-.jitsi-chat-message-head time {
+.jitsi-route-root .jitsi-chat-message-head time {
     color: var(--color-text-muted);
     opacity: 0.85;
 }
 
-.jitsi-chat-message-own .jitsi-chat-message-head strong,
-.jitsi-chat-message-own .jitsi-chat-message-head time {
+.jitsi-route-root .jitsi-chat-message-own .jitsi-chat-message-head strong,
+.jitsi-route-root .jitsi-chat-message-own .jitsi-chat-message-head time {
     color: var(--color-accent-contrast);
 }
 
-.jitsi-chat-message-body {
+.jitsi-route-root .jitsi-chat-message-body {
     margin: 0;
     white-space: normal;
     overflow-wrap: anywhere;
 }
 
-.jitsi-chat-message-body > :first-child {
+.jitsi-route-root .jitsi-chat-message-body > :first-child {
     margin-top: 0;
 }
 
-.jitsi-chat-message-body > :last-child {
+.jitsi-route-root .jitsi-chat-message-body > :last-child {
     margin-bottom: 0;
 }
 
-.jitsi-chat-message-body p {
+.jitsi-route-root .jitsi-chat-message-body p {
     margin: 0;
 }
 
-.jitsi-chat-message-body p + p {
+.jitsi-route-root .jitsi-chat-message-body p + p {
     margin-top: 0.35rem;
 }
 
-.jitsi-chat-message-body ul,
-.jitsi-chat-message-body ol {
+.jitsi-route-root .jitsi-chat-message-body ul,
+.jitsi-route-root .jitsi-chat-message-body ol {
     margin: 0.25rem 0 0.25rem 1rem;
 }
 
-.jitsi-chat-message-body li + li {
+.jitsi-route-root .jitsi-chat-message-body li + li {
     margin-top: 0.15rem;
 }
 
-.jitsi-chat-message-body pre {
+.jitsi-route-root .jitsi-chat-message-body pre {
     margin: 0.25rem 0;
     padding: 0.4rem 0.5rem;
     border-radius: 0.4rem;
@@ -343,18 +343,18 @@
     overflow-x: auto;
 }
 
-.jitsi-chat-message-own .jitsi-chat-message-body a {
+.jitsi-route-root .jitsi-chat-message-own .jitsi-chat-message-body a {
     color: inherit;
     text-decoration-color: currentColor;
 }
 
-.jitsi-chat-form {
+.jitsi-route-root .jitsi-chat-form {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.jitsi-chat-input {
+.jitsi-route-root .jitsi-chat-input {
     width: 100%;
     min-height: 5.5rem;
     resize: vertical;
@@ -366,24 +366,28 @@
     font: inherit;
 }
 
-.jitsi-participants-pane {
+.jitsi-route-root .jitsi-participants-pane {
     height: auto;
 }
 
-.jitsi-participants-pane.jitsi-participants-disabled {
+.jitsi-route-root .jitsi-participants-pane.jitsi-participants-disabled {
     opacity: 0.56;
 }
 
-.jitsi-participants-pane.jitsi-participants-disabled .jitsi-avatar-pool {
+.jitsi-route-root
+    .jitsi-participants-pane.jitsi-participants-disabled
+    .jitsi-avatar-pool {
     pointer-events: none;
     filter: grayscale(0.25);
 }
 
-.jitsi-participants-pane.jitsi-participants-disabled .jitsi-participant-avatar {
+.jitsi-route-root
+    .jitsi-participants-pane.jitsi-participants-disabled
+    .jitsi-participant-avatar {
     cursor: not-allowed;
 }
 
-.jitsi-participants-header {
+.jitsi-route-root .jitsi-participants-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -392,7 +396,7 @@
     margin-bottom: 0.35rem;
 }
 
-.jitsi-participants-pool-label {
+.jitsi-route-root .jitsi-participants-pool-label {
     margin: 0 0 0.35rem;
     font-size: 0.8rem;
     font-weight: 600;
@@ -401,7 +405,7 @@
     color: var(--text-muted);
 }
 
-.jitsi-avatar-pool {
+.jitsi-route-root .jitsi-avatar-pool {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -409,31 +413,31 @@
     min-height: 0;
 }
 
-.jitsi-participants-grid {
+.jitsi-route-root .jitsi-participants-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.9rem;
 }
 
-.jitsi-participants-grid-column {
+.jitsi-route-root .jitsi-participants-grid-column {
     min-width: 0;
 }
 
-.jitsi-active-meetings {
+.jitsi-route-root .jitsi-active-meetings {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.45rem;
     min-height: 2.5rem;
 }
 
-.jitsi-active-meetings-empty {
+.jitsi-route-root .jitsi-active-meetings-empty {
     grid-column: 1 / -1;
     margin: 0;
     color: var(--text-muted);
     font-size: 0.85rem;
 }
 
-.jitsi-active-meeting-item {
+.jitsi-route-root .jitsi-active-meeting-item {
     width: 100%;
     border: 1px solid rgba(148, 163, 184, 0.35);
     border-radius: 0.7rem;
@@ -447,12 +451,12 @@
     cursor: pointer;
 }
 
-.jitsi-active-meeting-item-selected {
+.jitsi-route-root .jitsi-active-meeting-item-selected {
     border-color: rgba(59, 130, 246, 0.85);
     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6);
 }
 
-.jitsi-active-meeting-avatar {
+.jitsi-route-root .jitsi-active-meeting-avatar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -466,14 +470,14 @@
     flex: 0 0 auto;
 }
 
-.jitsi-active-meeting-meta {
+.jitsi-route-root .jitsi-active-meeting-meta {
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
     min-width: 0;
 }
 
-.jitsi-active-meeting-title {
+.jitsi-route-root .jitsi-active-meeting-title {
     font-size: 0.82rem;
     font-weight: 600;
     overflow: hidden;
@@ -481,7 +485,7 @@
     white-space: nowrap;
 }
 
-.jitsi-active-meeting-owner {
+.jitsi-route-root .jitsi-active-meeting-owner {
     font-size: 0.73rem;
     color: var(--text-muted);
     overflow: hidden;
@@ -489,7 +493,7 @@
     white-space: nowrap;
 }
 
-.jitsi-participant-avatar {
+.jitsi-route-root .jitsi-participant-avatar {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -498,17 +502,17 @@
     user-select: none;
 }
 
-.jitsi-participant-avatar:active {
+.jitsi-route-root .jitsi-participant-avatar:active {
     cursor: grabbing;
 }
 
-.jitsi-participant-avatar-link {
+.jitsi-route-root .jitsi-participant-avatar-link {
     display: block;
     text-decoration: none;
 }
 
-.jitsi-participant-avatar-bubble,
-.jitsi-participant-avatar-img {
+.jitsi-route-root .jitsi-participant-avatar-bubble,
+.jitsi-route-root .jitsi-participant-avatar-img {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -524,19 +528,23 @@
         box-shadow 0.15s ease;
 }
 
-.jitsi-participant-avatar-img {
+.jitsi-route-root .jitsi-participant-avatar-img {
     display: block;
     object-fit: cover;
     background: rgba(15, 23, 42, 0.2);
 }
 
-.jitsi-participant-avatar:hover .jitsi-participant-avatar-bubble,
-.jitsi-participant-avatar:hover .jitsi-participant-avatar-img {
+.jitsi-route-root
+    .jitsi-participant-avatar:hover
+    .jitsi-participant-avatar-bubble,
+.jitsi-route-root
+    .jitsi-participant-avatar:hover
+    .jitsi-participant-avatar-img {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.jitsi-participant-avatar-label {
+.jitsi-route-root .jitsi-participant-avatar-label {
     font-size: 0.68rem;
     color: var(--text-muted);
     max-width: 4rem;
@@ -546,7 +554,7 @@
     text-align: center;
 }
 
-.jitsi-staged-participants {
+.jitsi-route-root .jitsi-staged-participants {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -555,23 +563,23 @@
     margin-bottom: 0.5rem;
 }
 
-.jitsi-staged-participants .jitsi-participant-avatar-bubble,
-.jitsi-staged-participants .jitsi-participant-avatar-img {
+.jitsi-route-root .jitsi-staged-participants .jitsi-participant-avatar-bubble,
+.jitsi-route-root .jitsi-staged-participants .jitsi-participant-avatar-img {
     width: 2.25rem;
     height: 2.25rem;
     font-size: 0.85rem;
     border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-.jitsi-staged-participants .jitsi-participant-avatar-label {
+.jitsi-route-root .jitsi-staged-participants .jitsi-participant-avatar-label {
     color: rgba(255, 255, 255, 0.75);
 }
 
-body[data-theme="light"] .jitsi-stage-frame-wrap {
+body[data-theme="light"] .jitsi-route-root .jitsi-stage-frame-wrap {
     background: rgba(226, 232, 240, 0.92);
 }
 
-body[data-theme="light"] .jitsi-overlay {
+body[data-theme="light"] .jitsi-route-root .jitsi-overlay {
     background: linear-gradient(
         180deg,
         rgba(248, 250, 255, 0.88) 0%,
@@ -579,7 +587,7 @@ body[data-theme="light"] .jitsi-overlay {
     );
 }
 
-body[data-theme="light"] .jitsi-overlay.jitsi-drop-active {
+body[data-theme="light"] .jitsi-route-root .jitsi-overlay.jitsi-drop-active {
     background: linear-gradient(
         180deg,
         rgba(240, 253, 244, 0.95) 0%,
@@ -587,64 +595,67 @@ body[data-theme="light"] .jitsi-overlay.jitsi-drop-active {
     );
 }
 
-body[data-theme="light"] .jitsi-spinner {
+body[data-theme="light"] .jitsi-route-root .jitsi-spinner {
     border-color: rgba(15, 23, 42, 0.18);
     border-top-color: rgba(15, 23, 42, 0.75);
 }
 
-body[data-theme="light"] .jitsi-chat-thread,
-body[data-theme="light"] .jitsi-chat-input {
+body[data-theme="light"] .jitsi-route-root .jitsi-chat-thread,
+body[data-theme="light"] .jitsi-route-root .jitsi-chat-input {
     background: rgba(248, 250, 252, 0.96);
 }
 
-body[data-theme="light"] .jitsi-chat-participant-item {
+body[data-theme="light"] .jitsi-route-root .jitsi-chat-participant-item {
     background: rgba(248, 250, 252, 0.96);
 }
 
-body[data-theme="light"] .jitsi-chat-return-btn {
+body[data-theme="light"] .jitsi-route-root .jitsi-chat-return-btn {
     background: rgba(248, 250, 252, 0.96);
 }
 
 body[data-theme="light"]
+    .jitsi-route-root
     .jitsi-staged-participants
     .jitsi-participant-avatar-img,
 body[data-theme="light"]
+    .jitsi-route-root
     .jitsi-staged-participants
     .jitsi-participant-avatar-bubble {
     border-color: rgba(15, 23, 42, 0.18);
 }
 
 body[data-theme="light"]
+    .jitsi-route-root
     .jitsi-staged-participants
     .jitsi-participant-avatar-label {
     color: var(--text-muted);
 }
 
 @media (max-width: 980px) {
-    .jitsi-participants-grid {
+    .jitsi-route-root .jitsi-participants-grid {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 720px) {
-    .jitsi-active-meetings {
+    .jitsi-route-root .jitsi-active-meetings {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 520px) {
-    .jitsi-active-meetings {
+    .jitsi-route-root .jitsi-active-meetings {
         grid-template-columns: 1fr;
     }
 }
 
-@keyframes jitsi-spin {
+@keyframes module-jitsi-meet-spin {
     to {
         transform: rotate(360deg);
     }
 }
 
-.jitsi-stage-header {
+.jitsi-route-root .jitsi-stage-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -653,6 +664,6 @@ body[data-theme="light"]
     flex: none;
 }
 
-.jitsi-stage-header h3 {
+.jitsi-route-root .jitsi-stage-header h3 {
     margin: 0;
 }

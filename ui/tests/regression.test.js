@@ -208,12 +208,46 @@ test("jitsi chat loads room keys through the messages adapter loading flow", () 
 
 test("jitsi meeting window has light-theme overlay overrides", () => {
     const source = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
-    assert.match(source, /body\[data-theme="light"\] \.jitsi-overlay\s*\{/);
-    assert.match(source, /body\[data-theme="light"\] \.jitsi-spinner\s*\{/);
+    assert.match(
+        source,
+        /body\[data-theme="light"\] \.jitsi-route-root \.jitsi-overlay\s*\{/,
+    );
+    assert.match(
+        source,
+        /body\[data-theme="light"\] \.jitsi-route-root \.jitsi-spinner\s*\{/,
+    );
     assert.match(
         source,
         /body\[data-theme="light"\][\s\S]*\.jitsi-staged-participants[\s\S]*\.jitsi-participant-avatar-label\s*\{/,
     );
+});
+
+test("meeting styles remain scoped to the Meetings route root", () => {
+    const source = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const topLevelSelectorLines = source
+        .split("\n")
+        .filter(
+            (line) =>
+                line.startsWith(".") ||
+                (line.startsWith("body[") &&
+                    line.includes(".jitsi-route-root")),
+        );
+    assert.ok(topLevelSelectorLines.length > 0);
+    assert.ok(
+        topLevelSelectorLines.every((line) =>
+            line.includes(".jitsi-route-root"),
+        ),
+    );
+    assert.doesNotMatch(source, /@media[^\{]*\{\s*\.jitsi-(?!route-root)/);
+    const themeSelectors = [...source.matchAll(/body\[data-theme="light"\]/g)];
+    assert.ok(themeSelectors.length > 0);
+    assert.ok(
+        themeSelectors.every(({ index, 0: match }) =>
+            /^\s+\.jitsi-route-root/.test(source.slice(index + match.length)),
+        ),
+    );
+    assert.match(source, /@keyframes module-jitsi-meet-spin/);
+    assert.doesNotMatch(source, /@keyframes jitsi-spin/);
 });
 
 test("meetings page composer uses a dedicated layout preference key", () => {
@@ -902,11 +936,18 @@ test("direct-account SPA shares mount the full Meetings page", () => {
 
 test("meeting routes and standalone shell load only module-owned layout styles", () => {
     const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const uiResourcesSource = readFileSync(
+        resolve(ROOT, "api/ui-resources.js"),
+        "utf8",
+    );
     const shellSource = readFileSync(resolve(ROOT, "ui/index.html"), "utf8");
     assert.doesNotMatch(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.doesNotMatch(shellSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.match(apiSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
     assert.match(shellSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.doesNotMatch(appSource, /ensureStylesheetLoaded/);
+    assert.doesNotMatch(uiResourcesSource, /stylesheetUrls/);
 });
 
 test("profile avatar rendering is centralized behind the host capability", () => {

@@ -12,7 +12,6 @@ import { isModeratorRole } from "./meeting-values.js";
 import {
     registerJitsiUiResourcesRoute,
     resolveMessagesUiResources,
-    resolveSharedMessagesStylesheetUrls,
 } from "./ui-resources.js";
 import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
@@ -98,9 +97,6 @@ function appendMeetingLinkToBody(body, meetingId) {
 }
 
 export function registerUi(ctx) {
-    const messagesUiResources = resolveMessagesUiResources(ctx);
-    const sharedStylesheetUrls =
-        resolveSharedMessagesStylesheetUrls(messagesUiResources);
     const moduleUiRoot = path.join(ctx.moduleRoot, "ui");
     ctx.registerStaticDir("", moduleUiRoot);
     ctx.registerNavbarPlugin({
@@ -109,7 +105,6 @@ export function registerUi(ctx) {
     });
     const meetingsStylesheets = [
         "/static/styles/page-builder.css",
-        ...sharedStylesheetUrls,
         "/static/modules/jitsi-meet/jitsi-meet.css",
     ];
     for (const route of [
