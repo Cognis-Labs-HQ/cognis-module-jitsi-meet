@@ -80,6 +80,6 @@ Die Schemainrichtung bei Neuinstallationen teilt jetzt ein Initialisierungs-Prom
 
 Das Manifest deklariert Nextcloud Whiteboard jetzt als optionale weiche Abhängigkeit. Die abhängigkeitsbewusste Cognis-Installation kann Whiteboard zusammen mit Meetings anbieten, ohne Installation oder Aktivierung zu blockieren, wenn das optionale Modul nicht verfügbar ist.
 
-Meetings versieht die Einstieg-URL seiner SPA jetzt mit der Modulversion. Dadurch kann der Cognis-Entwicklungs-Asset-Cache kein früheres unveränderliches Einstiegsmodul wiederverwenden, dessen umbenannte relative Importe nicht mehr vorhanden sind; dies wurde zuvor als fehlgeschlagener dynamischer Import für `/meetings` angezeigt.
-
 Neue Besprechungen ohne übernommene Raumidentität deaktivieren jetzt ausdrücklich die eingebettete Jitsi-Willkommensseite. Dadurch erzeugt Jitsi bei einem leeren Raum sofort einen zufälligen Raum und tritt ihm bei, statt seine Startseite im begrenzten Besprechungsbereich darzustellen und Cognis mit einer unbrauchbaren leeren, scrollenden Ansicht zurückzulassen.
+
+Die Meetings-SPA und Freigabebeiträge veröffentlichen wieder den kanonischen, nicht qualifizierten Modul-Einstiegspfad und überlassen die Versionierung des Asset-Caches vollständig Cognis.

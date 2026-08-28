@@ -80,6 +80,6 @@ Penyiapan skema pemasangan baru kini berbagi satu promise inisialisasi per eksek
 
 Manifest kini mendeklarasikan Nextcloud Whiteboard sebagai dependensi lunak opsional. Pemasangan Cognis yang memahami dependensi dapat menawarkan Papan Tulis bersama Rapat tanpa memblokir pemasangan atau pengaktifan ketika modul opsional tidak tersedia.
 
-Meetings kini memberi versi rilis modul pada URL entry SPA. Hal ini mencegah cache aset pengembangan Cognis memakai kembali modul entry lama yang tidak dapat diubah ketika impor relatifnya yang telah diganti nama sudah tidak ada, yang sebelumnya muncul sebagai kegagalan impor dinamis untuk `/meetings`.
-
 Rapat baru tanpa identitas ruang yang telah ditangkap kini secara eksplisit menonaktifkan halaman sambutan Jitsi tertanam. Dengan demikian, Jitsi langsung membuat dan memasuki ruang acak sesuai perilaku ruang kosong yang didukung, alih-alih merender layar awalnya di dalam panggung rapat terbatas dan meninggalkan Cognis pada viewport kosong yang tidak dapat digunakan dan terus bergulir.
+
+Kontribusi SPA dan berbagi Meetings kembali menerbitkan jalur entry modul kanonis tanpa parameter dan menyerahkan seluruh pengelolaan versi cache aset kepada Cognis.

@@ -1,7 +1,6 @@
 import { registerApiRoutes, registerUi } from "./api/index.js";
 import { registerShareFlowHooks } from "./api/share-hooks.js";
 import { JitsiMeetStore } from "./api/store.js";
-import { JITSI_MEET_APP_SCRIPT_URL } from "./api/ui-asset-urls.js";
 
 const MEETINGS_FLOW_CATALOG = [
     {
@@ -63,7 +62,7 @@ export function bootstrapModule(ctx) {
         () => ({
             providerId: "jitsi-meet",
             providerName: "Jitsi Meet",
-            scriptUrl: JITSI_MEET_APP_SCRIPT_URL,
+            scriptUrl: "/static/modules/jitsi-meet/app/index.js",
         }),
     );
 

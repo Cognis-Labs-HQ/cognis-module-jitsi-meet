@@ -8,7 +8,6 @@ import {
     resolveMessagesUiResources,
     resolveSharedMessagesStylesheetUrls,
 } from "./ui-resources.js";
-import { JITSI_MEET_APP_SCRIPT_URL } from "./ui-asset-urls.js";
 
 /**
  * Determines whether an already-authenticated requester (identified by
@@ -337,7 +336,7 @@ export function registerShareFlowHooks(ctx) {
                     return null;
                 }
                 return {
-                    mountScriptUrl: JITSI_MEET_APP_SCRIPT_URL,
+                    mountScriptUrl: "/static/modules/jitsi-meet/app/index.js",
                     stringsBaseUrl: ["/static/modules/jitsi-meet/languages"],
                     stylesheetUrls: [
                         ...resolveSharedMessagesStylesheetUrls(
