@@ -337,7 +337,7 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     );
 });
 
-test("jitsi store reconnects a reused meeting to its resolved chat room", async () => {
+test("jitsi store refreshes an unsafe reused name before reconnecting its chat", async () => {
     const participantKey = createHash("sha256")
         .update(
             JSON.stringify({
@@ -353,7 +353,7 @@ test("jitsi store reconnects a reused meeting to its resolved chat room", async 
                 participant_key: participantKey,
                 meeting_url: "https://meet.example.com/classroom-existing",
                 meeting_password: "secret",
-                meeting_name: "Cognis Classroom",
+                meeting_name: "2026-08-28 16:27 UTC · 98BBC2",
                 room_slug: "classroom-existing",
                 chat_room_id: "deleted-room",
                 classroom_id: null,
@@ -368,8 +368,14 @@ test("jitsi store reconnects a reused meeting to its resolved chat room", async 
             { meeting_id: "meeting-1", username: "bob" },
         ],
     });
-    const store = new JitsiMeetStore({ db: mockDb });
+    const logs = [];
+    const store = new JitsiMeetStore({
+        db: mockDb,
+        generatePassphrase: () => "Amber-Cedar-Otter-Willow",
+        log: (...entry) => logs.push(entry),
+    });
 
+    await store.ensureSchema();
     const meeting = await store.createMeeting({
         instanceUrl: "https://meet.example.com",
         usernames: ["alice", "bob"],
@@ -380,6 +386,14 @@ test("jitsi store reconnects a reused meeting to its resolved chat room", async 
 
     assert.equal(meeting?.reused, true);
     assert.equal(meeting?.chatRoomId, "resolved-room");
+    assert.equal(meeting?.meetingName, "Amber-Cedar-Otter-Willow");
+    assert.equal(meeting?.roomSlug, "Amber-Cedar-Otter-Willow");
+    assert.equal(
+        meeting?.meetingUrl,
+        "https://meet.example.com/Amber-Cedar-Otter-Willow",
+    );
+    assert.equal(logs[0][0], "info");
+    assert.equal(logs[0][2].operation, "regenerate_meeting_name");
     assert.equal(mockDb.insertedMeetingRows.length, 0);
     assert.equal(
         (await store.getMeetingById("meeting-1"))?.chatRoomId,

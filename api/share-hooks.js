@@ -28,7 +28,11 @@ async function requesterHasDirectMeetingAccess(
     if (!dbExecutor || !profileStore || !meetingId) {
         return false;
     }
-    const store = resolveStore(dbExecutor, log);
+    const store = resolveStore(
+        dbExecutor,
+        log,
+        ctx.getCapability("reuse:generatePassphrase"),
+    );
     await store.ensureSchema();
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
@@ -97,7 +101,11 @@ export function registerShareFlowHooks(ctx) {
                 if (!dbExecutor || !profileStore) {
                     return { targetAccountIds: [] };
                 }
-                const store = resolveStore(dbExecutor, log);
+                const store = resolveStore(
+                    dbExecutor,
+                    log,
+                    ctx.getCapability("reuse:generatePassphrase"),
+                );
                 await store.ensureSchema();
                 const meeting = await store.getMeetingById(
                     String(input.resourceId ?? ""),
@@ -161,7 +169,11 @@ export function registerShareFlowHooks(ctx) {
             if (!dbExecutor || !profileStore) {
                 return { valid: false, reason: "dependencies_unavailable" };
             }
-            const store = resolveStore(dbExecutor, log);
+            const store = resolveStore(
+                dbExecutor,
+                log,
+                ctx.getCapability("reuse:generatePassphrase"),
+            );
             await store.ensureSchema();
             const meeting = await store.getMeetingById(
                 String(input.resourceId ?? ""),
@@ -241,7 +253,11 @@ export function registerShareFlowHooks(ctx) {
             if (!dbExecutor || !profileStore) {
                 return { resolved: false, reason: "dependencies_unavailable" };
             }
-            const store = resolveStore(dbExecutor, log);
+            const store = resolveStore(
+                dbExecutor,
+                log,
+                ctx.getCapability("reuse:generatePassphrase"),
+            );
             await store.ensureSchema();
             const meeting = await store.getMeetingById(
                 String(tokenRecord.resourceId ?? ""),
@@ -363,7 +379,11 @@ export function registerShareFlowHooks(ctx) {
                         reason: "dependencies_unavailable",
                     };
                 }
-                const store = resolveStore(dbExecutor, log);
+                const store = resolveStore(
+                    dbExecutor,
+                    log,
+                    ctx.getCapability("reuse:generatePassphrase"),
+                );
                 await store.ensureSchema();
                 const meeting = await store.getMeetingById(
                     String(input.resourceId ?? ""),

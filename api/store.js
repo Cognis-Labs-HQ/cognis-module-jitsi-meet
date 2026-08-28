@@ -10,6 +10,7 @@ import {
 } from "./reuse/normalize-handle.js";
 import { buildMeetingName } from "./meeting-values.js";
 import { generateMeetingName } from "./meeting-name.js";
+import { refreshGeneratedMeetingNames } from "./meeting-name-store.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -181,7 +182,19 @@ export class JitsiMeetStore {
         const meetings = await this.db.executeCommand({
             option: "SELECT",
             table: "jitsi_meetings",
-            columns: ["id", "meeting_password", "meeting_password_iv"],
+            columns: [
+                "id",
+                "meeting_url",
+                "meeting_name",
+                "meeting_password",
+                "meeting_password_iv",
+            ],
+        });
+        await refreshGeneratedMeetingNames({
+            db: this.db,
+            meetings: meetings.rows ?? [],
+            generatePassphrase: this.generatePassphrase,
+            log: this.log,
         });
         for (const meeting of meetings.rows ?? []) {
             if (

@@ -127,7 +127,11 @@ export function registerMeetingShareRoutes({
         return;
     }
 
-    const store = resolveStore(dbExecutor, log);
+    const store = resolveStore(
+        dbExecutor,
+        log,
+        ctx.getCapability("reuse:generatePassphrase"),
+    );
 
     router.get(
         "/api/v1/modules/jitsi-meet/share",

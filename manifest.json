@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.52",
+    "version": "1.5.53",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -144,8 +144,12 @@
             "sha256": "1a39e3ec4cae2b967965421cc34a37299b58d50d506b33dffcab57875384a330"
         },
         {
+            "path": "api/meeting-name-store.js",
+            "sha256": "90792594ae461cb0264da493031c4a6ae1046cf16e641908641706fbdd40111d"
+        },
+        {
             "path": "api/meeting-name.js",
-            "sha256": "cf40bf72201648d1faa227c1a457be1d288d978c2fb47d26778627d72f4b0367"
+            "sha256": "f68b3c02635a818252e28fbdae458b6771ea0e2a539dd32ae399a0ea4ee3db89"
         },
         {
             "path": "api/meeting-values.js",
@@ -205,15 +209,15 @@
         },
         {
             "path": "api/share-hooks.js",
-            "sha256": "d936c88c7aa97cd07a99b750d4807050703c01ad101557ed1a75bac580154f50"
+            "sha256": "4d76a06e77d36419fa4f4b14633807bbca2f1660f0b411a7f2122ce484d4a97d"
         },
         {
             "path": "api/share-routes.js",
-            "sha256": "5cb311a79a3bd21e93677cf58ad3c7ffc23a6dce270ca9ed77b5eb5b7bd103d6"
+            "sha256": "27ad41430fd3f127cefad6dda6ce19f05fc585502b15ebee4628649ef150fa4f"
         },
         {
             "path": "api/store.js",
-            "sha256": "975a271c96b54c40cf387d59f452bf386855b71f0603957b2909b6b223995ddf"
+            "sha256": "74efd84f119ed7a77816838690691c833d7e0720e1e637f66945cfea7081fe86"
         },
         {
             "path": "api/tests/bootstrap.test.js",
@@ -245,11 +249,11 @@
         },
         {
             "path": "api/tests/share-hooks.test.js",
-            "sha256": "b4f3c52c263c7955ebe286a93bb3075370608b22c05c51c548adcfa53240940c"
+            "sha256": "02e79ab537f45f51d5ceeb587ab63e3a9a68e4ef35f1d4ae96b0a814117eacdb"
         },
         {
             "path": "api/tests/store.test.js",
-            "sha256": "eeaf4caa542a7e3cf496df4fae2be575385c5900f5875e183cf090bc29edb5dc"
+            "sha256": "35db0ef265e322a0f03b3a014364e73ed4329b8a3b672c10a6a206446c7fba63"
         },
         {
             "path": "api/tests/structural-compliance.test.js",
@@ -301,11 +305,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "ee77716d6b1ed53702fc6200f10e54714cfc48e6352c35f84dfc4b8c88144cb0"
+            "sha256": "9b9221b04dc7be1226209ebd7e22eeabfe5207289051a17bba7c68a6e6abd518"
         },
         {
             "path": "package.json",
-            "sha256": "dec0ceb3267fbea55b9aa0f09a19977dda8254f248b8ee0fe8c332888d651310"
+            "sha256": "482d18a7c0fdec61822c2ecb9bff6ed4eadc259e4360317e2f41ed17cd54c184"
         },
         {
             "path": "routes.json",

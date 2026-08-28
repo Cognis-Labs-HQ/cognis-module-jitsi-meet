@@ -151,6 +151,7 @@ function createFlowHarness(executor, profileStore = createProfileStore()) {
         ["db:executor", executor],
         ["social:profileStore", profileStore],
         ["logging:log", () => undefined],
+        ["reuse:generatePassphrase", () => "Amber-Cedar-Otter-Willow"],
     ]);
     registerShareFlowHooks({
         flow: ctx.flow,
@@ -179,6 +180,7 @@ function createRouterHarness({
     const capabilities = new Map([
         ["db:executor", executor],
         ["logging:log", () => undefined],
+        ["reuse:generatePassphrase", () => "Amber-Cedar-Otter-Willow"],
         ["system:ctx", { flow: { run: runFlow } }],
         ["share:listByResource", listByResource],
     ]);
