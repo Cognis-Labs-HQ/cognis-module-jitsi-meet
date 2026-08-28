@@ -170,6 +170,58 @@ function createMockJitsiDb({
     };
 }
 
+test("schema initialization is shared across concurrent store instances", async () => {
+    const ensuredTables = [];
+    let releaseFirstTable;
+    const firstTableBlocked = new Promise((resolve) => {
+        releaseFirstTable = resolve;
+    });
+    const databaseExecutor = {
+        async ensureTable(definition) {
+            ensuredTables.push(definition.name);
+            if (ensuredTables.length === 1) await firstTableBlocked;
+        },
+        async executeCommand() {
+            return { rows: [] };
+        },
+    };
+    const firstStore = new JitsiMeetStore({ db: databaseExecutor });
+    const secondStore = new JitsiMeetStore({ db: databaseExecutor });
+
+    const firstInitialization = firstStore.ensureSchema();
+    await Promise.resolve();
+    const secondInitialization = secondStore.ensureSchema();
+    releaseFirstTable();
+    await Promise.all([firstInitialization, secondInitialization]);
+
+    assert.deepEqual(ensuredTables, [
+        "jitsi_module_config",
+        "jitsi_meetings",
+        "jitsi_meeting_participants",
+        "jitsi_meeting_state",
+        "jitsi_meeting_presence",
+    ]);
+});
+
+test("schema initialization can retry after a failed create", async () => {
+    let ensureAttempts = 0;
+    const databaseExecutor = {
+        async ensureTable() {
+            ensureAttempts += 1;
+            if (ensureAttempts === 1) throw new Error("create raced");
+        },
+        async executeCommand() {
+            return { rows: [] };
+        },
+    };
+    const store = new JitsiMeetStore({ db: databaseExecutor });
+
+    await assert.rejects(store.ensureSchema(), /create raced/);
+    await store.ensureSchema();
+
+    assert.equal(ensureAttempts, 6);
+});
+
 test("jitsi store meeting creation uses the modern column set", async () => {
     const mockDb = createMockJitsiDb();
     const store = new JitsiMeetStore({ db: mockDb });

@@ -19,12 +19,8 @@ import {
 } from "./reuse/crypto.js";
 
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
-// Background/unfocused browser tabs are throttled by the browser and can
-// delay heartbeat pings (see HEARTBEAT_INTERVAL_MS client-side) well beyond
-// their nominal interval. This window must stay wide enough that a
-// participant who simply isn't focused on the tab is never treated as
-// "gone" for the purposes of the alone-in-meeting prompt.
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
+const schemaInitializationByExecutor = new WeakMap();
 function buildParticipantKey(usernames, classroomId = null) {
     const payload = JSON.stringify({
         classroomId: classroomId ? String(classroomId) : null,
@@ -40,6 +36,23 @@ export class JitsiMeetStore {
     }
 
     async ensureSchema() {
+        const existingInitialization = schemaInitializationByExecutor.get(
+            this.db,
+        );
+        if (existingInitialization) return existingInitialization;
+        const initialization = this.ensureSchemaTables().catch((error) => {
+            if (
+                schemaInitializationByExecutor.get(this.db) === initialization
+            ) {
+                schemaInitializationByExecutor.delete(this.db);
+            }
+            throw error;
+        });
+        schemaInitializationByExecutor.set(this.db, initialization);
+        return initialization;
+    }
+
+    async ensureSchemaTables() {
         await this.db.ensureTable({
             name: "jitsi_module_config",
             columns: [
@@ -870,9 +883,6 @@ export class JitsiMeetStore {
         return now - authStartMs >= AUTH_WAIT_TIMEOUT_MS;
     }
 
-    /**
-     * Builds the normalized meeting payload shape returned by API routes.
-     */
     buildMeetingPayload(meeting, participants, state, extra = {}) {
         return {
             id: meeting.id,

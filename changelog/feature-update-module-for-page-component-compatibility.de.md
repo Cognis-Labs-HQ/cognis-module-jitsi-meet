@@ -75,3 +75,5 @@ Changelog-Dokumente bleiben Release-Metadaten des Repositorys und sind nicht meh
 Der Whiteboard-UI-Orchestrator heißt jetzt `whiteboard-control.js`, passend zu seiner umfassenderen Verantwortung für den Steuerungslebenszyklus. Das Modul enthält keinen Besprechungsnamengenerator, keine kopierten Wortlisten und keine Generatorlizenz mehr. Bevor Jitsi die Raumidentität meldet, zeigen Flächen ohne Nutzen daraus weiterhin „Cognis Classroom“ an.
 
 Das Löschen der Konfiguration ist jetzt ausdrücklich als reine Administratorroute registriert, die auch bei deaktiviertem Modul einschließlich des Route-Satzes mit eingeschränkten Capabilities verfügbar bleibt.
+
+Die Schemainrichtung bei Neuinstallationen teilt jetzt ein Initialisierungs-Promise pro Datenbank-Executor. Gleichzeitige Konfigurations- und Lebenszyklusanfragen warten auf dieselbe Tabellenerstellung, statt bei der PostgreSQL-Typerstellung zu konkurrieren.

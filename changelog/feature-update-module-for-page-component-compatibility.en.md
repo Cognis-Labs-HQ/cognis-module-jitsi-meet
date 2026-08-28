@@ -75,3 +75,5 @@ Changelog documents remain repository release metadata and are no longer include
 The Whiteboard UI orchestrator is now named `whiteboard-control.js` to reflect its broader control lifecycle responsibility. The module no longer contains a meeting-name generator, copied word pools, or a generator license. Before Jitsi reports the room identity, surfaces that do not benefit from it continue to display “Cognis Classroom”.
 
 Configuration deletion is now explicitly registered as an administrator-only route that remains available while the module is disabled, including the reduced-capability route set.
+
+Fresh-install schema setup now shares one initialization promise per database executor. Concurrent config and lifecycle requests wait for the same table-creation sequence instead of racing PostgreSQL type creation.

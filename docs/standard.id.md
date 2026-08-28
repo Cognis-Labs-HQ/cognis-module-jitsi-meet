@@ -13,7 +13,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 
 - Panggilan API memerlukan token akses Cognis yang valid; detail rapat hanya dikembalikan kepada peserta berwenang atau tamu berbagi yang terbatas.
 - Kata sandi dibuat per rekaman rapat. Jitsi membuat nama ruang saat penyelenggara membuka rapat baru; Cognis kemudian menangkap nama tersebut untuk sumber daya Papan Tulis dan chat Messages tanpa tanggal. Permukaan rapat lainnya tetap menggunakan “Cognis Classroom” ketika identitas ruang tidak bermanfaat. Rapat sekali pakai tanpa peserta tidak membuat chat Messages, dan chat lama yang terkait akan dihapus permanen saat rapat berakhir. Endpoint konfigurasi `DELETE` yang diautentikasi tetap tersedia saat modul dinonaktifkan agar administrator dapat menghapus URL Jitsi yang tidak valid.
-- Persistensi milik modul menyimpan konfigurasi, peserta, kehadiran, status siklus hidup, status Papan Tulis, dan suara konsensus.
+- Persistensi milik modul menyimpan konfigurasi, peserta, kehadiran, status siklus hidup, status Papan Tulis, dan suara konsensus. Inisialisasi skema pada pemasangan baru diserialkan per eksekutor basis data agar permintaan siklus hidup dan konfigurasi yang bersamaan tidak berlomba saat membuat tabel PostgreSQL.
 - Pengambilalihan sesi memutus sesi rapat aktif pengguna sebelumnya.
 
 ### Kontrak Integrasi
