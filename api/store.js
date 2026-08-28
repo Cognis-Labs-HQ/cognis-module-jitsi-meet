@@ -8,7 +8,7 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName } from "./meeting-values.js";
+import { buildMeetingName, createMeetingName } from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -444,7 +444,6 @@ export class JitsiMeetStore {
 
         const meetingId = randomUUID();
         const meetingSlug = meetingId.replaceAll("-", "");
-        const meetingName = "Cognis Classroom";
         const meetingUrl = `${normalizedInstanceUrl}/${meetingSlug}`;
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
@@ -465,6 +464,10 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
+        const meetingName = createMeetingName(
+            normalizedScheduledAt,
+            meetingSlug,
+        );
 
         await this.db.transaction(async (executor) => {
             const meetingValues = {

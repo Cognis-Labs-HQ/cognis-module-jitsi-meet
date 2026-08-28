@@ -250,9 +250,9 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
-    assert.equal(
+    assert.match(
         mockDb.insertedMeetingRows[0].meeting_name,
-        "Cognis Classroom",
+        /^2026-08-01 09:30 UTC · [A-F0-9]{6}$/,
     );
     assert.equal(
         mockDb.insertedMeetingRows[0].meeting_url,

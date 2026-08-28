@@ -94,3 +94,75 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
     assert.equal(logs[0][2].meetingId, "meeting-1");
     assert.equal(logs[0][2].chatRoomId, "chat-1");
 });
+
+test("participant-free meeting creation provisions a share-ready chat", async () => {
+    const handlers = new Map();
+    const chatRequests = [];
+    const meeting = {
+        id: "meeting-1",
+        meetingName: "2026-08-28 18:30 UTC · A1B2C3",
+        chatRoomId: null,
+        createdBy: "alice",
+    };
+    const store = {
+        async ensureSchema() {},
+        async getConfig() {
+            return { instanceUrl: "https://meet.example.com" };
+        },
+        normalizeMeetingCreationInput({ creatorUsername }) {
+            return {
+                participantUsernames: [creatorUsername],
+                classroomId: null,
+            };
+        },
+        async createMeeting({ chatRoomId }) {
+            if (chatRoomId) meeting.chatRoomId = chatRoomId;
+            return meeting;
+        },
+        async listParticipants() {
+            return ["alice"];
+        },
+        async getMeetingState() {
+            return {};
+        },
+    };
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store,
+        requireAuth: () => ({ sub: "account-alice", role: "user" }),
+        readJson: async () => ({ participants: [] }),
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("meeting creation returned an error"),
+        profileStore: {},
+        resolveRequesterUsername: async () => "alice",
+        resolveRequestedParticipants: async () => [],
+        hasMinRole: () => false,
+        resolveGroupChat: async (request) => {
+            chatRequests.push(request);
+            return { roomId: "chat-1", url: "/messages/chat-1" };
+        },
+        buildMeetingChatTitle: (name) => name,
+        createMeetingPayload: async ({ meeting: createdMeeting, chatUrl }) => ({
+            ...createdMeeting,
+            chatUrl,
+        }),
+        dispatchMeetingNotifications: async () => {},
+    });
+    const response = createRecorder();
+
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
+        {},
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(chatRequests.length, 1);
+    assert.deepEqual(chatRequests[0].usernames, ["alice"]);
+    assert.equal(chatRequests[0].allowSingleMember, true);
+    assert.equal(chatRequests[0].title, meeting.meetingName);
+    assert.equal(response.body.data.chatRoomId, "chat-1");
+    assert.equal(response.body.data.chatUrl, "/messages/chat-1");
+});

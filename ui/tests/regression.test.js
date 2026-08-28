@@ -184,12 +184,15 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
     assert.match(cssSource, /\.jitsi-participant-avatar-img/);
 });
 
-test("jitsi meeting group chats use the classroom title without a date", () => {
+test("jitsi meeting group chats use the unique stored meeting title", () => {
     const source = readJitsiApiBundle();
-    assert.match(source, /function buildMeetingChatTitle\(meetingName\)/);
-    assert.match(source, /title:\s*buildMeetingChatTitle\(\)/);
+    assert.match(
+        source,
+        /title:\s*buildMeetingChatTitle\(meeting\.meetingName\)/,
+    );
     assert.doesNotMatch(source, /new Date\(parsedCreatedAt\)/);
-    assert.match(source, /normalizedInput\.participantUsernames\.length > 1/);
+    assert.match(source, /allowSingleMember:\s*true/);
+    assert.doesNotMatch(source, /participantUsernames\.length > 1/);
 });
 
 test("jitsi chat loads room keys through the messages adapter loading flow", () => {

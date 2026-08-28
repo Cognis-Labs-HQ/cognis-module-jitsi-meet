@@ -119,14 +119,19 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
+            let meeting = await store.createMeeting({
+                instanceUrl: config.instanceUrl,
+                usernames: normalizedInput.participantUsernames,
+                classroomId: normalizedInput.classroomId,
+                createdBy: requesterUsername,
+                chatRoomId: null,
+                scheduledAt: body.scheduledAt,
+            });
             let chatRoom = null;
-            if (
-                normalizedInput.participantUsernames.length > 1 &&
-                typeof resolveGroupChat === "function"
-            ) {
+            if (!meeting.chatRoomId && typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
                     usernames: normalizedInput.participantUsernames,
-                    title: buildMeetingChatTitle(),
+                    title: buildMeetingChatTitle(meeting.meetingName),
                     createdByAccountId: claims.sub,
                     allowSingleMember: true,
                 }).catch((error) => {
@@ -140,16 +145,17 @@ export function registerMeetingLifecycleRoutes({
                     });
                     return null;
                 });
+                if (chatRoom?.roomId) {
+                    meeting = await store.createMeeting({
+                        instanceUrl: config.instanceUrl,
+                        usernames: normalizedInput.participantUsernames,
+                        classroomId: normalizedInput.classroomId,
+                        createdBy: requesterUsername,
+                        chatRoomId: chatRoom.roomId,
+                        scheduledAt: body.scheduledAt,
+                    });
+                }
             }
-
-            const meeting = await store.createMeeting({
-                instanceUrl: config.instanceUrl,
-                usernames: normalizedInput.participantUsernames,
-                classroomId: normalizedInput.classroomId,
-                createdBy: requesterUsername,
-                chatRoomId: chatRoom?.roomId ?? null,
-                scheduledAt: body.scheduledAt,
-            });
             const participants = await store.listParticipants(meeting.id);
             const state = await store.getMeetingState(meeting.id);
             const payload = await createMeetingPayload({
