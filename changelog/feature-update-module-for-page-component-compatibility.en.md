@@ -83,3 +83,5 @@ The manifest now declares Nextcloud Whiteboard as an optional soft dependency. C
 New meetings without a captured room identity now explicitly disable Jitsi’s embedded welcome page. Jitsi therefore follows its supported empty-room behavior by generating and joining a random room immediately, instead of rendering its landing screen inside the constrained meeting stage and leaving Cognis on an unusable blank, scrolling viewport.
 
 Meetings SPA and share contributions again publish the canonical unqualified module entry path and leave asset cache versioning entirely to Cognis.
+
+Pending meetings now store a unique fragment-qualified Jitsi instance URL keyed by their existing meeting UUID. This satisfies the non-null unique `meeting_url` schema without inventing a room slug, prevents concurrent new meetings on the same Jitsi instance from colliding, and is replaced by the canonical Jitsi room URL after identity capture.

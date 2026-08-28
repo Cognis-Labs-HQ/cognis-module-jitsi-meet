@@ -83,3 +83,5 @@ Manifest kini mendeklarasikan Nextcloud Whiteboard sebagai dependensi lunak opsi
 Rapat baru tanpa identitas ruang yang telah ditangkap kini secara eksplisit menonaktifkan halaman sambutan Jitsi tertanam. Dengan demikian, Jitsi langsung membuat dan memasuki ruang acak sesuai perilaku ruang kosong yang didukung, alih-alih merender layar awalnya di dalam panggung rapat terbatas dan meninggalkan Cognis pada viewport kosong yang tidak dapat digunakan dan terus bergulir.
 
 Kontribusi SPA dan berbagi Meetings kembali menerbitkan jalur entry modul kanonis tanpa parameter dan menyerahkan seluruh pengelolaan versi cache aset kepada Cognis.
+
+Rapat yang masih menunggu kini menyimpan URL instans Jitsi unik dengan fragmen yang menggunakan UUID rapat yang sudah ada. Ini memenuhi skema `meeting_url` unik dan wajib tanpa membuat slug ruang, mencegah rapat baru bersamaan pada instans Jitsi yang sama berbenturan, dan diganti dengan URL ruang Jitsi kanonis setelah identitas ditangkap.

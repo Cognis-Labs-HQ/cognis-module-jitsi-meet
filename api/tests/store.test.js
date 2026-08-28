@@ -256,7 +256,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     );
     assert.equal(
         mockDb.insertedMeetingRows[0].meeting_url,
-        "https://meet.example.com",
+        `https://meet.example.com/#cognisMeeting=${createdMeeting.id}`,
     );
     const capturedMeeting = await store.captureMeetingIdentity(
         createdMeeting.id,
@@ -290,15 +290,32 @@ test("jitsi store meeting creation defers its room identity to Jitsi", async () 
     const store = new JitsiMeetStore({ db: mockDb });
 
     await store.ensureSchema();
-    await store.createMeeting({
+    const firstMeeting = await store.createMeeting({
         instanceUrl: "https://meet.example.com",
         usernames: ["alice", "bob"],
         classroomId: null,
         createdBy: "alice",
         chatRoomId: null,
     });
+    const secondMeeting = await store.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "carol"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+    });
 
     assert.equal(mockDb.insertedMeetingRows[0].room_slug, "");
+    assert.equal(mockDb.insertedMeetingRows[1].room_slug, "");
+    assert.notEqual(firstMeeting.meetingUrl, secondMeeting.meetingUrl);
+    assert.equal(
+        new URL(firstMeeting.meetingUrl).origin,
+        "https://meet.example.com",
+    );
+    assert.equal(
+        new URL(secondMeeting.meetingUrl).origin,
+        "https://meet.example.com",
+    );
 });
 
 test("jitsi store reconnects a reused meeting to its resolved chat room", async () => {

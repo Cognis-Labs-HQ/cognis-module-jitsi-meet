@@ -8,7 +8,7 @@ import {
     normalizeHandleKey,
     normalizeHandleKeys,
 } from "./reuse/normalize-handle.js";
-import { buildMeetingName } from "./meeting-values.js";
+import { buildMeetingName, buildPendingMeetingUrl } from "./meeting-values.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import { captureMeetingIdentity } from "./meeting-identity-store.js";
 import {
@@ -28,13 +28,11 @@ function buildParticipantKey(usernames, classroomId = null) {
     });
     return createHash("sha256").update(payload).digest("hex");
 }
-
 export class JitsiMeetStore {
     constructor({ db, log }) {
         this.db = db;
         this.log = log;
     }
-
     async ensureSchema() {
         const existingInitialization = schemaInitializationByExecutor.get(
             this.db,
@@ -51,7 +49,6 @@ export class JitsiMeetStore {
         schemaInitializationByExecutor.set(this.db, initialization);
         return initialization;
     }
-
     async ensureSchemaTables() {
         await this.db.ensureTable({
             name: "jitsi_module_config",
@@ -449,7 +446,10 @@ export class JitsiMeetStore {
         const meetingId = randomUUID();
         const meetingSlug = "";
         const meetingName = "Cognis Classroom";
-        const meetingUrl = normalizedInstanceUrl;
+        const meetingUrl = buildPendingMeetingUrl(
+            normalizedInstanceUrl,
+            meetingId,
+        );
         const meetingPassword = randomBytes(12).toString("base64url");
         const passwordWrapper = await deriveScopedKey(
             `jitsi:meeting:${meetingId}:password`,

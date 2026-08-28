@@ -83,3 +83,5 @@ Das Manifest deklariert Nextcloud Whiteboard jetzt als optionale weiche Abhängi
 Neue Besprechungen ohne übernommene Raumidentität deaktivieren jetzt ausdrücklich die eingebettete Jitsi-Willkommensseite. Dadurch erzeugt Jitsi bei einem leeren Raum sofort einen zufälligen Raum und tritt ihm bei, statt seine Startseite im begrenzten Besprechungsbereich darzustellen und Cognis mit einer unbrauchbaren leeren, scrollenden Ansicht zurückzulassen.
 
 Die Meetings-SPA und Freigabebeiträge veröffentlichen wieder den kanonischen, nicht qualifizierten Modul-Einstiegspfad und überlassen die Versionierung des Asset-Caches vollständig Cognis.
+
+Ausstehende Besprechungen speichern jetzt eine eindeutige, durch ein Fragment ergänzte Jitsi-Instanz-URL, die ihren vorhandenen Besprechungs-UUID verwendet. Damit wird das eindeutige, nicht leere Schemafeld `meeting_url` ohne erfundenen Raum-Slug erfüllt, gleichzeitige neue Besprechungen derselben Jitsi-Instanz kollidieren nicht, und die URL wird nach der Identitätsübernahme durch die kanonische Jitsi-Raum-URL ersetzt.
