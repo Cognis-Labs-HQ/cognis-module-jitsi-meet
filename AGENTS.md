@@ -98,11 +98,19 @@ Every behavior change requires appropriate tests, logging, and documentation. Ke
 
 Standard documentation describes the module's current supported behavior and integration contract. Keep it concise and cohesive by updating existing sections instead of appending a running history of fixes. Release chronology, superseded behavior, migration notes, and implementation history belong only in `changelog/`.
 
-### Changelog structure (strict requirement)
+### Changelog entries (strict requirement)
 
-Each pull request may create or update exactly one changelog set consisting of the German, English, Indonesian, and Japanese variants for that pull request. Name every file in that set after the complete feature branch: `changelog/<feature-branch>.de.md`, `changelog/<feature-branch>.en.md`, `changelog/<feature-branch>.id.md`, and `changelog/<feature-branch>.ja.md`. The shared filename is the required feature-branch record. Do not create additional changelog sets for review fixes or later commits in the same pull request, and do not append those notes to another feature branch's changelog.
+Store changelog entries under `changelog/` in one shared directory instead of a root `CHANGELOG.md`. Every pull request must add exactly one changelog set in every supported app language (de, en, id, ja). Use the filename pattern `<branch-name-without-copilot-prefix>.<lang>.md`; for example, branch `copilot/cleanup-strings-and-codebase` produces `cleanup-strings-and-codebase.en.md`, `cleanup-strings-and-codebase.de.md`, `cleanup-strings-and-codebase.id.md`, and `cleanup-strings-and-codebase.ja.md`. Do not create additional changelog sets for later commits in the same pull request or append those changes to another feature's changelog.
 
-Follow the established changelog structure: one localized level-one title followed by localized prose paragraphs. After the title, add exactly one paragraph for every commit included in the pull request, in chronological commit order. Those ordered paragraphs are the required commit list. Keep all four variants synchronized, but translate the title and every commit paragraph. Do not add a separate feature-branch field, commit hash list, metadata bullets, or a `Changes` section. Do not consider changelog work complete if the filename does not match the full feature branch, the pull request has more than one changelog set, or any included commit lacks its corresponding localized paragraph.
+Changelog entry structure is mandatory and must match Cognis core and adjacent modules:
+
+- `# ...` — localized changelog title used as the release summary title.
+- `**Feature Branch:** ...` — the complete branch name without modification except removal of a leading `copilot/` prefix; localize the label while preserving the branch value.
+- `## ...` — one localized change point per heading; these headings are shown as dot-point summaries in release popups.
+- Body content under each change-point heading — localized full details shown on the changelog page.
+- `## Commits` — a localized final section containing a Markdown list of implementation commit links. Each link must use the full `https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/<full-sha>` target; its visible label may use the seven-character short SHA.
+
+Every implementation commit described by the current pull request's changelog must ensure the commit list links the immediately preceding implementation commit. Finish with a dedicated bookkeeping commit, when needed, that changes only the four localized changelog files to record the preceding implementation commit; that bookkeeping commit must not add unrelated changes or link itself. Keep all four variants structurally synchronized and translate every title, label, change-point heading, and body. Existing changelog entries are historical records and remain immutable except for factual corrections.
 
 ## Review discipline
 
