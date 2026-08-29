@@ -45,3 +45,22 @@ test("documentation templates exist for every supported language", () => {
         assert.deepEqual(headingLevels(template), expected);
     }
 });
+
+test("whiteboard release notes declare their feature branch and commits", () => {
+    for (const language of LANGUAGES) {
+        const changelog = readFileSync(
+            resolve(
+                ROOT,
+                `changelog/fix-whiteboard-loading-stability.${language}.md`,
+            ),
+            "utf8",
+        );
+        assert.match(
+            changelog,
+            /\*\*[^*]*(?:branch|Branch|fitur|ブランチ)[^*]*:\*\* `fix-whiteboard-loading-stability`/i,
+        );
+        assert.match(changelog, /`7141534`/);
+        assert.match(changelog, /`12ad748`/);
+        assert.match(changelog, /^## /m);
+    }
+});

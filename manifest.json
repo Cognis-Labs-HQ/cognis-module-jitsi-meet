@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.59",
+    "version": "1.5.60",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -101,7 +101,7 @@
         },
         {
             "path": "AGENTS.md",
-            "sha256": "289121e277d2517a6dcfdd236e974464d091745369fe171bbd884df6b5caa352"
+            "sha256": "e9d5106a118ccc5865a6732fe885ecadb785ec8f1093e4e92a2641f59c6b5b6a"
         },
         {
             "path": "LICENSE",
@@ -229,7 +229,7 @@
         },
         {
             "path": "api/tests/documentation-convention.test.js",
-            "sha256": "bd46b4d41342660fce61ea5bcc893955bda898ee1f5825527e9bbffe885f3d12"
+            "sha256": "561cb572af21442fb7cdd145085f5a996a6ff117f7d065eabfbc995fb28e012f"
         },
         {
             "path": "api/tests/index.test.js",
@@ -305,11 +305,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "49171cdd86b0de8e2cba39f2acc258d4bac5b7e32482490788fd97c0d18caf10"
+            "sha256": "b44594f2f29191733520657ab6ed7cf270e169cf73a6234a417b93bffbac42e3"
         },
         {
             "path": "package.json",
-            "sha256": "a0997813b0701d82d32f376154d5c31a86e626c2787251d323216f63ae5f809c"
+            "sha256": "28c6010bb39e2ef9ee7c6d3ba9bab90a1c6d76720b4141bb97754c3753a42e4d"
         },
         {
             "path": "routes.json",

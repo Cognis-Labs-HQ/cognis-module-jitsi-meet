@@ -98,6 +98,24 @@ Every behavior change requires appropriate tests, logging, and documentation. Ke
 
 Standard documentation describes the module's current supported behavior and integration contract. Keep it concise and cohesive by updating existing sections instead of appending a running history of fixes. Release chronology, superseded behavior, migration notes, and implementation history belong only in `changelog/`.
 
+### Changelog metadata (strict requirement)
+
+Every new or updated changelog must explicitly include the feature branch and a complete commit list before its change description. This metadata is mandatory in every localized variant and must remain synchronized across German, English, Indonesian, and Japanese. Use this structure:
+
+```md
+# Localized title
+
+- **Feature branch:** `feature-or-fix-branch-name`
+- **Commits:**
+    - `short-sha` — Localized commit description
+
+## Changes
+
+Localized release notes.
+```
+
+Do not consolidate release notes into a different feature's changelog, omit branch metadata, replace the commit list with prose, or consider changelog work complete while any included feature commit is missing from the list. Translate the labels, commit descriptions, heading, and release notes in every locale while preserving branch names and commit hashes exactly.
+
 ## Review discipline
 
 Treat human and automated review comments as actionable engineering feedback. Implement technically sound corrections unless they conflict with a higher-priority instruction or architectural requirement. Record any intentionally deferred review item in root `TODO.md` with a concrete technical reason.
