@@ -18,6 +18,10 @@ Jitsi Meet now extends `resolve-share-delegated-access` instead of publishing a 
 
 Moved schema creation and credential backfill into a focused store-schema module, split the UI regression coverage into two cohesive test files, and restored normal whitespace between declarations and methods.
 
+## Enable Safe Guest Whiteboard Controls
+
+Share views now mount the Whiteboard control and authenticate state requests with the scoped guest token. The API permits guests to open or close only the exact canvas already mapped to their meeting and rejects mapping creation or replacement.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -26,3 +30,4 @@ Moved schema creation and credential backfill into a focused store-schema module
 - [c0f05fb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c0f05fb22382b2f18b2ecbacee654a6007944b78)
 - [3583bce](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3583bce288b495d3d44f1efe049063f267c82ad3)
 - [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
+- [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)

@@ -58,7 +58,11 @@ async function resolveAuthorizedMeeting({
         sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
     }
-    return { meeting, requesterUsername };
+    return {
+        meeting,
+        requesterUsername,
+        shareGuest: shareGuestAccess.isGuest,
+    };
 }
 
 export function registerMeetingWhiteboardRoutes({
@@ -121,6 +125,20 @@ export function registerMeetingWhiteboardRoutes({
             const currentState = await store.getMeetingState(
                 resolved.meeting.id,
             );
+            if (
+                resolved.shareGuest &&
+                (!currentState.whiteboardId ||
+                    whiteboardId !== currentState.whiteboardId ||
+                    whiteboardDisposable !== currentState.whiteboardDisposable)
+            ) {
+                sendError(
+                    res,
+                    403,
+                    "forbidden",
+                    "Share guests may only update the mapped whiteboard.",
+                );
+                return;
+            }
             let whiteboardOpen = false;
             let whiteboardOpenVotes = [];
             let votesRequired = 0;

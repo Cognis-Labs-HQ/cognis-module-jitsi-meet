@@ -935,14 +935,14 @@ export async function mount(
                     i18n,
                     deferAloneParticipantPrompt,
                 });
-                void bindWhiteboardButton({
-                    root,
-                    signal,
-                    state,
-                    i18n,
-                    apiFetch,
-                });
             }
+            void bindWhiteboardButton({
+                root,
+                signal,
+                state,
+                i18n,
+                apiFetch,
+            });
         },
     });
 

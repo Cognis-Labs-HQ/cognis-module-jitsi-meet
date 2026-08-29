@@ -18,6 +18,10 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 
 スキーマ作成と認証情報のバックフィルを専用のストアスキーマモジュールへ移し、UI 回帰テストをまとまりのある2つのファイルへ分割し、宣言とメソッド間の通常の空白を復元しました。
 
+## 安全なゲスト用 Whiteboard コントロール
+
+共有ビューでも Whiteboard コントロールを組み込み、スコープ付きゲストトークンで状態リクエストを認証するようになりました。API はゲストに対し、ミーティングに完全一致して関連付けられたキャンバスの開閉だけを許可し、関連付けの作成や置換を拒否します。
+
 ## コミット
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -26,3 +30,4 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 - [c0f05fb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c0f05fb22382b2f18b2ecbacee654a6007944b78)
 - [3583bce](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3583bce288b495d3d44f1efe049063f267c82ad3)
 - [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
+- [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)

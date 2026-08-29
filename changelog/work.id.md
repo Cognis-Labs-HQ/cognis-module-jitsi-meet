@@ -18,6 +18,10 @@ Jitsi Meet kini memperluas `resolve-share-delegated-access` alih-alih menerbitka
 
 Pembuatan skema dan pengisian ulang kredensial dipindahkan ke modul skema-store yang terfokus, cakupan regresi UI dibagi menjadi dua berkas pengujian yang kohesif, dan spasi normal antara deklarasi serta metode dipulihkan.
 
+## Aktifkan Kontrol Papan Tulis Tamu yang Aman
+
+Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan.
+
 ## Commit
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -26,3 +30,4 @@ Pembuatan skema dan pengisian ulang kredensial dipindahkan ke modul skema-store 
 - [c0f05fb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c0f05fb22382b2f18b2ecbacee654a6007944b78)
 - [3583bce](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3583bce288b495d3d44f1efe049063f267c82ad3)
 - [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
+- [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)

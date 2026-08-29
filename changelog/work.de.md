@@ -18,6 +18,10 @@ Jitsi Meet erweitert jetzt `resolve-share-delegated-access`, statt eine Whiteboa
 
 Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Schema-Modul verschoben, die UI-Regressionsabdeckung wurde in zwei zusammenhängende Testdateien aufgeteilt und normale Abstände zwischen Deklarationen und Methoden wurden wiederhergestellt.
 
+## Sichere Whiteboard-Steuerung für Gäste aktivieren
+
+Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -26,3 +30,4 @@ Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Sc
 - [c0f05fb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c0f05fb22382b2f18b2ecbacee654a6007944b78)
 - [3583bce](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3583bce288b495d3d44f1efe049063f267c82ad3)
 - [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
+- [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)

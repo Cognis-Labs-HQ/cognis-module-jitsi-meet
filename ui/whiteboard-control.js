@@ -294,6 +294,8 @@ export async function bindWhiteboardButton({
                                     disposable: trigger.disposableCanvas,
                                     active: false,
                                 }),
+                                accessToken:
+                                    state.shareAccessToken || undefined,
                             },
                         );
                         if (!response.ok)
@@ -367,6 +369,8 @@ export async function bindWhiteboardButton({
                                       disposable: trigger.disposableCanvas,
                                       active: true,
                                   }),
+                                  accessToken:
+                                      state.shareAccessToken || undefined,
                               },
                           )
                         : null;

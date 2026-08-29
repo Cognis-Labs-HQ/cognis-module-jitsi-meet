@@ -53,6 +53,25 @@ test("meeting state polling ignores responses after meeting teardown", () => {
     );
 });
 
+test("share guests receive whiteboard controls and authenticate state synchronization", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const controlSource = readFileSync(
+        resolve(ROOT, "ui/whiteboard-control.js"),
+        "utf8",
+    );
+
+    assert.match(
+        appSource,
+        /if \(!inShareView\) \{[\s\S]*bindShareButton[\s\S]*\}\s*void bindWhiteboardButton/,
+    );
+    assert.equal(
+        controlSource.match(
+            /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
+        )?.length,
+        2,
+    );
+});
+
 test("jitsi API resets ended meetings and reports meetingClosed from presence updates", () => {
     const source = readJitsiApiBundle();
     assert.match(

@@ -88,8 +88,12 @@ function createRoutes({
     return { handlers, stateUpdates };
 }
 
-test("meeting share guests synchronize state with their stable presence identity", async () => {
-    const state = { whiteboardOpenVotes: [] };
+test("meeting share guests synchronize the mapped state with their stable presence identity", async () => {
+    const state = {
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+        whiteboardOpenVotes: [],
+    };
     const routes = createRoutes({
         claims: { sub: "share:share-17:guest-session-4" },
         guestAllowed: true,
@@ -121,6 +125,42 @@ test("meeting share guests synchronize state with their stable presence identity
     assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, [
         "guest:share-17",
     ]);
+});
+
+test("meeting share guests cannot create or replace a whiteboard mapping", async () => {
+    for (const state of [
+        { whiteboardOpenVotes: [] },
+        {
+            whiteboardId: "board-1",
+            whiteboardDisposable: false,
+            whiteboardOpenVotes: [],
+        },
+    ]) {
+        const routes = createRoutes({
+            claims: { sub: "share:share-17:guest-session-4" },
+            guestAllowed: true,
+            state,
+        });
+        const response = createRecorder();
+
+        await routes.handlers.get(
+            "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+        )(
+            {
+                body: {
+                    meetingId: "meeting-1",
+                    whiteboardId: "board-2",
+                    disposable: false,
+                    active: true,
+                },
+            },
+            response,
+        );
+
+        assert.equal(response.status, 403);
+        assert.equal(response.body.error.code, "forbidden");
+        assert.equal(routes.stateUpdates.length, 0);
+    }
 });
 
 test("meeting share guest tokens cannot update another meeting", async () => {
