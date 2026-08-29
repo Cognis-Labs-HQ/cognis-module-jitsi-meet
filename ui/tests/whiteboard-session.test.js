@@ -4,6 +4,7 @@ import {
     ensureComponentPage,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
+    spawnComponentWindowWithRetry,
 } from "../whiteboard-session.js";
 
 test("component page discovery makes one broker request per mount", async () => {
@@ -26,6 +27,37 @@ test("component page discovery makes one broker request per mount", async () => 
         componentPage,
     );
     assert.equal(requests, 1);
+});
+
+test("automatic whiteboard opening tolerates delayed component windows", async () => {
+    const retryDelays = [];
+    const spawnRequests = [];
+    const componentWindow = { discard() {} };
+    const trigger = {
+        disposableCanvas: false,
+        frameWrap: { id: "meeting-stage" },
+        signal: new AbortController().signal,
+        spawnComponentPage(request) {
+            spawnRequests.push(request);
+            return spawnRequests.length < 5 ? null : componentWindow;
+        },
+        async waitForComponentWindowRetry(signal, delayMs) {
+            assert.equal(signal.aborted, false);
+            retryDelays.push(delayMs);
+        },
+    };
+
+    const result = await spawnComponentWindowWithRetry(trigger, {
+        meetingId: "meeting-a",
+        meetingName: "Shared Meeting",
+        whiteboardId: "mapped-board",
+    });
+
+    assert.equal(result, componentWindow);
+    assert.equal(spawnRequests.length, 5);
+    assert.deepEqual(retryDelays, [250, 500, 1_000, 2_000]);
+    assert.equal(spawnRequests.at(-1).elementId, "meeting-stage");
+    assert.equal(spawnRequests.at(-1).context.whiteboardId, "mapped-board");
 });
 
 test("persistent mappings stay closed unless the current meeting opened them", () => {

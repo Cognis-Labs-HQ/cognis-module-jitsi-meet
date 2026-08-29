@@ -20,7 +20,7 @@ Pembuatan skema dan pengisian ulang kredensial dipindahkan ke modul skema-store 
 
 ## Aktifkan Kontrol Papan Tulis Tamu yang Aman
 
-Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan. Orkestrasi tamu tidak lagi memerlukan pabrik kanvas khusus akun, sehingga status buka jarak jauh mencapai pemunculan komponen dan memindahkan rapat ke tampilan gambar-dalam-gambar mengambang.
+Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan. Orkestrasi tamu tidak lagi memerlukan pabrik kanvas khusus akun, sehingga status buka jarak jauh mencapai pemunculan komponen dan memindahkan rapat ke tampilan gambar-dalam-gambar mengambang. Pemasangan jendela komponen kini memakai percobaan ulang backoff eksponensial terbatas yang lebih panjang agar penyelenggara dapat pulih ketika peserta undangan membuka papan sebelum jendela penyedia penyelenggara siap.
 
 ## Commit
 
@@ -33,3 +33,4 @@ Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaa
 - [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
 - [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
+- [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)

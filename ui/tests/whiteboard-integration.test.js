@@ -147,7 +147,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /for \(let attempt = 0; attempt < 4; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
+        /for \(let attempt = 0; attempt < 6; attempt \+= 1\)[\s\S]*?Math\.min\(250 \* 2 \*\* attempt, 2_000\)/,
     );
     assert.match(
         buttonSource,

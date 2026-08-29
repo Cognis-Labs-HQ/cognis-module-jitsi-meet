@@ -20,7 +20,7 @@ Moved schema creation and credential backfill into a focused store-schema module
 
 ## Enable Safe Guest Whiteboard Controls
 
-Share views now mount the Whiteboard control and authenticate state requests with the scoped guest token. The API permits guests to open or close only the exact canvas already mapped to their meeting and rejects mapping creation or replacement. Guest orchestration no longer requires the account-only canvas factory, so remote open state reaches component spawning and moves the meeting into its floating picture-in-picture presentation.
+Share views now mount the Whiteboard control and authenticate state requests with the scoped guest token. The API permits guests to open or close only the exact canvas already mapped to their meeting and rejects mapping creation or replacement. Guest orchestration no longer requires the account-only canvas factory, so remote open state reaches component spawning and moves the meeting into its floating picture-in-picture presentation. Component-window mounting now uses a longer bounded exponential-backoff retry so organizers can recover when an invited participant opens the board before the organizer’s provider window is ready.
 
 ## Commits
 
@@ -33,3 +33,4 @@ Share views now mount the Whiteboard control and authenticate state requests wit
 - [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
 - [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
+- [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)

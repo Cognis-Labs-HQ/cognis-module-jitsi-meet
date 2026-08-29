@@ -20,7 +20,7 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 
 ## 安全なゲスト用 Whiteboard コントロール
 
-共有ビューでも Whiteboard コントロールを組み込み、スコープ付きゲストトークンで状態リクエストを認証するようになりました。API はゲストに対し、ミーティングに完全一致して関連付けられたキャンバスの開閉だけを許可し、関連付けの作成や置換を拒否します。ゲストのオーケストレーションではアカウント専用のキャンバスファクトリが不要になり、リモートのオープン状態がコンポーネントの起動に到達して、ミーティングをフローティングのピクチャーインピクチャー表示へ移すことも検証します。
+共有ビューでも Whiteboard コントロールを組み込み、スコープ付きゲストトークンで状態リクエストを認証するようになりました。API はゲストに対し、ミーティングに完全一致して関連付けられたキャンバスの開閉だけを許可し、関連付けの作成や置換を拒否します。ゲストのオーケストレーションではアカウント専用のキャンバスファクトリが不要になり、リモートのオープン状態がコンポーネントの起動に到達して、ミーティングをフローティングのピクチャーインピクチャー表示へ移すことも検証します。コンポーネントウィンドウの起動には、より長い上限付き指数バックオフを使用し、招待参加者が主催者側のプロバイダーウィンドウの準備前にボードを開いた場合でも主催者が復旧できるようにしました。
 
 ## コミット
 
@@ -33,3 +33,4 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 - [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
 - [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
+- [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)

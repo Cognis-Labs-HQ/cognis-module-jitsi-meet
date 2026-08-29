@@ -94,7 +94,9 @@ export async function spawnComponentWindowWithRetry(
     { meetingId, meetingName, whiteboardId },
 ) {
     let lastError;
-    for (let attempt = 0; attempt < 4; attempt += 1) {
+    const waitBeforeRetry =
+        trigger.waitForComponentWindowRetry ?? waitForProviderRetry;
+    for (let attempt = 0; attempt < 6; attempt += 1) {
         try {
             const componentWindow = await spawnComponentWindow(trigger, {
                 meetingId,
@@ -114,7 +116,12 @@ export async function spawnComponentWindowWithRetry(
         ) {
             break;
         }
-        if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
+        if (attempt < 5) {
+            await waitBeforeRetry(
+                trigger.signal,
+                Math.min(250 * 2 ** attempt, 2_000),
+            );
+        }
     }
     throw lastError;
 }
