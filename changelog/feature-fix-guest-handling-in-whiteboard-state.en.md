@@ -26,6 +26,10 @@ Share views now mount the Whiteboard control and authenticate state requests wit
 
 Account-created mappings and delegated guest access now require provider confirmation that the board identity and meeting title match. New mappings must also have been created by the requesting account, preventing unrelated board identifiers from becoming meeting mappings.
 
+## Resolve Whiteboard Verification Lazily
+
+Whiteboard state and delegated guest access now resolve the optional provider capability when each request runs. Legitimate organizer-created boards therefore remain available to guests when the Whiteboard module registers its server capability after Jitsi Meet.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -44,3 +48,4 @@ Account-created mappings and delegated guest access now require provider confirm
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
 - [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
+- [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)

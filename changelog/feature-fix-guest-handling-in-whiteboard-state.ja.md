@@ -26,6 +26,10 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 
 アカウントが作成する関連付けと委任されたゲストアクセスでは、ボード識別子とミーティング名が一致することをプロバイダーで確認するようになりました。新規関連付けは要求元アカウントが作成したボードに限定され、無関係なボード識別子をミーティングに関連付けることを防ぎます。
 
+## Whiteboard 検証を遅延解決
+
+Whiteboard の状態処理と委任されたゲストアクセスは、リクエスト実行時にオプションのプロバイダー Capability を解決するようになりました。Whiteboard モジュールが Jitsi Meet より後にサーバー Capability を登録した場合でも、主催者が正当に作成したボードをゲストが利用できます。
+
 ## コミット
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -44,3 +48,4 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
 - [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
+- [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)
