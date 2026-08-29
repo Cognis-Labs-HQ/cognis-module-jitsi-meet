@@ -109,6 +109,30 @@ test("limited share mounts never request account profile or participant data", (
     );
 });
 
+test("guest joins bypass account keyrings and defer chat until the embed opens", () => {
+    const meetingListSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const meetingRoomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+
+    assert.match(
+        meetingListSource,
+        /if \(!state\.shareAccessToken\) await callbacks\.updateNativeChat\(\);/,
+    );
+    assert.match(
+        meetingRoomSource,
+        /let meetingPassword = suppliedMeetingPassword;\s*if \(!state\.shareAccessToken\) \{[\s\S]*meetingKeyring\?\.resolve/,
+    );
+    assert.match(
+        meetingRoomSource,
+        /await openMeetingEmbed\(\);\s*if \(state\.shareAccessToken\) \{[\s\S]*callbacks\.updateNativeChat\(\)/,
+    );
+});
+
 test("jitsi API resets ended meetings and reports meetingClosed from presence updates", () => {
     const source = readJitsiApiBundle();
     assert.match(
@@ -208,7 +232,7 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
-        /await openMeetingEmbed\(\);\s*return \{ trackingAllowed: true \};/,
+        /await openMeetingEmbed\(\);\s*if \(state\.shareAccessToken\) \{[\s\S]*return \{ trackingAllowed: true \};/,
     );
     assert.doesNotMatch(
         embedSource,
@@ -221,10 +245,6 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     assert.match(
         embedSource,
         /if \(\s*state\.meeting\.state\?\.authRequired[\s\S]*return \{ trackingAllowed: false \};/,
-    );
-    assert.match(
-        embedSource,
-        /await openMeetingEmbed\(\);\n\s*return \{ trackingAllowed: true \};/,
     );
     assert.match(preflightSource, /function shouldTrackMeetingPresence\(\)/);
     assert.match(

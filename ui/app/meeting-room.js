@@ -1,4 +1,4 @@
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import {
     loadJitsiExternalApi,
@@ -65,19 +65,23 @@ export function createEmbedHandlers({
         const suppliedMeetingPassword = String(
             state.meeting.meetingPassword ?? "",
         ).trim();
-        let meetingPassword = String(
-            (await meetingKeyring?.resolve(meetingKeyringId, {
-                fallback: () => suppliedMeetingPassword || null,
-                request: {
-                    action: i18n.t("ui.reuse.join"),
-                    process: meetingProcess,
-                },
-                metadata: {
-                    label:
-                        state.meeting.meetingName || i18n.t("ui.reuse.meeting"),
-                },
-            })) || suppliedMeetingPassword,
-        ).trim();
+        let meetingPassword = suppliedMeetingPassword;
+        if (!state.shareAccessToken) {
+            meetingPassword = String(
+                (await meetingKeyring?.resolve(meetingKeyringId, {
+                    fallback: () => suppliedMeetingPassword || null,
+                    request: {
+                        action: i18n.t("ui.reuse.join"),
+                        process: meetingProcess,
+                    },
+                    metadata: {
+                        label:
+                            state.meeting.meetingName ||
+                            i18n.t("ui.reuse.meeting"),
+                    },
+                })) || suppliedMeetingPassword,
+            ).trim();
+        }
         if (
             meetingKeyring &&
             suppliedMeetingPassword &&
@@ -325,7 +329,7 @@ export function createEmbedHandlers({
         const joinPayload = await joinResponse.json();
         state.meeting = joinPayload?.data ?? state.meeting;
         utils.deferAloneParticipantPrompt();
-        await callbacks.updateNativeChat();
+        if (!state.shareAccessToken) await callbacks.updateNativeChat();
 
         if (state.meeting.requiresReclaim) {
             utils.updateOverlay({
@@ -359,6 +363,17 @@ export function createEmbedHandlers({
         }
 
         await openMeetingEmbed();
+        if (state.shareAccessToken) {
+            void callbacks.updateNativeChat().catch((error) =>
+                logUi("error", "Guest meeting chat loading failed.", {
+                    component: "module:jitsi-meet",
+                    operation: "load_guest_meeting_chat",
+                    meetingId: state.meeting?.id,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                }),
+            );
+        }
         return { trackingAllowed: true };
     }
 

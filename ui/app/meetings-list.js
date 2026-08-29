@@ -257,7 +257,7 @@ export function createMeetingHandlers({
         }
         state.chatMode = "meeting";
         state.privateChatUsername = "";
-        await callbacks.updateNativeChat();
+        if (!state.shareAccessToken) await callbacks.updateNativeChat();
         const joinState = await callbacks.joinMeeting();
         if (joinState?.trackingAllowed) {
             callbacks.ensureMeetingTracking();
