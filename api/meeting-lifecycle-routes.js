@@ -332,6 +332,8 @@ export function registerMeetingLifecycleRoutes({
                     authCompletedAt: null,
                     endedBy: null,
                     endedAt: null,
+                    whiteboardActive: false,
+                    whiteboardOpenVotes: [],
                 });
                 meetingStarted = true;
             }

@@ -61,7 +61,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /sharedOpenRequested = !shouldAutoOpenMappedCanvas;[\s\S]*?trigger\.button\.click\(\)/,
+        /meetingWhiteboardShouldOpen\(state\.meeting\);[\s\S]*?sharedOpenRequested = true;[\s\S]*?trigger\.button\.click\(\)/,
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
@@ -87,7 +87,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingName/,
     );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
-    assert.match(buttonSource, /shouldAutoOpenMappedCanvas/);
+    assert.doesNotMatch(buttonSource, /shouldAutoOpenMappedCanvas/);
+    assert.doesNotMatch(buttonSource, /autoOpenedMeetingIds/);
     assert.match(
         buttonSource,
         /await ensureWhiteboardKeyringUnlocked\(trigger, state\)[\s\S]*?unlock_meeting_whiteboard_keyring[\s\S]*?const response = synchronizeOpen/,
@@ -95,7 +96,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /title:\s*meetingName/);
     assert.match(
         buttonSource,
-        /setButtonActive\([\s\S]*?whiteboardOpen === true[\s\S]*?componentWindowPending/,
+        /setButtonActive\([\s\S]*?Boolean\(trigger\.componentWindow\)/,
     );
     assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
@@ -125,11 +126,20 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /setButtonActive\(button, true\)[\s\S]*?trigger\.componentWindowPending = true/,
+        /setButtonDisabled\(button, true\);[\s\S]*?trigger\.componentWindowPending = true/,
+    );
+    assert.doesNotMatch(buttonSource, /setButtonActive\(button, true\)/);
+    assert.match(
+        buttonSource,
+        /trigger\.componentWindowPending === true[\s\S]*?!state\.jitsiConferenceJoined/,
     );
     assert.match(
         buttonSource,
-        /const shouldAutoOpenMappedCanvas[\s\S]*?const shouldOpen[\s\S]*?button\.disabled !== true[\s\S]*?componentWindowPending !== true/,
+        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?disableWhiteboardAfterError/,
+    );
+    assert.match(
+        buttonSource,
+        /const shouldOpen = meetingWhiteboardShouldOpen\(state\.meeting\);[\s\S]*?button\.disabled !== true[\s\S]*?componentWindowPending !== true/,
     );
     assert.match(
         buttonSource,
@@ -224,4 +234,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         lifecycleSource.indexOf("meetingStarted = true"),
     );
     assert.doesNotMatch(meetingRestartSource, /whiteboardId:\s*null/);
+    assert.match(meetingRestartSource, /whiteboardActive:\s*false/);
+    assert.match(meetingRestartSource, /whiteboardOpenVotes:\s*\[\]/);
 });

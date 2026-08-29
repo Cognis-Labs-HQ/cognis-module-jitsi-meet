@@ -45,3 +45,23 @@ test("documentation templates exist for every supported language", () => {
         assert.deepEqual(headingLevels(template), expected);
     }
 });
+
+test("pull request release notes follow Cognis changelog structure", () => {
+    const branch =
+        "feature-implement-final-review-comments-and-improve-whiteboard-stabi";
+    const commitUrl =
+        "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/";
+    for (const language of LANGUAGES) {
+        const changelog = readFileSync(
+            resolve(ROOT, `changelog/${branch}.${language}.md`),
+            "utf8",
+        );
+        assert.match(changelog, /^# [^#]/);
+        assert.match(changelog, new RegExp(`\\*\\*[^\\n]+:\\*\\* ${branch}`));
+        assert.equal((changelog.match(/^## /gm) ?? []).length, 4);
+        assert.equal(
+            (changelog.match(new RegExp(commitUrl, "g")) ?? []).length,
+            5,
+        );
+    }
+});
