@@ -24,6 +24,10 @@ export function meetingHasInvitedParticipants(meeting) {
     );
 }
 
+export function meetingWhiteboardShouldOpen(meeting) {
+    return meeting?.state?.whiteboardOpen === true;
+}
+
 function waitForProviderRetry(signal, delayMs) {
     return new Promise((resolve) => {
         if (signal?.aborted) {

@@ -3,8 +3,32 @@ import assert from "node:assert/strict";
 import {
     ensureComponentPage,
     ensureWhiteboardKeyringUnlocked,
+    meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
 } from "../whiteboard-session.js";
+
+test("persistent mappings stay closed unless the current meeting opened them", () => {
+    assert.equal(
+        meetingWhiteboardShouldOpen({
+            state: {
+                whiteboardId: "persistent-board",
+                whiteboardDisposable: false,
+                whiteboardOpen: false,
+            },
+        }),
+        false,
+    );
+    assert.equal(
+        meetingWhiteboardShouldOpen({
+            state: {
+                whiteboardId: "persistent-board",
+                whiteboardDisposable: false,
+                whiteboardOpen: true,
+            },
+        }),
+        true,
+    );
+});
 
 test("component page discovery retries while providers finish loading", async () => {
     let requests = 0;
