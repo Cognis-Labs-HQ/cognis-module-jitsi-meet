@@ -47,21 +47,13 @@ function waitForProviderRetry(signal, delayMs) {
 }
 
 export async function ensureComponentPage(trigger, meetingId) {
-    for (
-        let attempt = 0;
-        attempt < 8 && !trigger.componentPage && !trigger.signal?.aborted;
-        attempt += 1
-    ) {
+    if (!trigger.componentPage) {
         trigger.componentPage = await trigger.requestComponentPage({
             componentUuid: WHITEBOARD_MODULE_UUID,
             routeId: WHITEBOARD_ROUTE_ID,
             mode: "overlay",
             context: { meetingId },
         });
-        if (!trigger.componentPage && attempt < 7) {
-            await trigger.refreshCapabilities?.();
-            await waitForProviderRetry(trigger.signal, 250);
-        }
     }
     if (!trigger.componentPage) {
         throw new Error("whiteboard_component_page_unavailable");
@@ -102,9 +94,8 @@ export async function spawnComponentWindowWithRetry(
     { meetingId, meetingName, whiteboardId },
 ) {
     let lastError;
-    for (let attempt = 0; attempt < 8; attempt += 1) {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
         try {
-            await ensureComponentPage(trigger, meetingId);
             const componentWindow = await spawnComponentWindow(trigger, {
                 meetingId,
                 meetingName,
@@ -116,17 +107,19 @@ export async function spawnComponentWindowWithRetry(
             lastError = error;
         }
         if (trigger.signal?.aborted) throw lastError;
-        trigger.componentPage = null;
-        if (attempt < 7) {
-            await trigger.refreshCapabilities?.();
-            await waitForProviderRetry(trigger.signal, 250);
+        if (
+            String(lastError?.message ?? lastError).includes(
+                "Failed to fetch dynamically imported module",
+            )
+        ) {
+            break;
         }
+        if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
     }
     throw lastError;
 }
 
 export async function ensureWhiteboardKeyringUnlocked(trigger, state) {
-    await trigger.refreshCapabilities?.();
     if (trigger.isKeyringUnlocked?.() === true) return true;
     if (typeof trigger.requestKeyringUnlock !== "function") return true;
     const meetingName = state.meeting?.meetingName || state.meeting?.id || "";

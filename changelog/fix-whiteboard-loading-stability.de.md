@@ -1,3 +1,3 @@
 # Whiteboard-Ladevorgang stabilisieren
 
-Whiteboards warten nun auf verspätete Provider-, Komponentenfenster- und Schlüsselbund-Capabilities, wenn Teilnehmende eine aktive Besprechung direkt öffnen oder aktualisieren. Komponentenfenster wiederholen vorübergehende Ladefehler, aber eine gespeicherte dauerhafte Arbeitsfläche öffnet sich nur, wenn die aktuelle Besprechungssitzung sie ausdrücklich als geöffnet markiert. Das Beenden oder Neustarten einer Besprechung löscht diesen Öffnungszustand.
+Whiteboard-Komponentenseiten werden nun einmal pro Besprechungs-Mount angefordert, statt beim Öffnen eines Fensters wiederholt ersetzt zu werden. Wiederholungen für Komponentenfenster bleiben begrenzt, dauerhafte Arbeitsflächen öffnen sich nur durch den ausdrücklichen Zustand der aktuellen Sitzung, und das Beenden oder Neustarten einer Besprechung löscht diesen Zustand.

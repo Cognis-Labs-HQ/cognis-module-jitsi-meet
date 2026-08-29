@@ -1,3 +1,3 @@
 # Stabilkan Pemuatan Papan Tulis
 
-Papan Tulis kini menunggu kapabilitas penyedia, halaman komponen, dan keyring yang terlambat saat peserta membuka rapat aktif secara langsung atau memuat ulang halamannya. Jendela komponen mencoba kembali kegagalan pemuatan sementara, tetapi kanvas persisten tersimpan hanya dibuka jika sesi rapat saat ini secara eksplisit menandainya terbuka. Mengakhiri atau memulai ulang rapat akan menghapus status buka tersebut.
+Halaman komponen Papan Tulis kini diminta satu kali untuk setiap mount rapat, bukan diganti berulang kali saat jendela dibuka. Percobaan ulang jendela komponen tetap dibatasi, kanvas persisten hanya dibuka dari status eksplisit sesi saat ini, dan mengakhiri atau memulai ulang rapat akan menghapus status tersebut.

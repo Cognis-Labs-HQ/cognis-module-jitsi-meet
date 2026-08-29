@@ -2,10 +2,31 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
     ensureComponentPage,
-    ensureWhiteboardKeyringUnlocked,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
 } from "../whiteboard-session.js";
+
+test("component page discovery makes one broker request per mount", async () => {
+    let requests = 0;
+    const componentPage = { routeId: "whiteboard" };
+    const trigger = {
+        componentPage: null,
+        requestComponentPage: async () => {
+            requests += 1;
+            return componentPage;
+        },
+    };
+
+    assert.equal(
+        await ensureComponentPage(trigger, "meeting-a"),
+        componentPage,
+    );
+    assert.equal(
+        await ensureComponentPage(trigger, "meeting-a"),
+        componentPage,
+    );
+    assert.equal(requests, 1);
+});
 
 test("persistent mappings stay closed unless the current meeting opened them", () => {
     assert.equal(
@@ -28,49 +49,6 @@ test("persistent mappings stay closed unless the current meeting opened them", (
         }),
         true,
     );
-});
-
-test("component page discovery retries while providers finish loading", async () => {
-    let requests = 0;
-    let refreshes = 0;
-    const trigger = {
-        componentPage: null,
-        requestComponentPage: async () => {
-            requests += 1;
-            return requests === 3 ? { routeId: "whiteboard" } : null;
-        },
-        refreshCapabilities: async () => {
-            refreshes += 1;
-        },
-    };
-
-    const page = await ensureComponentPage(trigger, "meeting-a");
-
-    assert.deepEqual(page, { routeId: "whiteboard" });
-    assert.equal(requests, 3);
-    assert.equal(refreshes, 2);
-});
-
-test("keyring access refreshes late capabilities before checking state", async () => {
-    let unlockRequests = 0;
-    const trigger = {
-        i18n: { t: (key) => key },
-        async refreshCapabilities() {
-            this.isKeyringUnlocked = () => false;
-            this.requestKeyringUnlock = async () => {
-                unlockRequests += 1;
-                return true;
-            };
-        },
-    };
-
-    assert.equal(
-        await ensureWhiteboardKeyringUnlocked(trigger, {
-            meeting: { id: "meeting-a" },
-        }),
-        true,
-    );
-    assert.equal(unlockRequests, 1);
 });
 
 test("canvas preparation discards a completion after the meeting changes", async () => {
