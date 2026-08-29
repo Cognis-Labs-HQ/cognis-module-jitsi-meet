@@ -48,11 +48,9 @@ function closeComponentWindow(trigger) {
     }
 }
 
-async function disableWhiteboardAfterError(trigger, state, error, operation) {
-    if (trigger.loadFailed) return;
+async function reportWhiteboardLoadError(trigger, state, error, operation) {
     closeComponentWindow(trigger);
-    trigger.loadFailed = true;
-    setButtonDisabled(trigger.button, true);
+    trigger.loadFailed = false;
     await logUi("error", "Meeting whiteboard loading failed.", {
         component: "module:jitsi-meet",
         operation,
@@ -104,7 +102,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
                 .catch((error) => {
                     trigger.preparationFailedMeetingId =
                         state.meeting?.id ?? "";
-                    return disableWhiteboardAfterError(
+                    return reportWhiteboardLoadError(
                         trigger,
                         state,
                         error,
@@ -272,6 +270,21 @@ export async function bindWhiteboardButton({
                 return null;
             });
         },
+        async refreshCapabilities() {
+            const refreshed = await resolveWhiteboardCapabilities(signal);
+            for (const capabilityName of [
+                "discardComponentPage",
+                "isKeyringUnlocked",
+                "makeFloatingWindow",
+                "requestKeyringUnlock",
+                "spawnComponentPage",
+                "whiteboardGateway",
+            ]) {
+                if (refreshed[capabilityName]) {
+                    trigger[capabilityName] = refreshed[capabilityName];
+                }
+            }
+        },
         requestKeyringUnlock,
         slot,
         whiteboardId: "",
@@ -414,7 +427,7 @@ export async function bindWhiteboardButton({
                     trigger.componentWindow = componentWindow;
                     trigger.whiteboardId = whiteboardId;
                 } catch (error) {
-                    await disableWhiteboardAfterError(
+                    await reportWhiteboardLoadError(
                         trigger,
                         state,
                         error,
@@ -442,7 +455,7 @@ export async function bindWhiteboardButton({
         await prepareMeetingCanvas(trigger, state);
     } catch (error) {
         trigger.preparationFailedMeetingId = state.meeting?.id ?? "";
-        await disableWhiteboardAfterError(
+        await reportWhiteboardLoadError(
             trigger,
             state,
             error,

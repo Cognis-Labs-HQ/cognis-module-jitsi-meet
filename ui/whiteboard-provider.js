@@ -21,9 +21,6 @@ function waitForProviderRetry(signal, delayMs) {
 }
 
 export async function resolveWhiteboardCapabilities(signal) {
-    const ensureProvidersLoaded = uiCtx.capabilities.get(
-        "ui:ensureProvidersLoaded",
-    );
     const readCapabilities = () => ({
         discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
         isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
@@ -33,7 +30,10 @@ export async function resolveWhiteboardCapabilities(signal) {
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
     let capabilities = readCapabilities();
-    for (let attempt = 0; attempt < 3 && !signal?.aborted; attempt += 1) {
+    for (let attempt = 0; attempt < 12 && !signal?.aborted; attempt += 1) {
+        const ensureProvidersLoaded = uiCtx.capabilities.get(
+            "ui:ensureProvidersLoaded",
+        );
         if (typeof ensureProvidersLoaded === "function") {
             await ensureProvidersLoaded({ force: attempt > 0 });
         }
@@ -46,7 +46,7 @@ export async function resolveWhiteboardCapabilities(signal) {
         ) {
             return capabilities;
         }
-        if (attempt < 2) await waitForProviderRetry(signal, 150);
+        if (attempt < 11) await waitForProviderRetry(signal, 250);
     }
     return capabilities;
 }

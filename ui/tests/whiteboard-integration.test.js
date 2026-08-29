@@ -137,11 +137,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /for \(let attempt = 0; attempt < 4; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
+        /for \(let attempt = 0; attempt < 8; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
     );
-    assert.match(
+    assert.doesNotMatch(
         buttonSource,
-        /Failed to fetch dynamically imported module[\s\S]*?break;/,
+        /Failed to fetch dynamically imported module/,
     );
     assert.match(buttonSource, /loadFailed:\s*false/);
     assert.match(
@@ -150,7 +150,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
+        /trigger\.loadFailed = false;[\s\S]*?whiteboard\.load_failed/,
     );
     assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(
