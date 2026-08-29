@@ -20,7 +20,7 @@ Pembuatan skema dan pengisian ulang kredensial dipindahkan ke modul skema-store 
 
 ## Aktifkan Kontrol Papan Tulis Tamu yang Aman
 
-Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan. Orkestrasi tamu tidak lagi memerlukan pabrik kanvas khusus akun, sehingga status buka jarak jauh mencapai pemunculan komponen dan memindahkan rapat ke tampilan gambar-dalam-gambar mengambang. Pemasangan jendela komponen kini memakai percobaan ulang backoff eksponensial terbatas yang lebih panjang agar penyelenggara dapat pulih ketika peserta undangan membuka papan sebelum jendela penyedia penyelenggara siap.
+Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan. Orkestrasi tamu tidak lagi memerlukan pabrik kanvas khusus akun, sehingga status buka jarak jauh mencapai pemunculan komponen dan memindahkan rapat ke tampilan gambar-dalam-gambar mengambang. Pemasangan jendela komponen kini memakai percobaan ulang backoff eksponensial terbatas yang lebih panjang agar penyelenggara dapat pulih ketika peserta undangan membuka papan sebelum jendela penyedia penyelenggara siap. Mount tamu terbatas kini meneruskan token Share yang dirutekan ke resolusi identitas dan melewati permintaan profil akun serta pencarian peserta, sehingga respons 404 profil khusus akun tidak menghalangi proses bergabung ke rapat.
 
 ## Commit
 
@@ -34,3 +34,4 @@ Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaa
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
 - [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
 - [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)
+- [53a9f98](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/53a9f9870c3a8a0ca546e8da6e33b9dc4f861db7)

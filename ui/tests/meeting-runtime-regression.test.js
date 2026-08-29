@@ -88,6 +88,27 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
 });
 
+test("limited share mounts never request account profile or participant data", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const helperSource = readFileSync(
+        resolve(ROOT, "ui/jitsi-helpers.js"),
+        "utf8",
+    );
+
+    assert.match(
+        appSource,
+        /limitedShareView \? Promise\.resolve\(\[\]\) : fetchParticipants\(""\)/,
+    );
+    assert.match(
+        appSource,
+        /fetchCurrentProfile\(\{\s*shareAccessToken: state\.shareAccessToken/,
+    );
+    assert.match(
+        helperSource,
+        /if \(shareAccessToken\) return fetchShareGuestProfile\(\);[\s\S]*profileClient\(\)\.getCurrentProfile\(\)/,
+    );
+});
+
 test("jitsi API resets ended meetings and reports meetingClosed from presence updates", () => {
     const source = readJitsiApiBundle();
     assert.match(

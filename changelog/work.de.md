@@ -20,7 +20,7 @@ Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Sc
 
 ## Sichere Whiteboard-Steuerung für Gäste aktivieren
 
-Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Gast-Orchestrierung benötigt die nur für Konten verfügbare Canvas-Factory nicht mehr, sodass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt. Das Einbinden des Komponentenfensters verwendet jetzt einen längeren begrenzten exponentiellen Backoff, damit Organisatoren fortfahren können, wenn ein eingeladener Teilnehmer das Board öffnet, bevor das Provider-Fenster des Organisators bereit ist.
+Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Gast-Orchestrierung benötigt die nur für Konten verfügbare Canvas-Factory nicht mehr, sodass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt. Das Einbinden des Komponentenfensters verwendet jetzt einen längeren begrenzten exponentiellen Backoff, damit Organisatoren fortfahren können, wenn ein eingeladener Teilnehmer das Board öffnet, bevor das Provider-Fenster des Organisators bereit ist. Eingeschränkte Gastansichten übergeben jetzt ihr weitergeleitetes Share-Token an die Identitätsauflösung und überspringen Konto-Profil- sowie Teilnehmersuchanfragen, damit kontoexklusive Profil-404-Antworten den Besprechungsbeitritt nicht blockieren.
 
 ## Commits
 
@@ -34,3 +34,4 @@ Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizi
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
 - [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
 - [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)
+- [53a9f98](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/53a9f9870c3a8a0ca546e8da6e33b9dc4f861db7)

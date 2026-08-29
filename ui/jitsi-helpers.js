@@ -7,12 +7,10 @@ import {
 import { importReuseModule } from "./reuse/resources.js";
 import { buildProfileAvatarMarkup } from "./app/profile-avatars.js";
 
-const [{ apiFetch }, { getShareContext }, { normalizeUsername }] =
-    await Promise.all([
-        importReuseModule("api-client.js"),
-        importReuseModule("auth-session.js"),
-        importReuseModule("value-normalizers.js"),
-    ]);
+const [{ apiFetch }, { normalizeUsername }] = await Promise.all([
+    importReuseModule("api-client.js"),
+    importReuseModule("value-normalizers.js"),
+]);
 
 const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     languageBaseUrls: ["/static/modules/jitsi-meet/languages"],
@@ -127,9 +125,8 @@ export function resolveMeetingChatRoomId(meeting) {
     return match ? normalizeChatRoomId(decodeURIComponent(match[1])) : "";
 }
 
-export async function fetchCurrentProfile() {
-    const guestProfile = await fetchShareGuestProfile();
-    if (guestProfile) return guestProfile;
+export async function fetchCurrentProfile({ shareAccessToken = "" } = {}) {
+    if (shareAccessToken) return fetchShareGuestProfile();
     const response = await profileClient().getCurrentProfile();
     if (!response.ok) return null;
     const payload = await response.json().catch(() => ({ data: null }));
@@ -159,12 +156,21 @@ export async function fetchCurrentProfile() {
 /**
  * Sources the current user's display identity from the Share gateway's
  * temporary guest profile when the current session is viewing as a share
- * guest. Returns null for real (non-guest) sessions or if the Share gateway
- * is unavailable, so callers fall back to the normal profile lookup.
+ * guest. Returns null when the Share gateway has no guest profile; limited
+ * share mounts keep that null identity instead of querying account profiles.
  */
 async function fetchShareGuestProfile() {
-    if (!getShareContext()?.guestAccessToken) return null;
-    const response = await shareClient().getGuestProfile();
+    let response;
+    try {
+        response = await shareClient().getGuestProfile();
+    } catch (error) {
+        void logUi("error", "Share guest profile loading failed.", {
+            component: "module:jitsi-meet",
+            operation: "load_share_guest_profile",
+            error: error instanceof Error ? error.message : String(error),
+        });
+        return null;
+    }
     if (!response.ok) return null;
     const payload = await response.json().catch(() => ({ data: null }));
     const profile = payload?.data;
