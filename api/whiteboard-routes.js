@@ -9,6 +9,8 @@ async function resolveAuthorizedMeeting({
     requireAuth,
     sendError,
     canAccessMeeting,
+    resolveShareGuestMeetingAccess,
+    resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
 }) {
     const claims = requireAuth(req, res, "user");
@@ -24,22 +26,34 @@ async function resolveAuthorizedMeeting({
         sendError(res, 404, "not_found", "Meeting not found.");
         return null;
     }
-    const requesterUsername = await resolveRequesterUsername(
-        profileStore,
-        claims.sub,
-    ).catch((error) => {
-        sendError(res, 409, "profile_required", error.message);
+    const shareGuestAccess = await resolveShareGuestMeetingAccess({
+        claims,
+        meetingId: meeting.id,
+        requiredCapability: "meeting:join",
+    });
+    if (shareGuestAccess.isGuest && !shareGuestAccess.allowed) {
+        sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
-    });
+    }
+    const requesterUsername = shareGuestAccess.isGuest
+        ? resolveShareGuestPresenceUsername(claims)
+        : await resolveRequesterUsername(profileStore, claims.sub).catch(
+              (error) => {
+                  sendError(res, 409, "profile_required", error.message);
+                  return null;
+              },
+          );
     if (!requesterUsername) return null;
-    const authorized = await canAccessMeeting({
-        store,
-        meeting,
-        username: requesterUsername,
-        listClassroomParticipantHandles,
-        profileStore,
-        requesterAccountId: claims.sub,
-    });
+    const authorized =
+        shareGuestAccess.isGuest ||
+        (await canAccessMeeting({
+            store,
+            meeting,
+            username: requesterUsername,
+            listClassroomParticipantHandles,
+            profileStore,
+            requesterAccountId: claims.sub,
+        }));
     if (!authorized) {
         sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
@@ -57,6 +71,8 @@ export function registerMeetingWhiteboardRoutes({
     sendJson,
     sendError,
     canAccessMeeting,
+    resolveShareGuestMeetingAccess,
+    resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
 }) {
     router.post(
@@ -72,6 +88,8 @@ export function registerMeetingWhiteboardRoutes({
                 requireAuth,
                 sendError,
                 canAccessMeeting,
+                resolveShareGuestMeetingAccess,
+                resolveShareGuestPresenceUsername,
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;

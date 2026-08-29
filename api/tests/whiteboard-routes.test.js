@@ -22,6 +22,8 @@ function createRoutes({
     participants = ["alice"],
     presence = [],
     state = { whiteboardOpenVotes: [] },
+    claims = { sub: "account-alice" },
+    guestAllowed = false,
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
@@ -62,7 +64,7 @@ function createRoutes({
                 return { handle: requesterUsername };
             },
         },
-        requireAuth: () => ({ sub: "account-alice" }),
+        requireAuth: () => claims,
         readJson: async (req) => req.body,
         sendJson(res, status, body) {
             res.writeHead(status);
@@ -73,10 +75,79 @@ function createRoutes({
             res.end(JSON.stringify({ error: { code, message } }));
         },
         canAccessMeeting: async () => authorized,
+        resolveShareGuestMeetingAccess: async () => ({
+            isGuest: String(claims.sub).startsWith("share:"),
+            allowed: guestAllowed,
+        }),
+        resolveShareGuestPresenceUsername: () =>
+            String(claims.sub).startsWith("share:")
+                ? `guest:${String(claims.sub).split(":")[1]}`
+                : "",
         listClassroomParticipantHandles: async () => [],
     });
     return { handlers, stateUpdates };
 }
+
+test("meeting share guests synchronize state with their stable presence identity", async () => {
+    const state = { whiteboardOpenVotes: [] };
+    const routes = createRoutes({
+        claims: { sub: "share:share-17:guest-session-4" },
+        guestAllowed: true,
+        organizerUsername: "alice",
+        presence: [
+            { username: "guest:share-17" },
+            { username: "guest:another-share" },
+        ],
+        state,
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(response.body.data.pendingConsensus, true);
+    assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, [
+        "guest:share-17",
+    ]);
+});
+
+test("meeting share guest tokens cannot update another meeting", async () => {
+    const routes = createRoutes({
+        claims: { sub: "share:share-17:guest-session-4" },
+        guestAllowed: false,
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 403);
+    assert.equal(response.body.error.code, "forbidden");
+    assert.equal(routes.stateUpdates.length, 0);
+});
 
 test("meeting participants can synchronize a provider-created whiteboard", async () => {
     const routes = createRoutes();

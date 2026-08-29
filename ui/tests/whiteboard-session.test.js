@@ -104,3 +104,73 @@ test("canvas preparation discards a completion after the meeting changes", async
     assert.equal(trigger.preparedWhiteboardId, "");
     assert.equal(trigger.preparationPromise, null);
 });
+
+test("share guests reuse a mapped meeting canvas without creating one", async () => {
+    let creationRequests = 0;
+    const trigger = {
+        disposableCanvas: true,
+        preparationFailedMeetingId: "",
+        preparationPromise: null,
+        preparedMeetingId: "meeting-a",
+        preparedWhiteboardId: "",
+        whiteboardGateway: {
+            createCanvas() {
+                creationRequests += 1;
+            },
+            createDisposableCanvas() {
+                creationRequests += 1;
+            },
+        },
+    };
+    const state = {
+        shareAccessToken: "guest-token",
+        meeting: {
+            id: "meeting-a",
+            meetingName: "Shared Meeting",
+            roomSlug: "SharedMeeting",
+            state: {
+                whiteboardId: "host-created-board",
+                whiteboardDisposable: false,
+            },
+        },
+    };
+
+    await prepareMeetingCanvas(trigger, state);
+
+    assert.equal(creationRequests, 0);
+    assert.equal(trigger.preparedWhiteboardId, "host-created-board");
+    assert.equal(trigger.disposableCanvas, false);
+});
+
+test("share guests wait for a host mapping instead of creating a canvas", async () => {
+    let creationRequests = 0;
+    const trigger = {
+        disposableCanvas: true,
+        preparationFailedMeetingId: "",
+        preparationPromise: null,
+        preparedMeetingId: "meeting-a",
+        preparedWhiteboardId: "",
+        whiteboardGateway: {
+            createCanvas() {
+                creationRequests += 1;
+            },
+            createDisposableCanvas() {
+                creationRequests += 1;
+            },
+        },
+    };
+    const state = {
+        shareAccessToken: "guest-token",
+        meeting: {
+            id: "meeting-a",
+            meetingName: "Shared Meeting",
+            roomSlug: "SharedMeeting",
+            state: {},
+        },
+    };
+
+    await prepareMeetingCanvas(trigger, state);
+
+    assert.equal(creationRequests, 0);
+    assert.equal(trigger.preparedWhiteboardId, "");
+});

@@ -86,8 +86,10 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         if (
             stateWhiteboardId &&
             typeof stateWhiteboardDisposable === "boolean" &&
-            stateWhiteboardDisposable === trigger.disposableCanvas
+            (state.shareAccessToken ||
+                stateWhiteboardDisposable === trigger.disposableCanvas)
         ) {
+            trigger.disposableCanvas = stateWhiteboardDisposable;
             trigger.preparedWhiteboardId = stateWhiteboardId;
         }
         setButtonActive(trigger.button, Boolean(trigger.componentWindow));

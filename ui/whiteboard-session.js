@@ -155,6 +155,21 @@ export function prepareMeetingCanvas(trigger, state) {
     const meeting = state.meeting;
     const meetingId = meeting.id;
     const meetingName = meeting.meetingName;
+    const mappedWhiteboardId = String(meeting.state?.whiteboardId ?? "").trim();
+    if (
+        state.shareAccessToken &&
+        mappedWhiteboardId &&
+        typeof meeting.state?.whiteboardDisposable === "boolean"
+    ) {
+        trigger.disposableCanvas = meeting.state.whiteboardDisposable;
+        trigger.preparedWhiteboardId = mappedWhiteboardId;
+        trigger.preparedMeetingId = meetingId;
+        trigger.preparationFailedMeetingId = "";
+        return Promise.resolve();
+    }
+    if (state.shareAccessToken) {
+        return Promise.resolve();
+    }
     const participantHandles = getParticipantHandles(meeting);
     trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
     const disposableCanvas = trigger.disposableCanvas;
