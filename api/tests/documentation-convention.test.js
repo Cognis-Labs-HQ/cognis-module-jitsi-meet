@@ -46,21 +46,19 @@ test("documentation templates exist for every supported language", () => {
     }
 });
 
-test("whiteboard release notes declare their feature branch and commits", () => {
+test("pull request release notes use one branch-named localized set", () => {
+    const branch =
+        "feature-implement-final-review-comments-and-improve-whiteboard-stabi";
     for (const language of LANGUAGES) {
         const changelog = readFileSync(
-            resolve(
-                ROOT,
-                `changelog/fix-whiteboard-loading-stability.${language}.md`,
-            ),
+            resolve(ROOT, `changelog/${branch}.${language}.md`),
             "utf8",
         );
-        assert.match(
-            changelog,
-            /\*\*[^*]*(?:branch|Branch|fitur|ブランチ)[^*]*:\*\* `fix-whiteboard-loading-stability`/i,
+        const sections = changelog.trim().split(/\n\s*\n/);
+        assert.match(sections[0], /^# [^#]/);
+        assert.equal(sections.length, 4);
+        assert.ok(
+            sections.slice(1).every((paragraph) => !paragraph.includes("\n")),
         );
-        assert.match(changelog, /`7141534`/);
-        assert.match(changelog, /`12ad748`/);
-        assert.match(changelog, /^## /m);
     }
 });

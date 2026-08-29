@@ -98,23 +98,11 @@ Every behavior change requires appropriate tests, logging, and documentation. Ke
 
 Standard documentation describes the module's current supported behavior and integration contract. Keep it concise and cohesive by updating existing sections instead of appending a running history of fixes. Release chronology, superseded behavior, migration notes, and implementation history belong only in `changelog/`.
 
-### Changelog metadata (strict requirement)
+### Changelog structure (strict requirement)
 
-Every new or updated changelog must explicitly include the feature branch and a complete commit list before its change description. This metadata is mandatory in every localized variant and must remain synchronized across German, English, Indonesian, and Japanese. Use this structure:
+Each pull request may create or update exactly one changelog set consisting of the German, English, Indonesian, and Japanese variants for that pull request. Name every file in that set after the complete feature branch: `changelog/<feature-branch>.de.md`, `changelog/<feature-branch>.en.md`, `changelog/<feature-branch>.id.md`, and `changelog/<feature-branch>.ja.md`. The shared filename is the required feature-branch record. Do not create additional changelog sets for review fixes or later commits in the same pull request, and do not append those notes to another feature branch's changelog.
 
-```md
-# Localized title
-
-- **Feature branch:** `feature-or-fix-branch-name`
-- **Commits:**
-    - `short-sha` — Localized commit description
-
-## Changes
-
-Localized release notes.
-```
-
-Do not consolidate release notes into a different feature's changelog, omit branch metadata, replace the commit list with prose, or consider changelog work complete while any included feature commit is missing from the list. Translate the labels, commit descriptions, heading, and release notes in every locale while preserving branch names and commit hashes exactly.
+Follow the established changelog structure: one localized level-one title followed by localized prose paragraphs. After the title, add exactly one paragraph for every commit included in the pull request, in chronological commit order. Those ordered paragraphs are the required commit list. Keep all four variants synchronized, but translate the title and every commit paragraph. Do not add a separate feature-branch field, commit hash list, metadata bullets, or a `Changes` section. Do not consider changelog work complete if the filename does not match the full feature branch, the pull request has more than one changelog set, or any included commit lacks its corresponding localized paragraph.
 
 ## Review discipline
 
