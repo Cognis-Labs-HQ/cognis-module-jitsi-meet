@@ -17,7 +17,7 @@ import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
-import { registerMeetingWhiteboardAssociationCapability } from "./whiteboard-association.js";
+import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
     canAccessMeeting,
     createMeetingPayload,
@@ -218,12 +218,7 @@ export function registerApiRoutes(router, ctx) {
         ? resolveStore(dbExecutor, log, generatePassphrase)
         : null;
     if (store) {
-        if (typeof ctx.capabilities?.contribute === "function") {
-            registerMeetingWhiteboardAssociationCapability(ctx, {
-                store,
-                resolveShareGuestMeetingAccess,
-            });
-        }
+        registerMeetingWhiteboardDelegationHook(ctx, { store });
     }
 
     if (typeof registerNotificationCategory === "function") {
