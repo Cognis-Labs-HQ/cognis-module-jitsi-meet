@@ -87,6 +87,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingName/,
     );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
+    assert.match(
+        buttonSource,
+        /!state\.shareAccessToken[\s\S]*meetingCanvasNeedsPreparation\(trigger, state\)/,
+    );
     assert.doesNotMatch(buttonSource, /shouldAutoOpenMappedCanvas/);
     assert.doesNotMatch(buttonSource, /autoOpenedMeetingIds/);
     assert.match(
@@ -135,7 +139,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?disableWhiteboardAfterError/,
+        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?handleWhiteboardLoadError/,
     );
     assert.match(
         buttonSource,
@@ -147,20 +151,24 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /for \(let attempt = 0; attempt < 4; attempt \+= 1\)[\s\S]*?waitForProviderRetry\(trigger\.signal, 250\)/,
+        /for \(let attempt = 0; attempt < 6; attempt \+= 1\)[\s\S]*?Math\.min\(250 \* 2 \*\* attempt, 2_000\)/,
     );
     assert.match(
         buttonSource,
         /Failed to fetch dynamically imported module[\s\S]*?break;/,
     );
-    assert.match(buttonSource, /loadFailed:\s*false/);
+    assert.match(buttonSource, /loadRetryAfter:\s*0/);
     assert.match(
         buttonSource,
-        /trigger\.loadFailed !== true[\s\S]*?trigger\.button\.click\(\)/,
+        /Date\.now\(\) >= trigger\.loadRetryAfter[\s\S]*?trigger\.button\.click\(\)/,
     );
     assert.match(
         buttonSource,
-        /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
+        /trigger\.loadRetryAfter = Date\.now\(\) \+ 2_000[\s\S]*?whiteboard\.load_failed/,
+    );
+    assert.doesNotMatch(
+        buttonSource,
+        /handleWhiteboardLoadError[\s\S]*?setButtonDisabled\(trigger\.button, true\)/,
     );
     assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(

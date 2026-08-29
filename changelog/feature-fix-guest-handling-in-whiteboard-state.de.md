@@ -1,0 +1,56 @@
+# Whiteboard-Zugriff für Freigabegäste
+
+**Feature-Branch:** feature-fix-guest-handling-in-whiteboard-state
+
+## Besprechungsgebundenen Gastzustand autorisieren
+
+Whiteboard-Zustandsänderungen prüfen Gäste über Freigabelinks jetzt über das Share-Gateway für die angeforderte Besprechung und verwenden für Konsensstimmen dieselbe stabile synthetische Identität wie die Besprechungsanwesenheit.
+
+## Vom Gastgeber erstellte Whiteboards wiederverwenden
+
+Gäste über Freigabelinks verwenden jetzt die vorhandene Whiteboard-Zuordnung der Besprechung und warten auf die Erstellung durch ein autorisiertes Konto oder den Gastgeber, wenn noch keine Zuordnung vorhanden ist.
+
+## Generische Share-Delegierung verwenden
+
+Jitsi Meet erweitert jetzt `resolve-share-delegated-access`, statt eine Whiteboard-spezifische Capability zu veröffentlichen. Es weist die exakte aktive Beziehung zwischen Besprechung und Board nach und deklariert `meeting:join` als Quellberechtigung, während Share das Gast-Token unabhängig validiert.
+
+## Übergroße Module aufteilen
+
+Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Schema-Modul verschoben, die UI-Regressionsabdeckung wurde in zwei zusammenhängende Testdateien aufgeteilt und normale Abstände zwischen Deklarationen und Methoden wurden wiederhergestellt.
+
+## Sichere Whiteboard-Steuerung für Gäste aktivieren
+
+Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Gast-Orchestrierung benötigt die nur für Konten verfügbare Canvas-Factory nicht mehr, sodass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt. Das Einbinden des Komponentenfensters verwendet jetzt einen längeren begrenzten exponentiellen Backoff, damit Organisatoren fortfahren können, wenn ein eingeladener Teilnehmer das Board öffnet, bevor das Provider-Fenster des Organisators bereit ist. Eingeschränkte Gastansichten übergeben jetzt ihr weitergeleitetes Share-Token an die Identitätsauflösung und überspringen Konto-Profil- sowie Teilnehmersuchanfragen, damit kontoexklusive Profil-404-Antworten den Besprechungsbeitritt nicht blockieren. Die Gast-Schlüsselbundauflösung bleibt für Besprechungskennwörter, Chat und Whiteboards verfügbar. Die tatsächliche Blockierung war eine unbegrenzte Microtask-Schleife: Eine Vorbereitung ohne Zuordnung kehrte sofort zurück und plante nach Abschluss rekursiv dieselbe Vorbereitung. Gäste warten jetzt über den synchronisierten Besprechungszustand auf ein zugeordnetes Board, ohne eine Arbeitsflächenerstellung einzuplanen. Ihr Steuerelement ist ausgeblendet und nicht interaktiv, sodass sie nur den Öffnungs- und Schließentscheidungen des Organisators folgen. Ladefehler deaktivieren das Konto-Steuerelement nicht mehr dauerhaft; manuelle Wiederholungen bleiben verfügbar und die automatische Synchronisierung verwendet eine kurze Verzögerung.
+
+## Whiteboard-Eigentum prüfen
+
+Von Konten erstellte Zuordnungen und delegierter Gastzugriff erfordern jetzt eine Provider-Bestätigung, dass Arbeitsflächenkennung und Besprechungstitel übereinstimmen. Neue Zuordnungen müssen außerdem vom anfragenden Konto erstellt worden sein, damit fremde Arbeitsflächenkennungen nicht zu Besprechungszuordnungen werden können.
+
+## Whiteboard-Prüfung verzögert auflösen
+
+Whiteboard-Zustand und delegierter Gastzugriff lösen die optionale Provider-Capability jetzt bei jeder Anfrage auf. Rechtmäßig vom Organisator erstellte Arbeitsflächen bleiben damit für Gäste verfügbar, wenn das Whiteboard-Modul seine Server-Capability nach Jitsi Meet registriert.
+
+## Delegierung über den System-ctx auflösen
+
+Delegierter Gastzugriff ermittelt die öffentliche Board-Daten-Capability des Providers jetzt über den System-ctx, wenn sie im bereichsgebundenen API-Kontext von Jitsi nicht sichtbar ist. Dadurch funktionieren Whiteboard-Sitzungs- und Anwesenheitsanfragen für rechtmäßig vom Organisator erstellte Arbeitsflächen, während die Provider-Eigentumsprüfung erhalten bleibt.
+
+## Commits
+
+- [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
+- [777e683](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/777e6839d246ceffe0d999227554c85da8b0f103)
+- [88e72f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/88e72f2b8ceb38fd137d22d97ab2749bc4a1e2bb)
+- [c0f05fb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c0f05fb22382b2f18b2ecbacee654a6007944b78)
+- [3583bce](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3583bce288b495d3d44f1efe049063f267c82ad3)
+- [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
+- [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)
+- [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
+- [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)
+- [78f8ba7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/78f8ba77509b5f104ae076d7d98840865791a312)
+- [53a9f98](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/53a9f9870c3a8a0ca546e8da6e33b9dc4f861db7)
+- [ce6c974](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ce6c9744f96ea5613e11efbcd12fe771ca49afd3)
+- [39a4794](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39a4794771a7c673ee9c92fba37e9fdf9ba9a449)
+- [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
+- [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
+- [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
+- [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)
+- [ec98ff4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ec98ff495ba3b40552474011e4c01342abf4d52f)

@@ -17,6 +17,7 @@ import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
+import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
     canAccessMeeting,
     createMeetingPayload,
@@ -161,6 +162,16 @@ export function registerApiRoutes(router, ctx) {
     const accountStore = ctx.getCapability("auth:accountStore");
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
+    const log = ctx.getCapability("logging:log");
+    const fetchBoardData = (...args) => {
+        const providerFetchBoardData =
+            ctx.getCapability("whiteboard:fetchBoardData") ??
+            systemCtx?.getCapability?.("whiteboard:fetchBoardData");
+        if (typeof providerFetchBoardData !== "function") {
+            throw new Error("Whiteboard provider verification is unavailable.");
+        }
+        return providerFetchBoardData(...args);
+    };
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -211,6 +222,13 @@ export function registerApiRoutes(router, ctx) {
         });
     const canAccessMeetingForRequester = (input) =>
         canAccessMeeting({ ...input, resolveShareUserAccess });
+
+    const store = dbExecutor
+        ? resolveStore(dbExecutor, log, generatePassphrase)
+        : null;
+    if (store) {
+        registerMeetingWhiteboardDelegationHook(ctx, { store });
+    }
 
     if (typeof registerNotificationCategory === "function") {
         registerNotificationCategory("meetings", "Meetings");
@@ -388,11 +406,9 @@ export function registerApiRoutes(router, ctx) {
         },
     );
 
-    const log = ctx.getCapability("logging:log");
     const registerScriptOrigins = ctx.getCapability(
         "auth:registerPageScriptOrigins",
     );
-    const store = resolveStore(dbExecutor, log, generatePassphrase);
     const runEnableTest = async () => {
         await store.ensureSchema();
         const config = await store.getConfig();
@@ -662,6 +678,7 @@ export function registerApiRoutes(router, ctx) {
         ...routeContext,
         ctx,
         listClassroomParticipantHandles,
+        fetchBoardData,
     });
 
     registerMeetingRoutes({

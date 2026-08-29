@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.62",
+    "version": "1.5.78",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -137,7 +137,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "911c429d3b646724e0f3c7eddfdaa9d884dbc5c9a32a1a1881fc6f449d4ab0b6"
+            "sha256": "d4f38c281f0ad7f6f9a8a6e47bdd352f1c9f402d0146dfb2596f5478bc2d42e1"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
@@ -200,6 +200,10 @@
             "sha256": "d77a39f0f8b35d8933e98d76be53bec154c1b59116c94b3139f83472b052147a"
         },
         {
+            "path": "api/reuse/store-schema.js",
+            "sha256": "0f9132fed355aa54b4a2c50ccce9934b73a99681d8f712ac9d952c14676fcd4b"
+        },
+        {
             "path": "api/reuse/timestamp.js",
             "sha256": "eb29a8032d33f474b6ccf22a87eda84a876502524b164b775b2a94c897b70f5f"
         },
@@ -217,7 +221,7 @@
         },
         {
             "path": "api/store.js",
-            "sha256": "74efd84f119ed7a77816838690691c833d7e0720e1e637f66945cfea7081fe86"
+            "sha256": "259077f989e530745f2109439ae8b0eee0bdf0c43d50dd89a4147836d5f36dab"
         },
         {
             "path": "api/tests/bootstrap.test.js",
@@ -253,23 +257,35 @@
         },
         {
             "path": "api/tests/store.test.js",
-            "sha256": "35db0ef265e322a0f03b3a014364e73ed4329b8a3b672c10a6a206446c7fba63"
+            "sha256": "1eddf3a423fdba9af12c560ac5496bc8acd6721215db786110f7738245840346"
         },
         {
             "path": "api/tests/structural-compliance.test.js",
             "sha256": "6ad682fc92c4fd528749140f214c92fd853fc6a76261885c718cc5d786571571"
         },
         {
+            "path": "api/tests/whiteboard-delegation.test.js",
+            "sha256": "e4dc8b77399f6d0fa4ac87a99f235ca58727011ab95f801b16eb7b4e841ae7eb"
+        },
+        {
             "path": "api/tests/whiteboard-routes.test.js",
-            "sha256": "659335794c655cadc191b8cb7ba0dde333b7c8ba4045b897ea106d993df4b4e4"
+            "sha256": "1bc825017368be796194a54bbbfd1cd764f7ec9fac8f0238e637103ed39e8dc4"
         },
         {
             "path": "api/ui-resources.js",
             "sha256": "2190e917cd1ca44ab705ec4a05319d4893cf5a8a5fa2bf0ca954e07ef1470923"
         },
         {
+            "path": "api/whiteboard-delegation.js",
+            "sha256": "97646cf8c879ae8592fc0d5beb58125ff042519811406254aba5998e4a7344ab"
+        },
+        {
             "path": "api/whiteboard-routes.js",
-            "sha256": "c4c7e9a050f3dae08a1fc32a3a7d77d30cc33fabd1483cd6cecb4d064023b9a1"
+            "sha256": "b8432e593ef8eaa781a487a0295c6f7e6380293deefbab7ff567a047b4bd3f73"
+        },
+        {
+            "path": "api/whiteboard-verification.js",
+            "sha256": "72d6440350a4dd0f187ecf5680ba7d7ef24e58929f4ff59a424b1b1cd09cae01"
         },
         {
             "path": "assets/banner.png",
@@ -289,27 +305,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "884f926188915d2af6a5baf8dcb4af6de0b7d81464a4dec298a1d6fdbc5fa13a"
+            "sha256": "7a47002bd8c9e11b405188f67cf5397572460fb591638f1afedf3abeca03d9ac"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "bd87ba15f1d7bb581aea2573209e0bbc9ad0419b8c25044e679e789228582e06"
+            "sha256": "31718383911bf007232d28d1db266e8d1ae3ecd1cd0753d850f33d0a4bdb1400"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "e9b24ef5d65b2f51af09b5e9222c180f6d0ac01b39ce42df5a45be5fd1912b2e"
+            "sha256": "461258b3643f0bb2b6f22813855ac004c1363caf499013ce862c41375ce80cfd"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "761193bb7745107a11ccf93480c28758f6a5e420b65d9890da1a6b95133f5955"
+            "sha256": "fdaa1332a2b591ce20d40acee948921039e7d9d140dc6d445826434392a0bab8"
         },
         {
             "path": "package-lock.json",
-            "sha256": "b89ade5e324fc9a568f925e9535ff7b731eb9fda99d000ba24c71eba77b428f8"
+            "sha256": "ea3d502cd9b3dde022ce63ebfd01897e2accc7fedc61c7c8fa5d48f041541c7f"
         },
         {
             "path": "package.json",
-            "sha256": "93e6aa34a23418aea3c2fa8c949eb53046955fdd0aff095021b2e076709fcd25"
+            "sha256": "e9e3b4a603b8887191bc727fb8c6d70ecdf8ad4739ec57da511531a2b0549ffb"
         },
         {
             "path": "routes.json",
@@ -333,7 +349,7 @@
         },
         {
             "path": "ui/app/index.js",
-            "sha256": "75fe781cb8702b25f3ab73fb65bdee00be600c6b430d4b455a49b2fbd779b5c1"
+            "sha256": "d946085f4845aa9b596370a7bab1c4546bc0a1774d5a7ef19596a4d8530d8593"
         },
         {
             "path": "ui/app/meeting-room.js",
@@ -369,7 +385,7 @@
         },
         {
             "path": "ui/jitsi-helpers.js",
-            "sha256": "4cd61a6ef0e7479e60d0af377a2043515116c4f938806025346e32e78361058c"
+            "sha256": "456c1f7d7d289c6fdda83859b5c1b3d21d4943b03b8d86f808257d71aaa19fd5"
         },
         {
             "path": "ui/jitsi-meet.css",
@@ -436,28 +452,32 @@
             "sha256": "fba31d4c1ef5e38790f7210dcefa9a44f44cf3b5bd46ce2d5b100b523ced6af4"
         },
         {
+            "path": "ui/tests/meeting-runtime-regression.test.js",
+            "sha256": "47c58d72490ce9202bdf79013ac641a25da9ae2bdab1122894c50f83efe45090"
+        },
+        {
             "path": "ui/tests/regression.test.js",
-            "sha256": "99aa4fec8c39b27ab209e9cfe54e1793cc6afea23818ffdc65fe4f2e309d4a43"
+            "sha256": "b15c316384925bf3c4e17f0eef115e76835f0f10017a9daa539dfbb2816d7d33"
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "73e3e2929fb3d171852220bbb5700ce2aeeea8159dbeffcd901fbfe6c2fe11c4"
+            "sha256": "4b7082d07d4bf01ac5fec6c7147b856a83c4f83424e7f6de998b5668bab1fbc1"
         },
         {
             "path": "ui/tests/whiteboard-session.test.js",
-            "sha256": "279e0f5cfadaa92530be53441f796a0ba5ca392571a6f18bbba9bd5f057f4985"
+            "sha256": "2022b998d3f35fe4739c565ef93733847ea93a7572f6e98689dc4375c4605d0b"
         },
         {
             "path": "ui/whiteboard-control.js",
-            "sha256": "8ccdd3616eafcefaba2bec80ca313b2efef10033606c3824e6928ec2a41e42e3"
+            "sha256": "f73e9ed16f55f3fa16981bdbea8cdbac938d98e733e53500a74806f89aeb8871"
         },
         {
             "path": "ui/whiteboard-provider.js",
-            "sha256": "3e07db866e28e5b9762da84b4b2d19779e5aaee0117c01cbd413edcd89fe9c1c"
+            "sha256": "d439418682a144eede3fa8bae4778548dc80b628d40ba01624f3d8ff1bf2b670"
         },
         {
             "path": "ui/whiteboard-session.js",
-            "sha256": "fdb7cbbd9157591eedb8d8f3c3221af05620b5f5cd49bc079b6f7c6d69774ebc"
+            "sha256": "ffc806ba6e35ddf38ada660feb4c14823aa2c96cb1e167c098318e216a026d2a"
         }
     ]
 }

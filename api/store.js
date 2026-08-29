@@ -10,7 +10,6 @@ import {
 } from "./reuse/normalize-handle.js";
 import { buildMeetingName } from "./meeting-values.js";
 import { generateMeetingName } from "./meeting-name.js";
-import { refreshGeneratedMeetingNames } from "./meeting-name-store.js";
 import { readDbTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
@@ -18,10 +17,12 @@ import {
     encryptPayload,
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
+import { ensureJitsiStoreSchema } from "./reuse/store-schema.js";
 
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
 const schemaInitializationByExecutor = new WeakMap();
+
 function buildParticipantKey(usernames, classroomId = null) {
     const payload = JSON.stringify({
         classroomId: classroomId ? String(classroomId) : null,
@@ -29,12 +30,14 @@ function buildParticipantKey(usernames, classroomId = null) {
     });
     return createHash("sha256").update(payload).digest("hex");
 }
+
 export class JitsiMeetStore {
     constructor({ db, log, generatePassphrase }) {
         this.db = db;
         this.log = log;
         this.generatePassphrase = generatePassphrase;
     }
+
     async ensureSchema() {
         const existingInitialization = schemaInitializationByExecutor.get(
             this.db,
@@ -51,177 +54,15 @@ export class JitsiMeetStore {
         schemaInitializationByExecutor.set(this.db, initialization);
         return initialization;
     }
+
     async ensureSchemaTables() {
-        await this.db.ensureTable({
-            name: "jitsi_module_config",
-            columns: [
-                { name: "id", type: "text", primaryKey: true },
-                { name: "instance_url", type: "text" },
-                {
-                    name: "updated_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-            ],
-        });
-
-        await this.db.ensureTable({
-            name: "jitsi_meetings",
-            columns: [
-                { name: "id", type: "text", primaryKey: true },
-                {
-                    name: "participant_key",
-                    type: "text",
-                    unique: true,
-                    notNull: true,
-                },
-                {
-                    name: "meeting_url",
-                    type: "text",
-                    unique: true,
-                    notNull: true,
-                },
-                { name: "meeting_password", type: "text", notNull: true },
-                { name: "meeting_password_iv", type: "text" },
-                {
-                    name: "meeting_name",
-                    type: "text",
-                    notNull: true,
-                    default: "",
-                },
-                { name: "room_slug", type: "text", notNull: true },
-                { name: "chat_room_id", type: "text" },
-                { name: "classroom_id", type: "text" },
-                { name: "created_by", type: "text", notNull: true },
-                { name: "scheduled_at", type: "timestamp" },
-                {
-                    name: "created_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-                {
-                    name: "updated_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-            ],
-        });
-
-        await this.db.ensureTable({
-            name: "jitsi_meeting_participants",
-            columns: [
-                { name: "meeting_id", type: "text", notNull: true },
-                { name: "username", type: "text", notNull: true },
-                {
-                    name: "added_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-                { name: "password_delivered_at", type: "timestamp" },
-            ],
-            primaryKey: ["meeting_id", "username"],
-        });
-
-        await this.db.ensureTable({
-            name: "jitsi_meeting_state",
-            columns: [
-                { name: "meeting_id", type: "text", primaryKey: true },
-                { name: "instance_id", type: "text" },
-                { name: "first_joined_by", type: "text" },
-                { name: "first_joined_at", type: "timestamp" },
-                {
-                    name: "auth_required",
-                    type: "integer",
-                    notNull: true,
-                    default: 0,
-                },
-                { name: "auth_started_by", type: "text" },
-                { name: "auth_started_at", type: "timestamp" },
-                { name: "auth_completed_at", type: "timestamp" },
-                { name: "ended_by", type: "text" },
-                { name: "ended_at", type: "timestamp" },
-                { name: "whiteboard_id", type: "text" },
-                { name: "whiteboard_disposable", type: "integer" },
-                {
-                    name: "whiteboard_active",
-                    type: "integer",
-                    notNull: true,
-                    default: 0,
-                },
-                { name: "whiteboard_open_votes", type: "text" },
-                {
-                    name: "updated_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-            ],
-        });
-
-        await this.db.ensureTable({
-            name: "jitsi_meeting_presence",
-            columns: [
-                { name: "meeting_id", type: "text", notNull: true },
-                { name: "username", type: "text", notNull: true },
-                { name: "session_id", type: "text", notNull: true },
-                { name: "active", type: "integer", notNull: true, default: 1 },
-                {
-                    name: "last_seen_at",
-                    type: "timestamp",
-                    notNull: true,
-                    default: "now",
-                },
-            ],
-            primaryKey: ["meeting_id", "username", "session_id"],
-        });
-
-        const meetings = await this.db.executeCommand({
-            option: "SELECT",
-            table: "jitsi_meetings",
-            columns: [
-                "id",
-                "meeting_url",
-                "meeting_name",
-                "meeting_password",
-                "meeting_password_iv",
-            ],
-        });
-        await refreshGeneratedMeetingNames({
+        await ensureJitsiStoreSchema({
             db: this.db,
-            meetings: meetings.rows ?? [],
             generatePassphrase: this.generatePassphrase,
             log: this.log,
         });
-        for (const meeting of meetings.rows ?? []) {
-            if (
-                !meeting.id ||
-                !meeting.meeting_password ||
-                meeting.meeting_password_iv
-            )
-                continue;
-            const wrapper = await deriveScopedKey(
-                `jitsi:meeting:${String(meeting.id)}:password`,
-                getDataEncryptionKey(),
-            );
-            const encryptedPassword = await encryptPayload(
-                wrapper,
-                String(meeting.meeting_password),
-            );
-            await this.db.executeCommand({
-                option: "UPDATE",
-                table: "jitsi_meetings",
-                set: {
-                    meeting_password: encryptedPassword.ciphertext,
-                    meeting_password_iv: encryptedPassword.iv,
-                },
-                where: [{ column: "id", value: meeting.id }],
-            });
-        }
     }
+
     async getConfig() {
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -235,6 +76,7 @@ export class JitsiMeetStore {
             updatedAt: readDbTimestampValue(row?.updated_at),
         };
     }
+
     async saveConfig({ instanceUrl }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
         const previousConfig = await this.getConfig();
@@ -279,6 +121,7 @@ export class JitsiMeetStore {
             invalidatedMeetings: instanceChanged,
         };
     }
+
     async deleteConfig() {
         await this.db.executeCommand({
             option: "DELETE",
@@ -286,6 +129,7 @@ export class JitsiMeetStore {
             where: [{ column: "id", value: "default" }],
         });
     }
+
     async deleteAllData() {
         for (const table of [
             "jitsi_meeting_presence",
@@ -654,6 +498,20 @@ export class JitsiMeetStore {
                 row.whiteboard_open_votes ?? "[]",
             ).map(String),
         };
+    }
+
+    async getActiveMeetingByWhiteboardId(whiteboardId) {
+        const { rows = [] } = await this.db.executeCommand({
+            option: "SELECT",
+            table: "jitsi_meeting_state",
+            where: [{ column: "whiteboard_id", value: whiteboardId }],
+        });
+        const activeMappings = rows.filter(
+            (row) => Number(row.whiteboard_active) === 1 && !row.ended_at,
+        );
+        if (activeMappings.length !== 1) return null;
+        const id = String(activeMappings[0].meeting_id ?? "").trim();
+        return this.getMeetingById(id);
     }
 
     async updateMeetingState(meetingId, updates) {

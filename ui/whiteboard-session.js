@@ -94,7 +94,9 @@ export async function spawnComponentWindowWithRetry(
     { meetingId, meetingName, whiteboardId },
 ) {
     let lastError;
-    for (let attempt = 0; attempt < 4; attempt += 1) {
+    const waitBeforeRetry =
+        trigger.waitForComponentWindowRetry ?? waitForProviderRetry;
+    for (let attempt = 0; attempt < 6; attempt += 1) {
         try {
             const componentWindow = await spawnComponentWindow(trigger, {
                 meetingId,
@@ -114,7 +116,12 @@ export async function spawnComponentWindowWithRetry(
         ) {
             break;
         }
-        if (attempt < 3) await waitForProviderRetry(trigger.signal, 250);
+        if (attempt < 5) {
+            await waitBeforeRetry(
+                trigger.signal,
+                Math.min(250 * 2 ** attempt, 2_000),
+            );
+        }
     }
     throw lastError;
 }
@@ -140,6 +147,15 @@ export async function ensureWhiteboardKeyringUnlocked(trigger, state) {
     );
 }
 
+export function meetingCanvasNeedsPreparation(trigger, state) {
+    return Boolean(
+        !state.shareAccessToken &&
+        !trigger.preparedWhiteboardId &&
+        state.meeting?.id &&
+        trigger.preparationFailedMeetingId !== state.meeting.id,
+    );
+}
+
 export function prepareMeetingCanvas(trigger, state) {
     if (
         trigger.preparedWhiteboardId ||
@@ -155,6 +171,21 @@ export function prepareMeetingCanvas(trigger, state) {
     const meeting = state.meeting;
     const meetingId = meeting.id;
     const meetingName = meeting.meetingName;
+    const mappedWhiteboardId = String(meeting.state?.whiteboardId ?? "").trim();
+    if (
+        state.shareAccessToken &&
+        mappedWhiteboardId &&
+        typeof meeting.state?.whiteboardDisposable === "boolean"
+    ) {
+        trigger.disposableCanvas = meeting.state.whiteboardDisposable;
+        trigger.preparedWhiteboardId = mappedWhiteboardId;
+        trigger.preparedMeetingId = meetingId;
+        trigger.preparationFailedMeetingId = "";
+        return Promise.resolve();
+    }
+    if (state.shareAccessToken) {
+        return Promise.resolve();
+    }
     const participantHandles = getParticipantHandles(meeting);
     trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
     const disposableCanvas = trigger.disposableCanvas;

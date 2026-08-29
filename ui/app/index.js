@@ -891,8 +891,10 @@ export async function mount(
     const elements = createMeetingPageElements(i18n, limitedShareView);
 
     const [allParticipants, currentProfile] = await Promise.all([
-        fetchParticipants(""),
-        fetchCurrentProfile(),
+        limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
+        fetchCurrentProfile({
+            shareAccessToken: state.shareAccessToken,
+        }),
     ]);
     state.currentProfile = currentProfile;
     state.allParticipants = allParticipants
@@ -935,14 +937,14 @@ export async function mount(
                     i18n,
                     deferAloneParticipantPrompt,
                 });
-                void bindWhiteboardButton({
-                    root,
-                    signal,
-                    state,
-                    i18n,
-                    apiFetch,
-                });
             }
+            void bindWhiteboardButton({
+                root,
+                signal,
+                state,
+                i18n,
+                apiFetch,
+            });
         },
     });
 

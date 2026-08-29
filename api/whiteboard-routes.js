@@ -1,4 +1,5 @@
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
 
 async function resolveAuthorizedMeeting({
     req,
@@ -9,6 +10,8 @@ async function resolveAuthorizedMeeting({
     requireAuth,
     sendError,
     canAccessMeeting,
+    resolveShareGuestMeetingAccess,
+    resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
 }) {
     const claims = requireAuth(req, res, "user");
@@ -24,27 +27,43 @@ async function resolveAuthorizedMeeting({
         sendError(res, 404, "not_found", "Meeting not found.");
         return null;
     }
-    const requesterUsername = await resolveRequesterUsername(
-        profileStore,
-        claims.sub,
-    ).catch((error) => {
-        sendError(res, 409, "profile_required", error.message);
+    const shareGuestAccess = await resolveShareGuestMeetingAccess({
+        claims,
+        meetingId: meeting.id,
+        requiredCapability: "meeting:join",
+    });
+    if (shareGuestAccess.isGuest && !shareGuestAccess.allowed) {
+        sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
-    });
+    }
+    const requesterUsername = shareGuestAccess.isGuest
+        ? resolveShareGuestPresenceUsername(claims)
+        : await resolveRequesterUsername(profileStore, claims.sub).catch(
+              (error) => {
+                  sendError(res, 409, "profile_required", error.message);
+                  return null;
+              },
+          );
     if (!requesterUsername) return null;
-    const authorized = await canAccessMeeting({
-        store,
-        meeting,
-        username: requesterUsername,
-        listClassroomParticipantHandles,
-        profileStore,
-        requesterAccountId: claims.sub,
-    });
+    const authorized =
+        shareGuestAccess.isGuest ||
+        (await canAccessMeeting({
+            store,
+            meeting,
+            username: requesterUsername,
+            listClassroomParticipantHandles,
+            profileStore,
+            requesterAccountId: claims.sub,
+        }));
     if (!authorized) {
         sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
     }
-    return { meeting, requesterUsername };
+    return {
+        meeting,
+        requesterUsername,
+        shareGuest: shareGuestAccess.isGuest,
+    };
 }
 
 export function registerMeetingWhiteboardRoutes({
@@ -57,7 +76,10 @@ export function registerMeetingWhiteboardRoutes({
     sendJson,
     sendError,
     canAccessMeeting,
+    resolveShareGuestMeetingAccess,
+    resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
+    fetchBoardData,
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/whiteboard/state",
@@ -72,6 +94,8 @@ export function registerMeetingWhiteboardRoutes({
                 requireAuth,
                 sendError,
                 canAccessMeeting,
+                resolveShareGuestMeetingAccess,
+                resolveShareGuestPresenceUsername,
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
@@ -103,6 +127,66 @@ export function registerMeetingWhiteboardRoutes({
             const currentState = await store.getMeetingState(
                 resolved.meeting.id,
             );
+            if (
+                resolved.shareGuest &&
+                (!currentState.whiteboardId ||
+                    whiteboardId !== currentState.whiteboardId ||
+                    whiteboardDisposable !== currentState.whiteboardDisposable)
+            ) {
+                sendError(
+                    res,
+                    403,
+                    "forbidden",
+                    "Share guests may only update the mapped whiteboard.",
+                );
+                return;
+            }
+            const replacesMapping =
+                active &&
+                (currentState.whiteboardId !== whiteboardId ||
+                    currentState.whiteboardDisposable !== whiteboardDisposable);
+            if (!resolved.shareGuest && replacesMapping) {
+                let verified = false;
+                try {
+                    verified = await verifyMeetingWhiteboard({
+                        fetchBoardData,
+                        meeting: resolved.meeting,
+                        whiteboardId,
+                        expectedCreator: resolved.requesterUsername,
+                    });
+                } catch (error) {
+                    ctx.log?.(
+                        "error",
+                        "Whiteboard mapping verification failed.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation: "verify_meeting_whiteboard_mapping",
+                            meetingId: resolved.meeting.id,
+                            whiteboardId,
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : String(error),
+                        },
+                    );
+                    sendError(
+                        res,
+                        503,
+                        "service_unavailable",
+                        "Whiteboard verification is unavailable.",
+                    );
+                    return;
+                }
+                if (!verified) {
+                    sendError(
+                        res,
+                        403,
+                        "forbidden",
+                        "Whiteboard does not belong to this meeting.",
+                    );
+                    return;
+                }
+            }
             let whiteboardOpen = false;
             let whiteboardOpenVotes = [];
             let votesRequired = 0;
