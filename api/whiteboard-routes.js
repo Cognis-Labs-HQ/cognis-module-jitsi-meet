@@ -1,4 +1,5 @@
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
 
 async function resolveAuthorizedMeeting({
     req,
@@ -78,6 +79,7 @@ export function registerMeetingWhiteboardRoutes({
     resolveShareGuestMeetingAccess,
     resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
+    fetchBoardData,
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/whiteboard/state",
@@ -138,6 +140,52 @@ export function registerMeetingWhiteboardRoutes({
                     "Share guests may only update the mapped whiteboard.",
                 );
                 return;
+            }
+            const replacesMapping =
+                active &&
+                (currentState.whiteboardId !== whiteboardId ||
+                    currentState.whiteboardDisposable !== whiteboardDisposable);
+            if (!resolved.shareGuest && replacesMapping) {
+                let verified = false;
+                try {
+                    verified = await verifyMeetingWhiteboard({
+                        fetchBoardData,
+                        meeting: resolved.meeting,
+                        whiteboardId,
+                        expectedCreator: resolved.requesterUsername,
+                    });
+                } catch (error) {
+                    ctx.log?.(
+                        "error",
+                        "Whiteboard mapping verification failed.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation: "verify_meeting_whiteboard_mapping",
+                            meetingId: resolved.meeting.id,
+                            whiteboardId,
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : String(error),
+                        },
+                    );
+                    sendError(
+                        res,
+                        503,
+                        "service_unavailable",
+                        "Whiteboard verification is unavailable.",
+                    );
+                    return;
+                }
+                if (!verified) {
+                    sendError(
+                        res,
+                        403,
+                        "forbidden",
+                        "Whiteboard does not belong to this meeting.",
+                    );
+                    return;
+                }
             }
             let whiteboardOpen = false;
             let whiteboardOpenVotes = [];

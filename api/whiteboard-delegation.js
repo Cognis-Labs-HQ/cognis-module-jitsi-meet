@@ -1,3 +1,5 @@
+import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
+
 const DELEGATED_WHITEBOARD_CAPABILITIES = Object.freeze([
     "whiteboard:read",
     "whiteboard:write",
@@ -7,7 +9,11 @@ function deniedDelegation() {
     return { authorized: false };
 }
 
-export function createMeetingWhiteboardDelegationResolver({ store }) {
+export function createMeetingWhiteboardDelegationResolver({
+    store,
+    fetchBoardData,
+    log,
+}) {
     return async function resolveMeetingWhiteboardDelegation({
         source,
         target,
@@ -31,6 +37,31 @@ export function createMeetingWhiteboardDelegationResolver({ store }) {
         if (!meeting || meeting.id !== sourceResourceId) {
             return deniedDelegation();
         }
+        try {
+            const authorizedCreators = new Set([
+                meeting.createdBy,
+                ...(await store.listParticipants(meeting.id)),
+            ]);
+            if (
+                !(await verifyMeetingWhiteboard({
+                    fetchBoardData,
+                    meeting,
+                    whiteboardId: targetResourceId,
+                    expectedCreators: Array.from(authorizedCreators),
+                }))
+            ) {
+                return deniedDelegation();
+            }
+        } catch (error) {
+            log?.("error", "Whiteboard delegation verification failed.", {
+                component: "jitsi-meet-module",
+                operation: "verify_whiteboard_delegation",
+                meetingId: sourceResourceId,
+                whiteboardId: targetResourceId,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            return deniedDelegation();
+        }
 
         return {
             authorized: true,
@@ -48,6 +79,8 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     if (!ctx.flow.exists("resolve-share-delegated-access")) return false;
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
+        fetchBoardData: ctx.getCapability?.("whiteboard:fetchBoardData"),
+        log: ctx.log,
     });
     ctx.flow.extend(
         "resolve-share-delegated-access",

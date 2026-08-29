@@ -22,6 +22,10 @@ Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Sc
 
 Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Gast-Orchestrierung benötigt die nur für Konten verfügbare Canvas-Factory nicht mehr, sodass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt. Das Einbinden des Komponentenfensters verwendet jetzt einen längeren begrenzten exponentiellen Backoff, damit Organisatoren fortfahren können, wenn ein eingeladener Teilnehmer das Board öffnet, bevor das Provider-Fenster des Organisators bereit ist. Eingeschränkte Gastansichten übergeben jetzt ihr weitergeleitetes Share-Token an die Identitätsauflösung und überspringen Konto-Profil- sowie Teilnehmersuchanfragen, damit kontoexklusive Profil-404-Antworten den Besprechungsbeitritt nicht blockieren. Die Gast-Schlüsselbundauflösung bleibt für Besprechungskennwörter, Chat und Whiteboards verfügbar. Die tatsächliche Blockierung war eine unbegrenzte Microtask-Schleife: Eine Vorbereitung ohne Zuordnung kehrte sofort zurück und plante nach Abschluss rekursiv dieselbe Vorbereitung. Gäste warten jetzt über den synchronisierten Besprechungszustand auf ein zugeordnetes Board, ohne eine Arbeitsflächenerstellung einzuplanen. Ihr Steuerelement ist ausgeblendet und nicht interaktiv, sodass sie nur den Öffnungs- und Schließentscheidungen des Organisators folgen. Ladefehler deaktivieren das Konto-Steuerelement nicht mehr dauerhaft; manuelle Wiederholungen bleiben verfügbar und die automatische Synchronisierung verwendet eine kurze Verzögerung.
 
+## Whiteboard-Eigentum prüfen
+
+Von Konten erstellte Zuordnungen und delegierter Gastzugriff erfordern jetzt eine Provider-Bestätigung, dass Arbeitsflächenkennung und Besprechungstitel übereinstimmen. Neue Zuordnungen müssen außerdem vom anfragenden Konto erstellt worden sein, damit fremde Arbeitsflächenkennungen nicht zu Besprechungszuordnungen werden können.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -38,3 +42,4 @@ Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizi
 - [ce6c974](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ce6c9744f96ea5613e11efbcd12fe771ca49afd3)
 - [39a4794](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39a4794771a7c673ee9c92fba37e9fdf9ba9a449)
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
+- [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)

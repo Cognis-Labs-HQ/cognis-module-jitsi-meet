@@ -24,6 +24,11 @@ function createRoutes({
     state = { whiteboardOpenVotes: [] },
     claims = { sub: "account-alice" },
     guestAllowed = false,
+    board = {
+        id: "board-1",
+        title: "Planning",
+        createdBy: requesterUsername,
+    },
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
@@ -84,6 +89,7 @@ function createRoutes({
                 ? `guest:${String(claims.sub).split(":")[1]}`
                 : "",
         listClassroomParticipantHandles: async () => [],
+        fetchBoardData: async () => board,
     });
     return { handlers, stateUpdates };
 }
@@ -225,6 +231,32 @@ test("meeting participants can synchronize a provider-created whiteboard", async
             },
         },
     ]);
+});
+
+test("meeting participants cannot map an unrelated provider whiteboard", async () => {
+    for (const board of [
+        { id: "board-1", title: "Other meeting", createdBy: "alice" },
+        { id: "board-1", title: "Planning", createdBy: "mallory" },
+        null,
+    ]) {
+        const routes = createRoutes({ board });
+        const response = createRecorder();
+        await routes.handlers.get(
+            "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+        )(
+            {
+                body: {
+                    meetingId: "meeting-1",
+                    whiteboardId: "board-1",
+                    disposable: false,
+                    active: true,
+                },
+            },
+            response,
+        );
+        assert.equal(response.status, 403);
+        assert.equal(routes.stateUpdates.length, 0);
+    }
 });
 
 test("meeting whiteboard state rejects malformed and unauthorized requests", async () => {

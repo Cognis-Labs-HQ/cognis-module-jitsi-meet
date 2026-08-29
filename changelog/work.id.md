@@ -22,6 +22,10 @@ Pembuatan skema dan pengisian ulang kredensial dipindahkan ke modul skema-store 
 
 Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaan status dengan token tamu yang tercakup. API hanya mengizinkan tamu membuka atau menutup kanvas yang dipetakan secara tepat ke rapat mereka serta menolak pembuatan atau penggantian pemetaan. Orkestrasi tamu tidak lagi memerlukan pabrik kanvas khusus akun, sehingga status buka jarak jauh mencapai pemunculan komponen dan memindahkan rapat ke tampilan gambar-dalam-gambar mengambang. Pemasangan jendela komponen kini memakai percobaan ulang backoff eksponensial terbatas yang lebih panjang agar penyelenggara dapat pulih ketika peserta undangan membuka papan sebelum jendela penyedia penyelenggara siap. Mount tamu terbatas kini meneruskan token Share yang dirutekan ke resolusi identitas dan melewati permintaan profil akun serta pencarian peserta, sehingga respons 404 profil khusus akun tidak menghalangi proses bergabung ke rapat. Resolusi keyring tamu tetap tersedia untuk kata sandi rapat, chat, dan Papan Tulis. Pembekuan sebenarnya disebabkan loop microtask tanpa batas: persiapan kanvas tamu tanpa pemetaan langsung selesai lalu secara rekursif menjadwalkan persiapan yang sama. Tamu kini menunggu papan terpetakan melalui status rapat tersinkronisasi tanpa menjadwalkan pembuatan kanvas. Kontrol mereka disembunyikan dan noninteraktif agar mereka hanya mengikuti keputusan buka dan tutup penyelenggara. Kegagalan pemuatan tidak lagi menonaktifkan kontrol akun secara permanen; percobaan ulang manual tetap tersedia dan sinkronisasi otomatis memakai jeda singkat.
 
+## Verifikasi Kepemilikan Papan Tulis
+
+Pemetaan yang dibuat akun dan akses tamu terdelegasi kini memerlukan konfirmasi penyedia bahwa identitas papan dan judul rapat cocok. Pemetaan baru juga harus dibuat oleh akun peminta agar pengenal papan yang tidak terkait tidak dapat menjadi pemetaan rapat.
+
 ## Commit
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -38,3 +42,4 @@ Tampilan berbagi kini memasang kontrol Papan Tulis dan mengautentikasi permintaa
 - [ce6c974](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ce6c9744f96ea5613e11efbcd12fe771ca49afd3)
 - [39a4794](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39a4794771a7c673ee9c92fba37e9fdf9ba9a449)
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
+- [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)

@@ -163,6 +163,7 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
+    const fetchBoardData = ctx.getCapability("whiteboard:fetchBoardData");
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -669,6 +670,7 @@ export function registerApiRoutes(router, ctx) {
         ...routeContext,
         ctx,
         listClassroomParticipantHandles,
+        fetchBoardData,
     });
 
     registerMeetingRoutes({

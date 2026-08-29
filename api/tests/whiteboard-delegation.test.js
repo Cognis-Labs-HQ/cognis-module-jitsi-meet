@@ -16,9 +16,21 @@ function createResolver({
                 if (whiteboardId !== "board-1" || !associationActive) {
                     return null;
                 }
-                return { id: associationMeetingId };
+                return {
+                    id: associationMeetingId,
+                    meetingName: "Planning",
+                    createdBy: "alice",
+                };
+            },
+            async listParticipants() {
+                return ["alice"];
             },
         },
+        fetchBoardData: async () => ({
+            id: "board-1",
+            title: "Planning",
+            createdBy: "alice",
+        }),
     });
 }
 
@@ -74,9 +86,43 @@ test("delegation denies mismatched resources and inactive mappings", async () =>
     );
 });
 
+test("delegation denies mappings not verified by the whiteboard provider", async () => {
+    const resolveDelegation = createMeetingWhiteboardDelegationResolver({
+        store: {
+            async ensureSchema() {},
+            async getActiveMeetingByWhiteboardId() {
+                return {
+                    id: "meeting-1",
+                    meetingName: "Planning",
+                    createdBy: "alice",
+                };
+            },
+            async listParticipants() {
+                return ["alice"];
+            },
+        },
+        fetchBoardData: async () => ({
+            id: "board-1",
+            title: "Unrelated board",
+            createdBy: "alice",
+        }),
+    });
+    assert.deepEqual(await resolveDelegation(DELEGATION_REQUEST), {
+        authorized: false,
+    });
+});
+
 test("Jitsi extends the generic delegated-access flow", async () => {
     const hooks = [];
     const ctx = {
+        getCapability(capabilityId) {
+            if (capabilityId !== "whiteboard:fetchBoardData") return null;
+            return async () => ({
+                id: "board-1",
+                title: "Planning",
+                createdBy: "alice",
+            });
+        },
         flow: {
             exists: (flowId) => flowId === "resolve-share-delegated-access",
             extend(flowId, stageId, hook, handler) {
@@ -88,7 +134,14 @@ test("Jitsi extends the generic delegated-access flow", async () => {
         store: {
             async ensureSchema() {},
             async getActiveMeetingByWhiteboardId() {
-                return { id: "meeting-1" };
+                return {
+                    id: "meeting-1",
+                    meetingName: "Planning",
+                    createdBy: "alice",
+                };
+            },
+            async listParticipants() {
+                return ["alice"];
             },
         },
     });

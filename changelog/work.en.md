@@ -22,6 +22,10 @@ Moved schema creation and credential backfill into a focused store-schema module
 
 Share views now mount the Whiteboard control and authenticate state requests with the scoped guest token. The API permits guests to open or close only the exact canvas already mapped to their meeting and rejects mapping creation or replacement. Guest orchestration no longer requires the account-only canvas factory, so remote open state reaches component spawning and moves the meeting into its floating picture-in-picture presentation. Component-window mounting now uses a longer bounded exponential-backoff retry so organizers can recover when an invited participant opens the board before the organizer’s provider window is ready. Limited guest mounts now pass their routed share token into identity resolution and skip account profile and participant-search requests, preventing account-only profile 404 responses from blocking meeting joins. Guest keyring resolution remains available for meeting passwords, chat, and Whiteboards. The actual freeze was an unbounded microtask loop: an unmapped guest canvas preparation returned immediately and its completion recursively scheduled the same preparation. Guests now wait for a mapped board to arrive through synchronized meeting state without scheduling canvas creation. Their control is hidden and non-interactive so they only follow organizer open and close decisions. Loading failures no longer permanently disable the account control; manual retries remain available and automatic synchronization uses a short cooldown.
 
+## Verify Whiteboard Ownership
+
+Account-created mappings and delegated guest access now require provider confirmation that the board identity and meeting title match. New mappings must also have been created by the requesting account, preventing unrelated board identifiers from becoming meeting mappings.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -38,3 +42,4 @@ Share views now mount the Whiteboard control and authenticate state requests wit
 - [ce6c974](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ce6c9744f96ea5613e11efbcd12fe771ca49afd3)
 - [39a4794](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39a4794771a7c673ee9c92fba37e9fdf9ba9a449)
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
+- [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
