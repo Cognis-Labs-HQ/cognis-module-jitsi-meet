@@ -1,6 +1,6 @@
 # Akses Papan Tulis untuk Tamu Berbagi
 
-**Cabang Fitur:** work
+**Cabang Fitur:** feature-fix-guest-handling-in-whiteboard-state
 
 ## Otorisasi status tamu yang tercakup pada rapat
 
@@ -43,3 +43,4 @@ Pemetaan yang dibuat akun dan akses tamu terdelegasi kini memerlukan konfirmasi 
 - [39a4794](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39a4794771a7c673ee9c92fba37e9fdf9ba9a449)
 - [9dde9ff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9dde9ff0d3a7b86f1a306e27e1d11510d9acc7a4)
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
+- [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
