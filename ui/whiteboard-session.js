@@ -147,6 +147,16 @@ export async function ensureWhiteboardKeyringUnlocked(trigger, state) {
     );
 }
 
+export function meetingCanvasNeedsPreparation(trigger, state) {
+    return Boolean(
+        !state.shareAccessToken &&
+        !trigger.loadFailed &&
+        !trigger.preparedWhiteboardId &&
+        state.meeting?.id &&
+        trigger.preparationFailedMeetingId !== state.meeting.id,
+    );
+}
+
 export function prepareMeetingCanvas(trigger, state) {
     if (
         trigger.preparedWhiteboardId ||

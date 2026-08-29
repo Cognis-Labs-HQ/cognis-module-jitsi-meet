@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
     ensureComponentPage,
+    meetingCanvasNeedsPreparation,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
     spawnComponentWindowWithRetry,
@@ -78,6 +79,30 @@ test("persistent mappings stay closed unless the current meeting opened them", (
                 whiteboardDisposable: false,
                 whiteboardOpen: true,
             },
+        }),
+        true,
+    );
+});
+
+test("share guests without a mapping do not enter canvas preparation loops", () => {
+    const trigger = {
+        loadFailed: false,
+        preparedWhiteboardId: "",
+        preparationFailedMeetingId: "",
+    };
+    const meeting = { id: "meeting-a" };
+
+    assert.equal(
+        meetingCanvasNeedsPreparation(trigger, {
+            shareAccessToken: "guest-token",
+            meeting,
+        }),
+        false,
+    );
+    assert.equal(
+        meetingCanvasNeedsPreparation(trigger, {
+            shareAccessToken: "",
+            meeting,
         }),
         true,
     );

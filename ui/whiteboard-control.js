@@ -4,6 +4,7 @@ import { resolveWhiteboardCapabilities } from "./whiteboard-provider.js";
 import {
     ensureComponentPage,
     ensureWhiteboardKeyringUnlocked,
+    meetingCanvasNeedsPreparation,
     meetingHasInvitedParticipants,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
@@ -93,12 +94,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             trigger.preparedWhiteboardId = stateWhiteboardId;
         }
         setButtonActive(trigger.button, Boolean(trigger.componentWindow));
-        if (
-            !trigger.loadFailed &&
-            !trigger.preparedWhiteboardId &&
-            state.meeting?.id &&
-            trigger.preparationFailedMeetingId !== state.meeting.id
-        ) {
+        if (meetingCanvasNeedsPreparation(trigger, state)) {
             void prepareMeetingCanvas(trigger, state)
                 .catch((error) => {
                     trigger.preparationFailedMeetingId =
