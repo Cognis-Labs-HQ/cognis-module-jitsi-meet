@@ -53,7 +53,7 @@ test("meeting state polling ignores responses after meeting teardown", () => {
     );
 });
 
-test("share guests receive whiteboard controls and authenticate state synchronization", () => {
+test("share guests bind remote whiteboard orchestration without resharing controls", () => {
     const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
     const controlSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-control.js"),
@@ -69,6 +69,14 @@ test("share guests receive whiteboard controls and authenticate state synchroniz
             /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
         )?.length,
         2,
+    );
+    assert.match(
+        controlSource,
+        /meetingWhiteboardShouldOpen\(state\.meeting\)[\s\S]*sharedOpenRequested = true;[\s\S]*trigger\.button\.click\(\)/,
+    );
+    assert.match(
+        controlSource,
+        /const meetingFrame =[\s\S]*makeFloatingWindow\([\s\S]*await spawnComponentWindowWithRetry\(/,
     );
 });
 
