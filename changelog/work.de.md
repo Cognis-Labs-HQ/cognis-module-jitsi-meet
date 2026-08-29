@@ -20,7 +20,7 @@ Schemaerstellung und Zugangsdaten-Nachpflege wurden in ein fokussiertes Store-Sc
 
 ## Sichere Whiteboard-Steuerung für Gäste aktivieren
 
-Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Regressionsabdeckung prüft jetzt außerdem, dass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt.
+Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizieren Zustandsanfragen mit dem besprechungsgebundenen Gast-Token. Die API erlaubt Gästen nur, die exakt ihrer Besprechung zugeordnete Arbeitsfläche zu öffnen oder zu schließen, und lehnt das Erstellen oder Ersetzen einer Zuordnung ab. Die Gast-Orchestrierung benötigt die nur für Konten verfügbare Canvas-Factory nicht mehr, sodass ein entfernter Öffnungszustand die Komponentenbereitstellung erreicht und die Besprechung in ihre schwebende Bild-in-Bild-Darstellung verschiebt.
 
 ## Commits
 
@@ -32,3 +32,4 @@ Freigabeansichten binden jetzt das Whiteboard-Steuerelement ein und authentifizi
 - [18fb935](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18fb935e94e6819bc4884599f80f7a07a9d24fc7)
 - [91c689d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/91c689df7e719ec03fc207c82d283510362d69c8)
 - [54caf84](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54caf840c8578bca200e7d9c897bc62413547cff)
+- [2512c1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2512c1fcb45ffe494b0c6945edea7031d303b5b8)

@@ -106,21 +106,12 @@ test("canvas preparation discards a completion after the meeting changes", async
 });
 
 test("share guests reuse a mapped meeting canvas without creating one", async () => {
-    let creationRequests = 0;
     const trigger = {
         disposableCanvas: true,
         preparationFailedMeetingId: "",
         preparationPromise: null,
         preparedMeetingId: "meeting-a",
         preparedWhiteboardId: "",
-        whiteboardGateway: {
-            createCanvas() {
-                creationRequests += 1;
-            },
-            createDisposableCanvas() {
-                creationRequests += 1;
-            },
-        },
     };
     const state = {
         shareAccessToken: "guest-token",
@@ -137,27 +128,17 @@ test("share guests reuse a mapped meeting canvas without creating one", async ()
 
     await prepareMeetingCanvas(trigger, state);
 
-    assert.equal(creationRequests, 0);
     assert.equal(trigger.preparedWhiteboardId, "host-created-board");
     assert.equal(trigger.disposableCanvas, false);
 });
 
 test("share guests wait for a host mapping instead of creating a canvas", async () => {
-    let creationRequests = 0;
     const trigger = {
         disposableCanvas: true,
         preparationFailedMeetingId: "",
         preparationPromise: null,
         preparedMeetingId: "meeting-a",
         preparedWhiteboardId: "",
-        whiteboardGateway: {
-            createCanvas() {
-                creationRequests += 1;
-            },
-            createDisposableCanvas() {
-                creationRequests += 1;
-            },
-        },
     };
     const state = {
         shareAccessToken: "guest-token",
@@ -171,6 +152,5 @@ test("share guests wait for a host mapping instead of creating a canvas", async 
 
     await prepareMeetingCanvas(trigger, state);
 
-    assert.equal(creationRequests, 0);
     assert.equal(trigger.preparedWhiteboardId, "");
 });

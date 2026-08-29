@@ -72,6 +72,14 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
+        /requireCanvasFactory:\s*!state\.shareAccessToken/,
+    );
+    assert.match(
+        controlSource,
+        /\(!state\.shareAccessToken &&[\s\S]*createDisposableCanvas/,
+    );
+    assert.match(
+        controlSource,
         /meetingWhiteboardShouldOpen\(state\.meeting\)[\s\S]*sharedOpenRequested = true;[\s\S]*trigger\.button\.click\(\)/,
     );
     assert.match(

@@ -20,7 +20,10 @@ function waitForProviderRetry(signal, delayMs) {
     });
 }
 
-export async function resolveWhiteboardCapabilities(signal) {
+export async function resolveWhiteboardCapabilities(
+    signal,
+    { requireCanvasFactory = true } = {},
+) {
     const ensureProvidersLoaded = uiCtx.capabilities.get(
         "ui:ensureProvidersLoaded",
     );
@@ -39,8 +42,9 @@ export async function resolveWhiteboardCapabilities(signal) {
         }
         capabilities = readCapabilities();
         if (
-            typeof capabilities.whiteboardGateway?.createDisposableCanvas ===
-                "function" &&
+            (!requireCanvasFactory ||
+                typeof capabilities.whiteboardGateway
+                    ?.createDisposableCanvas === "function") &&
             typeof capabilities.spawnComponentPage === "function" &&
             typeof capabilities.makeFloatingWindow === "function"
         ) {

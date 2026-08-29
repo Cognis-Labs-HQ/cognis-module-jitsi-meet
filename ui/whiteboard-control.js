@@ -179,7 +179,9 @@ export async function bindWhiteboardButton({
         : `jitsi-whiteboard-stage-${Date.now()}-${componentStageSequence}`;
     let capabilities;
     try {
-        capabilities = await resolveWhiteboardCapabilities(signal);
+        capabilities = await resolveWhiteboardCapabilities(signal, {
+            requireCanvasFactory: !state.shareAccessToken,
+        });
     } catch (error) {
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",
@@ -198,7 +200,8 @@ export async function bindWhiteboardButton({
         whiteboardGateway,
     } = capabilities;
     if (
-        typeof whiteboardGateway?.createDisposableCanvas !== "function" ||
+        (!state.shareAccessToken &&
+            typeof whiteboardGateway?.createDisposableCanvas !== "function") ||
         typeof spawnComponentPage !== "function" ||
         typeof makeFloatingWindow !== "function"
     )
