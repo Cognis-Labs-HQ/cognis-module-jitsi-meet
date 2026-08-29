@@ -86,6 +86,10 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource,
         /const meetingFrame =[\s\S]*makeFloatingWindow\([\s\S]*await spawnComponentWindowWithRetry\(/,
     );
+    assert.match(
+        controlSource,
+        /if \(state\.shareAccessToken\) \{\s*button\.hidden = true;[\s\S]*aria-hidden/,
+    );
 });
 
 test("limited share mounts never request account profile or participant data", () => {

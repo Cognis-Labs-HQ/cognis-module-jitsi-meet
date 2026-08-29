@@ -139,7 +139,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?disableWhiteboardAfterError/,
+        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?handleWhiteboardLoadError/,
     );
     assert.match(
         buttonSource,
@@ -157,14 +157,18 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /Failed to fetch dynamically imported module[\s\S]*?break;/,
     );
-    assert.match(buttonSource, /loadFailed:\s*false/);
+    assert.match(buttonSource, /loadRetryAfter:\s*0/);
     assert.match(
         buttonSource,
-        /trigger\.loadFailed !== true[\s\S]*?trigger\.button\.click\(\)/,
+        /Date\.now\(\) >= trigger\.loadRetryAfter[\s\S]*?trigger\.button\.click\(\)/,
     );
     assert.match(
         buttonSource,
-        /trigger\.loadFailed = true;[\s\S]*?setButtonDisabled\(trigger\.button, true\)[\s\S]*?whiteboard\.load_failed/,
+        /trigger\.loadRetryAfter = Date\.now\(\) \+ 2_000[\s\S]*?whiteboard\.load_failed/,
+    );
+    assert.doesNotMatch(
+        buttonSource,
+        /handleWhiteboardLoadError[\s\S]*?setButtonDisabled\(trigger\.button, true\)/,
     );
     assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(

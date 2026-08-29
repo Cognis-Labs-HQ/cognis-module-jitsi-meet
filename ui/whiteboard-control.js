@@ -51,11 +51,9 @@ function closeComponentWindow(trigger) {
     }
 }
 
-async function disableWhiteboardAfterError(trigger, state, error, operation) {
-    if (trigger.loadFailed) return;
+async function handleWhiteboardLoadError(trigger, state, error, operation) {
     closeComponentWindow(trigger);
-    trigger.loadFailed = true;
-    setButtonDisabled(trigger.button, true);
+    trigger.loadRetryAfter = Date.now() + 2_000;
     await logUi("error", "Meeting whiteboard loading failed.", {
         component: "module:jitsi-meet",
         operation,
@@ -99,7 +97,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
                 .catch((error) => {
                     trigger.preparationFailedMeetingId =
                         state.meeting?.id ?? "";
-                    return disableWhiteboardAfterError(
+                    return handleWhiteboardLoadError(
                         trigger,
                         state,
                         error,
@@ -112,8 +110,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         }
         setButtonDisabled(
             trigger.button,
-            trigger.loadFailed ||
-                trigger.componentWindowPending === true ||
+            trigger.componentWindowPending === true ||
                 !state.jitsiConferenceJoined ||
                 !trigger.componentPage ||
                 !trigger.preparedWhiteboardId,
@@ -130,7 +127,7 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
         closeComponentWindow(trigger);
     } else if (
         shouldOpen &&
-        trigger.loadFailed !== true &&
+        Date.now() >= trigger.loadRetryAfter &&
         trigger.button.disabled !== true &&
         !trigger.componentWindow &&
         trigger.componentWindowPending !== true
@@ -210,6 +207,11 @@ export async function bindWhiteboardButton({
     button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
     button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
     button.textContent = button.dataset.inactiveLabel;
+    if (state.shareAccessToken) {
+        button.hidden = true;
+        button.tabIndex = -1;
+        button.setAttribute("aria-hidden", "true");
+    }
     setButtonDisabled(button, true);
     slot.replaceChildren(button);
     const trigger = {
@@ -223,7 +225,7 @@ export async function bindWhiteboardButton({
         frameWrap,
         i18n,
         isKeyringUnlocked,
-        loadFailed: false,
+        loadRetryAfter: 0,
         makeFloatingWindow,
         pipHandle,
         preparedWhiteboardId:
@@ -428,7 +430,7 @@ export async function bindWhiteboardButton({
                             state.meeting?.state?.whiteboardOpen !== true)
                     )
                         return;
-                    await disableWhiteboardAfterError(
+                    await handleWhiteboardLoadError(
                         trigger,
                         state,
                         error,
@@ -456,7 +458,7 @@ export async function bindWhiteboardButton({
         await prepareMeetingCanvas(trigger, state);
     } catch (error) {
         trigger.preparationFailedMeetingId = state.meeting?.id ?? "";
-        await disableWhiteboardAfterError(
+        await handleWhiteboardLoadError(
             trigger,
             state,
             error,

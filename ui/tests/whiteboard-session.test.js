@@ -86,7 +86,6 @@ test("persistent mappings stay closed unless the current meeting opened them", (
 
 test("share guests without a mapping do not enter canvas preparation loops", () => {
     const trigger = {
-        loadFailed: false,
         preparedWhiteboardId: "",
         preparationFailedMeetingId: "",
     };
