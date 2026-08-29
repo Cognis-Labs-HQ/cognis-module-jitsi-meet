@@ -96,7 +96,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /title:\s*meetingName/);
     assert.match(
         buttonSource,
-        /setButtonActive\([\s\S]*?whiteboardOpen === true[\s\S]*?componentWindowPending/,
+        /setButtonActive\([\s\S]*?Boolean\(trigger\.componentWindow\)/,
     );
     assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
@@ -126,7 +126,16 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /setButtonActive\(button, true\)[\s\S]*?trigger\.componentWindowPending = true/,
+        /setButtonDisabled\(button, true\);[\s\S]*?trigger\.componentWindowPending = true/,
+    );
+    assert.doesNotMatch(buttonSource, /setButtonActive\(button, true\)/);
+    assert.match(
+        buttonSource,
+        /trigger\.componentWindowPending === true[\s\S]*?!state\.jitsiConferenceJoined/,
+    );
+    assert.match(
+        buttonSource,
+        /openStateConfirmed = true;[\s\S]*?catch \(error\) \{[\s\S]*?openStateConfirmed &&[\s\S]*?whiteboardOpen !== true[\s\S]*?disableWhiteboardAfterError/,
     );
     assert.match(
         buttonSource,

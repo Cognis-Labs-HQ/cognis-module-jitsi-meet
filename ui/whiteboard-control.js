@@ -90,12 +90,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         ) {
             trigger.preparedWhiteboardId = stateWhiteboardId;
         }
-        setButtonActive(
-            trigger.button,
-            state.meeting?.state?.whiteboardOpen === true ||
-                trigger.componentWindowPending === true ||
-                Boolean(trigger.componentWindow),
-        );
+        setButtonActive(trigger.button, Boolean(trigger.componentWindow));
         if (
             !trigger.loadFailed &&
             !trigger.preparedWhiteboardId &&
@@ -120,6 +115,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         setButtonDisabled(
             trigger.button,
             trigger.loadFailed ||
+                trigger.componentWindowPending === true ||
                 !state.jitsiConferenceJoined ||
                 !trigger.componentPage ||
                 !trigger.preparedWhiteboardId,
@@ -329,7 +325,6 @@ export async function bindWhiteboardButton({
             const synchronizeOpen = trigger.sharedOpenRequested !== true;
             trigger.sharedOpenRequested = false;
             setButtonDisabled(button, true);
-            setButtonActive(button, true);
             trigger.componentWindowPending = true;
             const meetingId = state.meeting.id;
             const windowRequestSequence = ++trigger.windowRequestSequence;
@@ -337,6 +332,7 @@ export async function bindWhiteboardButton({
                 trigger.windowRequestSequence === windowRequestSequence &&
                 state.meeting?.id === meetingId &&
                 !signal?.aborted;
+            let openStateConfirmed = false;
             void (async () => {
                 try {
                     const keyringUnlocked =
@@ -387,6 +383,7 @@ export async function bindWhiteboardButton({
                         );
                         return;
                     }
+                    openStateConfirmed = true;
                     state.meeting.state.whiteboardId = whiteboardId;
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
@@ -420,6 +417,12 @@ export async function bindWhiteboardButton({
                     trigger.componentWindow = componentWindow;
                     trigger.whiteboardId = whiteboardId;
                 } catch (error) {
+                    if (
+                        !requestIsCurrent() ||
+                        (openStateConfirmed &&
+                            state.meeting?.state?.whiteboardOpen !== true)
+                    )
+                        return;
                     await disableWhiteboardAfterError(
                         trigger,
                         state,
