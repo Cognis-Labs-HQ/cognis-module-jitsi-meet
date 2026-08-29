@@ -17,6 +17,7 @@ import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
+import { registerMeetingWhiteboardAssociationCapability } from "./whiteboard-association.js";
 import {
     canAccessMeeting,
     createMeetingPayload,
@@ -161,6 +162,7 @@ export function registerApiRoutes(router, ctx) {
     const accountStore = ctx.getCapability("auth:accountStore");
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
+    const log = ctx.getCapability("logging:log");
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -211,6 +213,18 @@ export function registerApiRoutes(router, ctx) {
         });
     const canAccessMeetingForRequester = (input) =>
         canAccessMeeting({ ...input, resolveShareUserAccess });
+
+    const store = dbExecutor
+        ? resolveStore(dbExecutor, log, generatePassphrase)
+        : null;
+    if (store) {
+        if (typeof ctx.capabilities?.contribute === "function") {
+            registerMeetingWhiteboardAssociationCapability(ctx, {
+                store,
+                resolveShareGuestMeetingAccess,
+            });
+        }
+    }
 
     if (typeof registerNotificationCategory === "function") {
         registerNotificationCategory("meetings", "Meetings");
@@ -388,11 +402,9 @@ export function registerApiRoutes(router, ctx) {
         },
     );
 
-    const log = ctx.getCapability("logging:log");
     const registerScriptOrigins = ctx.getCapability(
         "auth:registerPageScriptOrigins",
     );
-    const store = resolveStore(dbExecutor, log, generatePassphrase);
     const runEnableTest = async () => {
         await store.ensureSchema();
         const config = await store.getConfig();

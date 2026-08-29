@@ -131,6 +131,17 @@ function createMockJitsiDb({
                 command.option === "SELECT" &&
                 command.table === "jitsi_meeting_state"
             ) {
+                const whiteboardId = command.where?.find(
+                    (whereEntry) => whereEntry.column === "whiteboard_id",
+                )?.value;
+                if (whiteboardId) {
+                    return {
+                        rows: storedStateRows.filter(
+                            (stateRow) =>
+                                stateRow.whiteboard_id === whiteboardId,
+                        ),
+                    };
+                }
                 const meetingId = command.where?.find(
                     (whereEntry) => whereEntry.column === "meeting_id",
                 )?.value;
@@ -169,6 +180,38 @@ function createMockJitsiDb({
         },
     };
 }
+
+test("active whiteboard mappings resolve only to an existing open meeting", async () => {
+    const meetingRow = {
+        id: "meeting-1",
+        meeting_url: "https://meet.example/PlanningRoom",
+        meeting_name: "Planning Room",
+        room_slug: "PlanningRoom",
+        created_by: "alice",
+    };
+    const activeState = {
+        meeting_id: "meeting-1",
+        whiteboard_id: "board-1",
+        whiteboard_active: 1,
+        ended_at: null,
+    };
+    const store = new JitsiMeetStore({
+        db: createMockJitsiDb({
+            meetingRows: [meetingRow],
+            stateRows: [activeState],
+        }),
+    });
+
+    const meeting = await store.getActiveMeetingByWhiteboardId("board-1");
+    assert.equal(meeting?.id, "meeting-1");
+    assert.equal(meeting?.createdBy, "alice");
+
+    activeState.whiteboard_active = 0;
+    assert.equal(await store.getActiveMeetingByWhiteboardId("board-1"), null);
+    activeState.whiteboard_active = 1;
+    activeState.ended_at = new Date().toISOString();
+    assert.equal(await store.getActiveMeetingByWhiteboardId("board-1"), null);
+});
 
 test("schema initialization is shared across concurrent store instances", async () => {
     const ensuredTables = [];

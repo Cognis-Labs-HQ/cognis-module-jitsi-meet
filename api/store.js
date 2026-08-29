@@ -18,7 +18,6 @@ import {
     encryptPayload,
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
-
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
 const schemaInitializationByExecutor = new WeakMap();
@@ -297,7 +296,6 @@ export class JitsiMeetStore {
             await this.db.executeCommand({ option: "DELETE", table });
         }
     }
-
     async getMeetingById(meetingId) {
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -655,7 +653,19 @@ export class JitsiMeetStore {
             ).map(String),
         };
     }
-
+    async getActiveMeetingByWhiteboardId(whiteboardId) {
+        const { rows = [] } = await this.db.executeCommand({
+            option: "SELECT",
+            table: "jitsi_meeting_state",
+            where: [{ column: "whiteboard_id", value: whiteboardId }],
+        });
+        const activeMappings = rows.filter(
+            (row) => Number(row.whiteboard_active) === 1 && !row.ended_at,
+        );
+        if (activeMappings.length !== 1) return null;
+        const id = String(activeMappings[0].meeting_id ?? "").trim();
+        return this.getMeetingById(id);
+    }
     async updateMeetingState(meetingId, updates) {
         const merged = {
             ...(await this.getMeetingState(meetingId)),
