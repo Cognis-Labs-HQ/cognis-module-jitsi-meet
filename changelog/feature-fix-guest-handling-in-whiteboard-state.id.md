@@ -30,6 +30,10 @@ Pemetaan yang dibuat akun dan akses tamu terdelegasi kini memerlukan konfirmasi 
 
 Status Papan Tulis dan akses tamu terdelegasi kini menyelesaikan kapabilitas penyedia opsional saat setiap permintaan dijalankan. Dengan demikian, papan sah yang dibuat penyelenggara tetap tersedia bagi tamu ketika modul Papan Tulis mendaftarkan kapabilitas servernya setelah Jitsi Meet.
 
+## Selesaikan Delegasi Melalui Ctx Sistem
+
+Akses tamu terdelegasi kini menemukan kapabilitas data papan publik milik penyedia melalui ctx sistem ketika kapabilitas itu tidak terlihat dalam konteks API Jitsi yang tercakup. Hal ini memungkinkan permintaan sesi dan kehadiran Papan Tulis untuk papan sah buatan penyelenggara sambil tetap mempertahankan verifikasi kepemilikan penyedia.
+
 ## Commit
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -49,3 +53,4 @@ Status Papan Tulis dan akses tamu terdelegasi kini menyelesaikan kapabilitas pen
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
 - [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
 - [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)
+- [ec98ff4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ec98ff495ba3b40552474011e4c01342abf4d52f)

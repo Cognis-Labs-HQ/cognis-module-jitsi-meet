@@ -30,6 +30,10 @@ Jitsi Meet は Whiteboard 固有の Capability を公開せず、`resolve-share-
 
 Whiteboard の状態処理と委任されたゲストアクセスは、リクエスト実行時にオプションのプロバイダー Capability を解決するようになりました。Whiteboard モジュールが Jitsi Meet より後にサーバー Capability を登録した場合でも、主催者が正当に作成したボードをゲストが利用できます。
 
+## システム ctx 経由で委任を解決
+
+委任されたゲストアクセスは、プロバイダーの公開ボードデータ Capability が Jitsi のスコープ付き API コンテキストから見えない場合、システム ctx から検出するようになりました。プロバイダーによる所有関係の検証を維持したまま、主催者が正当に作成したボードの Whiteboard セッション要求と在席要求を利用できます。
+
 ## コミット
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -49,3 +53,4 @@ Whiteboard の状態処理と委任されたゲストアクセスは、リクエ
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
 - [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
 - [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)
+- [ec98ff4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ec98ff495ba3b40552474011e4c01342abf4d52f)

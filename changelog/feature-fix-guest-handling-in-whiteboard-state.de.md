@@ -30,6 +30,10 @@ Von Konten erstellte Zuordnungen und delegierter Gastzugriff erfordern jetzt ein
 
 Whiteboard-Zustand und delegierter Gastzugriff lösen die optionale Provider-Capability jetzt bei jeder Anfrage auf. Rechtmäßig vom Organisator erstellte Arbeitsflächen bleiben damit für Gäste verfügbar, wenn das Whiteboard-Modul seine Server-Capability nach Jitsi Meet registriert.
 
+## Delegierung über den System-ctx auflösen
+
+Delegierter Gastzugriff ermittelt die öffentliche Board-Daten-Capability des Providers jetzt über den System-ctx, wenn sie im bereichsgebundenen API-Kontext von Jitsi nicht sichtbar ist. Dadurch funktionieren Whiteboard-Sitzungs- und Anwesenheitsanfragen für rechtmäßig vom Organisator erstellte Arbeitsflächen, während die Provider-Eigentumsprüfung erhalten bleibt.
+
 ## Commits
 
 - [afbb29a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/afbb29a0276ea2f9a870b3f50429448a0db04a8c)
@@ -49,3 +53,4 @@ Whiteboard-Zustand und delegierter Gastzugriff lösen die optionale Provider-Cap
 - [c02f2e1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c02f2e1b05f67b2b5b14b630c932abebff92e8b1)
 - [ae1c5ab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ae1c5abe334a45904c8893b100b79e72994fe6b8)
 - [95fb679](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/95fb6791d531cd0adebf925db971d3d9b3afd493)
+- [ec98ff4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ec98ff495ba3b40552474011e4c01342abf4d52f)

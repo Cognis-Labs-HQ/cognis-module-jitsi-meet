@@ -115,10 +115,15 @@ test("delegation denies mappings not verified by the whiteboard provider", async
 test("Jitsi extends the generic delegated-access flow", async () => {
     const hooks = [];
     let providerFetchBoardData;
-    const ctx = {
+    const systemCtx = {
         getCapability(capabilityId) {
             if (capabilityId !== "whiteboard:fetchBoardData") return null;
             return providerFetchBoardData;
+        },
+    };
+    const ctx = {
+        getCapability(capabilityId) {
+            return capabilityId === "system:ctx" ? systemCtx : null;
         },
         flow: {
             exists: (flowId) => flowId === "resolve-share-delegated-access",
