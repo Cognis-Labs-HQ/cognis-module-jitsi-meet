@@ -70,7 +70,13 @@ DOM-Referenzen für Besprechungsrahmen und Einblendung bleiben jetzt lokal in de
 
 Der Start eines Teilnehmer-Ziehvorgangs bestätigt jetzt erneut das Einblendungs-Elternelement des aktuell aktiven Besprechungsfensters. Bei geöffnetem Whiteboard-Bild-in-Bild erscheint der grüne Teilnehmer-Ablagebereich über dem schwebenden Jitsi-Rahmen; andernfalls bleibt er über der normalen Besprechungsbühne.
 
+## Jitsi-Bildschirmfreigabe priorisieren und Whiteboard-Sichtbarkeit vereinheitlichen
+
+Jitsis Echtzeitereignis für lokale und entfernte Teilnehmer mit Bildschirmfreigabe schließt nun das synchronisierte Whiteboard für alle und verhindert das erneute Öffnen bis zum Ende der Freigabe, sodass der normale Bereich an die Konferenz zurückkehrt. Eine Backend-Capability-Prüfung entscheidet jetzt gemeinsam über die Whiteboard-Sichtbarkeit, damit jedes Konto während der Browser-Provider-Initialisierung dasselbe deaktivierte Steuerelement darstellt oder es bei nicht verfügbarem Provider ausblendet.
+
 ## Commits
+
+- [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 
 - [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 

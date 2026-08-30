@@ -80,7 +80,66 @@ export function registerMeetingWhiteboardRoutes({
     resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
     fetchBoardData,
+    isWhiteboardProviderAvailable,
 }) {
+    router.get(
+        "/api/v1/modules/jitsi-meet/whiteboard/availability",
+        (req, res) => {
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            sendJson(res, 200, {
+                data: {
+                    available: isWhiteboardProviderAvailable?.() === true,
+                },
+            });
+        },
+        { access: { minRole: "user" } },
+    );
+
+    router.post(
+        "/api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
+        async (req, res) => {
+            const body = await readJson(req);
+            const resolved = await resolveAuthorizedMeeting({
+                req,
+                res,
+                body,
+                store,
+                profileStore,
+                requireAuth,
+                sendError,
+                canAccessMeeting,
+                resolveShareGuestMeetingAccess,
+                resolveShareGuestPresenceUsername,
+                listClassroomParticipantHandles,
+            });
+            if (!resolved) return;
+            if (typeof body.active !== "boolean") {
+                sendError(res, 400, "bad_request", "active must be a boolean.");
+                return;
+            }
+            const updates = {
+                screenSharingActive: body.active,
+                ...(body.active
+                    ? {
+                          whiteboardActive: false,
+                          whiteboardOpenVotes: [],
+                      }
+                    : {}),
+            };
+            await store.updateMeetingState(resolved.meeting.id, updates);
+            ctx.log?.("info", "Meeting screen-sharing state changed.", {
+                component: "jitsi-meet-module",
+                operation: "update_meeting_screen_sharing_state",
+                meetingId: resolved.meeting.id,
+                active: body.active,
+                requestedBy: resolved.requesterUsername,
+            });
+            sendJson(res, 200, { data: updates });
+        },
+        { access: { minRole: "user" } },
+    );
+
     router.post(
         "/api/v1/modules/jitsi-meet/whiteboard/state",
         async (req, res) => {
@@ -127,6 +186,15 @@ export function registerMeetingWhiteboardRoutes({
             const currentState = await store.getMeetingState(
                 resolved.meeting.id,
             );
+            if (active && currentState.screenSharingActive) {
+                sendError(
+                    res,
+                    409,
+                    "screen_sharing_active",
+                    "Whiteboard cannot open while screen sharing is active.",
+                );
+                return;
+            }
             if (
                 resolved.shareGuest &&
                 (!currentState.whiteboardId ||

@@ -125,7 +125,10 @@ export function meetingHasInvitedParticipants(meeting) {
 }
 
 export function meetingWhiteboardShouldOpen(meeting) {
-    return meeting?.state?.whiteboardOpen === true;
+    return (
+        meeting?.state?.whiteboardOpen === true &&
+        meeting?.state?.screenSharingActive !== true
+    );
 }
 
 function waitForProviderRetry(signal, delayMs) {

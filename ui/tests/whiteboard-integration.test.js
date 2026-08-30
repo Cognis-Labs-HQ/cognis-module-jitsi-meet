@@ -72,6 +72,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
+    assert.match(buttonSource, /whiteboard\/availability/);
     assert.match(buttonSource, /expandCanvasAccess/);
     assert.match(buttonSource, /result\?\.whiteboardId/);
     assert.match(buttonSource, /result\?\.participants/);

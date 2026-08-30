@@ -70,7 +70,13 @@ Referensi DOM bingkai rapat dan overlay kini tetap lokal pada permukaan Meetings
 
 Memulai penyeretan peserta kini memastikan kembali induk overlay untuk jendela rapat yang sedang aktif. Saat PiP Papan Tulis terbuka, target peletakan peserta hijau muncul di atas bingkai Jitsi mengambang; jika tidak, target tetap di atas panggung rapat normal.
 
+## Prioritaskan berbagi layar Jitsi dan satukan visibilitas Papan Tulis
+
+Peristiwa peserta berbagi layar lokal dan jarak jauh waktu nyata milik Jitsi kini menutup Papan Tulis tersinkronisasi untuk semua orang dan menonaktifkan pembukaan kembali hingga berbagi berhenti, sehingga area normal kembali ke konferensi. Pemeriksaan kapabilitas backend kini menjadi keputusan bersama visibilitas Papan Tulis agar setiap akun menampilkan kontrol nonaktif yang sama saat penyedia browser diinisialisasi atau menyembunyikannya saat penyedia tidak tersedia.
+
 ## Commit
+
+- [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 
 - [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 

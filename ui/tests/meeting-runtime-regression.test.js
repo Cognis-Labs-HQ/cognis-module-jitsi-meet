@@ -59,6 +59,10 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         resolve(ROOT, "ui/whiteboard-control.js"),
         "utf8",
     );
+    const meetingRoomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
 
     assert.match(
         appSource,
@@ -68,7 +72,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource.match(
             /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
         )?.length,
-        2,
+        3,
     );
     assert.match(
         controlSource,
@@ -90,6 +94,9 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource,
         /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
     );
+    assert.match(meetingRoomSource, /contentSharingParticipantsChanged/);
+    assert.match(meetingRoomSource, /whiteboard\/screen-sharing/);
+    assert.match(controlSource, /screenSharingActive === true/);
     assert.match(
         controlSource,
         /if \(state\.shareAccessToken\) \{\s*button\.hidden = true;[\s\S]*aria-hidden/,

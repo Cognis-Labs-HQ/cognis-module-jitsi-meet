@@ -70,7 +70,13 @@ Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.ex
 
 参加者のドラッグ開始時に、現在アクティブなミーティングウィンドウのオーバーレイ親要素を再確認するようになりました。Whiteboard PiP が開いている場合、緑色の参加者ドロップ先はフローティング Jitsi フレーム上に表示され、それ以外では通常のミーティングステージ上に残ります。
 
+## Jitsi 画面共有を優先し Whiteboard 表示を統一
+
+Jitsi のローカルおよびリモート画面共有参加者のリアルタイムイベントにより、同期 Whiteboard を全員に対して閉じ、共有終了まで再オープンを無効にして、通常領域を会議へ戻すようになりました。バックエンド Capability チェックを共通の Whiteboard 表示判断とし、ブラウザプロバイダー初期化中は全アカウントが同じ無効コントロールを表示し、プロバイダーが利用不可なら非表示にします。
+
 ## コミット
+
+- [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 
 - [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 

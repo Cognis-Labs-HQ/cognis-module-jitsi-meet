@@ -70,7 +70,13 @@ Meeting-frame and overlay DOM references now remain local to the Meetings surfac
 
 Starting a participant drag now reasserts the overlay parent for the currently active meeting window. When Whiteboard PiP is open, the green participant dropzone appears over the floating Jitsi frame; otherwise it remains over the normal meeting stage.
 
+## Prioritize Jitsi screen sharing and unify Whiteboard visibility
+
+Jitsi’s real-time local and remote screen-sharing participant event now closes the synchronized Whiteboard for everyone and disables reopening until sharing stops, returning the normal area to the conference. A backend capability check is now the shared Whiteboard visibility decision, so every account renders the same disabled control while browser providers initialize or hides it when the provider is unavailable.
+
 ## Commits
+
+- [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 
 - [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 

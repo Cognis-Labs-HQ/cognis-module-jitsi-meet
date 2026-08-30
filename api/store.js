@@ -532,6 +532,7 @@ export class JitsiMeetStore {
                 whiteboardId: null,
                 whiteboardDisposable: null,
                 whiteboardActive: false,
+                screenSharingActive: false,
                 whiteboardOpenVotes: [],
             };
         }
@@ -573,6 +574,7 @@ export class JitsiMeetStore {
                     ? null
                     : Number(row.whiteboard_disposable) === 1,
             whiteboardActive: Number(row.whiteboard_active ?? 0) === 1,
+            screenSharingActive: Number(row.screen_sharing_active ?? 0) === 1,
             whiteboardOpenVotes: JSON.parse(
                 row.whiteboard_open_votes ?? "[]",
             ).map(String),
@@ -622,6 +624,7 @@ export class JitsiMeetStore {
                           ? 1
                           : 0,
                 whiteboard_active: merged.whiteboardActive ? 1 : 0,
+                screen_sharing_active: merged.screenSharingActive ? 1 : 0,
                 whiteboard_open_votes: JSON.stringify(
                     merged.whiteboardOpenVotes ?? [],
                 ),
@@ -835,6 +838,7 @@ export class JitsiMeetStore {
                 firstJoinedAt: state.firstJoinedAt,
                 endedBy: state.endedBy,
                 endedAt: state.endedAt,
+                screenSharingActive: state.screenSharingActive,
                 ...(state.whiteboardId
                     ? {
                           whiteboardId: state.whiteboardId,

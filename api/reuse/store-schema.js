@@ -106,6 +106,12 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
                 notNull: true,
                 default: 0,
             },
+            {
+                name: "screen_sharing_active",
+                type: "integer",
+                notNull: true,
+                default: 0,
+            },
             { name: "whiteboard_open_votes", type: "text" },
             {
                 name: "updated_at",

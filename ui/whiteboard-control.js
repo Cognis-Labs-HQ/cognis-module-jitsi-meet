@@ -125,7 +125,8 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         }
         setButtonDisabled(
             trigger.button,
-            trigger.componentWindowPending === true ||
+            state.meeting?.state?.screenSharingActive === true ||
+                trigger.componentWindowPending === true ||
                 !state.jitsiConferenceJoined ||
                 !trigger.componentPage ||
                 !trigger.preparedWhiteboardId,
@@ -213,6 +214,38 @@ export async function bindWhiteboardButton({
     )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
+    let availabilityResponse;
+    try {
+        availabilityResponse = await apiFetch(
+            "/api/v1/modules/jitsi-meet/whiteboard/availability",
+            {
+                accessToken: state.shareAccessToken || undefined,
+                suppressAccessDeniedEvent: true,
+            },
+        );
+    } catch (error) {
+        await logUi("error", "Whiteboard availability check failed.", {
+            component: "module:jitsi-meet",
+            operation: "check_whiteboard_availability",
+            error: error instanceof Error ? error.message : String(error),
+        });
+        mounted?.destroy();
+        mountedWhiteboardButtons.delete(root);
+        slot.replaceChildren();
+        return;
+    }
+    const availabilityPayload = await availabilityResponse
+        .json()
+        .catch(() => ({ data: { available: false } }));
+    if (
+        !availabilityResponse.ok ||
+        availabilityPayload?.data?.available !== true
+    ) {
+        mounted?.destroy();
+        mountedWhiteboardButtons.delete(root);
+        slot.replaceChildren();
+        return;
+    }
     if (mounted?.slot === slot) {
         syncWhiteboardButtonAvailability({ root, state });
         return;
@@ -225,6 +258,20 @@ export async function bindWhiteboardButton({
     frameWrap.id = uniqueStageId
         ? `jitsi-whiteboard-stage-${uniqueStageId}`
         : `jitsi-whiteboard-stage-${Date.now()}-${componentStageSequence}`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn-confirm btn-animated";
+    button.setAttribute("aria-pressed", "false");
+    button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
+    button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
+    button.textContent = button.dataset.inactiveLabel;
+    if (state.shareAccessToken) {
+        button.hidden = true;
+        button.tabIndex = -1;
+        button.setAttribute("aria-hidden", "true");
+    }
+    setButtonDisabled(button, true);
+    slot.replaceChildren(button);
     let capabilities;
     try {
         capabilities = await resolveWhiteboardCapabilities(signal, {
@@ -255,20 +302,6 @@ export async function bindWhiteboardButton({
     )
         return;
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "btn-confirm btn-animated";
-    button.setAttribute("aria-pressed", "false");
-    button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
-    button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
-    button.textContent = button.dataset.inactiveLabel;
-    if (state.shareAccessToken) {
-        button.hidden = true;
-        button.tabIndex = -1;
-        button.setAttribute("aria-hidden", "true");
-    }
-    setButtonDisabled(button, true);
-    slot.replaceChildren(button);
     const trigger = {
         apiFetch,
         button,

@@ -275,6 +275,39 @@ export function createEmbedHandlers({
                 reportTerminated: true,
             });
         };
+        const reportScreenSharingState = async (event) => {
+            if (state.jitsiApi !== apiInstance || !state.meeting?.id) return;
+            const active = Array.isArray(event?.data) && event.data.length > 0;
+            if (Boolean(state.meeting.state?.screenSharingActive) === active)
+                return;
+            state.meeting.state = {
+                ...(state.meeting.state ?? {}),
+                screenSharingActive: active,
+                ...(active ? { whiteboardOpen: false } : {}),
+            };
+            callbacks.syncMeetingWhiteboardComponent?.();
+            const response = await apiFetch(
+                "/api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
+                {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                        meetingId: state.meeting.id,
+                        active,
+                    }),
+                    accessToken: state.shareAccessToken || undefined,
+                    suppressAccessDeniedEvent: true,
+                },
+            );
+            if (!response.ok) {
+                await logUi("error", "Screen-sharing state sync failed.", {
+                    component: "module:jitsi-meet",
+                    operation: "sync_meeting_screen_sharing_state",
+                    meetingId: state.meeting?.id,
+                    active,
+                });
+            }
+        };
         apiInstance.addEventListener("videoConferenceJoined", (event) => {
             if (state.jitsiApi !== apiInstance) return;
             state.jitsiParticipantId = callbacks.getParticipantId(event);
@@ -299,6 +332,10 @@ export function createEmbedHandlers({
                 callbacks.getParticipantRole(event) === "moderator";
             applyPrivilegedMeetingSettings();
         });
+        apiInstance.addEventListener(
+            "contentSharingParticipantsChanged",
+            (event) => void reportScreenSharingState(event),
+        );
         apiInstance.addEventListener("participantKickedOut", (event) => {
             void handleLocalParticipantKicked(event);
         });

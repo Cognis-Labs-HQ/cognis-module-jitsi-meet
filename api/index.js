@@ -175,6 +175,11 @@ export function registerApiRoutes(router, ctx) {
         }
         return providerFetchBoardData(...args);
     };
+    const isWhiteboardProviderAvailable = () =>
+        typeof (
+            ctx.getCapability("whiteboard:fetchBoardData") ??
+            systemCtx?.getCapability?.("whiteboard:fetchBoardData")
+        ) === "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -713,6 +718,7 @@ export function registerApiRoutes(router, ctx) {
         ctx,
         listClassroomParticipantHandles,
         fetchBoardData,
+        isWhiteboardProviderAvailable,
     });
 
     registerMeetingRoutes({

@@ -29,11 +29,15 @@ function createRoutes({
         title: "Planning",
         createdBy: requesterUsername,
     },
+    whiteboardAvailable = true,
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
     registerMeetingWhiteboardRoutes({
         router: {
+            get(path, handler) {
+                handlers.set(`GET ${path}`, handler);
+            },
             post(path, handler) {
                 handlers.set(`POST ${path}`, handler);
             },
@@ -90,9 +94,66 @@ function createRoutes({
                 : "",
         listClassroomParticipantHandles: async () => [],
         fetchBoardData: async () => board,
+        isWhiteboardProviderAvailable: () => whiteboardAvailable,
     });
     return { handlers, stateUpdates };
 }
+
+test("backend publishes consistent Whiteboard availability", async () => {
+    for (const available of [true, false]) {
+        const routes = createRoutes({ whiteboardAvailable: available });
+        const response = createRecorder();
+        await routes.handlers.get(
+            "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
+        )({}, response);
+        assert.equal(response.status, 200);
+        assert.equal(response.body.data.available, available);
+    }
+});
+
+test("screen sharing closes and blocks meeting Whiteboards", async () => {
+    const routes = createRoutes({
+        state: {
+            screenSharingActive: false,
+            whiteboardActive: true,
+            whiteboardOpenVotes: ["alice"],
+        },
+    });
+    const response = createRecorder();
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
+    )({ body: { meetingId: "meeting-1", active: true } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(routes.stateUpdates[0].update, {
+        screenSharingActive: true,
+        whiteboardActive: false,
+        whiteboardOpenVotes: [],
+    });
+
+    const blockedRoutes = createRoutes({
+        state: {
+            screenSharingActive: true,
+            whiteboardOpenVotes: [],
+        },
+    });
+    const blockedResponse = createRecorder();
+    await blockedRoutes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        blockedResponse,
+    );
+    assert.equal(blockedResponse.status, 409);
+    assert.equal(blockedResponse.body.error.code, "screen_sharing_active");
+});
 
 test("meeting share guests synchronize the mapped state with their stable presence identity", async () => {
     const state = {
