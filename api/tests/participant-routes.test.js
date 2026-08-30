@@ -34,6 +34,12 @@ test("meeting participant search preserves follow filtering and omits the curren
                 ];
             },
         },
+        store: {
+            async ensureSchema() {},
+            async listReservedParticipantUsernames() {
+                return [];
+            },
+        },
         sendJson: (_res, status, payload) => {
             assert.equal(status, 200);
             assert.deepEqual(payload.data, [
@@ -65,4 +71,44 @@ test("meeting participant search preserves follow filtering and omits the curren
             },
         },
     ]);
+});
+
+test("participant search hides users reserved by current or scheduled meetings", async () => {
+    const routes = [];
+    registerMeetingParticipantRoutes({
+        router: { get: (path, handler) => routes.push({ path, handler }) },
+        requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileStore: {
+            async searchProfiles() {
+                return [
+                    { accountId: "alice-account", handle: "alice" },
+                    { accountId: "carol-account", handle: "carol" },
+                ];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async listReservedParticipantUsernames() {
+                return ["alice"];
+            },
+        },
+        sendJson: (_res, status, payload) => {
+            assert.equal(status, 200);
+            assert.deepEqual(payload.data, [
+                {
+                    handle: "carol",
+                    displayName: "carol",
+                    avatarKey: null,
+                },
+            ]);
+        },
+        sendError: () => assert.fail("participant search should not fail"),
+        hasMinRole: () => false,
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+    });
+
+    await routes[0].handler(
+        { url: "/api/v1/modules/jitsi-meet/participants?q=" },
+        {},
+    );
 });

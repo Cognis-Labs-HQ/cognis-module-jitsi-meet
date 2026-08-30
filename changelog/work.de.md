@@ -30,6 +30,10 @@ Der Meeting-Client erkennt nun lokale Jitsi-Entfernungsereignisse und -fehler. E
 
 Geroutete, freigegebene und eingebettete Meetings-Mounts beanspruchen kein bereits abgebrochenes Stammelement mehr und entfernen `.jitsi-route-root`, sobald ihr Lebenszyklus-Signal abbricht. Die asynchrone Initialisierung endet vor späteren Darstellungsarbeiten; die vorhandene Bereinigung entfernt weiterhin Observer, Handler, Timer, Chat-Arbeiten, Whiteboards und die Jitsi-Einbettung.
 
+## Teilnehmerschlüssel-Kollisionen verhindern und reservierte Benutzer ausblenden
+
+Änderungen der aktiven Mitgliedschaft verwenden nun einen besprechungsbezogenen Teilnehmerschlüssel. Dadurch entstehen keine PostgreSQL-Eindeutigkeitsfehler mehr, wenn die neue Teilnehmerliste einer anderen Besprechung entspricht. Die Teilnehmersuche blendet Benutzer aus, die für eine andere aktive oder geplante Besprechung reserviert sind; die API für aktive Einladungen erzwingt dieselbe Verfügbarkeitsregel.
+
 ## Commits
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -39,3 +43,4 @@ Geroutete, freigegebene und eingebettete Meetings-Mounts beanspruchen kein berei
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
+- [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)

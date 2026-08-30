@@ -1,7 +1,10 @@
+import { normalizeHandleKey } from "./reuse/normalize-handle.js";
+
 export function registerMeetingParticipantRoutes({
     router,
     requireAuth,
     profileStore,
+    store,
     sendJson,
     sendError,
     hasMinRole,
@@ -39,6 +42,10 @@ export function registerMeetingParticipantRoutes({
                 return;
             }
             const query = (requestUrl.searchParams.get("q") ?? "").trim();
+            await store.ensureSchema();
+            const reservedUsernames = new Set(
+                await store.listReservedParticipantUsernames(meetingId),
+            );
             const includeHidden = hasMinRole(claims.role, "admin");
             const candidates = await profileStore.searchProfiles(query, 50, {
                 includeHidden,
@@ -47,6 +54,12 @@ export function registerMeetingParticipantRoutes({
             });
             const results = candidates
                 .filter((profile) => profile.accountId !== claims.sub)
+                .filter(
+                    (profile) =>
+                        !reservedUsernames.has(
+                            normalizeHandleKey(profile.handle),
+                        ),
+                )
                 .map((profile) => ({
                     handle: profile.handle,
                     displayName: profile.displayName ?? profile.handle,

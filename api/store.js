@@ -23,9 +23,16 @@ const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
 const schemaInitializationByExecutor = new WeakMap();
 
-function buildParticipantKey(usernames, classroomId = null) {
+function buildParticipantKey(
+    usernames,
+    classroomId = null,
+    mutableMeetingId = null,
+) {
     const payload = JSON.stringify({
         classroomId: classroomId ? String(classroomId) : null,
+        ...(mutableMeetingId
+            ? { mutableMeetingId: String(mutableMeetingId) }
+            : {}),
         participants: normalizeHandleKeys(usernames),
     });
     return createHash("sha256").update(payload).digest("hex");
@@ -262,6 +269,7 @@ export class JitsiMeetStore {
                     participant_key: buildParticipantKey(
                         participants,
                         meeting.classroomId,
+                        meetingId,
                     ),
                     ...(chatRoomId ? { chat_room_id: chatRoomId } : {}),
                     updated_at: updatedAt,
@@ -295,6 +303,7 @@ export class JitsiMeetStore {
                     participant_key: buildParticipantKey(
                         participants,
                         meeting.classroomId,
+                        meetingId,
                     ),
                     updated_at: new Date().toISOString(),
                 },
@@ -895,6 +904,30 @@ export class JitsiMeetStore {
                     String(right.scheduledAt ?? ""),
                 ),
             );
+    }
+
+    async listReservedParticipantUsernames(excludedMeetingId = "") {
+        const [activeMeetings, upcomingMeetings] = await Promise.all([
+            this.listActiveMeetings(),
+            this.listUpcomingMeetings(),
+        ]);
+        const meetingIds = Array.from(
+            new Set(
+                [
+                    ...activeMeetings.filter((meeting) => !meeting.endedAt),
+                    ...upcomingMeetings,
+                ]
+                    .map((meeting) => String(meeting?.id ?? ""))
+                    .filter(
+                        (meetingId) =>
+                            meetingId && meetingId !== excludedMeetingId,
+                    ),
+            ),
+        );
+        const participantLists = await Promise.all(
+            meetingIds.map((meetingId) => this.listParticipants(meetingId)),
+        );
+        return normalizeHandleKeys(participantLists.flat());
     }
 
     normalizeMeetingCreationInput({

@@ -5,7 +5,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 ## Contoh Penggunaan
 
 - Bergabung atau mengambil alih rapat dari `/meetings` dan `/meeting` tanpa navigasi halaman penuh.
-- Memilih peserta, membagikan akses rapat, dan menggunakan chat Messages milik rapat.
+- Memilih peserta, membagikan akses rapat, dan menggunakan chat Messages milik rapat. Pengguna yang sudah dicadangkan oleh rapat lain yang sedang berlangsung atau terjadwal tidak ditampilkan dalam pencarian peserta dan tidak dapat diseret ke rapat aktif.
 - Selama rapat aktif yang tidak sekali pakai, seret pengguna lain yang tersedia ke jendela rapat untuk menambahkannya secara permanen ke daftar peserta. Cognis menyediakan akses chat Messages terenkripsi, mengirim undangan, dan mengizinkan pengguna tersebut mengambil kata sandi rapat saat bergabung. Penyegaran peserta tidak pernah menutupi rapat aktif dengan overlay lobi, dan kumpulan peserta tersedia yang kosong ditandai secara jelas. Saat pengguna yang tersedia diseret selama rapat aktif, target peletakan terlokalisasi muncul dengan batas yang sama persis dengan jendela tersemat. Target berada di atas sematan selama penyeretan dan kembali ke bawahnya setelah peletakan atau penyeretan berakhir. Garis tepi dalam hijau dan target putus-putus tetap terlihat selama seluruh proses penyeretan peserta. Saat Jitsi melaporkan peserta lokal telah dikeluarkan, pengguna terautentikasi dihapus dari daftar peserta tersimpan dan tersedia untuk undangan baru; tautan Share tertentu milik tamu yang dikeluarkan dicabut.
 - Memantau rapat aktif dan mendatang dari Administration → Meetings.
 - Menyematkan rute Meetings sebagai halaman komponen overlay, layar penuh, atau gambar-dalam-gambar.

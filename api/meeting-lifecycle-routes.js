@@ -272,6 +272,19 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
+            const reservedUsernames =
+                await store.listReservedParticipantUsernames(
+                    resolved.meeting.id,
+                );
+            if (reservedUsernames.includes(username)) {
+                sendError(
+                    res,
+                    409,
+                    "participant_unavailable",
+                    "The participant is in another current or scheduled meeting.",
+                );
+                return;
+            }
             if (resolved.participants.includes(username)) {
                 sendJson(res, 200, {
                     data: await createMeetingPayload({

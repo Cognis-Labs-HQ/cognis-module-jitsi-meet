@@ -30,6 +30,10 @@ Klien rapat kini mengenali peristiwa dan kesalahan pengeluaran lokal dari Jitsi.
 
 Mount Meetings yang dirutekan, dibagikan, dan disematkan kini tidak mengambil root yang sudah dibatalkan dan menghapus `.jitsi-route-root` ketika sinyal siklus hidup dibatalkan. Inisialisasi asinkron berhenti sebelum membuat pekerjaan presentasi berikutnya, sementara pembersihan yang ada tetap membuang observer, penangan, timer, pekerjaan chat, papan tulis, dan sematan Jitsi.
 
+## Cegah benturan kunci peserta dan sembunyikan pengguna yang dicadangkan
+
+Perubahan keanggotaan aktif kini menggunakan kunci peserta yang tercakup pada rapat sehingga kegagalan keunikan PostgreSQL tidak terjadi saat daftar peserta yang dihasilkan sama dengan rapat lain. Pencarian peserta menyembunyikan pengguna yang dicadangkan oleh rapat aktif atau terjadwal lain, dan API undangan aktif menerapkan aturan ketersediaan yang sama.
+
 ## Commit
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -39,3 +43,4 @@ Mount Meetings yang dirutekan, dibagikan, dan disematkan kini tidak mengambil ro
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
+- [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)

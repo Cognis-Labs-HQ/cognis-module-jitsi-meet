@@ -582,3 +582,40 @@ test("jitsi active meeting summaries report invited and active participants sepa
     assert.equal(meetings[0].activeParticipantCount, 2);
     assert.equal(meetings[0].activeSessionCount, 3);
 });
+
+test("active membership changes use a meeting-scoped participant key", async () => {
+    const now = new Date().toISOString();
+    const meetingRow = {
+        id: "meeting-1",
+        participant_key: "original-key",
+        meeting_url: "https://meet.example.test/team-room",
+        meeting_password: "secret",
+        meeting_name: "Team Room",
+        classroom_id: null,
+        created_by: "alice",
+        created_at: now,
+        updated_at: now,
+    };
+    const store = new JitsiMeetStore({
+        db: createMockJitsiDb({
+            meetingRows: [meetingRow],
+            participantRows: [
+                { meeting_id: "meeting-1", username: "alice" },
+                { meeting_id: "meeting-1", username: "bob" },
+            ],
+        }),
+    });
+
+    await store.addMeetingParticipant("meeting-1", "carol");
+
+    const expectedScopedKey = createHash("sha256")
+        .update(
+            JSON.stringify({
+                classroomId: null,
+                mutableMeetingId: "meeting-1",
+                participants: ["alice", "bob", "carol"],
+            }),
+        )
+        .digest("hex");
+    assert.equal(meetingRow.participant_key, expectedScopedKey);
+});

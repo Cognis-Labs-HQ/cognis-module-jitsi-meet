@@ -195,6 +195,9 @@ test("active non-disposable meetings invite a newly dropped participant", async 
                 additions.push({ meetingId, username, options });
                 return { ...meeting, chatRoomId: options.chatRoomId };
             },
+            async listReservedParticipantUsernames() {
+                return [];
+            },
         },
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
         readJson: async (req) => req.body,
