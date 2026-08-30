@@ -94,6 +94,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 画面共有がミーティング領域を使用している間、無効な Whiteboard 操作にローカライズ済みのホバー説明を表示します。Cognis のユーザーアクティベーション要件に達した同期済みアカウントボードは、中止に安全な入力リスナーを設定し、Whiteboard 固有のクリックを求めず次のアクティベーションで自動再開します。アクティブな参加者招待は変更前に Share の任意承認 Capability で合意を求め、明示的な拒否を適用し、承認基盤が利用できない場合は構造化ログを残してフェイルオープンします。
 
+## ドロップ時に合意を開始し、拒否を戻してミーティング切り替えをロック
+
+アクティブな参加者のドロップでは参加者プールを一時的に更新し、承認付き API 要求を直ちに送信します。投票で拒否された場合、提案した参加者を利用可能一覧へ戻し、招待者に専用のローカライズ済み拒否トーストを表示します。ローカルユーザーがミーティングへ参加中は、アクティブなミーティングのグリッドと操作を常に無効にします。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -130,3 +134,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
+- [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)

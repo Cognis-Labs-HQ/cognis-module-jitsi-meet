@@ -27,6 +27,15 @@ export function createMeetingHandlers({
         if (!(activeMeetingsEl instanceof HTMLElement)) {
             return;
         }
+        const activeMeetingsLocked = utils.isMeetingActive();
+        activeMeetingsEl.classList.toggle(
+            "jitsi-active-meetings-disabled",
+            activeMeetingsLocked,
+        );
+        activeMeetingsEl.setAttribute(
+            "aria-disabled",
+            String(activeMeetingsLocked),
+        );
         if (
             !Array.isArray(state.activeMeetings) ||
             state.activeMeetings.length === 0
@@ -53,6 +62,7 @@ export function createMeetingHandlers({
                 const badgeInitials = getInitialsText(badgeLabel);
                 const button = document.createElement("button");
                 button.type = "button";
+                button.disabled = activeMeetingsLocked;
                 button.className = "jitsi-active-meeting-item";
                 if (
                     state.requestedMeetingId &&

@@ -487,6 +487,7 @@ export async function mount(
             activeMeetingsEl.addEventListener(
                 "click",
                 (event) => {
+                    if (isMeetingActive()) return;
                     const button = event.target.closest(
                         ".jitsi-active-meeting-item[data-meeting-id]",
                     );

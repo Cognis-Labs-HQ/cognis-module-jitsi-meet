@@ -353,6 +353,35 @@ test("active non-disposable meetings accept participant drops without unstaging 
         source,
         /!utils\.isMeetingActive\(\)[\s\S]*targetZone === "available"/,
     );
+    assert.match(
+        source,
+        /addParticipant\(fromAvailable\);\s*renderParticipants\(\);[\s\S]*?meetings\/participants\/add/,
+    );
+    assert.match(
+        source,
+        /participant_addition_declined[\s\S]*?participants\.invite_rejected/,
+    );
+    assert.match(
+        source,
+        /removeParticipant\(normalized\)[\s\S]*?state\.availableParticipants\.push\(fromAvailable\)[\s\S]*?renderParticipants\(\)/,
+    );
+});
+
+test("active meetings are locked while the user is joined to a meeting", () => {
+    const source = readJitsiUiBundle();
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        source,
+        /activeMeetingsLocked = utils\.isMeetingActive\(\)[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
+    );
+    assert.match(
+        source,
+        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(isMeetingActive\(\)\) return/,
+    );
+    assert.match(
+        cssSource,
+        /\.jitsi-active-meetings-disabled[\s\S]*?pointer-events: none/,
+    );
 });
 
 test("participant rendering preserves an active meeting overlay state and shows an empty-pool message", () => {

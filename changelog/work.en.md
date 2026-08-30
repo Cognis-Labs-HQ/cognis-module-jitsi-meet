@@ -94,6 +94,10 @@ Active-meeting participant dragging now reuses the existing meeting overlay and 
 
 The disabled Whiteboard action now exposes a localized hover explanation while screen sharing owns the meeting surface. Synchronized account boards that encounter Cognis’ user-activation requirement now arm abort-safe input listeners and automatically resume on the next activation instead of requiring a Whiteboard-specific click. Active participant invitations request consensus through Share’s optional approval capability before mutation, reject explicit declines, and fail open with structured logs if approval infrastructure is unavailable.
 
+## Start consensus on drop, roll back declines, and lock meeting switches
+
+Active participant drops now optimistically update the participant pools and immediately issue the approval-backed API request. A declined vote restores the proposed participant to the available list and gives the inviter a dedicated localized rejection toast. The Active Meetings grid and its controls are now always disabled while the local user remains joined to a meeting.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -130,3 +134,4 @@ The disabled Whiteboard action now exposes a localized hover explanation while s
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
+- [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)

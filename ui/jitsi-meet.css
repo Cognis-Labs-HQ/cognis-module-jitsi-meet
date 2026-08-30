@@ -434,6 +434,11 @@
     min-height: 2.5rem;
 }
 
+.jitsi-route-root .jitsi-active-meetings-disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
 .jitsi-route-root .jitsi-active-meetings-empty {
     grid-column: 1 / -1;
     margin: 0;

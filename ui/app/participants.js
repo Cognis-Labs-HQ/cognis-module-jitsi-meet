@@ -270,22 +270,66 @@ export function createPreflightHandlers({
         if (targetZone === "stage" && fromAvailable) {
             if (utils.isMeetingActive()) {
                 if (!state.meeting?.hasInvitedParticipants) return;
-                const response = await apiFetch(
-                    "/api/v1/modules/jitsi-meet/meetings/participants/add",
-                    {
-                        method: "POST",
-                        headers: { "content-type": "application/json" },
-                        body: JSON.stringify({
-                            meetingId: state.meeting.id,
-                            username: normalized,
-                        }),
-                    },
-                );
-                if (!response.ok) {
-                    showToast(
-                        i18n.t("module.jitsi_meet.overlay.invite_failed"),
+                state.availableParticipants =
+                    state.availableParticipants.filter(
+                        (entry) => entry.username !== normalized,
+                    );
+                addParticipant(fromAvailable);
+                renderParticipants();
+                let response = null;
+                try {
+                    response = await apiFetch(
+                        "/api/v1/modules/jitsi-meet/meetings/participants/add",
                         {
-                            variant: "error",
+                            method: "POST",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify({
+                                meetingId: state.meeting.id,
+                                username: normalized,
+                            }),
+                        },
+                    );
+                } catch (error) {
+                    await logUi("error", "Active meeting invitation failed.", {
+                        component: "module:jitsi-meet",
+                        operation: "invite_active_meeting_participant",
+                        meetingId: state.meeting.id,
+                        username: normalized,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                }
+                if (!response?.ok) {
+                    const errorPayload = response
+                        ? await response.json().catch(() => ({ error: null }))
+                        : { error: null };
+                    removeParticipant(normalized);
+                    if (
+                        !state.availableParticipants.some(
+                            (entry) => entry.username === normalized,
+                        )
+                    ) {
+                        state.availableParticipants.push(fromAvailable);
+                        state.availableParticipants.sort((left, right) =>
+                            left.username.localeCompare(right.username),
+                        );
+                    }
+                    renderParticipants();
+                    showToast(
+                        i18n.t(
+                            errorPayload?.error?.code ===
+                                "participant_addition_declined"
+                                ? "module.jitsi_meet.participants.invite_rejected"
+                                : "module.jitsi_meet.overlay.invite_failed",
+                        ),
+                        {
+                            variant:
+                                errorPayload?.error?.code ===
+                                "participant_addition_declined"
+                                    ? "warning"
+                                    : "error",
                         },
                     );
                     return;
@@ -307,6 +351,7 @@ export function createPreflightHandlers({
                         ),
                     { variant: "success" },
                 );
+                return;
             }
             state.availableParticipants = state.availableParticipants.filter(
                 (entry) => entry.username !== normalized,

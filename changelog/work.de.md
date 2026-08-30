@@ -94,6 +94,10 @@ Beim Ziehen von Teilnehmern in eine aktive Besprechung werden nun die vorhandene
 
 Die deaktivierte Whiteboard-Aktion zeigt nun eine lokalisierte Hover-Erklärung, während die Bildschirmfreigabe die Besprechungsoberfläche belegt. Synchronisierte Konto-Boards, die auf die Cognis-Anforderung zur Benutzeraktivierung treffen, richten abbruchsichere Eingabeereignisse ein und werden bei der nächsten Aktivierung automatisch fortgesetzt, ohne einen Whiteboard-spezifischen Klick zu erfordern. Aktive Teilnehmereinladungen fordern vor der Änderung Konsens über die optionale Share-Genehmigungs-Capability an, lehnen ausdrückliche Ablehnungen ab und fahren bei nicht verfügbarer Genehmigungsinfrastruktur mit strukturierten Protokollen fort.
 
+## Konsens beim Ablegen starten, Ablehnungen zurücknehmen und Besprechungswechsel sperren
+
+Beim Ablegen aktiver Teilnehmer werden die Teilnehmerpools nun vorläufig aktualisiert und die genehmigungsgestützte API-Anfrage sofort ausgelöst. Eine abgelehnte Abstimmung stellt den vorgeschlagenen Teilnehmer in der verfügbaren Liste wieder her und zeigt dem Einladenden einen eigenen lokalisierten Ablehnungs-Toast. Das Raster „Aktive Besprechungen“ und seine Steuerelemente sind nun immer deaktiviert, solange der lokale Benutzer einer Besprechung beigetreten bleibt.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -130,3 +134,4 @@ Die deaktivierte Whiteboard-Aktion zeigt nun eine lokalisierte Hover-Erklärung,
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
+- [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)

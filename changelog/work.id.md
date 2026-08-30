@@ -94,6 +94,10 @@ Penyeretan peserta ke rapat aktif kini menggunakan kembali lapisan rapat dan des
 
 Tindakan Whiteboard yang dinonaktifkan kini menampilkan penjelasan hover terlokalisasi saat berbagi layar menggunakan permukaan rapat. Papan akun tersinkron yang menemui persyaratan aktivasi pengguna Cognis kini memasang listener input aman-abort dan otomatis melanjutkan pada aktivasi berikutnya tanpa memerlukan klik khusus Whiteboard. Undangan peserta aktif meminta konsensus melalui kapabilitas persetujuan opsional Share sebelum mutasi, menolak penolakan eksplisit, dan fail-open dengan log terstruktur jika infrastruktur persetujuan tidak tersedia.
 
+## Mulai konsensus saat dilepas, rollback penolakan, dan kunci perpindahan rapat
+
+Pelepasan peserta aktif kini memperbarui kumpulan peserta secara optimistis dan segera mengirim permintaan API berbasis persetujuan. Suara yang menolak mengembalikan peserta yang diusulkan ke daftar tersedia dan memberi pengundang toast penolakan terlokalisasi khusus. Kisi Rapat Aktif dan kontrolnya kini selalu dinonaktifkan selama pengguna lokal masih bergabung ke suatu rapat.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -130,3 +134,4 @@ Tindakan Whiteboard yang dinonaktifkan kini menampilkan penjelasan hover terloka
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
+- [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
