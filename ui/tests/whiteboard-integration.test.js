@@ -186,14 +186,13 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /loadRetryAfter:\s*0/);
     assert.match(buttonSource, /automaticOpenFailureWhiteboardId/);
-    assert.match(buttonSource, /automaticUnlockNoticeWhiteboardId/);
     assert.match(
         buttonSource,
-        /navigator\?\.userActivation\?\.isActive === true[\s\S]*?auto_open_requires_interaction/,
+        /navigator\?\.userActivation\?\.isActive !== true[\s\S]*?addEventListener\("pointerdown", activate[\s\S]*?trigger\.button\.click\(\)/,
     );
     assert.match(
         buttonSource,
-        /isKeyringUnlocked\?\.\(\) !== true[\s\S]*?auto_open_requires_unlock/,
+        /screen_sharing_locked_tooltip[\s\S]*?trigger\.button\.title = screenSharingTooltip[\s\S]*?trigger\.slot\.title = screenSharingTooltip/,
     );
     assert.match(buttonSource, /globalThis\.console\?\.error/);
     assert.match(buttonSource, /load_failed_detailed/);
@@ -223,7 +222,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         apiIndexSource,
         /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
     );
-    assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
+    assert.doesNotMatch(buttonSource, /pointer(?:move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
     assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
     assert.match(buttonSource, /whiteboardId/);

@@ -150,6 +150,9 @@ export function registerApiRoutes(router, ctx) {
     const dbExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const systemCtx = ctx.getCapability("system:ctx");
+    const requestShareApproval =
+        ctx.getCapability("share:requestApproval") ??
+        systemCtx?.getCapability?.("share:requestApproval");
     const profileStore = ctx.getCapability("social:profileStore");
     const messagesUiResources = resolveMessagesUiResources(ctx);
     const resolveGroupChat = ctx.getCapability(
@@ -679,6 +682,53 @@ export function registerApiRoutes(router, ctx) {
         resolveModeratorUsernames,
         deleteResourceShares,
         deleteChatRoom,
+        requestParticipantAdditionApproval: async ({
+            meetingId,
+            requesterAccountId,
+            requesterDisplayName,
+        }) => {
+            if (typeof requestShareApproval !== "function") {
+                log?.(
+                    "warn",
+                    "Share approval capability unavailable; participant addition is fail-open.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation:
+                            "approve_active_meeting_participant_addition",
+                        meetingId,
+                    },
+                );
+                return { approved: true, failOpen: true };
+            }
+            try {
+                const result = await requestShareApproval({
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    requesterAccountId,
+                    requesterDisplayName,
+                });
+                return {
+                    approved: result !== false && result?.approved !== false,
+                    failOpen: false,
+                };
+            } catch (error) {
+                log?.(
+                    "error",
+                    "Share approval failed; participant addition is fail-open.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation:
+                            "approve_active_meeting_participant_addition",
+                        meetingId,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return { approved: true, failOpen: true };
+            }
+        },
         revokeKickedGuestShare: async ({ claims, meetingId }) => {
             const shareId = resolveShareGuestId(claims);
             if (!shareId || !systemCtx?.flow?.exists?.("revoke-share-token")) {

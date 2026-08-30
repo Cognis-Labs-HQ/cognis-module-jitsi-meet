@@ -181,6 +181,8 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     const handlers = new Map();
     const notifications = [];
     const additions = [];
+    const approvals = [];
+    let approvalApproved = true;
     const meeting = {
         id: "meeting-1",
         meetingName: "Bright-Otters-Meet-Safely",
@@ -205,7 +207,10 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             res.writeHead(status);
             res.end(JSON.stringify(body));
         },
-        sendError: () => assert.fail("active meeting invitation was rejected"),
+        sendError: (res, status, code, message) => {
+            res.writeHead(status);
+            res.end(JSON.stringify({ error: { code, message } }));
+        },
         profileStore: {},
         resolveMeetingPayload: async () => ({
             meeting,
@@ -232,6 +237,10 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         }),
         dispatchMeetingNotifications: async (...args) =>
             notifications.push(args),
+        requestParticipantAdditionApproval: async (input) => {
+            approvals.push(input);
+            return { approved: approvalApproved };
+        },
         log: () => {},
     });
 
@@ -257,6 +266,26 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(response.body.data.meetingPassword, "");
     assert.equal(notifications[0][0][0], "carol");
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
+    assert.deepEqual(approvals, [
+        {
+            meetingId: "meeting-1",
+            requesterAccountId: "account-alice",
+            requesterDisplayName: "alice",
+        },
+    ]);
+
+    approvalApproved = false;
+    const declinedResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/participants/add")(
+        { body: { meetingId: meeting.id, username: "dave" } },
+        declinedResponse,
+    );
+    assert.equal(declinedResponse.status, 409);
+    assert.equal(
+        declinedResponse.body.error.code,
+        "participant_addition_declined",
+    );
+    assert.equal(additions.length, 1);
 });
 
 test("a kicked account participant is removed and made inactive", async () => {

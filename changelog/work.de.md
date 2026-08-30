@@ -90,6 +90,10 @@ Das Teilnehmerziel erkennt nun die tatsächliche Cognis-Klasse `floating-window`
 
 Beim Ziehen von Teilnehmern in eine aktive Besprechung werden nun die vorhandene Besprechungseinblendung und das grüne Zieldesign ohne das zusätzliche gestrichelte Popup wiederverwendet. Beim Start einer Besprechung bleibt das gemeinsame Seiten-Laderad von Cognis Core vom Klick auf „Besprechung starten“ bis zum abgeschlossenen Jitsi-Beitrittsversuch aktiv. Der gemeldete Whiteboard-Fehler wurde auf die Autorisierung beim Start einer Cognis-Komponentenseite zurückgeführt: Eine automatische Konto-Einbindung ohne aktuelle Browser-Aktivierung wird nun mit einer einmaligen Handlungsaufforderung verschoben, statt einen nicht autorisierten Start bis zur Meldung `whiteboard_component_window_unavailable` zu wiederholen.
 
+## Bildschirmfreigabe-Sperren erklären, Whiteboards fortsetzen und aktive Einladungen genehmigen
+
+Die deaktivierte Whiteboard-Aktion zeigt nun eine lokalisierte Hover-Erklärung, während die Bildschirmfreigabe die Besprechungsoberfläche belegt. Synchronisierte Konto-Boards, die auf die Cognis-Anforderung zur Benutzeraktivierung treffen, richten abbruchsichere Eingabeereignisse ein und werden bei der nächsten Aktivierung automatisch fortgesetzt, ohne einen Whiteboard-spezifischen Klick zu erfordern. Aktive Teilnehmereinladungen fordern vor der Änderung Konsens über die optionale Share-Genehmigungs-Capability an, lehnen ausdrückliche Ablehnungen ab und fahren bei nicht verfügbarer Genehmigungsinfrastruktur mit strukturierten Protokollen fort.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -125,3 +129,4 @@ Beim Ziehen von Teilnehmern in eine aktive Besprechung werden nun die vorhandene
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
+- [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)

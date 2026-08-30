@@ -46,6 +46,14 @@ function readJitsiApiBundle() {
         .join("\n");
 }
 
+test("active participant additions reuse Share approval with fail-open fallback", () => {
+    const source = readJitsiApiBundle();
+    assert.match(source, /getCapability\("share:requestApproval"\)/);
+    assert.match(source, /result !== false && result\?\.approved !== false/);
+    assert.match(source, /participant addition is fail-open/);
+    assert.match(source, /participant_addition_declined/);
+});
+
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 

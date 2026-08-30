@@ -90,6 +90,10 @@ The participant target now detects Cognis’ actual `floating-window` class and 
 
 Active-meeting participant dragging now reuses the existing meeting overlay and green target design without the additional dashed popup. Starting a meeting holds Cognis core’s shared page-loading wheel from the Start Meeting click through the completed Jitsi join attempt. The reported Whiteboard failure was traced to Cognis component-page spawn authorization: automatic account mounting without current browser activation now defers with a one-time action prompt instead of retrying an unauthorized spawn until it reports `whiteboard_component_window_unavailable`.
 
+## Explain screen-share locks, resume Whiteboards, and approve active invitations
+
+The disabled Whiteboard action now exposes a localized hover explanation while screen sharing owns the meeting surface. Synchronized account boards that encounter Cognis’ user-activation requirement now arm abort-safe input listeners and automatically resume on the next activation instead of requiring a Whiteboard-specific click. Active participant invitations request consensus through Share’s optional approval capability before mutation, reject explicit declines, and fail open with structured logs if approval infrastructure is unavailable.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -125,3 +129,4 @@ Active-meeting participant dragging now reuses the existing meeting overlay and 
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
+- [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)

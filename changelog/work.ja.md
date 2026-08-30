@@ -90,6 +90,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 アクティブなミーティングへの参加者ドラッグでは、追加の破線ポップアップを使わず、既存のミーティングオーバーレイと緑色のターゲットデザインを再利用します。ミーティング開始時は「ミーティングを開始」のクリックから Jitsi への参加試行が完了するまで、Cognis core の共有ページ読み込みホイールを維持します。報告された Whiteboard エラーは Cognis のコンポーネントページ生成認可が原因でした。現在のブラウザアクティベーションがないアカウントの自動マウントは、認可されない生成を `whiteboard_component_window_unavailable` になるまで再試行せず、一度だけ操作を促して延期します。
 
+## 画面共有ロックを説明し、Whiteboard を再開してアクティブ招待を承認
+
+画面共有がミーティング領域を使用している間、無効な Whiteboard 操作にローカライズ済みのホバー説明を表示します。Cognis のユーザーアクティベーション要件に達した同期済みアカウントボードは、中止に安全な入力リスナーを設定し、Whiteboard 固有のクリックを求めず次のアクティベーションで自動再開します。アクティブな参加者招待は変更前に Share の任意承認 Capability で合意を求め、明示的な拒否を適用し、承認基盤が利用できない場合は構造化ログを残してフェイルオープンします。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -125,3 +129,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
+- [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)

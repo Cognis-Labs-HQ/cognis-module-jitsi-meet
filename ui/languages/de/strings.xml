@@ -124,8 +124,7 @@
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
   <string name="module.jitsi_meet.whiteboard.load_failed_detailed">Das Whiteboard ist bei {{stage}} fehlgeschlagen. Den genauen Fehler finden Sie in der Browserkonsole.</string>
-  <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Wählen Sie „Whiteboard“, um Ihren Schlüsselbund zu entsperren und das gemeinsame Board zu öffnen.</string>
-  <string name="module.jitsi_meet.whiteboard.auto_open_requires_interaction">Wählen Sie „Whiteboard“, um das gemeinsame Board zu öffnen.</string>
+  <string name="module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip">Das Whiteboard ist nicht verfügbar, während ein Teilnehmer seinen Bildschirm teilt.</string>
   <string name="module.jitsi_meet.whiteboard.stage.prepare">der Arbeitsflächenvorbereitung</string>
   <string name="module.jitsi_meet.whiteboard.stage.unlock">der Schlüsselbundentsperrung</string>
   <string name="module.jitsi_meet.whiteboard.stage.synchronize">der Besprechungssynchronisierung</string>

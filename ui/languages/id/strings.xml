@@ -124,8 +124,7 @@
   <string name="module.jitsi_meet.whiteboard.description">Buka papan tulis tersinkron untuk rapat ini.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Terjadi kesalahan saat memuat papan tulis</string>
   <string name="module.jitsi_meet.whiteboard.load_failed_detailed">Papan Tulis gagal saat {{stage}}. Lihat konsol browser untuk kesalahan yang tepat.</string>
-  <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Pilih Papan Tulis untuk membuka kunci keyring dan membuka papan bersama.</string>
-  <string name="module.jitsi_meet.whiteboard.auto_open_requires_interaction">Pilih Papan Tulis untuk membuka papan bersama.</string>
+  <string name="module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip">Whiteboard tidak tersedia saat peserta membagikan layarnya.</string>
   <string name="module.jitsi_meet.whiteboard.stage.prepare">persiapan kanvas</string>
   <string name="module.jitsi_meet.whiteboard.stage.unlock">pembukaan kunci keyring</string>
   <string name="module.jitsi_meet.whiteboard.stage.synchronize">sinkronisasi rapat</string>

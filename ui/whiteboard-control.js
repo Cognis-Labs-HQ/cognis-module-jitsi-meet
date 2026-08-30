@@ -51,6 +51,7 @@ function placeMeetingOverlay(trigger, { floating = false } = {}) {
 
 function closeComponentWindow(trigger) {
     if (trigger) trigger.windowRequestSequence += 1;
+    trigger?.automaticActivationCleanup?.();
     placeMeetingOverlay(trigger);
     trigger?.releaseFloatingWindow?.();
     if (typeof trigger?.componentWindow?.discard === "function") {
@@ -62,6 +63,7 @@ function closeComponentWindow(trigger) {
         trigger.componentWindowPending = false;
         trigger.componentWindow = null;
         trigger.releaseFloatingWindow = null;
+        trigger.automaticActivationCleanup = null;
         trigger.whiteboardId = "";
         setButtonActive(trigger.button, false);
     }
@@ -130,6 +132,15 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             trigger.preparedWhiteboardId = stateWhiteboardId;
         }
         setButtonActive(trigger.button, Boolean(trigger.componentWindow));
+        const screenSharingActive =
+            state.meeting?.state?.screenSharingActive === true;
+        const screenSharingTooltip = screenSharingActive
+            ? trigger.i18n.t(
+                  "module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip",
+              )
+            : "";
+        trigger.button.title = screenSharingTooltip;
+        trigger.slot.title = screenSharingTooltip;
         if (meetingCanvasNeedsPreparation(trigger, state)) {
             void prepareMeetingCanvas(trigger, state)
                 .catch((error) => {
@@ -149,7 +160,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
         }
         setButtonDisabled(
             trigger.button,
-            state.meeting?.state?.screenSharingActive === true ||
+            screenSharingActive ||
                 trigger.componentWindowPending === true ||
                 !state.jitsiConferenceJoined ||
                 !trigger.componentPage ||
@@ -193,7 +204,6 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     const shouldOpen = meetingWhiteboardShouldOpen(state.meeting);
     if (!shouldOpen && trigger.componentWindowPending !== true) {
         trigger.automaticOpenFailureWhiteboardId = "";
-        trigger.automaticUnlockNoticeWhiteboardId = "";
         closeComponentWindow(trigger);
     } else if (
         shouldOpen &&
@@ -204,56 +214,45 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
         trigger.automaticOpenFailureWhiteboardId !==
             trigger.preparedWhiteboardId
     ) {
-        const userActivationAvailable =
-            globalThis.navigator?.userActivation?.isActive === true;
-        if (!state.shareAccessToken && !userActivationAvailable) {
-            if (
-                trigger.automaticUnlockNoticeWhiteboardId !==
-                trigger.preparedWhiteboardId
-            ) {
-                trigger.automaticUnlockNoticeWhiteboardId =
-                    trigger.preparedWhiteboardId;
+        if (
+            !state.shareAccessToken &&
+            globalThis.navigator?.userActivation?.isActive !== true
+        ) {
+            if (!trigger.automaticActivationCleanup) {
+                const activationController = new AbortController();
+                const activate = () => {
+                    activationController.abort();
+                    trigger.automaticActivationCleanup = null;
+                    if (!meetingWhiteboardShouldOpen(state.meeting)) return;
+                    trigger.sharedOpenRequested = true;
+                    trigger.button.click();
+                };
+                document.addEventListener("pointerdown", activate, {
+                    capture: true,
+                    once: true,
+                    signal: activationController.signal,
+                });
+                document.addEventListener("keydown", activate, {
+                    capture: true,
+                    once: true,
+                    signal: activationController.signal,
+                });
+                trigger.signal?.addEventListener(
+                    "abort",
+                    () => activationController.abort(),
+                    { once: true },
+                );
+                trigger.automaticActivationCleanup = () =>
+                    activationController.abort();
                 void logUi(
                     "info",
-                    "Automatic Whiteboard component mounting requires user activation.",
+                    "Whiteboard mounting deferred until the next browser activation.",
                     {
                         component: "module:jitsi-meet",
                         operation: "defer_automatic_whiteboard_mount",
                         meetingId: state.meeting?.id,
                         whiteboardId: trigger.preparedWhiteboardId,
                     },
-                );
-                showToast(
-                    trigger.i18n.t(
-                        "module.jitsi_meet.whiteboard.auto_open_requires_interaction",
-                    ),
-                    { variant: "warning" },
-                );
-            }
-            return;
-        }
-        if (!state.shareAccessToken && trigger.isKeyringUnlocked?.() !== true) {
-            if (
-                trigger.automaticUnlockNoticeWhiteboardId !==
-                trigger.preparedWhiteboardId
-            ) {
-                trigger.automaticUnlockNoticeWhiteboardId =
-                    trigger.preparedWhiteboardId;
-                void logUi(
-                    "info",
-                    "Automatic Whiteboard opening requires user-initiated keyring unlock.",
-                    {
-                        component: "module:jitsi-meet",
-                        operation: "defer_automatic_whiteboard_unlock",
-                        meetingId: state.meeting?.id,
-                        whiteboardId: trigger.preparedWhiteboardId,
-                    },
-                );
-                showToast(
-                    trigger.i18n.t(
-                        "module.jitsi_meet.whiteboard.auto_open_requires_unlock",
-                    ),
-                    { variant: "warning" },
                 );
             }
             return;
@@ -430,7 +429,7 @@ export async function bindWhiteboardButton({
         participantAccessAttemptSignature: "",
         participantAccessWarningLogged: false,
         automaticOpenFailureWhiteboardId: "",
-        automaticUnlockNoticeWhiteboardId: "",
+        automaticActivationCleanup: null,
         releaseFloatingWindow: null,
         sharedOpenRequested: false,
         signal,

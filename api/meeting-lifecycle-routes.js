@@ -69,6 +69,7 @@ export function registerMeetingLifecycleRoutes({
     deleteResourceShares,
     deleteChatRoom,
     revokeKickedGuestShare,
+    requestParticipantAdditionApproval,
     log,
 }) {
     router.post(
@@ -299,6 +300,20 @@ export function registerMeetingLifecycleRoutes({
                         requiresReclaim: false,
                     }),
                 });
+                return;
+            }
+            const approval = await requestParticipantAdditionApproval?.({
+                meetingId: resolved.meeting.id,
+                requesterAccountId: claims.sub,
+                requesterDisplayName: resolved.requesterUsername,
+            });
+            if (approval?.approved === false) {
+                sendError(
+                    res,
+                    409,
+                    "participant_addition_declined",
+                    "Current meeting participants declined the invitation.",
+                );
                 return;
             }
             const participants = [...resolved.participants, username];
