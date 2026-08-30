@@ -78,6 +78,10 @@ Jitsi’s real-time local and remote screen-sharing participant event now closes
 
 Automatic account opening now waits for an already-unlocked keyring instead of attempting a browser-gated unlock without user activation. A single warning asks the user to select Whiteboard when interaction is required, and failed automatic mounting is not retried for the same board. Real failures now identify the failing stage in the toast and write structured identifiers, the error message, and the complete Error object to both the host log and browser console.
 
+## Keep active-meeting overlays on their live window
+
+Joining an existing meeting no longer lets participant rendering restore the lobby or preflight overlay. Overlay placement now detects the meeting frame’s actual floating parent rather than relying only on a local release callback, and participant dragging uses that relocated overlay directly so the green dropzone follows Whiteboard PiP.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -110,3 +114,4 @@ Automatic account opening now waits for an already-unlocked keyring instead of a
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
+- [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)

@@ -132,7 +132,7 @@ export function createPreflightHandlers({
         }
 
         const participantCount = state.selectedParticipants.length;
-        if (!utils.isMeetingActive()) {
+        if (!utils.isMeetingActive() && !state.meeting?.id) {
             utils.updateOverlay({
                 message: i18n.t(callbacks.lobbyMessageKey(participantCount)),
                 canStart: state.preflightPassed && !state.meeting?.id,
@@ -213,8 +213,9 @@ export function createPreflightHandlers({
         ) {
             return;
         }
-        placeMeetingOverlayForActiveWindow(root);
-        const overlay = root.querySelector("#jitsi-overlay");
+        const overlay =
+            placeMeetingOverlayForActiveWindow(root) ??
+            root.querySelector("#jitsi-overlay");
         if (!(overlay instanceof HTMLElement)) return;
         overlay.classList.toggle("jitsi-overlay-participant-drop", visible);
         overlay.classList.toggle("jitsi-drop-active", visible);

@@ -359,7 +359,7 @@ test("participant rendering preserves an active meeting overlay state and shows 
     const source = readJitsiUiBundle();
     assert.match(
         source,
-        /if \(!utils\.isMeetingActive\(\)\) \{\s*utils\.updateOverlay/,
+        /if \(!utils\.isMeetingActive\(\) && !state\.meeting\?\.id\) \{\s*utils\.updateOverlay/,
     );
     assert.match(
         source,
@@ -372,6 +372,14 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /setActiveParticipantDropzoneVisible/);
     assert.match(source, /placeMeetingOverlayForActiveWindow\(root\)/);
+    assert.match(
+        source,
+        /placeMeetingOverlayForActiveWindow\(root\) \?\?[\s\S]*?root\.querySelector\("#jitsi-overlay"\)/,
+    );
+    assert.match(
+        source,
+        /!utils\.isMeetingActive\(\) && !state\.meeting\?\.id/,
+    );
     assert.match(
         source,
         /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,

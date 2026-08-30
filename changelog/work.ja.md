@@ -78,6 +78,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 アカウントの自動オープンは、ユーザー操作なしでブラウザに制限されるキーリング解除を試みず、すでに解除済みになるまで待つようになりました。操作が必要な場合は Whiteboard の選択を求める警告を1回表示し、自動マウント失敗を同じボードで再試行しません。実際の失敗ではトーストに失敗段階を表示し、構造化 ID、エラーメッセージ、完全な Error オブジェクトをホストログとブラウザコンソールの両方へ書き込みます。
 
+## アクティブなミーティングのオーバーレイをライブウィンドウに維持
+
+既存のミーティングへ参加した後、参加者の再描画によってロビーまたはプリフライトオーバーレイが復帰しないようにしました。オーバーレイ配置はローカルの解放コールバックだけに依存せず、ミーティングフレームの実際のフローティング親要素を検出します。参加者のドラッグも移動済みオーバーレイを直接使用するため、緑色のドロップゾーンが Whiteboard の PiP に追従します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -110,3 +114,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
+- [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)

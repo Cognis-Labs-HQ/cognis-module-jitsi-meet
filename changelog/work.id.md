@@ -78,6 +78,10 @@ Peristiwa peserta berbagi layar lokal dan jarak jauh waktu nyata milik Jitsi kin
 
 Pembukaan akun otomatis kini menunggu keyring yang sudah terbuka, bukan mencoba pembukaan kunci yang dibatasi browser tanpa aktivasi pengguna. Satu peringatan meminta pengguna memilih Papan Tulis saat interaksi diperlukan, dan pemasangan otomatis yang gagal tidak dicoba ulang untuk papan yang sama. Kegagalan nyata kini menyebut tahap yang gagal pada toast serta menulis ID terstruktur, pesan kesalahan, dan objek Error lengkap ke log host dan konsol browser.
 
+## Pertahankan lapisan rapat aktif pada jendela langsungnya
+
+Bergabung ke rapat yang sudah ada tidak lagi membuat perenderan peserta memulihkan lapisan lobi atau pra-pemeriksaan. Penempatan lapisan kini mendeteksi induk mengambang aktual dari bingkai rapat, bukan hanya mengandalkan callback pelepas lokal, dan penyeretan peserta menggunakan lapisan yang telah dipindahkan secara langsung agar zona pelepasan hijau mengikuti PiP Whiteboard.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -110,3 +114,4 @@ Pembukaan akun otomatis kini menunggu keyring yang sudah terbuka, bukan mencoba 
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
+- [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)

@@ -46,6 +46,7 @@ function placeMeetingOverlay(trigger, { floating = false } = {}) {
     ) {
         parent.append(overlay);
     }
+    return overlay instanceof HTMLElement ? overlay : null;
 }
 
 function closeComponentWindow(trigger) {
@@ -240,9 +241,12 @@ export function closeMeetingWhiteboard(root) {
 
 export function placeMeetingOverlayForActiveWindow(root) {
     const trigger = mountedWhiteboardButtons.get(root);
-    if (!trigger) return;
-    placeMeetingOverlay(trigger, {
-        floating: Boolean(trigger.releaseFloatingWindow),
+    if (!trigger) return null;
+    const meetingFrameIsFloating =
+        trigger.meetingFrame?.parentElement !== trigger.frameWrap;
+    return placeMeetingOverlay(trigger, {
+        floating:
+            Boolean(trigger.releaseFloatingWindow) || meetingFrameIsFloating,
     });
 }
 
@@ -368,6 +372,7 @@ export async function bindWhiteboardButton({
         isKeyringUnlocked,
         loadRetryAfter: 0,
         makeFloatingWindow,
+        meetingFrame,
         pipHandle,
         preparedWhiteboardId:
             state.meeting?.state?.whiteboardDisposable ===

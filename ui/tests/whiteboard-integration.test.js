@@ -178,7 +178,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /placeMeetingOverlayForActiveWindow[\s\S]*?floating: Boolean\(trigger\.releaseFloatingWindow\)/,
+        /placeMeetingOverlayForActiveWindow[\s\S]*?meetingFrame\?\.parentElement !== trigger\.frameWrap[\s\S]*?Boolean\(trigger\.releaseFloatingWindow\) \|\| meetingFrameIsFloating/,
     );
     assert.match(
         buttonSource,
