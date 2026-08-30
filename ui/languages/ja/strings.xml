@@ -60,6 +60,7 @@
   <string name="module.jitsi_meet.participants.selected">ミーティング参加者</string>
   <string name="module.jitsi_meet.participants.none">表示できる参加者がいません。</string>
   <string name="module.jitsi_meet.participants.available_none">利用可能な参加者はいません。</string>
+  <string name="module.jitsi_meet.participants.drop_to_invite">ここに参加者をドロップしてミーティングに招待します。</string>
   <string name="module.jitsi_meet.participants.add_selected">選択を追加</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi インスタンス URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Jitsi デプロイのベース URL を完全な形式で入力してください。</string>

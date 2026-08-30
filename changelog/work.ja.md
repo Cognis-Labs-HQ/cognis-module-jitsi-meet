@@ -10,7 +10,12 @@
 
 参加者情報の更新時に、参加済みのミーティング上でロビーオーバーレイが再表示されなくなり、通知や進行中リストから参加した場合も操作を続けられます。利用可能な参加者の列が空の場合は「利用可能な参加者はいません。」と表示されます。
 
+## 進行中の参加者ドロップ先を表示
+
+利用可能な参加者をドラッグすると、対象となる進行中のミーティングウィンドウ上にローカライズされたドロップ先が一時的に表示されます。ドロップすると参加者が招待され、ドラッグを終了すると中断のないミーティング表示に戻ります。
+
 ## コミット
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)
+- [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)

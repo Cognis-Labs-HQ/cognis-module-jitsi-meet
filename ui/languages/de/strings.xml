@@ -60,6 +60,7 @@
   <string name="module.jitsi_meet.participants.selected">Meeting-Teilnehmer</string>
   <string name="module.jitsi_meet.participants.none">Keine Teilnehmer zum Anzeigen.</string>
   <string name="module.jitsi_meet.participants.available_none">Keine verfügbaren Teilnehmer.</string>
+  <string name="module.jitsi_meet.participants.drop_to_invite">Teilnehmer hier ablegen, um ihn zur Besprechung einzuladen.</string>
   <string name="module.jitsi_meet.participants.add_selected">Ausgewählte Hinzufügen</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi-Instanz-URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Gib die vollständige Basis-URL deiner Jitsi-Instanz ein.</string>

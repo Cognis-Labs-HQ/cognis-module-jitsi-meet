@@ -62,6 +62,24 @@
     );
 }
 
+.jitsi-route-root .jitsi-overlay.jitsi-overlay-participant-drop > * {
+    display: none;
+}
+
+.jitsi-route-root .jitsi-overlay.jitsi-overlay-participant-drop::after {
+    content: attr(data-drop-label);
+    display: grid;
+    place-items: center;
+    min-height: 8rem;
+    padding: 1.5rem;
+    border: 2px dashed currentColor;
+    border-radius: 1rem;
+    color: var(--color-success, #22c55e);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+}
+
 .jitsi-route-root .jitsi-overlay-title {
     margin: 0;
     font-size: 1.25rem;

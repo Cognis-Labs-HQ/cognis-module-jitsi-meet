@@ -1,6 +1,5 @@
-import { logUi, openErrorPopup } from "../reuse/feedback.js";
+import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
@@ -24,7 +23,6 @@ import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
 } from "../whiteboard-control.js";
-
 const [
     { apiFetch },
     { getShareContext, ensureFullAccountSession },
@@ -267,6 +265,7 @@ export async function mount(
         recoverMeetingSessionAfterComposerRender,
         renderParticipants,
         runPreflightCheck,
+        setActiveParticipantDropzoneVisible,
     } = preflightHandlers;
     const { openMeetingEmbed, prepareMeetingStart } = embedHandlers;
     if (signal) {
@@ -404,6 +403,16 @@ export async function mount(
             "#jitsi-available-participants",
         );
         if (overlay instanceof HTMLElement) {
+            container.addEventListener(
+                "dragstart",
+                () => setActiveParticipantDropzoneVisible(true),
+                { signal: bindSignal },
+            );
+            container.addEventListener(
+                "dragend",
+                () => setActiveParticipantDropzoneVisible(false),
+                { signal: bindSignal },
+            );
             overlay.addEventListener(
                 "dragover",
                 (event) => {
@@ -438,6 +447,7 @@ export async function mount(
                         !state.meeting?.hasInvitedParticipants
                     )
                         return;
+                    setActiveParticipantDropzoneVisible(false);
                     overlay.classList.remove("jitsi-drop-active");
                     const username =
                         state.dragUsername ??

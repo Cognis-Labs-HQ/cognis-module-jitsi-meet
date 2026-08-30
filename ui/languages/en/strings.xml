@@ -60,6 +60,7 @@
   <string name="module.jitsi_meet.participants.selected">Meeting Participants</string>
   <string name="module.jitsi_meet.participants.none">No participants to display.</string>
   <string name="module.jitsi_meet.participants.available_none">No available participants.</string>
+  <string name="module.jitsi_meet.participants.drop_to_invite">Drop participant here to invite them to the meeting.</string>
   <string name="module.jitsi_meet.participants.add_selected">Add Selected</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Instance URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Enter the full base URL of your Jitsi deployment.</string>

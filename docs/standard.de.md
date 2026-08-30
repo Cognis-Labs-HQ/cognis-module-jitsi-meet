@@ -6,7 +6,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerau
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.
 - Teilnehmer auswählen, Besprechungszugriff teilen und den Messages-Chat der Besprechung verwenden.
-- Während einer aktiven, nicht verwerfbaren Besprechung kann ein weiterer verfügbarer Benutzer in das Besprechungsfenster gezogen und dauerhaft zum Teilnehmerkreis hinzugefügt werden. Cognis richtet dessen Zugriff auf den verschlüsselten Messages-Chat ein, sendet eine Einladung und ermöglicht beim Beitritt den Abruf des Besprechungskennworts. Teilnehmeraktualisierungen verdecken eine aktive Besprechung niemals mit der Lobby-Einblendung, und ein leerer Pool verfügbarer Teilnehmer wird ausdrücklich gekennzeichnet.
+- Während einer aktiven, nicht verwerfbaren Besprechung kann ein weiterer verfügbarer Benutzer in das Besprechungsfenster gezogen und dauerhaft zum Teilnehmerkreis hinzugefügt werden. Cognis richtet dessen Zugriff auf den verschlüsselten Messages-Chat ein, sendet eine Einladung und ermöglicht beim Beitritt den Abruf des Besprechungskennworts. Teilnehmeraktualisierungen verdecken eine aktive Besprechung niemals mit der Lobby-Einblendung, und ein leerer Pool verfügbarer Teilnehmer wird ausdrücklich gekennzeichnet. Beim Ziehen eines verfügbaren Benutzers während einer aktiven Besprechung erscheint bis zum Ende des Ziehvorgangs ein lokalisierter Ablagebereich über dem Besprechungsfenster.
 - Aktive und bevorstehende Besprechungen unter Administration → Meetings überwachen.
 - Die Meetings-Route als Overlay-, Vollbild- oder Bild-in-Bild-Komponentenseite einbetten.
 

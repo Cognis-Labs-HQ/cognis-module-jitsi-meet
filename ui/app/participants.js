@@ -147,6 +147,29 @@ export function createPreflightHandlers({
         );
     }
 
+    function setActiveParticipantDropzoneVisible(visible) {
+        if (
+            !utils.isMeetingActive() ||
+            !state.meeting?.hasInvitedParticipants
+        ) {
+            return;
+        }
+        const overlay = root.querySelector("#jitsi-overlay");
+        if (!(overlay instanceof HTMLElement)) return;
+        overlay.classList.toggle("jitsi-overlay-participant-drop", visible);
+        overlay.classList.toggle("jitsi-drop-active", visible);
+        overlay.hidden = !visible;
+        if (visible) {
+            overlay.dataset.dropLabel = i18n.t(
+                "module.jitsi_meet.participants.drop_to_invite",
+            );
+            overlay.setAttribute("aria-label", overlay.dataset.dropLabel);
+            return;
+        }
+        delete overlay.dataset.dropLabel;
+        overlay.removeAttribute("aria-label");
+    }
+
     async function applyDrop(username, targetZone) {
         if (!username) return;
         const normalized = normalizeUsername(username);
@@ -467,5 +490,6 @@ export function createPreflightHandlers({
         removeParticipant,
         renderParticipants,
         runPreflightCheck,
+        setActiveParticipantDropzoneVisible,
     };
 }
