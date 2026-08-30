@@ -44,7 +44,7 @@ Tombol Papan Tulis kini memakai tampilan konfirmasi saat membuka papan dan beral
 
 ## Skalakan minimum gambar-dalam-gambar rapat
 
-Minimum gambar-dalam-gambar rapat kini 400 × 225 piksel, 25% lebih besar dari sebelumnya. Mulai peserta aktif ketiga, kedua dimensi bertambah 25% lagi per peserta dan langsung diterapkan melalui pembaru ukuran minimum jendela mengambang Cognis.
+Minimum gambar-dalam-gambar rapat kini 400 × 225 piksel, 25% lebih besar dari sebelumnya. Peserta aktif ketiga meningkatkan kedua dimensi satu kali sebesar 25%, dan Cognis langsung menerapkan minimum terbatas melalui pembaru jendela mengambangnya.
 
 ## Verifikasi kontrak perluasan Papan Tulis
 
@@ -58,7 +58,13 @@ Kini hanya penyelenggara rapat yang memanggil kapabilitas perluasan kanvas yang 
 
 Overlay rapat, termasuk permintaan peserta sendirian, kini berpindah ke bingkai Jitsi mengambang selama PiP Papan Tulis aktif dan kembali ke panggung saat ditutup. Pembukaan Papan Tulis otomatis kini mencoba ulang kegagalan impor modul dinamis sementara melalui seluruh backoff terbatas, bukan berhenti setelah kegagalan pertama.
 
+## Batasi pertumbuhan PiP pada tiga peserta
+
+PiP rapat kini hanya memiliki dua status ukuran minimum: 400 × 225 piksel untuk hingga dua peserta aktif dan 500 × 282 piksel untuk tiga atau lebih. Rapat yang lebih besar tidak lagi terus meningkatkan minimum dan mengambil alih layar yang tersedia.
+
 ## Commit
+
+- [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 
 - [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 

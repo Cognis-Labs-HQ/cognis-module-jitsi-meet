@@ -42,7 +42,7 @@ export function resolveMeetingPipMinimumSize(meeting) {
             )
             .filter(Boolean),
     ).size;
-    const scale = 1 + Math.max(0, activeParticipantCount - 2) * 0.25;
+    const scale = activeParticipantCount >= 3 ? 1.25 : 1;
     return {
         width: Math.ceil(PIP_BASE_MINIMUM_SIZE.width * scale),
         height: Math.ceil(PIP_BASE_MINIMUM_SIZE.height * scale),

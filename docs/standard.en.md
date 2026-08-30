@@ -11,7 +11,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 - Monitor active and upcoming meetings from Administration → Meetings.
 - Embed the Meetings route as an overlay, fullscreen, or picture-in-picture component page.
 
-The advertised picture-in-picture minimum is 400 × 225 pixels, 25% larger than Jitsi Meet's 320 × 180 smallest supported mobile surface. While the meeting is floating, three or more active participants increase both minimum dimensions by another 25% per participant after the second; the module applies each change through the host floating-window release handle.
+The advertised picture-in-picture minimum is 400 × 225 pixels, 25% larger than Jitsi Meet's 320 × 180 smallest supported mobile surface. While the meeting is floating, the third active participant increases both minimum dimensions once by 25%, to 500 × 282 pixels; additional participants do not increase it further, and the module applies the single change through the host floating-window release handle.
 
 ## Technical Specification
 

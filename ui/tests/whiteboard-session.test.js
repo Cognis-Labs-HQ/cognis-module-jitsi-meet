@@ -10,7 +10,7 @@ import {
     resolveMeetingPipMinimumSize,
 } from "../whiteboard-session.js";
 
-test("meeting PiP minimum grows by 25 percent for each participant after two", () => {
+test("meeting PiP minimum grows once when a third participant joins", () => {
     assert.deepEqual(resolveMeetingPipMinimumSize({}), {
         width: 400,
         height: 225,
@@ -30,7 +30,16 @@ test("meeting PiP minimum grows by 25 percent for each participant after two", (
                 { username: "dave" },
             ],
         }),
-        { width: 600, height: 338 },
+        { width: 500, height: 282 },
+    );
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: Array.from(
+                { length: 12 },
+                (_, index) => `participant-${index}`,
+            ),
+        }),
+        { width: 500, height: 282 },
     );
 });
 

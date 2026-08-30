@@ -11,7 +11,7 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 - Memantau rapat aktif dan mendatang dari Administration → Meetings.
 - Menyematkan rute Meetings sebagai halaman komponen overlay, layar penuh, atau gambar-dalam-gambar.
 
-Ukuran minimum gambar-dalam-gambar yang diumumkan adalah 400 × 225 piksel, 25% lebih besar daripada permukaan seluler terkecil Jitsi Meet sebesar 320 × 180. Saat rapat mengambang, tiga peserta aktif atau lebih meningkatkan kedua dimensi minimum sebesar 25% lagi untuk setiap peserta setelah peserta kedua; modul menerapkan setiap perubahan melalui fungsi pelepas jendela mengambang milik host.
+Ukuran minimum gambar-dalam-gambar yang diumumkan adalah 400 × 225 piksel, 25% lebih besar daripada permukaan seluler terkecil Jitsi Meet sebesar 320 × 180. Saat rapat mengambang, peserta aktif ketiga meningkatkan kedua dimensi minimum satu kali sebesar 25% menjadi 500 × 282 piksel; peserta tambahan tidak memperbesarnya lagi, dan modul menerapkan perubahan tunggal itu melalui fungsi pelepas jendela mengambang milik host.
 
 ## Spesifikasi Teknis
 

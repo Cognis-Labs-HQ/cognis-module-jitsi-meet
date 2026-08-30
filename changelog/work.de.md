@@ -44,7 +44,7 @@ Die Whiteboard-Schaltfläche verwendet jetzt beim Öffnen die Bestätigungsdarst
 
 ## Mindestgröße des Meeting-Bild-in-Bild skalieren
 
-Die Mindestgröße des Meeting-Bild-in-Bild beträgt nun 400 × 225 Pixel und ist damit 25 % größer als zuvor. Ab dem dritten aktiven Teilnehmer wachsen beide Maße pro Teilnehmer um weitere 25 % und werden sofort über Cognis’ Aktualisierung der Floating-Window-Mindestgröße angewendet.
+Die Mindestgröße des Meeting-Bild-in-Bild beträgt nun 400 × 225 Pixel und ist damit 25 % größer als zuvor. Der dritte aktive Teilnehmer erhöht beide Maße einmalig um 25 %, und Cognis wendet die begrenzte Mindestgröße sofort über seine Floating-Window-Aktualisierung an.
 
 ## Whiteboard-Erweiterungsvertrag prüfen
 
@@ -58,7 +58,13 @@ Nur der Besprechungsorganisator ruft jetzt die eigentümerautorisierte Capabilit
 
 Besprechungseinblendungen einschließlich der Aufforderung für alleinige Teilnehmer ziehen jetzt während des Whiteboard-Bild-in-Bild in den schwebenden Jitsi-Rahmen um und kehren beim Schließen zur Bühne zurück. Das automatische Öffnen des Whiteboards wiederholt vorübergehende Fehler beim dynamischen Modulimport nun über den vollständigen begrenzten Backoff, statt nach dem ersten Fehler abzubrechen.
 
+## PiP-Wachstum bei drei Teilnehmern begrenzen
+
+Das Meeting-Bild-in-Bild hat nun nur zwei Mindestgrößen: 400 × 225 Pixel für bis zu zwei aktive Teilnehmer und 500 × 282 Pixel für drei oder mehr. Größere Besprechungen erhöhen das Minimum nicht weiter und nehmen nicht mehr den verfügbaren Bildschirm ein.
+
 ## Commits
+
+- [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 
 - [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 

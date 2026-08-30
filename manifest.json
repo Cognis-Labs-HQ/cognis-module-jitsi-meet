@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.92",
+    "version": "1.5.93",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -305,27 +305,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "182aee9d9d216406b3f831b08675e9ec18fdd98d3ca668fa007a050e22eab19a"
+            "sha256": "ec020a95cfbcf52ea47474936820b5d9f68b582753b716d3f402db17dfb8b8d3"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "056a16622e618887b85ba4b9e8e425edc72ae12876c5415b5a74023200b9a51c"
+            "sha256": "37e8c0851deb2146c3730057d21a531d7b9c2a97ea47b207f0138f8fbac47dd0"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "41e46fe092b929915d63eaeae7f327253eccaab3782ce94b13c132017519cfe1"
+            "sha256": "de839dfd91c6230f56087a01ca4a171e3bdda910760ed6f2e0d1709ea34827f5"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "2af85dc2bf34102115e368b887a1321b4c7771b0271edd94508947723c5ba3c4"
+            "sha256": "0668115bed244f2ec8e67f76c83cc5b3bb3e649aecb2a6abab9ec2d7fbfb7de5"
         },
         {
             "path": "package-lock.json",
-            "sha256": "e516723b9562a45524c56402c92b24e997d50dfc0f979cee0a12272d03fb5b2b"
+            "sha256": "866c3d72f22f4890cabc12d645f2914121180f4d05630fa3adc2d35b871f97e7"
         },
         {
             "path": "package.json",
-            "sha256": "f9a37e9b5e90ae74c01ea7757b17435ece08d1c8e755e38c7214a76f7a5c21f0"
+            "sha256": "5e5f9be6077c33823d2b2f703b28b72eb3ee572d49651764546fadda354fcd40"
         },
         {
             "path": "routes.json",
@@ -473,7 +473,7 @@
         },
         {
             "path": "ui/tests/whiteboard-session.test.js",
-            "sha256": "b8e27f4b938aeed53db993942e7d9ef34341813b63bf3d396399fe4a87aa457e"
+            "sha256": "2c2a1a4e18d5c952a877f650b77013cf810198270772868fdb76f7bbc1fad7ee"
         },
         {
             "path": "ui/whiteboard-control.js",
@@ -485,7 +485,7 @@
         },
         {
             "path": "ui/whiteboard-session.js",
-            "sha256": "9459523867748573e8658578daa698a57ad4147313ee1ee3329398e232772c52"
+            "sha256": "3f599c29c1a8106dd7fb0df4cc4d7ebc87440c521da6853d946936fd06b358be"
         }
     ]
 }

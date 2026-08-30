@@ -44,7 +44,7 @@ The Whiteboard button now uses the confirm treatment when it opens a board and s
 
 ## Scale the meeting PiP minimum
 
-The base meeting PiP minimum is now 400 × 225 pixels, 25% larger than before. Starting with the third active participant, both dimensions grow by another 25% per participant and are applied immediately through Cognis’ floating-window minimum-size updater.
+The base meeting PiP minimum is now 400 × 225 pixels, 25% larger than before. The third active participant increases both dimensions once by 25%, and Cognis applies the capped minimum immediately through its floating-window updater.
 
 ## Verify the Whiteboard expansion contract
 
@@ -58,7 +58,13 @@ Only the meeting organizer now invokes the owner-authorized canvas expansion cap
 
 Meeting overlays, including the alone-participant prompt, now move into the floating Jitsi frame while Whiteboard PiP is active and return to the stage when it closes. Automatic Whiteboard opening now retries transient dynamic-module import failures through the full bounded backoff instead of stopping after the first failure.
 
+## Cap PiP growth at three participants
+
+The meeting PiP now has only two minimum-size states: 400 × 225 pixels for up to two active participants and 500 × 282 pixels for three or more. Larger meetings no longer keep increasing the minimum and taking over the available screen.
+
 ## Commits
+
+- [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 
 - [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 
