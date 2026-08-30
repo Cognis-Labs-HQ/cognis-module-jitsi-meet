@@ -36,8 +36,21 @@ function setButtonDisabled(button, disabled) {
     button?.setAttribute("aria-disabled", String(disabled));
 }
 
+function placeMeetingOverlay(trigger, { floating = false } = {}) {
+    const overlay = trigger?.overlay;
+    const parent = floating ? trigger?.meetingFrame : trigger?.frameWrap;
+    if (
+        overlay instanceof HTMLElement &&
+        parent instanceof HTMLElement &&
+        overlay.parentElement !== parent
+    ) {
+        parent.append(overlay);
+    }
+}
+
 function closeComponentWindow(trigger) {
     if (trigger) trigger.windowRequestSequence += 1;
+    placeMeetingOverlay(trigger);
     trigger?.releaseFloatingWindow?.();
     if (typeof trigger?.componentWindow?.discard === "function") {
         void trigger.componentWindow.discard();
@@ -180,10 +193,14 @@ export async function bindWhiteboardButton({
 }) {
     const slot = root.querySelector("#jitsi-whiteboard-button-slot");
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
+    const meetingFrame = frameWrap?.querySelector(".jitsi-stage-frame");
+    const overlay = frameWrap?.querySelector("#jitsi-overlay");
     const pipHandle = root.querySelector(".jitsi-stage-header");
     if (
         !(slot instanceof HTMLElement) ||
         !(frameWrap instanceof HTMLElement) ||
+        !(meetingFrame instanceof HTMLElement) ||
+        !(overlay instanceof HTMLElement) ||
         !(pipHandle instanceof HTMLElement)
     )
         return;
@@ -218,6 +235,8 @@ export async function bindWhiteboardButton({
         discardComponentPage,
         isKeyringUnlocked,
         makeFloatingWindow,
+        meetingFrame,
+        overlay,
         requestKeyringUnlock,
         spawnComponentPage,
         whiteboardGateway,
@@ -429,22 +448,19 @@ export async function bindWhiteboardButton({
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
                     state.meeting.state.whiteboardOpen = true;
-                    const meetingFrame =
-                        frameWrap.querySelector(".jitsi-stage-frame");
-                    if (meetingFrame instanceof HTMLElement) {
-                        const minimumSize = resolveMeetingPipMinimumSize(
-                            state.meeting,
-                        );
-                        trigger.releaseFloatingWindow = makeFloatingWindow(
-                            meetingFrame,
-                            {
-                                handle: pipHandle,
-                                minWidth: minimumSize.width,
-                                minHeight: minimumSize.height,
-                                signal,
-                            },
-                        );
-                    }
+                    const minimumSize = resolveMeetingPipMinimumSize(
+                        state.meeting,
+                    );
+                    trigger.releaseFloatingWindow = makeFloatingWindow(
+                        meetingFrame,
+                        {
+                            handle: pipHandle,
+                            minWidth: minimumSize.width,
+                            minHeight: minimumSize.height,
+                            signal,
+                        },
+                    );
+                    placeMeetingOverlay(trigger, { floating: true });
                     const componentWindow = await spawnComponentWindowWithRetry(
                         trigger,
                         {

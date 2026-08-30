@@ -54,7 +54,13 @@ Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.ex
 
 所有者認可のキャンバス拡張 Capability はミーティング主催者だけが呼び出すようになりました。招待参加者は拡張要求を送信せず、所有者の失敗した要求は同じキャンバスと参加者集合について記録されるため、ポーリングや埋め込みライフサイクル更新で同じ禁止要求を繰り返し送信しません。
 
+## PiP 内にオーバーレイを保ち、自動 Whiteboard を復旧
+
+単独参加者への確認を含むミーティングオーバーレイは、Whiteboard PiP の有効中にフローティング Jitsi フレーム内へ移動し、閉じるとステージへ戻るようになりました。Whiteboard の自動オープンは、一時的な動的モジュール読み込み失敗で最初に停止せず、上限付きバックオフ全体を通じて再試行します。
+
 ## コミット
+
+- [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 
 - [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 

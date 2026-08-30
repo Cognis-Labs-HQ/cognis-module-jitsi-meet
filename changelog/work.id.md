@@ -54,7 +54,13 @@ Meetings kini memvalidasi kontrak `whiteboard:uiGateway.expandCanvasAccess` pers
 
 Kini hanya penyelenggara rapat yang memanggil kapabilitas perluasan kanvas yang diotorisasi pemilik. Peserta undangan tidak membuat permintaan perluasan, dan permintaan pemilik yang gagal diingat untuk kanvas serta kumpulan peserta tersebut agar polling dan pembaruan siklus hidup sematan tidak berulang kali mengirim permintaan terlarang yang sama.
 
+## Pertahankan overlay di PiP dan pulihkan Papan Tulis otomatis
+
+Overlay rapat, termasuk permintaan peserta sendirian, kini berpindah ke bingkai Jitsi mengambang selama PiP Papan Tulis aktif dan kembali ke panggung saat ditutup. Pembukaan Papan Tulis otomatis kini mencoba ulang kegagalan impor modul dinamis sementara melalui seluruh backoff terbatas, bukan berhenti setelah kegagalan pertama.
+
 ## Commit
+
+- [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 
 - [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 

@@ -160,9 +160,17 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /for \(let attempt = 0; attempt < 6; attempt \+= 1\)[\s\S]*?Math\.min\(250 \* 2 \*\* attempt, 2_000\)/,
     );
-    assert.match(
+    assert.doesNotMatch(
         buttonSource,
         /Failed to fetch dynamically imported module[\s\S]*?break;/,
+    );
+    assert.match(
+        buttonSource,
+        /placeMeetingOverlay\(trigger, \{ floating: true \}\)/,
+    );
+    assert.match(
+        buttonSource,
+        /function closeComponentWindow[\s\S]*?placeMeetingOverlay\(trigger\)/,
     );
     assert.match(buttonSource, /loadRetryAfter:\s*0/);
     assert.match(

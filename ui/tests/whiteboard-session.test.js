@@ -87,6 +87,34 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     assert.equal(spawnRequests.at(-1).context.whiteboardId, "mapped-board");
 });
 
+test("automatic whiteboard opening retries transient module imports", async () => {
+    let requests = 0;
+    const componentWindow = { discard() {} };
+    const trigger = {
+        disposableCanvas: false,
+        frameWrap: { id: "meeting-stage" },
+        signal: new AbortController().signal,
+        spawnComponentPage() {
+            requests += 1;
+            if (requests < 3) {
+                throw new Error("Failed to fetch dynamically imported module");
+            }
+            return componentWindow;
+        },
+        async waitForComponentWindowRetry() {},
+    };
+
+    assert.equal(
+        await spawnComponentWindowWithRetry(trigger, {
+            meetingId: "meeting-a",
+            meetingName: "Shared Meeting",
+            whiteboardId: "mapped-board",
+        }),
+        componentWindow,
+    );
+    assert.equal(requests, 3);
+});
+
 test("persistent mappings stay closed unless the current meeting opened them", () => {
     assert.equal(
         meetingWhiteboardShouldOpen({

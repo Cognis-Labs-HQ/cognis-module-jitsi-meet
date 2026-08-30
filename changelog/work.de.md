@@ -54,7 +54,13 @@ Meetings validiert nun den exakten Vertrag `whiteboard:uiGateway.expandCanvasAcc
 
 Nur der Besprechungsorganisator ruft jetzt die eigentümerautorisierte Capability zur Arbeitsflächenerweiterung auf. Eingeladene Teilnehmer senden keine Erweiterungsanfrage, und eine fehlgeschlagene Eigentümeranfrage wird für genau diese Arbeitsfläche und Teilnehmermenge gespeichert, damit Abfragen und Einbettungs-Lebenszyklusaktualisierungen dieselbe verbotene Anfrage nicht wiederholt senden.
 
+## Einblendungen im Bild-in-Bild halten und automatische Whiteboards wiederherstellen
+
+Besprechungseinblendungen einschließlich der Aufforderung für alleinige Teilnehmer ziehen jetzt während des Whiteboard-Bild-in-Bild in den schwebenden Jitsi-Rahmen um und kehren beim Schließen zur Bühne zurück. Das automatische Öffnen des Whiteboards wiederholt vorübergehende Fehler beim dynamischen Modulimport nun über den vollständigen begrenzten Backoff, statt nach dem ersten Fehler abzubrechen.
+
 ## Commits
+
+- [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 
 - [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 

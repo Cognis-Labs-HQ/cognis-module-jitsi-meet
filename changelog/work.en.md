@@ -54,7 +54,13 @@ Meetings now validates the exact `whiteboard:uiGateway.expandCanvasAccess` contr
 
 Only the meeting organizer now invokes the owner-authorized canvas expansion capability. Invited participants make no expansion request, and a failed owner request is remembered for that exact canvas and participant set so polling and embed lifecycle updates cannot repeatedly submit the same forbidden request.
 
+## Keep overlays with PiP and recover automatic Whiteboards
+
+Meeting overlays, including the alone-participant prompt, now move into the floating Jitsi frame while Whiteboard PiP is active and return to the stage when it closes. Automatic Whiteboard opening now retries transient dynamic-module import failures through the full bounded backoff instead of stopping after the first failure.
+
 ## Commits
+
+- [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
 
 - [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 

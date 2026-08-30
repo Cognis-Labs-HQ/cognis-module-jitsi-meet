@@ -209,13 +209,6 @@ export async function spawnComponentWindowWithRetry(
             lastError = error;
         }
         if (trigger.signal?.aborted) throw lastError;
-        if (
-            String(lastError?.message ?? lastError).includes(
-                "Failed to fetch dynamically imported module",
-            )
-        ) {
-            break;
-        }
         if (attempt < 5) {
             await waitBeforeRetry(
                 trigger.signal,
