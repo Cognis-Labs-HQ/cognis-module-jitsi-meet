@@ -14,8 +14,13 @@
 
 利用可能な参加者をドラッグすると、対象となる進行中のミーティングウィンドウ上にローカライズされたドロップ先が一時的に表示されます。ドロップすると参加者が招待され、ドラッグを終了すると中断のないミーティング表示に戻ります。
 
+## ドロップ先を Jitsi 埋め込みの前面に配置
+
+有効な参加者のドラッグ時に、アバターのドラッグイベントからドロップ先が直接有効になります。ドロップ先は埋め込み Jitsi ウィンドウと完全に一致し、ドラッグ中は iframe の前面へ移動し、参加者のドロップまたはドラッグ終了後は背面へ戻ります。
+
 ## コミット
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)
 - [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
+- [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)

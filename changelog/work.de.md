@@ -14,8 +14,13 @@ Teilnehmeraktualisierungen öffnen die Lobby-Einblendung nicht mehr über einer 
 
 Beim Ziehen eines verfügbaren Teilnehmers wird nun vorübergehend ein lokalisierter Ablagebereich über einem geeigneten aktiven Besprechungsfenster angezeigt. Das Ablegen lädt den Teilnehmer ein; beim Ende des Ziehvorgangs wird die ungestörte Besprechungsansicht wiederhergestellt.
 
+## Ablagebereich über der Jitsi-Einbettung anordnen
+
+Ein gültiger Teilnehmer-Ziehvorgang aktiviert den Ablagebereich nun direkt über das Ziehereignis des Avatars. Der Ablagebereich entspricht exakt dem eingebetteten Jitsi-Fenster, liegt beim Ziehen über dem iframe und kehrt nach dem Ablegen oder Ende des Ziehvorgangs darunter zurück.
+
 ## Commits
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)
 - [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
+- [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)

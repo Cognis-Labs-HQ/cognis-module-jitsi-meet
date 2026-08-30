@@ -395,6 +395,10 @@ export async function mount(
                     "text/plain",
                     state.dragUsername ?? "",
                 );
+                if (event.dataTransfer) {
+                    event.dataTransfer.effectAllowed = "move";
+                }
+                setActiveParticipantDropzoneVisible(true);
             },
             { signal: bindSignal },
         );
@@ -403,11 +407,6 @@ export async function mount(
             "#jitsi-available-participants",
         );
         if (overlay instanceof HTMLElement) {
-            container.addEventListener(
-                "dragstart",
-                () => setActiveParticipantDropzoneVisible(true),
-                { signal: bindSignal },
-            );
             container.addEventListener(
                 "dragend",
                 () => setActiveParticipantDropzoneVisible(false),

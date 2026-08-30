@@ -373,7 +373,7 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     assert.match(source, /setActiveParticipantDropzoneVisible/);
     assert.match(
         source,
-        /"dragstart"[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,
+        /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,
     );
     assert.match(
         source,
@@ -381,6 +381,10 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     );
     assert.match(source, /module\.jitsi_meet\.participants\.drop_to_invite/);
     assert.match(cssSource, /jitsi-overlay-participant-drop::after/);
+    assert.match(
+        cssSource,
+        /\.jitsi-stage-frame[\s\S]*z-index: 2;[\s\S]*\.jitsi-overlay[\s\S]*inset: 0;[\s\S]*z-index: 3;[\s\S]*\.jitsi-overlay\.jitsi-drop-active[\s\S]*z-index: 4;/,
+    );
 });
 
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {

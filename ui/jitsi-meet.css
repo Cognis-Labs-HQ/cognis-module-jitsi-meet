@@ -16,6 +16,8 @@
 }
 
 .jitsi-route-root .jitsi-stage-frame {
+    position: relative;
+    z-index: 2;
     grid-area: 1 / 1;
     width: 100%;
     height: 100%;
@@ -32,6 +34,8 @@
 .jitsi-route-root .jitsi-overlay {
     position: absolute;
     inset: 0;
+    z-index: 3;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -50,9 +54,11 @@
 
 .jitsi-route-root .jitsi-overlay[hidden] {
     display: none;
+    z-index: 1;
 }
 
 .jitsi-route-root .jitsi-overlay.jitsi-drop-active {
+    z-index: 4;
     outline: 3px solid #22c55e;
     outline-offset: -3px;
     background: linear-gradient(
