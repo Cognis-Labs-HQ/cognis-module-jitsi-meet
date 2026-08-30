@@ -123,6 +123,13 @@
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard schließen</string>
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
+  <string name="module.jitsi_meet.whiteboard.load_failed_detailed">Das Whiteboard ist bei {{stage}} fehlgeschlagen. Den genauen Fehler finden Sie in der Browserkonsole.</string>
+  <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Wählen Sie „Whiteboard“, um Ihren Schlüsselbund zu entsperren und das gemeinsame Board zu öffnen.</string>
+  <string name="module.jitsi_meet.whiteboard.stage.prepare">der Arbeitsflächenvorbereitung</string>
+  <string name="module.jitsi_meet.whiteboard.stage.unlock">der Schlüsselbundentsperrung</string>
+  <string name="module.jitsi_meet.whiteboard.stage.synchronize">der Besprechungssynchronisierung</string>
+  <string name="module.jitsi_meet.whiteboard.stage.float">der Erstellung des Besprechungs-Bild-in-Bild</string>
+  <string name="module.jitsi_meet.whiteboard.stage.mount">der Komponenteneinbindung</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Warten auf die Zustimmung der Teilnehmer zum Öffnen des Whiteboards.</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>

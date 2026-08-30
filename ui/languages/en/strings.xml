@@ -123,6 +123,13 @@
   <string name="module.jitsi_meet.whiteboard.close">Close Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.description">Open a synchronized whiteboard for this meeting.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Error loading whiteboard</string>
+  <string name="module.jitsi_meet.whiteboard.load_failed_detailed">Whiteboard failed during {{stage}}. See the browser console for the exact error.</string>
+  <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Select Whiteboard to unlock your keyring and open the shared board.</string>
+  <string name="module.jitsi_meet.whiteboard.stage.prepare">canvas preparation</string>
+  <string name="module.jitsi_meet.whiteboard.stage.unlock">keyring unlock</string>
+  <string name="module.jitsi_meet.whiteboard.stage.synchronize">meeting synchronization</string>
+  <string name="module.jitsi_meet.whiteboard.stage.float">meeting PiP creation</string>
+  <string name="module.jitsi_meet.whiteboard.stage.mount">component mounting</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">The meeting whiteboard could not be closed.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Waiting for participant consensus to open the whiteboard.</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>

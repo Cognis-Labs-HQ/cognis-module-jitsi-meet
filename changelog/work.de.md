@@ -74,7 +74,13 @@ Der Start eines Teilnehmer-Ziehvorgangs bestätigt jetzt erneut das Einblendungs
 
 Jitsis Echtzeitereignis für lokale und entfernte Teilnehmer mit Bildschirmfreigabe schließt nun das synchronisierte Whiteboard für alle und verhindert das erneute Öffnen bis zum Ende der Freigabe, sodass der normale Bereich an die Konferenz zurückkehrt. Eine Backend-Capability-Prüfung entscheidet jetzt gemeinsam über die Whiteboard-Sichtbarkeit, damit jedes Konto während der Browser-Provider-Initialisierung dasselbe deaktivierte Steuerelement darstellt oder es bei nicht verfügbarem Provider ausblendet.
 
+## Automatische Whiteboard-Fehlerschleifen stoppen und Diagnose offenlegen
+
+Das automatische Öffnen für Konten wartet nun auf einen bereits entsperrten Schlüsselbund, statt eine vom Browser gesperrte Entsperrung ohne Benutzerinteraktion zu versuchen. Eine einmalige Warnung fordert bei erforderlicher Interaktion zur Auswahl von Whiteboard auf; eine fehlgeschlagene automatische Einbindung wird für dasselbe Board nicht wiederholt. Tatsächliche Fehler nennen nun die fehlgeschlagene Phase im Toast und schreiben strukturierte Kennungen, Fehlermeldung und vollständiges Error-Objekt sowohl ins Host-Protokoll als auch in die Browserkonsole.
+
 ## Commits
+
+- [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 

@@ -74,7 +74,13 @@ Memulai penyeretan peserta kini memastikan kembali induk overlay untuk jendela r
 
 Peristiwa peserta berbagi layar lokal dan jarak jauh waktu nyata milik Jitsi kini menutup Papan Tulis tersinkronisasi untuk semua orang dan menonaktifkan pembukaan kembali hingga berbagi berhenti, sehingga area normal kembali ke konferensi. Pemeriksaan kapabilitas backend kini menjadi keputusan bersama visibilitas Papan Tulis agar setiap akun menampilkan kontrol nonaktif yang sama saat penyedia browser diinisialisasi atau menyembunyikannya saat penyedia tidak tersedia.
 
+## Hentikan loop kegagalan Papan Tulis otomatis dan tampilkan diagnostik
+
+Pembukaan akun otomatis kini menunggu keyring yang sudah terbuka, bukan mencoba pembukaan kunci yang dibatasi browser tanpa aktivasi pengguna. Satu peringatan meminta pengguna memilih Papan Tulis saat interaksi diperlukan, dan pemasangan otomatis yang gagal tidak dicoba ulang untuk papan yang sama. Kegagalan nyata kini menyebut tahap yang gagal pada toast serta menulis ID terstruktur, pesan kesalahan, dan objek Error lengkap ke log host dan konsol browser.
+
 ## Commit
+
+- [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 

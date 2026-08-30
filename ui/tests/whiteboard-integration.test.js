@@ -185,6 +185,15 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /function closeComponentWindow[\s\S]*?placeMeetingOverlay\(trigger\)/,
     );
     assert.match(buttonSource, /loadRetryAfter:\s*0/);
+    assert.match(buttonSource, /automaticOpenFailureWhiteboardId/);
+    assert.match(buttonSource, /automaticUnlockNoticeWhiteboardId/);
+    assert.match(
+        buttonSource,
+        /isKeyringUnlocked\?\.\(\) !== true[\s\S]*?auto_open_requires_unlock/,
+    );
+    assert.match(buttonSource, /globalThis\.console\?\.error/);
+    assert.match(buttonSource, /load_failed_detailed/);
+    assert.match(buttonSource, /stage: stageKey/);
     assert.match(
         buttonSource,
         /Date\.now\(\) >= trigger\.loadRetryAfter[\s\S]*?trigger\.button\.click\(\)/,

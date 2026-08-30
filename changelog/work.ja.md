@@ -74,7 +74,13 @@ Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.ex
 
 Jitsi のローカルおよびリモート画面共有参加者のリアルタイムイベントにより、同期 Whiteboard を全員に対して閉じ、共有終了まで再オープンを無効にして、通常領域を会議へ戻すようになりました。バックエンド Capability チェックを共通の Whiteboard 表示判断とし、ブラウザプロバイダー初期化中は全アカウントが同じ無効コントロールを表示し、プロバイダーが利用不可なら非表示にします。
 
+## Whiteboard 自動失敗ループを停止し診断情報を表示
+
+アカウントの自動オープンは、ユーザー操作なしでブラウザに制限されるキーリング解除を試みず、すでに解除済みになるまで待つようになりました。操作が必要な場合は Whiteboard の選択を求める警告を1回表示し、自動マウント失敗を同じボードで再試行しません。実際の失敗ではトーストに失敗段階を表示し、構造化 ID、エラーメッセージ、完全な Error オブジェクトをホストログとブラウザコンソールの両方へ書き込みます。
+
 ## コミット
+
+- [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 

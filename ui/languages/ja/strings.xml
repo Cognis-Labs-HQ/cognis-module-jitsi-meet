@@ -123,6 +123,13 @@
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard を閉じる</string>
   <string name="module.jitsi_meet.whiteboard.description">このミーティング用の同期ホワイトボードを開きます。</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">ホワイトボードの読み込みエラー</string>
+  <string name="module.jitsi_meet.whiteboard.load_failed_detailed">{{stage}}中に Whiteboard を開けませんでした。正確なエラーはブラウザコンソールで確認してください。</string>
+  <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Whiteboard を選択してキーリングを解除し、共有ボードを開いてください。</string>
+  <string name="module.jitsi_meet.whiteboard.stage.prepare">キャンバス準備</string>
+  <string name="module.jitsi_meet.whiteboard.stage.unlock">キーリング解除</string>
+  <string name="module.jitsi_meet.whiteboard.stage.synchronize">ミーティング同期</string>
+  <string name="module.jitsi_meet.whiteboard.stage.float">ミーティング PiP 作成</string>
+  <string name="module.jitsi_meet.whiteboard.stage.mount">コンポーネントのマウント</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">ミーティングのホワイトボードを閉じられませんでした。</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">ホワイトボードを開くための参加者の合意を待っています。</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>

@@ -74,7 +74,13 @@ Starting a participant drag now reasserts the overlay parent for the currently a
 
 Jitsi’s real-time local and remote screen-sharing participant event now closes the synchronized Whiteboard for everyone and disables reopening until sharing stops, returning the normal area to the conference. A backend capability check is now the shared Whiteboard visibility decision, so every account renders the same disabled control while browser providers initialize or hides it when the provider is unavailable.
 
+## Stop automatic Whiteboard failure loops and expose diagnostics
+
+Automatic account opening now waits for an already-unlocked keyring instead of attempting a browser-gated unlock without user activation. A single warning asks the user to select Whiteboard when interaction is required, and failed automatic mounting is not retried for the same board. Real failures now identify the failing stage in the toast and write structured identifiers, the error message, and the complete Error object to both the host log and browser console.
+
 ## Commits
+
+- [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 

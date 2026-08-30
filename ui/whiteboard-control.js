@@ -66,18 +66,40 @@ function closeComponentWindow(trigger) {
     }
 }
 
-async function handleWhiteboardLoadError(trigger, state, error, operation) {
+async function handleWhiteboardLoadError(
+    trigger,
+    state,
+    error,
+    operation,
+    stageKey,
+) {
     closeComponentWindow(trigger);
     trigger.loadRetryAfter = Date.now() + 2_000;
-    await logUi("error", "Meeting whiteboard loading failed.", {
+    const metadata = {
         component: "module:jitsi-meet",
         operation,
+        stage: stageKey,
         meetingId: state.meeting?.id,
+        whiteboardId: state.meeting?.state?.whiteboardId,
         error: error instanceof Error ? error.message : String(error),
-    });
-    showToast(trigger.i18n.t("module.jitsi_meet.whiteboard.load_failed"), {
-        variant: "error",
-    });
+    };
+    globalThis.console?.error?.(
+        "[jitsi-meet] Meeting Whiteboard loading failed.",
+        metadata,
+        error,
+    );
+    await logUi("error", "Meeting whiteboard loading failed.", metadata);
+    showToast(
+        trigger.i18n
+            .t("module.jitsi_meet.whiteboard.load_failed_detailed")
+            .replace(
+                "{{stage}}",
+                trigger.i18n.t(
+                    `module.jitsi_meet.whiteboard.stage.${stageKey}`,
+                ),
+            ),
+        { variant: "error" },
+    );
 }
 
 export function syncWhiteboardButtonAvailability({ root, state }) {
@@ -117,6 +139,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
                         state,
                         error,
                         "prepare_meeting_whiteboard",
+                        "prepare",
                     );
                 })
                 .finally(() =>
@@ -168,14 +191,44 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
         );
     const shouldOpen = meetingWhiteboardShouldOpen(state.meeting);
     if (!shouldOpen && trigger.componentWindowPending !== true) {
+        trigger.automaticOpenFailureWhiteboardId = "";
+        trigger.automaticUnlockNoticeWhiteboardId = "";
         closeComponentWindow(trigger);
     } else if (
         shouldOpen &&
         Date.now() >= trigger.loadRetryAfter &&
         trigger.button.disabled !== true &&
         !trigger.componentWindow &&
-        trigger.componentWindowPending !== true
+        trigger.componentWindowPending !== true &&
+        trigger.automaticOpenFailureWhiteboardId !==
+            trigger.preparedWhiteboardId
     ) {
+        if (!state.shareAccessToken && trigger.isKeyringUnlocked?.() !== true) {
+            if (
+                trigger.automaticUnlockNoticeWhiteboardId !==
+                trigger.preparedWhiteboardId
+            ) {
+                trigger.automaticUnlockNoticeWhiteboardId =
+                    trigger.preparedWhiteboardId;
+                void logUi(
+                    "info",
+                    "Automatic Whiteboard opening requires user-initiated keyring unlock.",
+                    {
+                        component: "module:jitsi-meet",
+                        operation: "defer_automatic_whiteboard_unlock",
+                        meetingId: state.meeting?.id,
+                        whiteboardId: trigger.preparedWhiteboardId,
+                    },
+                );
+                showToast(
+                    trigger.i18n.t(
+                        "module.jitsi_meet.whiteboard.auto_open_requires_unlock",
+                    ),
+                    { variant: "warning" },
+                );
+            }
+            return;
+        }
         trigger.sharedOpenRequested = true;
         trigger.button.click();
     }
@@ -328,6 +381,8 @@ export async function bindWhiteboardButton({
         participantAccessSignature: "",
         participantAccessAttemptSignature: "",
         participantAccessWarningLogged: false,
+        automaticOpenFailureWhiteboardId: "",
+        automaticUnlockNoticeWhiteboardId: "",
         releaseFloatingWindow: null,
         sharedOpenRequested: false,
         signal,
@@ -420,6 +475,7 @@ export async function bindWhiteboardButton({
             const whiteboardId = trigger.preparedWhiteboardId;
             if (!whiteboardId || !trigger.componentPage) return;
             const synchronizeOpen = trigger.sharedOpenRequested !== true;
+            const automaticOpen = !synchronizeOpen;
             trigger.sharedOpenRequested = false;
             setButtonDisabled(button, true);
             trigger.componentWindowPending = true;
@@ -430,6 +486,7 @@ export async function bindWhiteboardButton({
                 state.meeting?.id === meetingId &&
                 !signal?.aborted;
             let openStateConfirmed = false;
+            let loadStage = "unlock";
             void (async () => {
                 try {
                     const keyringUnlocked =
@@ -448,6 +505,7 @@ export async function bindWhiteboardButton({
                         );
                         return;
                     }
+                    loadStage = "synchronize";
                     const response = synchronizeOpen
                         ? await apiFetch(
                               "/api/v1/modules/jitsi-meet/whiteboard/state",
@@ -487,6 +545,7 @@ export async function bindWhiteboardButton({
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
                     state.meeting.state.whiteboardOpen = true;
+                    loadStage = "float";
                     const minimumSize = resolveMeetingPipMinimumSize(
                         state.meeting,
                     );
@@ -500,6 +559,7 @@ export async function bindWhiteboardButton({
                         },
                     );
                     placeMeetingOverlay(trigger, { floating: true });
+                    loadStage = "mount";
                     const componentWindow = await spawnComponentWindowWithRetry(
                         trigger,
                         {
@@ -517,6 +577,7 @@ export async function bindWhiteboardButton({
                     }
                     trigger.componentWindow = componentWindow;
                     trigger.whiteboardId = whiteboardId;
+                    trigger.automaticOpenFailureWhiteboardId = "";
                 } catch (error) {
                     if (
                         !requestIsCurrent() ||
@@ -524,11 +585,15 @@ export async function bindWhiteboardButton({
                             state.meeting?.state?.whiteboardOpen !== true)
                     )
                         return;
+                    if (automaticOpen) {
+                        trigger.automaticOpenFailureWhiteboardId = whiteboardId;
+                    }
                     await handleWhiteboardLoadError(
                         trigger,
                         state,
                         error,
                         "load_meeting_whiteboard",
+                        loadStage,
                     );
                 } finally {
                     trigger.componentWindowPending = false;
@@ -557,6 +622,7 @@ export async function bindWhiteboardButton({
             state,
             error,
             "prepare_meeting_whiteboard",
+            "prepare",
         );
     }
     syncMeetingWhiteboardComponent({ root, state });
