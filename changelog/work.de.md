@@ -18,9 +18,14 @@ Beim Ziehen eines verfügbaren Teilnehmers wird nun vorübergehend ein lokalisie
 
 Ein gültiger Teilnehmer-Ziehvorgang aktiviert den Ablagebereich nun direkt über das Ziehereignis des Avatars. Der Ablagebereich entspricht exakt dem eingebetteten Jitsi-Fenster, liegt beim Ziehen über dem iframe und kehrt nach dem Ablegen oder Ende des Ziehvorgangs darunter zurück.
 
+## Grüne Ziehhilfe dauerhaft anzeigen
+
+Der aktive Teilnehmer-Zielbereich behält nun während des gesamten Ziehvorgangs dieselbe grüne Kontur, ergänzt eine grüne Innenkante und einen gestrichelten Zielbereich und entfernt die Hilfe erst beim Ende des Ziehvorgangs oder beim Ablegen des Teilnehmers.
+
 ## Commits
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)
 - [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
 - [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
+- [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)

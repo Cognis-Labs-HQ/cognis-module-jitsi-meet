@@ -409,7 +409,10 @@ export async function mount(
         if (overlay instanceof HTMLElement) {
             container.addEventListener(
                 "dragend",
-                () => setActiveParticipantDropzoneVisible(false),
+                () => {
+                    overlay.classList.remove("jitsi-drop-active");
+                    setActiveParticipantDropzoneVisible(false);
+                },
                 { signal: bindSignal },
             );
             overlay.addEventListener(
@@ -426,15 +429,6 @@ export async function mount(
                     if (!username) return;
                     event.preventDefault();
                     overlay.classList.add("jitsi-drop-active");
-                },
-                { signal: bindSignal },
-            );
-            overlay.addEventListener(
-                "dragleave",
-                (event) => {
-                    if (!overlay.contains(event.relatedTarget)) {
-                        overlay.classList.remove("jitsi-drop-active");
-                    }
                 },
                 { signal: bindSignal },
             );
