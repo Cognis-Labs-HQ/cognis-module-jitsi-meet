@@ -38,7 +38,13 @@
 
 利用可能な参加者と進行中のミーティングを5秒ごとに更新し、SPA ナビゲーション後にアバターの在席プロバイダーを初期化し、拡張された参加者と新着メッセージをミーティングチャットへ再読み込みし、進行中の招待成功をトーストで通知します。既存の永続 Whiteboard は任意のプロバイダー capability を通じて参加者アクセスを拡張します。参加者なしの文言を進行中ミーティングなしの表示に合わせ、退出時の文言を短縮し、ピクチャーインピクチャーの通知最小サイズを 320 × 180 ピクセルにしました。
 
+## Whiteboard 操作を区別
+
+Whiteboard ボタンはボードを開くときに確認スタイルを使用し、「Whiteboard を閉じる」の表示中はキャンセルスタイルへ切り替わります。
+
 ## コミット
+
+- [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 
 - [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
 

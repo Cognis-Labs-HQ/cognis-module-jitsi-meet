@@ -38,7 +38,13 @@ Perubahan keanggotaan aktif kini menggunakan kunci peserta yang tercakup pada ra
 
 Peserta tersedia dan rapat aktif kini disegarkan setiap lima detik, penyedia kehadiran avatar diinisialisasi setelah navigasi SPA, chat rapat memuat ulang keanggotaan yang diperluas beserta pesan baru, dan undangan aktif yang berhasil menampilkan toast. Papan tulis persisten yang sudah ada menerima perluasan akses peserta melalui kapabilitas penyedia opsional. Pesan peserta kosong cocok dengan status rapat aktif kosong, pesan pengeluaran dipersingkat, dan ukuran minimum gambar-dalam-gambar yang diumumkan adalah 320 × 180 piksel.
 
+## Bedakan tindakan Papan Tulis
+
+Tombol Papan Tulis kini memakai tampilan konfirmasi saat membuka papan dan beralih ke tampilan batal selama menampilkan “Tutup Papan Tulis.”
+
 ## Commit
+
+- [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 
 - [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
 

@@ -38,7 +38,13 @@ Geroutete, freigegebene und eingebettete Meetings-Mounts beanspruchen kein berei
 
 Verfügbare Teilnehmer und aktive Besprechungen werden jetzt alle fünf Sekunden aktualisiert, Avatar-Anwesenheitsanbieter nach SPA-Navigation initialisiert, der Besprechungschat mit erweitertem Teilnehmerkreis und neuen Nachrichten neu geladen und erfolgreiche aktive Einladungen per Toast bestätigt. Vorhandene dauerhafte Whiteboards erhalten über eine optionale Anbieter-Capability erweiterten Teilnehmerzugriff. Der leere Teilnehmerhinweis entspricht dem Zustand für leere aktive Besprechungen, der Entfernungshinweis ist kürzer und die angegebene Mindestgröße für Bild-in-Bild beträgt 320 × 180 Pixel.
 
+## Whiteboard-Aktionen unterscheiden
+
+Die Whiteboard-Schaltfläche verwendet jetzt beim Öffnen die Bestätigungsdarstellung und wechselt zur Abbruchdarstellung, während sie „Whiteboard schließen“ anzeigt.
+
 ## Commits
+
+- [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 
 - [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
 

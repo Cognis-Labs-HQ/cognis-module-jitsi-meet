@@ -173,7 +173,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(
         buttonSource,
-        /getAttribute\("aria-pressed"\) === "true"[\s\S]*?classList\.toggle\("btn-confirm", confirmed\)[\s\S]*?classList\.toggle\("btn-neutral", !confirmed\)/,
+        /getAttribute\("aria-pressed"\) === "true"[\s\S]*?classList\.toggle\("btn-cancel", confirmed\)[\s\S]*?classList\.toggle\("btn-confirm", !confirmed\)/,
     );
     assert.match(
         buttonSource,
@@ -219,7 +219,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(stylesheet, /\.component-page-window/);
     assert.match(
         buttonSource,
-        /button\.className = "btn-neutral btn-animated";/,
+        /button\.className = "btn-confirm btn-animated";/,
     );
     assert.match(appIndexSource, /await loadCommonStyles\(\)/);
     assert.doesNotMatch(appIndexSource, /ensureStylesheetLoaded/);

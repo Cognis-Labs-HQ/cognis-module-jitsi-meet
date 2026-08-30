@@ -18,8 +18,8 @@ function syncButtonStyle(button) {
     if (!button) return;
     const confirmed = button.getAttribute("aria-pressed") === "true";
     button.classList.toggle("active", confirmed);
-    button.classList.toggle("btn-confirm", confirmed);
-    button.classList.toggle("btn-neutral", !confirmed);
+    button.classList.toggle("btn-cancel", confirmed);
+    button.classList.toggle("btn-confirm", !confirmed);
     button.textContent = confirmed
         ? button.dataset.activeLabel || button.textContent
         : button.dataset.inactiveLabel || button.textContent;
@@ -228,7 +228,7 @@ export async function bindWhiteboardButton({
 
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "btn-neutral btn-animated";
+    button.className = "btn-confirm btn-animated";
     button.setAttribute("aria-pressed", "false");
     button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
     button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
