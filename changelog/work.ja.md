@@ -42,7 +42,13 @@
 
 Whiteboard ボタンはボードを開くときに確認スタイルを使用し、「Whiteboard を閉じる」の表示中はキャンセルスタイルへ切り替わります。
 
+## ミーティング PiP の最小サイズを拡大
+
+ミーティング PiP の基本最小サイズを従来より 25% 大きい 400 × 225 ピクセルにしました。進行中の参加者が3人目以降になると、参加者ごとに両方の寸法をさらに 25% 増やし、Cognis のフローティングウィンドウ最小サイズ更新機能で直ちに適用します。
+
 ## コミット
+
+- [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 
 - [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 

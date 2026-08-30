@@ -11,7 +11,7 @@ Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerau
 - Aktive und bevorstehende Besprechungen unter Administration → Meetings überwachen.
 - Die Meetings-Route als Overlay-, Vollbild- oder Bild-in-Bild-Komponentenseite einbetten.
 
-Die angegebene Mindestgröße für Bild-in-Bild beträgt 320 × 180 Pixel. Die Breite von 320 Pixeln entspricht der kleinsten von Jitsi Meet unterstützten mobilen Breite; die Höhe im Format 16:9 erhält eine nutzbare Videooberfläche, die Cognis durchsetzen kann.
+Die angegebene Mindestgröße für Bild-in-Bild beträgt 400 × 225 Pixel und ist damit 25 % größer als die kleinste von Jitsi Meet unterstützte mobile Fläche von 320 × 180 Pixeln. Während die Besprechung schwebt, erhöhen drei oder mehr aktive Teilnehmer beide Mindestmaße für jeden Teilnehmer nach dem zweiten um weitere 25 %; das Modul wendet jede Änderung über die Freigabefunktion des Host-Floating-Windows an.
 
 ## Technische Spezifikation
 

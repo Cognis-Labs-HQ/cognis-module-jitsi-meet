@@ -14,6 +14,25 @@ function getParticipantHandles(meeting) {
         .filter(Boolean);
 }
 
+const PIP_BASE_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
+
+export function resolveMeetingPipMinimumSize(meeting) {
+    const activeParticipantCount = new Set(
+        (meeting?.activeParticipants ?? [])
+            .map((participant) =>
+                String(participant?.username ?? participant ?? "")
+                    .trim()
+                    .toLowerCase(),
+            )
+            .filter(Boolean),
+    ).size;
+    const scale = 1 + Math.max(0, activeParticipantCount - 2) * 0.25;
+    return {
+        width: Math.ceil(PIP_BASE_MINIMUM_SIZE.width * scale),
+        height: Math.ceil(PIP_BASE_MINIMUM_SIZE.height * scale),
+    };
+}
+
 export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
     const whiteboardId = String(
         state.meeting?.state?.whiteboardId ??

@@ -42,7 +42,13 @@ Peserta tersedia dan rapat aktif kini disegarkan setiap lima detik, penyedia keh
 
 Tombol Papan Tulis kini memakai tampilan konfirmasi saat membuka papan dan beralih ke tampilan batal selama menampilkan “Tutup Papan Tulis.”
 
+## Skalakan minimum gambar-dalam-gambar rapat
+
+Minimum gambar-dalam-gambar rapat kini 400 × 225 piksel, 25% lebih besar dari sebelumnya. Mulai peserta aktif ketiga, kedua dimensi bertambah 25% lagi per peserta dan langsung diterapkan melalui pembaru ukuran minimum jendela mengambang Cognis.
+
 ## Commit
+
+- [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 
 - [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 

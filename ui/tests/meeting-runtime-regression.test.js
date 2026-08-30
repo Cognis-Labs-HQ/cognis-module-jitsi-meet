@@ -88,6 +88,10 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
+        /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
+    );
+    assert.match(
+        controlSource,
         /if \(state\.shareAccessToken\) \{\s*button\.hidden = true;[\s\S]*aria-hidden/,
     );
 });

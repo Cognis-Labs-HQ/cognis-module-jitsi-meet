@@ -42,7 +42,13 @@ Verfügbare Teilnehmer und aktive Besprechungen werden jetzt alle fünf Sekunden
 
 Die Whiteboard-Schaltfläche verwendet jetzt beim Öffnen die Bestätigungsdarstellung und wechselt zur Abbruchdarstellung, während sie „Whiteboard schließen“ anzeigt.
 
+## Mindestgröße des Meeting-Bild-in-Bild skalieren
+
+Die Mindestgröße des Meeting-Bild-in-Bild beträgt nun 400 × 225 Pixel und ist damit 25 % größer als zuvor. Ab dem dritten aktiven Teilnehmer wachsen beide Maße pro Teilnehmer um weitere 25 % und werden sofort über Cognis’ Aktualisierung der Floating-Window-Mindestgröße angewendet.
+
 ## Commits
+
+- [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 
 - [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 

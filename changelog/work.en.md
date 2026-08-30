@@ -42,7 +42,13 @@ Available participants and active meetings now refresh every five seconds, avata
 
 The Whiteboard button now uses the confirm treatment when it opens a board and switches to the cancel treatment while it displays “Close Whiteboard.”
 
+## Scale the meeting PiP minimum
+
+The base meeting PiP minimum is now 400 × 225 pixels, 25% larger than before. Starting with the third active participant, both dimensions grow by another 25% per participant and are applied immediately through Cognis’ floating-window minimum-size updater.
+
 ## Commits
+
+- [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 
 - [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
 

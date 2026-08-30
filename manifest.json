@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.88",
+    "version": "1.5.89",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -137,7 +137,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "1effaf2790a9d05166784b530e217e4019cdbcae13253f8233fb4e640106c4d9"
+            "sha256": "00f5c936f18f0f8f8e2ff0813e6adbdb534a86347325ce5f3fabf9cd70bd4c97"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
@@ -225,7 +225,7 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "5a307346602b8a30109d6fd63852f4d9c76863ad2faea7faac9bd4f25aedf10d"
+            "sha256": "c56b2d639f09f75bab7116980611f8a7f2b7c961fea71850409d7204394de5f8"
         },
         {
             "path": "api/tests/config-routes.test.js",
@@ -305,27 +305,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "0526db14b92959f31fa07e2dd9d92eeb85008e68e5a5ebb487709f083d8ad1d8"
+            "sha256": "28301eeac7dd2461aeb0a887b44df381ba5c2e7bb037e174242ea33eb6455bbd"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "091555533b3412d1fad90f2b241689772e979b671e41cc987d39aa514400b48e"
+            "sha256": "d7a7cd2b02366632d182d7716bb4bafceb47dbf4accbb3f80f632f673da10cc7"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "2a06f7724a5bfd18a33b169c4d07cff6158d28d4e1140d5cef99e9674f0595b0"
+            "sha256": "0e37159f397ef191d7fcb5734fb2d07e61cfbb4dd0e6f48daa89a818f7beab83"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "67cfdbd370b0abab4bbac57f920ccf2676c2a77994dbf05b96350c4bab114e11"
+            "sha256": "b30f1f036c2ba97e72f022d67f02710a0c688e625686082028a18e72614d6382"
         },
         {
             "path": "package-lock.json",
-            "sha256": "8ccdd0bf9aa06b424f945dcb12bfd51c00e4c0f85f83efb30ec693b63c6efe7b"
+            "sha256": "1512e7472021dc457490c9594f2a8b9db3f5ef6e4e1dccfd704bd6db62be847c"
         },
         {
             "path": "package.json",
-            "sha256": "64dd4b832449c03ccac9bb26c60c1ccf14491debeeb020ff7c7c04a14ef6b152"
+            "sha256": "07f8e9ec7bbbdcd4024e9f7662aeef5f017a373590986835419c3b6963b1315f"
         },
         {
             "path": "routes.json",
@@ -369,7 +369,7 @@
         },
         {
             "path": "ui/app/participants.js",
-            "sha256": "a49aa4eb5561c3092c913ab4b37ae9108cf441d9dcec7cda3d9062ebff35f7ad"
+            "sha256": "fbb33b2fc737307237c23693b0e40b828b9697d9f29e15781fef85744687ca0e"
         },
         {
             "path": "ui/app/profile-avatars.js",
@@ -457,7 +457,7 @@
         },
         {
             "path": "ui/tests/meeting-runtime-regression.test.js",
-            "sha256": "47c58d72490ce9202bdf79013ac641a25da9ae2bdab1122894c50f83efe45090"
+            "sha256": "d76645c9ee89287e9940c3491a1fcff58d14c37a9127fc99a53b61a4625e9f63"
         },
         {
             "path": "ui/tests/regression.test.js",
@@ -473,11 +473,11 @@
         },
         {
             "path": "ui/tests/whiteboard-session.test.js",
-            "sha256": "fed86e66a15acd0920fe149963852cfe7b49cf84cf6a50376887c738ce74acae"
+            "sha256": "14556e51be378dfdb964608265fd0fcf246665587a073693c8e26fe2bf8a106e"
         },
         {
             "path": "ui/whiteboard-control.js",
-            "sha256": "15577dcf52540b1e2138f8c9afb36d402ff457f33ae6dbb8551ed4dad305e8d3"
+            "sha256": "b139fa7b6ee0b0a47991183edff351aec823ccbcd8f33704c4e985e1c5719b9f"
         },
         {
             "path": "ui/whiteboard-provider.js",
@@ -485,7 +485,7 @@
         },
         {
             "path": "ui/whiteboard-session.js",
-            "sha256": "211a788607530cbf396212d61287ed956d8045a86da9272951681161fae18451"
+            "sha256": "e5f00e793d955e39f74add57ef54165934e7da284ee0ccd8b4007e49fac99e58"
         }
     ]
 }

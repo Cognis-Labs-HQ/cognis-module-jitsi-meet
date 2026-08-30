@@ -348,6 +348,9 @@ export function createPreflightHandlers({
         }
         if (state.meeting?.id !== meetingId) return;
         state.meeting.state = latestState;
+        if (Array.isArray(payload?.data?.activeParticipants)) {
+            state.meeting.activeParticipants = payload.data.activeParticipants;
+        }
         if (Array.isArray(payload?.data?.participants)) {
             const currentUsername = normalizeUsername(
                 state.currentProfile?.handle ?? state.currentProfile?.username,

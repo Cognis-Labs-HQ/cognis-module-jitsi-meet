@@ -7,7 +7,32 @@ import {
     prepareMeetingCanvas,
     spawnComponentWindowWithRetry,
     synchronizeWhiteboardParticipantAccess,
+    resolveMeetingPipMinimumSize,
 } from "../whiteboard-session.js";
+
+test("meeting PiP minimum grows by 25 percent for each participant after two", () => {
+    assert.deepEqual(resolveMeetingPipMinimumSize({}), {
+        width: 400,
+        height: 225,
+    });
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: ["alice", "bob", "carol"],
+        }),
+        { width: 500, height: 282 },
+    );
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: [
+                { username: "alice" },
+                { username: "bob" },
+                { username: "carol" },
+                { username: "dave" },
+            ],
+        }),
+        { width: 600, height: 338 },
+    );
+});
 
 test("component page discovery makes one broker request per mount", async () => {
     let requests = 0;

@@ -8,6 +8,7 @@ import {
     meetingHasInvitedParticipants,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
+    resolveMeetingPipMinimumSize,
     spawnComponentWindowWithRetry,
     synchronizeWhiteboardParticipantAccess,
 } from "./whiteboard-session.js";
@@ -123,6 +124,9 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (!trigger?.button) return;
     syncWhiteboardButtonAvailability({ root, state });
+    trigger.releaseFloatingWindow?.updateMinimumSize?.(
+        resolveMeetingPipMinimumSize(state.meeting),
+    );
     void synchronizeWhiteboardParticipantAccess(trigger, state)
         .then((expanded) => {
             if (expanded !== false || trigger.participantAccessWarningLogged)
@@ -427,10 +431,15 @@ export async function bindWhiteboardButton({
                     const meetingFrame =
                         frameWrap.querySelector(".jitsi-stage-frame");
                     if (meetingFrame instanceof HTMLElement) {
+                        const minimumSize = resolveMeetingPipMinimumSize(
+                            state.meeting,
+                        );
                         trigger.releaseFloatingWindow = makeFloatingWindow(
                             meetingFrame,
                             {
                                 handle: pipHandle,
+                                minWidth: minimumSize.width,
+                                minHeight: minimumSize.height,
                                 signal,
                             },
                         );
