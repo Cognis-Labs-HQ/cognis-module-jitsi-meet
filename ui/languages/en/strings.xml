@@ -34,6 +34,8 @@
   <string name="module.jitsi_meet.overlay.remain_in_meeting">Remain in Meeting</string>
   <string name="module.jitsi_meet.overlay.meeting_closed">This meeting has been closed.</string>
   <string name="module.jitsi_meet.overlay.meeting_left">You left the meeting.</string>
+  <string name="module.jitsi_meet.overlay.kicked">You were removed from the meeting and must be invited again.</string>
+  <string name="module.jitsi_meet.overlay.kick_sync_failed">The meeting could not record that you were removed.</string>
   <string name="module.jitsi_meet.overlay.leave_blocked">Leave the meeting before navigating away from this page.</string>
   <string name="module.jitsi_meet.overlay.probe_done">Pre-Flight Check Passed.</string>
   <string name="module.jitsi_meet.chat.heading">Meeting Chat</string>

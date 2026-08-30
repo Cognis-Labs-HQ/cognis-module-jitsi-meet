@@ -277,6 +277,26 @@ export function createPreflightHandlers({
         }
         if (state.meeting?.id !== meetingId) return;
         state.meeting.state = latestState;
+        if (Array.isArray(payload?.data?.participants)) {
+            const currentUsername = normalizeUsername(
+                state.currentProfile?.handle ?? state.currentProfile?.username,
+            );
+            const participantUsernames = new Set(
+                payload.data.participants
+                    .map((participant) => normalizeUsername(participant))
+                    .filter(
+                        (username) => username && username !== currentUsername,
+                    ),
+            );
+            state.selectedParticipants = state.allParticipants.filter((entry) =>
+                participantUsernames.has(entry.username),
+            );
+            state.availableParticipants = state.allParticipants.filter(
+                (entry) => !participantUsernames.has(entry.username),
+            );
+            state.meeting.participants = payload.data.participants;
+            renderParticipants();
+        }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {
             utils.updateOverlay({

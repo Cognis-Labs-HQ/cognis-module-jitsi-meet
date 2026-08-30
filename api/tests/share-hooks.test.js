@@ -255,6 +255,18 @@ test("jitsi share hooks let participants mint and revoke meeting shares", async 
         revokeResult.stageResults["authorize-revocation"][0].authorized,
         true,
     );
+    const kickedGuestRevokeResult = await ctx.flow.run("revoke-share-token", {
+        claims: { sub: "share:share-1:guest-1" },
+        shareId: "share-1",
+        resourceType: "meeting",
+        resourceId: "meeting-1",
+        selfRevocation: true,
+    });
+    assert.equal(
+        kickedGuestRevokeResult.stageResults["authorize-revocation"][0]
+            .authorized,
+        true,
+    );
 
     ctx.flow.extend(
         "resolve-share-token",

@@ -68,6 +68,7 @@ export function registerMeetingLifecycleRoutes({
     resolveModeratorUsernames,
     deleteResourceShares,
     deleteChatRoom,
+    revokeKickedGuestShare,
     log,
 }) {
     router.post(
@@ -358,6 +359,91 @@ export function registerMeetingLifecycleRoutes({
                     requiresReclaim: false,
                 }),
             });
+        },
+        { access: { minRole: "user" } },
+    );
+
+    router.post(
+        "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
+        async (req, res) => {
+            await store.ensureSchema();
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            const body = await readJson(req);
+            const meetingId = String(body.meetingId ?? "").trim();
+            if (!meetingId) {
+                sendError(res, 400, "bad_request", "meetingId is required.");
+                return;
+            }
+            const shareGuestAccess = await resolveShareGuestMeetingAccess({
+                claims,
+                meetingId,
+                requiredCapability: "meeting:join",
+            });
+            if (shareGuestAccess.isGuest) {
+                if (!shareGuestAccess.allowed) {
+                    sendError(
+                        res,
+                        403,
+                        "forbidden",
+                        "Guest access is not valid.",
+                    );
+                    return;
+                }
+                const revoked = await revokeKickedGuestShare?.({
+                    claims,
+                    meetingId,
+                });
+                if (!revoked) {
+                    sendError(
+                        res,
+                        503,
+                        "share_unavailable",
+                        "Guest link invalidation failed.",
+                    );
+                    return;
+                }
+                const guestPresenceUsername =
+                    resolveShareGuestPresenceUsername(claims);
+                if (guestPresenceUsername) {
+                    await store.setUserSessionsInactive(
+                        meetingId,
+                        guestPresenceUsername,
+                    );
+                }
+                log?.("info", "Kicked meeting guest link invalidated.", {
+                    component: "jitsi-meet-module",
+                    operation: "invalidate_kicked_guest_link",
+                    meetingId,
+                });
+                sendJson(res, 200, { data: { removed: true } });
+                return;
+            }
+            const resolved = await resolveMeetingPayload({
+                body,
+                profileStore,
+                store,
+                claims,
+                res,
+                listClassroomParticipantHandles,
+                requesterAccountId: claims.sub,
+            });
+            if (!resolved) return;
+            await store.removeMeetingParticipant(
+                resolved.meeting.id,
+                resolved.requesterUsername,
+            );
+            await store.setUserSessionsInactive(
+                resolved.meeting.id,
+                resolved.requesterUsername,
+            );
+            log?.("info", "Kicked user removed from meeting participants.", {
+                component: "jitsi-meet-module",
+                operation: "remove_kicked_meeting_participant",
+                meetingId: resolved.meeting.id,
+                username: resolved.requesterUsername,
+            });
+            sendJson(res, 200, { data: { removed: true } });
         },
         { access: { minRole: "user" } },
     );

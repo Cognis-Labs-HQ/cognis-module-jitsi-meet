@@ -4,6 +4,7 @@ import {
     getFirstMatchingStageResult,
     getFirstStageResult,
 } from "./reuse/flow-helpers.js";
+import { resolveShareGuestId } from "./reuse/share-guest.js";
 /**
  * Determines whether an already-authenticated requester (identified by
  * their real account claims, not a share-guest token) already has direct
@@ -390,6 +391,18 @@ export function registerShareFlowHooks(ctx) {
                 );
                 if (!meeting) {
                     return { authorized: false, reason: "resource_not_found" };
+                }
+                if (
+                    input.selfRevocation === true &&
+                    resolveShareGuestId(input.claims) ===
+                        String(input.shareId ?? "")
+                ) {
+                    return {
+                        authorized: true,
+                        shareId: String(input.shareId),
+                        resourceType: "meeting",
+                        resourceId: meeting.id,
+                    };
                 }
                 const requesterAccess = await resolveMeetingRequesterAccess({
                     store,

@@ -100,6 +100,7 @@ export function createMeetingHandlers({
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
         state.meeting = null;
+        state.kickReportedMeetingId = "";
         state.chatMode = "meeting";
         state.privateChatUsername = "";
         state.lastMeetingParticipants = [];
@@ -343,6 +344,7 @@ export function createMeetingHandlers({
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
         state.meeting = null;
+        state.kickReportedMeetingId = "";
         state.chatMode = "meeting";
         state.privateChatUsername = "";
         state.lastMeetingParticipants = [];

@@ -16,6 +16,7 @@ import {
 import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { resolveShareGuestId } from "./reuse/share-guest.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
 import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
@@ -313,6 +314,7 @@ export function registerApiRoutes(router, ctx) {
             "/api/v1/modules/jitsi-meet/meetings/probe",
             "/api/v1/modules/jitsi-meet/meetings/join",
             "/api/v1/modules/jitsi-meet/meetings/participants/add",
+            "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
             "/api/v1/modules/jitsi-meet/meetings/reclaim",
             "/api/v1/modules/jitsi-meet/meetings/presence",
             "/api/v1/modules/jitsi-meet/meetings/auth-required",
@@ -670,6 +672,35 @@ export function registerApiRoutes(router, ctx) {
         resolveModeratorUsernames,
         deleteResourceShares,
         deleteChatRoom,
+        revokeKickedGuestShare: async ({ claims, meetingId }) => {
+            const shareId = resolveShareGuestId(claims);
+            if (!shareId || !systemCtx?.flow?.exists?.("revoke-share-token")) {
+                return false;
+            }
+            try {
+                const result = await systemCtx.flow.run("revoke-share-token", {
+                    claims,
+                    shareId,
+                    ownerAccountId: claims.sub,
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    selfRevocation: true,
+                });
+                return (
+                    result.stageResults["delete-token"]?.[0]?.revoked === true
+                );
+            } catch (error) {
+                log?.("error", "Kicked guest link invalidation failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "invalidate_kicked_guest_share",
+                    meetingId,
+                    shareId,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return false;
+            }
+        },
     };
 
     registerMeetingConfigRoutes(routeContext);

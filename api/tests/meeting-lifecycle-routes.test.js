@@ -255,3 +255,85 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(notifications[0][0][0], "carol");
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
 });
+
+test("a kicked account participant is removed and made inactive", async () => {
+    const handlers = new Map();
+    const operations = [];
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            async ensureSchema() {},
+            async removeMeetingParticipant(meetingId, username) {
+                operations.push(["remove", meetingId, username]);
+            },
+            async setUserSessionsInactive(meetingId, username) {
+                operations.push(["inactive", meetingId, username]);
+            },
+        },
+        requireAuth: () => ({ sub: "account-bob", role: "user" }),
+        readJson: async (req) => req.body,
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("kick report was rejected"),
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+        resolveMeetingPayload: async () => ({
+            meeting: { id: "meeting-1" },
+            requesterUsername: "bob",
+        }),
+        log: () => {},
+    });
+    const response = createRecorder();
+    await handlers.get(
+        "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
+    )({ body: { meetingId: "meeting-1" } }, response);
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations, [
+        ["remove", "meeting-1", "bob"],
+        ["inactive", "meeting-1", "bob"],
+    ]);
+});
+
+test("a kicked guest invalidates the share link used to join", async () => {
+    const handlers = new Map();
+    const revocations = [];
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            async ensureSchema() {},
+            async setUserSessionsInactive(meetingId, username) {
+                revocations.push({ inactive: [meetingId, username] });
+            },
+        },
+        requireAuth: () => ({ sub: "share:link-1:guest-1", role: "user" }),
+        readJson: async (req) => req.body,
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("guest kick report was rejected"),
+        resolveShareGuestMeetingAccess: async () => ({
+            isGuest: true,
+            allowed: true,
+        }),
+        resolveShareGuestPresenceUsername: () => "guest:guest-1",
+        revokeKickedGuestShare: async (input) => {
+            revocations.push(input);
+            return true;
+        },
+        log: () => {},
+    });
+    const response = createRecorder();
+    await handlers.get(
+        "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
+    )({ body: { meetingId: "meeting-1" } }, response);
+    assert.equal(response.status, 200);
+    assert.deepEqual(revocations, [
+        {
+            claims: { sub: "share:link-1:guest-1", role: "user" },
+            meetingId: "meeting-1",
+        },
+        { inactive: ["meeting-1", "guest:guest-1"] },
+    ]);
+});

@@ -153,6 +153,7 @@ export async function mount(
         alonePromptDismissedMeetingId: "",
         alonePromptBlockedUntil: 0,
         recoveringMeetingSession: false,
+        kickReportedMeetingId: "",
         promptShareOnJoin: false,
     };
     registerSearchIndex(

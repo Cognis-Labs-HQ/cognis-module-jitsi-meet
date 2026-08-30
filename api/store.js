@@ -272,6 +272,38 @@ export class JitsiMeetStore {
         return this.getMeetingById(meetingId);
     }
 
+    async removeMeetingParticipant(meetingId, username) {
+        const normalizedUsername = normalizeHandleKey(username);
+        const meeting = await this.getMeetingById(meetingId);
+        if (!meeting || !normalizedUsername) return meeting;
+        const participants = (await this.listParticipants(meetingId)).filter(
+            (participant) => participant !== normalizedUsername,
+        );
+        await this.db.transaction(async (executor) => {
+            await executor.executeCommand({
+                option: "DELETE",
+                table: "jitsi_meeting_participants",
+                where: [
+                    { column: "meeting_id", value: meetingId },
+                    { column: "username", value: normalizedUsername },
+                ],
+            });
+            await executor.executeCommand({
+                option: "UPDATE",
+                table: "jitsi_meetings",
+                set: {
+                    participant_key: buildParticipantKey(
+                        participants,
+                        meeting.classroomId,
+                    ),
+                    updated_at: new Date().toISOString(),
+                },
+                where: [{ column: "id", value: meetingId }],
+            });
+        });
+        return this.getMeetingById(meetingId);
+    }
+
     async findMeetingByParticipants(usernames, classroomId = null) {
         const participantKey = buildParticipantKey(usernames, classroomId);
         const result = await this.db.executeCommand({

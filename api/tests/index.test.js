@@ -83,6 +83,31 @@ test("jitsi resolves guest access through the Share gateway contract", () => {
     assert.match(source, /legacyMeetingAccess\?\.authorized === true/);
 });
 
+test("kicked share guests can revoke only the link represented by their claims", () => {
+    const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const hooksSource = readFileSync(
+        resolve(ROOT, "api/share-hooks.js"),
+        "utf8",
+    );
+    assert.match(apiSource, /resolveShareGuestId\(claims\)/);
+    assert.match(apiSource, /selfRevocation: true/);
+    assert.match(
+        hooksSource,
+        /input\.selfRevocation === true[\s\S]*resolveShareGuestId\(input\.claims\)[\s\S]*input\.shareId/,
+    );
+});
+
+test("meeting state polling publishes current membership for participant refreshes", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
+    assert.match(
+        source,
+        /activeParticipants:[\s\S]*participants: resolved\.participants,[\s\S]*sessionActive:/,
+    );
+});
+
 test("meeting share guests receive the Jitsi meeting password", () => {
     const source = readJitsiApiBundle();
 

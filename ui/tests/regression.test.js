@@ -392,6 +392,23 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     );
 });
 
+test("local Jitsi kick events remove account participants or invalidate guest links", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /addEventListener\("participantKickedOut"/);
+    assert.match(
+        source,
+        /addEventListener\("errorOccurred"[\s\S]*isLocalParticipantKick\(event\)/,
+    );
+    assert.match(source, /kickedParticipant\?\.local === true/);
+    assert.match(source, /meetings\/participants\/kicked/);
+    assert.match(source, /accessToken: state\.shareAccessToken \|\| undefined/);
+    assert.match(source, /module\.jitsi_meet\.overlay\.kicked/);
+    assert.match(
+        source,
+        /payload\.data\.participants[\s\S]*state\.availableParticipants = state\.allParticipants\.filter/,
+    );
+});
+
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");

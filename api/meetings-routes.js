@@ -763,6 +763,7 @@ export function registerMeetingRoutes({
                     activeParticipants: store
                         .filterCurrentPresenceEntries(presence)
                         .map((entry) => entry.username),
+                    participants: resolved.participants,
                     sessionActive: sessionPresence
                         ? store.isPresenceEntryCurrent(sessionPresence)
                         : true,

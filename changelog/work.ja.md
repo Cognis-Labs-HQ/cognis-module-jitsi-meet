@@ -22,6 +22,10 @@
 
 進行中の参加者ドロップ先では、ドラッグ中を通して同じ緑色のアウトラインを維持し、緑色の内側エッジと破線のドロップ先を表示します。ガイドはドラッグ終了時または参加者のドロップ時にのみ解除されます。
 
+## 削除された参加者のアクセスを失効
+
+ミーティングクライアントが、ローカルの Jitsi キックイベントとエラーを認識するようになりました。削除されたアカウントユーザーは保存済みメンバーから外れ、再度招待可能なユーザーとして表示されます。削除されたゲストについては、そのセッションで使用した Share リンクだけが失効し、在席状態も無効になります。
+
 ## コミット
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -29,3 +33,4 @@
 - [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
 - [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
+- [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)

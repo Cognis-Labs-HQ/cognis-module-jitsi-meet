@@ -22,6 +22,10 @@ Ein gültiger Teilnehmer-Ziehvorgang aktiviert den Ablagebereich nun direkt übe
 
 Der aktive Teilnehmer-Zielbereich behält nun während des gesamten Ziehvorgangs dieselbe grüne Kontur, ergänzt eine grüne Innenkante und einen gestrichelten Zielbereich und entfernt die Hilfe erst beim Ende des Ziehvorgangs oder beim Ablegen des Teilnehmers.
 
+## Zugriff entfernter Teilnehmer widerrufen
+
+Der Meeting-Client erkennt nun lokale Jitsi-Entfernungsereignisse und -fehler. Entfernte Kontobenutzer werden aus dem gespeicherten Teilnehmerkreis gelöscht und erscheinen wieder als verfügbare Einzuladende; bei entfernten Gästen wird nur der für ihre Sitzung verwendete Share-Link widerrufen. Außerdem wird ihre Anwesenheit deaktiviert.
+
 ## Commits
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -29,3 +33,4 @@ Der aktive Teilnehmer-Zielbereich behält nun während des gesamten Ziehvorgangs
 - [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
 - [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
+- [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)

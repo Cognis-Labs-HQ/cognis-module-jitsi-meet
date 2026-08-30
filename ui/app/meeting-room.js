@@ -207,8 +207,59 @@ export function createEmbedHandlers({
                 );
             }
         };
-        const handleMeetingLeft = () => {
+        const isLocalParticipantKick = (event) => {
+            const kickedParticipant = event?.kicked ?? event?.participant;
+            const kickedParticipantId = callbacks.getParticipantId(
+                kickedParticipant ?? event,
+            );
+            if (kickedParticipant?.local === true || event?.local === true) {
+                return true;
+            }
+            if (kickedParticipantId) {
+                return kickedParticipantId === state.jitsiParticipantId;
+            }
+            return [event?.reason, event?.message, event?.name]
+                .map((value) => String(value ?? "").toLowerCase())
+                .some((value) => value.includes("kick"));
+        };
+        const handleLocalParticipantKicked = async (event) => {
+            if (!isLocalParticipantKick(event)) return;
+            const meetingId = state.meeting?.id;
+            if (!meetingId || state.kickReportedMeetingId === meetingId) return;
+            state.kickReportedMeetingId = meetingId;
+            const response = await apiFetch(
+                "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
+                {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ meetingId }),
+                    accessToken: state.shareAccessToken || undefined,
+                    suppressAccessDeniedEvent: true,
+                },
+            );
+            if (!response.ok) {
+                state.kickReportedMeetingId = "";
+                showToast(
+                    i18n.t("module.jitsi_meet.overlay.kick_sync_failed"),
+                    {
+                        variant: "error",
+                    },
+                );
+                return;
+            }
+            await callbacks.resetMeetingState({
+                overlayMessageKey: "module.jitsi_meet.overlay.kicked",
+                toastMessageKey: "module.jitsi_meet.overlay.kicked",
+                toastVariant: "warning",
+                skipPresenceUpdate: true,
+            });
+        };
+        const handleMeetingLeft = (event) => {
             if (state.jitsiApi !== apiInstance) return;
+            if (isLocalParticipantKick(event)) {
+                void handleLocalParticipantKicked(event);
+                return;
+            }
             void callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
                     "module.jitsi_meet.overlay.meeting_left",
@@ -248,6 +299,9 @@ export function createEmbedHandlers({
                 callbacks.getParticipantRole(event) === "moderator";
             applyPrivilegedMeetingSettings();
         });
+        apiInstance.addEventListener("participantKickedOut", (event) => {
+            void handleLocalParticipantKicked(event);
+        });
         apiInstance.addEventListener("passwordRequired", async () => {
             utils.deferAloneParticipantPrompt();
             if (submittedStoredPassword) {
@@ -281,6 +335,10 @@ export function createEmbedHandlers({
             handleMeetingTerminated();
         });
         apiInstance.addEventListener("errorOccurred", (event) => {
+            if (isLocalParticipantKick(event)) {
+                void handleLocalParticipantKicked(event);
+                return;
+            }
             if (!callbacks.isMeetingTerminatedNotice(event)) return;
             handleMeetingTerminated();
         });
