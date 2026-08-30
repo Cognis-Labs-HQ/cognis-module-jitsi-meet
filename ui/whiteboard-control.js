@@ -241,13 +241,28 @@ export function closeMeetingWhiteboard(root) {
 
 export function placeMeetingOverlayForActiveWindow(root) {
     const trigger = mountedWhiteboardButtons.get(root);
-    if (!trigger) return null;
+    const overlay =
+        root.querySelector("#jitsi-overlay") ?? trigger?.overlay ?? null;
+    const meetingFrame =
+        root.querySelector(".jitsi-stage-frame") ??
+        trigger?.meetingFrame ??
+        null;
+    const frameWrap =
+        root.querySelector(".jitsi-stage-frame-wrap") ??
+        trigger?.frameWrap ??
+        null;
+    if (!(overlay instanceof HTMLElement)) return null;
     const meetingFrameIsFloating =
-        trigger.meetingFrame?.parentElement !== trigger.frameWrap;
-    return placeMeetingOverlay(trigger, {
-        floating:
-            Boolean(trigger.releaseFloatingWindow) || meetingFrameIsFloating,
-    });
+        meetingFrame instanceof HTMLElement &&
+        meetingFrame.classList.contains("floating-window");
+    return placeMeetingOverlay(
+        { frameWrap, meetingFrame, overlay },
+        {
+            floating:
+                Boolean(trigger?.releaseFloatingWindow) ||
+                meetingFrameIsFloating,
+        },
+    );
 }
 
 export async function bindWhiteboardButton({

@@ -11,6 +11,19 @@ import { createParticipantAvatarEl } from "../jitsi-helpers.js";
 import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
 
+export function bindDragCleanup({ signal, cancel }) {
+    document.addEventListener("dragend", cancel, { capture: true, signal });
+    document.addEventListener("drop", cancel, { capture: true, signal });
+    window.addEventListener("blur", cancel, { signal });
+    document.addEventListener(
+        "keydown",
+        (event) => {
+            if (event.key === "Escape") cancel();
+        },
+        { signal },
+    );
+}
+
 const { normalizeUsername } = await importReuseModule("value-normalizers.js");
 
 export function createPreflightHandlers({
@@ -208,8 +221,8 @@ export function createPreflightHandlers({
 
     function setActiveParticipantDropzoneVisible(visible) {
         if (
-            !utils.isMeetingActive() ||
-            !state.meeting?.hasInvitedParticipants
+            visible &&
+            (!utils.isMeetingActive() || !state.meeting?.hasInvitedParticipants)
         ) {
             return;
         }

@@ -82,6 +82,10 @@ Automatic account opening now waits for an already-unlocked keyring instead of a
 
 Joining an existing meeting no longer lets participant rendering restore the lobby or preflight overlay. Overlay placement now detects the meeting frame’s actual floating parent rather than relying only on a local release callback, and participant dragging uses that relocated overlay directly so the green dropzone follows Whiteboard PiP.
 
+## Bind and clean up the PiP participant dropzone
+
+The participant target now detects Cognis’ actual `floating-window` class and resolves the current overlay and Jitsi frame from the live DOM before every transition, so it binds to the PiP element rather than the Whiteboard stage. Document-level drag-end and drop cleanup, plus Escape and window-blur handling, remove the target when a drag is cancelled.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -115,3 +119,4 @@ Joining an existing meeting no longer lets participant rendering restore the lob
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
+- [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)

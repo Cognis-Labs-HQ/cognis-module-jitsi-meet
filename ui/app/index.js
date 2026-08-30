@@ -13,7 +13,7 @@ import {
 } from "../jitsi-helpers.js";
 import { createChatHandlers } from "./chat.js";
 import { createMeetingHandlers } from "./meetings-list.js";
-import { createPreflightHandlers } from "./participants.js";
+import { bindDragCleanup, createPreflightHandlers } from "./participants.js";
 import { createEmbedHandlers } from "./meeting-room.js";
 import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
@@ -410,15 +410,11 @@ export async function mount(
         const availablePool = container.querySelector(
             "#jitsi-available-participants",
         );
+        const clearActiveParticipantDrag = () => {
+            state.dragUsername = null;
+            setActiveParticipantDropzoneVisible(false);
+        };
         if (overlay instanceof HTMLElement) {
-            container.addEventListener(
-                "dragend",
-                () => {
-                    overlay.classList.remove("jitsi-drop-active");
-                    setActiveParticipantDropzoneVisible(false);
-                },
-                { signal: bindSignal },
-            );
             overlay.addEventListener(
                 "dragover",
                 (event) => {
@@ -445,7 +441,6 @@ export async function mount(
                     )
                         return;
                     setActiveParticipantDropzoneVisible(false);
-                    overlay.classList.remove("jitsi-drop-active");
                     const username =
                         state.dragUsername ??
                         event.dataTransfer?.getData("text/plain");
@@ -456,6 +451,10 @@ export async function mount(
                 { signal: bindSignal },
             );
         }
+        bindDragCleanup({
+            signal: bindSignal,
+            cancel: clearActiveParticipantDrag,
+        });
         if (availablePool instanceof HTMLElement) {
             availablePool.addEventListener(
                 "dragover",

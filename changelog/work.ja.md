@@ -82,6 +82,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 既存のミーティングへ参加した後、参加者の再描画によってロビーまたはプリフライトオーバーレイが復帰しないようにしました。オーバーレイ配置はローカルの解放コールバックだけに依存せず、ミーティングフレームの実際のフローティング親要素を検出します。参加者のドラッグも移動済みオーバーレイを直接使用するため、緑色のドロップゾーンが Whiteboard の PiP に追従します。
 
+## PiP の参加者ドロップゾーンを正しく関連付けて解除
+
+参加者ターゲットは Cognis の実際の `floating-window` クラスを検出し、各遷移の前に現在のオーバーレイと Jitsi フレームをライブ DOM から解決するため、Whiteboard ステージではなく PiP 要素へ関連付けられます。ドキュメント全体のドラッグ終了とドロップのクリーンアップに加え、Escape とウィンドウのフォーカス喪失の処理によって、ドラッグを中止した際にターゲットが消去されます。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -115,3 +119,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
+- [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)

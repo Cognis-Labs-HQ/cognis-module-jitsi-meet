@@ -384,10 +384,10 @@ test("dragging an available participant reveals the active meeting dropzone", ()
         source,
         /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,
     );
-    assert.match(
-        source,
-        /"dragend"[\s\S]*setActiveParticipantDropzoneVisible\(false\)/,
-    );
+    assert.match(source, /document\.addEventListener\("dragend", cancel/);
+    assert.match(source, /document\.addEventListener\("drop", cancel/);
+    assert.match(source, /window\.addEventListener\("blur", cancel/);
+    assert.match(source, /event\.key === "Escape"[\s\S]*cancel\(\)/);
     assert.match(source, /module\.jitsi_meet\.participants\.drop_to_invite/);
     assert.match(cssSource, /jitsi-overlay-participant-drop::after/);
     assert.match(

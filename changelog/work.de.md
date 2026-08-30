@@ -82,6 +82,10 @@ Das automatische Öffnen für Konten wartet nun auf einen bereits entsperrten Sc
 
 Beim Beitritt zu einer vorhandenen Besprechung stellt die Teilnehmerdarstellung die Lobby- oder Preflight-Einblendung nicht mehr wieder her. Die Platzierung erkennt nun das tatsächliche schwebende Elternelement des Besprechungsrahmens, statt sich nur auf einen lokalen Freigabe-Callback zu verlassen; beim Ziehen von Teilnehmern wird die verschobene Einblendung direkt verwendet, sodass die grüne Ablagezone dem Whiteboard-Bild-in-Bild folgt.
 
+## PiP-Teilnehmer-Ablagezone binden und bereinigen
+
+Das Teilnehmerziel erkennt nun die tatsächliche Cognis-Klasse `floating-window` und löst vor jedem Übergang die aktuelle Einblendung und den Jitsi-Rahmen aus dem aktiven DOM auf, sodass es an das PiP-Element statt an die Whiteboard-Bühne gebunden wird. Dokumentweite Bereinigung bei Drag-Ende und Ablegen sowie die Behandlung von Escape und Fensterfokusverlust entfernen das Ziel bei einem Abbruch.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -115,3 +119,4 @@ Beim Beitritt zu einer vorhandenen Besprechung stellt die Teilnehmerdarstellung 
 - [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
+- [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
