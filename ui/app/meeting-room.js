@@ -458,71 +458,76 @@ export function createEmbedHandlers({
     }
 
     async function prepareMeetingStart() {
-        if (!state.preflightPassed) {
-            const passed = await callbacks.runPreflightCheck({
-                showErrors: true,
-            });
-            if (!passed) return;
-        }
+        const finishPageLoading = callbacks.beginPageLoading();
+        try {
+            if (!state.preflightPassed) {
+                const passed = await callbacks.runPreflightCheck({
+                    showErrors: true,
+                });
+                if (!passed) return;
+            }
 
-        const selected = utils.selectedUsernames();
+            const selected = utils.selectedUsernames();
 
-        utils.updateOverlay({
-            message: i18n.t("module.jitsi_meet.overlay.creating"),
-            loading: true,
-            visible: true,
-        });
-
-        const createResponse = await apiFetch(
-            "/api/v1/modules/jitsi-meet/meetings/create",
-            {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify({
-                    participants: selected,
-                }),
-            },
-        );
-
-        if (!createResponse.ok) {
-            const message =
-                createResponse.status === 409
-                    ? i18n.t("module.jitsi_meet.overlay.config_required")
-                    : i18n.t("module.jitsi_meet.overlay.create_failed");
             utils.updateOverlay({
-                message,
-                loading: false,
-                canStart: state.preflightPassed,
+                message: i18n.t("module.jitsi_meet.overlay.creating"),
+                loading: true,
                 visible: true,
             });
-            showToast(message, { variant: "error" });
-            return;
+
+            const createResponse = await apiFetch(
+                "/api/v1/modules/jitsi-meet/meetings/create",
+                {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        participants: selected,
+                    }),
+                },
+            );
+
+            if (!createResponse.ok) {
+                const message =
+                    createResponse.status === 409
+                        ? i18n.t("module.jitsi_meet.overlay.config_required")
+                        : i18n.t("module.jitsi_meet.overlay.create_failed");
+                utils.updateOverlay({
+                    message,
+                    loading: false,
+                    canStart: state.preflightPassed,
+                    visible: true,
+                });
+                showToast(message, { variant: "error" });
+                return;
+            }
+
+            const createPayload = await createResponse
+                .json()
+                .catch(() => ({ data: null }));
+            state.meeting = createPayload?.data;
+            state.promptShareOnJoin =
+                Boolean(state.meeting?.id) && selected.length === 0;
+            state.chatMode = "meeting";
+            state.privateChatUsername = "";
+            await callbacks.updateNativeChat();
+
+            utils.updateOverlay({
+                message: i18n.t("module.jitsi_meet.overlay.joining"),
+                loading: false,
+                canStart: false,
+                visible: true,
+            });
+
+            const joinState = await joinMeeting();
+            if (joinState?.trackingAllowed) {
+                callbacks.ensureMeetingTracking();
+            }
+            void callbacks.loadActiveMeetings({ resolveRequested: false });
+        } finally {
+            finishPageLoading();
         }
-
-        const createPayload = await createResponse
-            .json()
-            .catch(() => ({ data: null }));
-        state.meeting = createPayload?.data;
-        state.promptShareOnJoin =
-            Boolean(state.meeting?.id) && selected.length === 0;
-        state.chatMode = "meeting";
-        state.privateChatUsername = "";
-        await callbacks.updateNativeChat();
-
-        utils.updateOverlay({
-            message: i18n.t("module.jitsi_meet.overlay.joining"),
-            loading: false,
-            canStart: false,
-            visible: true,
-        });
-
-        const joinState = await joinMeeting();
-        if (joinState?.trackingAllowed) {
-            callbacks.ensureMeetingTracking();
-        }
-        void callbacks.loadActiveMeetings({ resolveRequested: false });
     }
 
     return {

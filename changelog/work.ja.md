@@ -86,6 +86,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者ターゲットは Cognis の実際の `floating-window` クラスを検出し、各遷移の前に現在のオーバーレイと Jitsi フレームをライブ DOM から解決するため、Whiteboard ステージではなく PiP 要素へ関連付けられます。ドキュメント全体のドラッグ終了とドロップのクリーンアップに加え、Escape とウィンドウのフォーカス喪失の処理によって、ドラッグを中止した際にターゲットが消去されます。
 
+## ミーティングターゲットを再利用し、Core の読み込みと Whiteboard のアクティベーションを明確化
+
+アクティブなミーティングへの参加者ドラッグでは、追加の破線ポップアップを使わず、既存のミーティングオーバーレイと緑色のターゲットデザインを再利用します。ミーティング開始時は「ミーティングを開始」のクリックから Jitsi への参加試行が完了するまで、Cognis core の共有ページ読み込みホイールを維持します。報告された Whiteboard エラーは Cognis のコンポーネントページ生成認可が原因でした。現在のブラウザアクティベーションがないアカウントの自動マウントは、認可されない生成を `whiteboard_component_window_unavailable` になるまで再試行せず、一度だけ操作を促して延期します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -120,3 +124,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
+- [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)

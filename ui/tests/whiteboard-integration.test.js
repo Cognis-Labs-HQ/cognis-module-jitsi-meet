@@ -189,6 +189,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /automaticUnlockNoticeWhiteboardId/);
     assert.match(
         buttonSource,
+        /navigator\?\.userActivation\?\.isActive === true[\s\S]*?auto_open_requires_interaction/,
+    );
+    assert.match(
+        buttonSource,
         /isKeyringUnlocked\?\.\(\) !== true[\s\S]*?auto_open_requires_unlock/,
     );
     assert.match(buttonSource, /globalThis\.console\?\.error/);

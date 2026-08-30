@@ -86,6 +86,10 @@ Beim Beitritt zu einer vorhandenen Besprechung stellt die Teilnehmerdarstellung 
 
 Das Teilnehmerziel erkennt nun die tatsächliche Cognis-Klasse `floating-window` und löst vor jedem Übergang die aktuelle Einblendung und den Jitsi-Rahmen aus dem aktiven DOM auf, sodass es an das PiP-Element statt an die Whiteboard-Bühne gebunden wird. Dokumentweite Bereinigung bei Drag-Ende und Ablegen sowie die Behandlung von Escape und Fensterfokusverlust entfernen das Ziel bei einem Abbruch.
 
+## Besprechungsziel wiederverwenden, Core-Laden zeigen und Whiteboard-Aktivierung erklären
+
+Beim Ziehen von Teilnehmern in eine aktive Besprechung werden nun die vorhandene Besprechungseinblendung und das grüne Zieldesign ohne das zusätzliche gestrichelte Popup wiederverwendet. Beim Start einer Besprechung bleibt das gemeinsame Seiten-Laderad von Cognis Core vom Klick auf „Besprechung starten“ bis zum abgeschlossenen Jitsi-Beitrittsversuch aktiv. Der gemeldete Whiteboard-Fehler wurde auf die Autorisierung beim Start einer Cognis-Komponentenseite zurückgeführt: Eine automatische Konto-Einbindung ohne aktuelle Browser-Aktivierung wird nun mit einer einmaligen Handlungsaufforderung verschoben, statt einen nicht autorisierten Start bis zur Meldung `whiteboard_component_window_unavailable` zu wiederholen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -120,3 +124,4 @@ Das Teilnehmerziel erkennt nun die tatsächliche Cognis-Klasse `floating-window`
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
+- [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)

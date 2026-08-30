@@ -389,15 +389,24 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     assert.match(source, /window\.addEventListener\("blur", cancel/);
     assert.match(source, /event\.key === "Escape"[\s\S]*cancel\(\)/);
     assert.match(source, /module\.jitsi_meet\.participants\.drop_to_invite/);
-    assert.match(cssSource, /jitsi-overlay-participant-drop::after/);
     assert.match(
-        cssSource,
-        /\.jitsi-overlay\.jitsi-overlay-participant-drop \{[\s\S]*outline: 3px solid #22c55e;[\s\S]*box-shadow: inset 0 0 0 3px #22c55e;/,
+        source,
+        /dropPreviousMessage[\s\S]*message\.textContent = overlay\.dataset\.dropLabel/,
     );
+    assert.doesNotMatch(cssSource, /jitsi-overlay-participant-drop/);
     assert.doesNotMatch(source, /"dragleave"/);
     assert.match(
         cssSource,
         /\.jitsi-stage-frame[\s\S]*z-index: 2;[\s\S]*\.jitsi-overlay[\s\S]*inset: 0;[\s\S]*z-index: 3;[\s\S]*\.jitsi-overlay\.jitsi-drop-active[\s\S]*z-index: 4;/,
+    );
+});
+
+test("starting a meeting uses the Cognis page loading wheel until join completes", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /\{ beginPageLoading, mountWhenDirect \}/);
+    assert.match(
+        source,
+        /prepareMeetingStart[\s\S]*callbacks\.beginPageLoading\(\)[\s\S]*finally[\s\S]*finishPageLoading\(\)/,
     );
 });
 

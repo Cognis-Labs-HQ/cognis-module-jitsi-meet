@@ -86,6 +86,10 @@ Bergabung ke rapat yang sudah ada tidak lagi membuat perenderan peserta memulihk
 
 Target peserta kini mendeteksi kelas `floating-window` Cognis yang sebenarnya serta menyelesaikan lapisan dan bingkai Jitsi saat ini dari DOM aktif sebelum setiap transisi, sehingga target terikat pada elemen PiP alih-alih panggung Whiteboard. Pembersihan akhir-seret dan pelepasan tingkat dokumen, ditambah penanganan Escape dan hilangnya fokus jendela, menghapus target saat seretan dibatalkan.
 
+## Gunakan kembali target rapat, tampilkan pemuatan core, dan jelaskan aktivasi Whiteboard
+
+Penyeretan peserta ke rapat aktif kini menggunakan kembali lapisan rapat dan desain target hijau yang ada tanpa popup putus-putus tambahan. Memulai rapat mempertahankan roda pemuatan halaman bersama Cognis core sejak klik Mulai Rapat sampai upaya bergabung ke Jitsi selesai. Kegagalan Whiteboard yang dilaporkan dilacak ke otorisasi pemunculan halaman komponen Cognis: pemasangan akun otomatis tanpa aktivasi browser saat ini kini ditunda dengan satu permintaan tindakan, bukan mencoba ulang pemunculan tanpa izin hingga melaporkan `whiteboard_component_window_unavailable`.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -120,3 +124,4 @@ Target peserta kini mendeteksi kelas `floating-window` Cognis yang sebenarnya se
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
+- [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)

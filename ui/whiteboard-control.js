@@ -204,6 +204,34 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
         trigger.automaticOpenFailureWhiteboardId !==
             trigger.preparedWhiteboardId
     ) {
+        const userActivationAvailable =
+            globalThis.navigator?.userActivation?.isActive === true;
+        if (!state.shareAccessToken && !userActivationAvailable) {
+            if (
+                trigger.automaticUnlockNoticeWhiteboardId !==
+                trigger.preparedWhiteboardId
+            ) {
+                trigger.automaticUnlockNoticeWhiteboardId =
+                    trigger.preparedWhiteboardId;
+                void logUi(
+                    "info",
+                    "Automatic Whiteboard component mounting requires user activation.",
+                    {
+                        component: "module:jitsi-meet",
+                        operation: "defer_automatic_whiteboard_mount",
+                        meetingId: state.meeting?.id,
+                        whiteboardId: trigger.preparedWhiteboardId,
+                    },
+                );
+                showToast(
+                    trigger.i18n.t(
+                        "module.jitsi_meet.whiteboard.auto_open_requires_interaction",
+                    ),
+                    { variant: "warning" },
+                );
+            }
+            return;
+        }
         if (!state.shareAccessToken && trigger.isKeyringUnlocked?.() !== true) {
             if (
                 trigger.automaticUnlockNoticeWhiteboardId !==

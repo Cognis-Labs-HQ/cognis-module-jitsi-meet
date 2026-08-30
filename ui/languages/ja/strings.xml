@@ -125,6 +125,7 @@
   <string name="module.jitsi_meet.whiteboard.load_failed">ホワイトボードの読み込みエラー</string>
   <string name="module.jitsi_meet.whiteboard.load_failed_detailed">{{stage}}中に Whiteboard を開けませんでした。正確なエラーはブラウザコンソールで確認してください。</string>
   <string name="module.jitsi_meet.whiteboard.auto_open_requires_unlock">Whiteboard を選択してキーリングを解除し、共有ボードを開いてください。</string>
+  <string name="module.jitsi_meet.whiteboard.auto_open_requires_interaction">Whiteboard を選択して共有ボードを開いてください。</string>
   <string name="module.jitsi_meet.whiteboard.stage.prepare">キャンバス準備</string>
   <string name="module.jitsi_meet.whiteboard.stage.unlock">キーリング解除</string>
   <string name="module.jitsi_meet.whiteboard.stage.synchronize">ミーティング同期</string>

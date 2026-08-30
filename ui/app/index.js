@@ -29,7 +29,7 @@ const [
     { getShareContext, ensureFullAccountSession },
     { applyDocumentTitle, createI18n },
     { createPageComposer },
-    { mountWhenDirect },
+    { beginPageLoading, mountWhenDirect },
     { registerSearchIndex, openSearchPopup },
     { normalizeUsername },
 ] = await Promise.all([
@@ -180,6 +180,7 @@ export async function mount(
         });
     }
     const callbacks = {
+        beginPageLoading,
         syncMeetingWhiteboardComponent: () =>
             syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>

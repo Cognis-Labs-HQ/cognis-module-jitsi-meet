@@ -230,16 +230,27 @@ export function createPreflightHandlers({
             placeMeetingOverlayForActiveWindow(root) ??
             root.querySelector("#jitsi-overlay");
         if (!(overlay instanceof HTMLElement)) return;
-        overlay.classList.toggle("jitsi-overlay-participant-drop", visible);
         overlay.classList.toggle("jitsi-drop-active", visible);
         overlay.hidden = !visible;
+        const message = overlay.querySelector("#jitsi-overlay-message");
         if (visible) {
             overlay.dataset.dropLabel = i18n.t(
                 "module.jitsi_meet.participants.drop_to_invite",
             );
+            if (message instanceof HTMLElement) {
+                overlay.dataset.dropPreviousMessage = message.textContent ?? "";
+                message.textContent = overlay.dataset.dropLabel;
+            }
             overlay.setAttribute("aria-label", overlay.dataset.dropLabel);
             return;
         }
+        if (
+            message instanceof HTMLElement &&
+            typeof overlay.dataset.dropPreviousMessage === "string"
+        ) {
+            message.textContent = overlay.dataset.dropPreviousMessage;
+        }
+        delete overlay.dataset.dropPreviousMessage;
         delete overlay.dataset.dropLabel;
         overlay.removeAttribute("aria-label");
     }

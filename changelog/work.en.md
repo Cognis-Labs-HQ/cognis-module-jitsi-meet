@@ -86,6 +86,10 @@ Joining an existing meeting no longer lets participant rendering restore the lob
 
 The participant target now detects Cognis’ actual `floating-window` class and resolves the current overlay and Jitsi frame from the live DOM before every transition, so it binds to the PiP element rather than the Whiteboard stage. Document-level drag-end and drop cleanup, plus Escape and window-blur handling, remove the target when a drag is cancelled.
 
+## Reuse the meeting target, show core loading, and explain Whiteboard activation
+
+Active-meeting participant dragging now reuses the existing meeting overlay and green target design without the additional dashed popup. Starting a meeting holds Cognis core’s shared page-loading wheel from the Start Meeting click through the completed Jitsi join attempt. The reported Whiteboard failure was traced to Cognis component-page spawn authorization: automatic account mounting without current browser activation now defers with a one-time action prompt instead of retrying an unauthorized spawn until it reports `whiteboard_component_window_unavailable`.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -120,3 +124,4 @@ The participant target now detects Cognis’ actual `floating-window` class and 
 - [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
 - [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
 - [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
+- [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
