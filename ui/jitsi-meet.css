@@ -435,6 +435,11 @@
     font-size: 0.85rem;
 }
 
+.jitsi-route-root .jitsi-participants-empty {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
 .jitsi-route-root .jitsi-active-meeting-item {
     width: 100%;
     border: 1px solid rgba(148, 163, 184, 0.35);

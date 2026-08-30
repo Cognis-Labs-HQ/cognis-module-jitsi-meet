@@ -6,7 +6,7 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 
 - Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.
 - Select participants, share meeting access, and use the meeting's Messages chat.
-- During an active non-disposable meeting, drag another available user into the meeting window to add them permanently to its participant set. Cognis provisions their encrypted Messages chat access, sends an invitation, and lets them claim the meeting password when joining.
+- During an active non-disposable meeting, drag another available user into the meeting window to add them permanently to its participant set. Cognis provisions their encrypted Messages chat access, sends an invitation, and lets them claim the meeting password when joining. Participant refreshes never cover an active meeting with the lobby overlay, and an empty available-participant pool is identified explicitly.
 - Monitor active and upcoming meetings from Administration → Meetings.
 - Embed the Meetings route as an overlay, fullscreen, or picture-in-picture component page.
 

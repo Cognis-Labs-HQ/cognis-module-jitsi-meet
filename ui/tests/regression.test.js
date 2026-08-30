@@ -355,6 +355,18 @@ test("active non-disposable meetings accept participant drops without unstaging 
     );
 });
 
+test("participant rendering preserves an active meeting overlay state and shows an empty-pool message", () => {
+    const source = readJitsiUiBundle();
+    assert.match(
+        source,
+        /if \(!utils\.isMeetingActive\(\)\) \{\s*utils\.updateOverlay/,
+    );
+    assert.match(
+        source,
+        /state\.availableParticipants\.length === 0[\s\S]*module\.jitsi_meet\.participants\.available_none/,
+    );
+});
+
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");

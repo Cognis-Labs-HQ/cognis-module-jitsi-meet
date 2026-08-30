@@ -81,11 +81,20 @@ export function createPreflightHandlers({
             return;
         }
 
-        availablePool.replaceChildren(
-            ...state.availableParticipants.map((entry) =>
-                createParticipantAvatarEl(entry),
-            ),
-        );
+        if (state.availableParticipants.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "jitsi-participants-empty";
+            emptyMessage.textContent = i18n.t(
+                "module.jitsi_meet.participants.available_none",
+            );
+            availablePool.replaceChildren(emptyMessage);
+        } else {
+            availablePool.replaceChildren(
+                ...state.availableParticipants.map((entry) =>
+                    createParticipantAvatarEl(entry),
+                ),
+            );
+        }
         void hydrateProfileAvatars(availablePool);
 
         const stagedEntries = utils.isMeetingActive()
@@ -109,7 +118,7 @@ export function createPreflightHandlers({
         }
 
         const participantCount = state.selectedParticipants.length;
-        if (!participantSelectionLocked) {
+        if (!utils.isMeetingActive()) {
             utils.updateOverlay({
                 message: i18n.t(callbacks.lobbyMessageKey(participantCount)),
                 canStart: state.preflightPassed && !state.meeting?.id,
