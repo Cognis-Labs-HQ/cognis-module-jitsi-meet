@@ -50,7 +50,13 @@ Die Mindestgröße des Meeting-Bild-in-Bild beträgt nun 400 × 225 Pixel und is
 
 Meetings validiert nun den exakten Vertrag `whiteboard:uiGateway.expandCanvasAccess`, den Nextcloud Whiteboard PR 24 bereitstellt. Eine erfolgreiche Aktualisierung muss die angeforderte Arbeitsfläche identifizieren und jeden angeforderten Teilnehmer in der erweiterten Zugriffsliste zurückgeben, bevor Meetings die Synchronisierung als abgeschlossen speichert.
 
+## Nicht autorisierte Whiteboard-Wiederholungen stoppen
+
+Nur der Besprechungsorganisator ruft jetzt die eigentümerautorisierte Capability zur Arbeitsflächenerweiterung auf. Eingeladene Teilnehmer senden keine Erweiterungsanfrage, und eine fehlgeschlagene Eigentümeranfrage wird für genau diese Arbeitsfläche und Teilnehmermenge gespeichert, damit Abfragen und Einbettungs-Lebenszyklusaktualisierungen dieselbe verbotene Anfrage nicht wiederholt senden.
+
 ## Commits
+
+- [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 
 - [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 

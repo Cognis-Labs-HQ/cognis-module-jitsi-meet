@@ -268,6 +268,7 @@ export async function bindWhiteboardButton({
         preparationFailedMeetingId: "",
         participantAccessPromise: null,
         participantAccessSignature: "",
+        participantAccessAttemptSignature: "",
         participantAccessWarningLogged: false,
         releaseFloatingWindow: null,
         sharedOpenRequested: false,

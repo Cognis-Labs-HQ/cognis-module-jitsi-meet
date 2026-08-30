@@ -50,7 +50,13 @@ Whiteboard ボタンはボードを開くときに確認スタイルを使用し
 
 Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.expandCanvasAccess` の正確な契約を検証するようになりました。更新を同期済みとして記録する前に、成功応答は要求したキャンバスを識別し、要求した全参加者を拡張後のアクセス一覧として返す必要があります。
 
+## 未認可の Whiteboard 拡張再試行を停止
+
+所有者認可のキャンバス拡張 Capability はミーティング主催者だけが呼び出すようになりました。招待参加者は拡張要求を送信せず、所有者の失敗した要求は同じキャンバスと参加者集合について記録されるため、ポーリングや埋め込みライフサイクル更新で同じ禁止要求を繰り返し送信しません。
+
 ## コミット
+
+- [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 
 - [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 

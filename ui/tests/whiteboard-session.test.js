@@ -256,7 +256,9 @@ test("persistent whiteboards expand access when meeting membership changes", asy
     };
     const state = {
         shareAccessToken: "",
+        currentProfile: { handle: "owner" },
         meeting: {
+            createdBy: "owner",
             participants: ["carol", "alice", "bob"],
             state: { whiteboardId: "board-1" },
         },
@@ -281,6 +283,7 @@ test("persistent whiteboards expand access when meeting membership changes", asy
 test("whiteboard expansion rejects a provider response missing participants", async () => {
     const trigger = {
         disposableCanvas: false,
+        participantAccessAttemptSignature: "",
         participantAccessPromise: null,
         participantAccessSignature: "",
         preparedWhiteboardId: "board-1",
@@ -294,7 +297,9 @@ test("whiteboard expansion rejects a provider response missing participants", as
     await assert.rejects(
         synchronizeWhiteboardParticipantAccess(trigger, {
             shareAccessToken: "",
+            currentProfile: { handle: "owner" },
             meeting: {
+                createdBy: "owner",
                 participants: ["alice", "bob"],
                 state: { whiteboardId: "board-1" },
             },
@@ -302,4 +307,71 @@ test("whiteboard expansion rejects a provider response missing participants", as
         /whiteboard_participant_access_invalid_response/,
     );
     assert.equal(trigger.participantAccessSignature, "");
+});
+
+test("invited users never request owner-only whiteboard expansion", async () => {
+    let requests = 0;
+    const trigger = {
+        disposableCanvas: false,
+        participantAccessAttemptSignature: "",
+        participantAccessPromise: null,
+        participantAccessSignature: "",
+        preparedWhiteboardId: "board-1",
+        whiteboardGateway: {
+            async expandCanvasAccess() {
+                requests += 1;
+            },
+        },
+    };
+    const state = {
+        shareAccessToken: "",
+        currentProfile: { handle: "invited-user" },
+        meeting: {
+            createdBy: "owner",
+            participants: ["owner", "invited-user"],
+            state: { whiteboardId: "board-1" },
+        },
+    };
+
+    assert.equal(
+        await synchronizeWhiteboardParticipantAccess(trigger, state),
+        null,
+    );
+    assert.equal(requests, 0);
+});
+
+test("failed owner expansion is attempted once per participant set", async () => {
+    let requests = 0;
+    const trigger = {
+        disposableCanvas: false,
+        participantAccessAttemptSignature: "",
+        participantAccessPromise: null,
+        participantAccessSignature: "",
+        preparedWhiteboardId: "board-1",
+        whiteboardGateway: {
+            async expandCanvasAccess() {
+                requests += 1;
+                throw new Error("forbidden");
+            },
+        },
+    };
+    const state = {
+        shareAccessToken: "",
+        currentProfile: { handle: "owner" },
+        meeting: {
+            createdBy: "owner",
+            participants: ["owner", "invited-user"],
+            state: { whiteboardId: "board-1" },
+        },
+    };
+
+    await assert.rejects(
+        synchronizeWhiteboardParticipantAccess(trigger, state),
+        /forbidden/,
+    );
+    assert.equal(
+        await synchronizeWhiteboardParticipantAccess(trigger, state),
+        null,
+    );
+    assert.equal(requests, 1);
 });

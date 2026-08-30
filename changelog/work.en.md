@@ -50,7 +50,13 @@ The base meeting PiP minimum is now 400 × 225 pixels, 25% larger than before. S
 
 Meetings now validates the exact `whiteboard:uiGateway.expandCanvasAccess` contract supplied by Nextcloud Whiteboard PR 24. A successful update must identify the requested canvas and return every requested participant in the expanded access list before Meetings records the synchronization as complete.
 
+## Stop unauthorized Whiteboard expansion retries
+
+Only the meeting organizer now invokes the owner-authorized canvas expansion capability. Invited participants make no expansion request, and a failed owner request is remembered for that exact canvas and participant set so polling and embed lifecycle updates cannot repeatedly submit the same forbidden request.
+
 ## Commits
+
+- [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 
 - [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 

@@ -14,6 +14,22 @@ function getParticipantHandles(meeting) {
         .filter(Boolean);
 }
 
+function currentUserOwnsMeetingWhiteboard(state) {
+    const currentUsername = String(
+        state.currentProfile?.handle ?? state.currentProfile?.username ?? "",
+    )
+        .trim()
+        .toLowerCase();
+    const organizerUsername = String(state.meeting?.createdBy ?? "")
+        .trim()
+        .toLowerCase();
+    return Boolean(
+        currentUsername &&
+        organizerUsername &&
+        currentUsername === organizerUsername,
+    );
+}
+
 const PIP_BASE_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
 
 export function resolveMeetingPipMinimumSize(meeting) {
@@ -42,16 +58,19 @@ export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
     if (!whiteboardId || state.shareAccessToken || trigger.disposableCanvas) {
         return null;
     }
+    if (!currentUserOwnsMeetingWhiteboard(state)) return null;
     if (typeof trigger.whiteboardGateway?.expandCanvasAccess !== "function") {
         return false;
     }
     const participantHandles = getParticipantHandles(state.meeting).sort();
     const signature = `${whiteboardId}:${participantHandles.join(",")}`;
     if (trigger.participantAccessSignature === signature) return true;
+    if (trigger.participantAccessAttemptSignature === signature) return null;
     if (trigger.participantAccessPromise) {
         await trigger.participantAccessPromise;
         if (trigger.participantAccessSignature === signature) return true;
     }
+    trigger.participantAccessAttemptSignature = signature;
     const accessPromise = trigger.whiteboardGateway
         .expandCanvasAccess({
             whiteboardId,

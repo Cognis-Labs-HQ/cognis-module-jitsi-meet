@@ -50,7 +50,13 @@ Minimum gambar-dalam-gambar rapat kini 400 × 225 piksel, 25% lebih besar dari s
 
 Meetings kini memvalidasi kontrak `whiteboard:uiGateway.expandCanvasAccess` persis yang disediakan PR 24 Nextcloud Whiteboard. Pembaruan yang berhasil harus mengidentifikasi kanvas yang diminta dan mengembalikan setiap peserta yang diminta dalam daftar akses yang diperluas sebelum Meetings mencatat sinkronisasi sebagai selesai.
 
+## Hentikan pengulangan perluasan Papan Tulis tanpa izin
+
+Kini hanya penyelenggara rapat yang memanggil kapabilitas perluasan kanvas yang diotorisasi pemilik. Peserta undangan tidak membuat permintaan perluasan, dan permintaan pemilik yang gagal diingat untuk kanvas serta kumpulan peserta tersebut agar polling dan pembaruan siklus hidup sematan tidak berulang kali mengirim permintaan terlarang yang sama.
+
 ## Commit
+
+- [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
 
 - [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 
