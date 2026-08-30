@@ -19,6 +19,7 @@ import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
 import { handleProfileAvatarError } from "./profile-avatars.js";
 import { createMeetingSearchGroups } from "./meeting-search.js";
+import { claimRouteRoot } from "./route-root.js";
 import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
@@ -72,7 +73,7 @@ export async function mount(
     } = {},
 ) {
     await loadCommonStyles();
-    root.classList.add("jitsi-route-root");
+    if (!claimRouteRoot(root, signal)) return;
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
         shareContext !== null && shareContext?.directAccess !== true;
@@ -104,6 +105,7 @@ export async function mount(
                 },
             )) ?? NULL_MESSAGE_REACTIONS_CONTROLLER;
     }
+    if (signal?.aborted) return messageReactions.destroy();
     applyDocumentTitle(i18n, "module.jitsi_meet.page_title");
     signal?.addEventListener(
         "abort",
@@ -283,6 +285,7 @@ export async function mount(
     }
     let bindController = null;
     function bindInteractiveHandlers() {
+        if (signal?.aborted) return;
         if (bindController) {
             bindController.abort();
         }
@@ -915,6 +918,7 @@ export async function mount(
             shareAccessToken: state.shareAccessToken,
         }),
     ]);
+    if (signal?.aborted) return;
     state.currentProfile = currentProfile;
     state.allParticipants = allParticipants
         .map((entry) => ({
@@ -968,6 +972,7 @@ export async function mount(
     });
 
     await composer.init();
+    if (signal?.aborted) return;
     if (state.requestedMeetingId) {
         await joinMeetingById(state.requestedMeetingId, {
             autoStart: inShareView || state.requestedMeetingStart,

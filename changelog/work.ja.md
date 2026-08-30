@@ -26,6 +26,10 @@
 
 ミーティングクライアントが、ローカルの Jitsi キックイベントとエラーを認識するようになりました。削除されたアカウントユーザーは保存済みメンバーから外れ、再度招待可能なユーザーとして表示されます。削除されたゲストについては、そのセッションで使用した Share リンクだけが失効し、在席状態も無効になります。
 
+## アンマウント時に永続ルートを解放
+
+ルーティング、共有、埋め込みの Meetings マウントは、すでに中止されたルートを取得せず、ライフサイクルシグナルの中止時に `.jitsi-route-root` を削除するようになりました。非同期初期化は後続の表示処理を作成する前に停止し、既存のクリーンアップは Observer、ハンドラー、タイマー、チャット処理、Whiteboard、Jitsi 埋め込みを引き続き破棄します。
+
 ## コミット
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -34,3 +38,4 @@
 - [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
+- [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)

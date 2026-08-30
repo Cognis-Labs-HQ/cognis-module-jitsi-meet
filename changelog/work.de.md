@@ -26,6 +26,10 @@ Der aktive Teilnehmer-Zielbereich behält nun während des gesamten Ziehvorgangs
 
 Der Meeting-Client erkennt nun lokale Jitsi-Entfernungsereignisse und -fehler. Entfernte Kontobenutzer werden aus dem gespeicherten Teilnehmerkreis gelöscht und erscheinen wieder als verfügbare Einzuladende; bei entfernten Gästen wird nur der für ihre Sitzung verwendete Share-Link widerrufen. Außerdem wird ihre Anwesenheit deaktiviert.
 
+## Dauerhaftes Routen-Stammelement beim Unmount freigeben
+
+Geroutete, freigegebene und eingebettete Meetings-Mounts beanspruchen kein bereits abgebrochenes Stammelement mehr und entfernen `.jitsi-route-root`, sobald ihr Lebenszyklus-Signal abbricht. Die asynchrone Initialisierung endet vor späteren Darstellungsarbeiten; die vorhandene Bereinigung entfernt weiterhin Observer, Handler, Timer, Chat-Arbeiten, Whiteboards und die Jitsi-Einbettung.
+
 ## Commits
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
@@ -34,3 +38,4 @@ Der Meeting-Client erkennt nun lokale Jitsi-Entfernungsereignisse und -fehler. E
 - [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
 - [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
 - [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
+- [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
