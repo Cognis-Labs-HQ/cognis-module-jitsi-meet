@@ -322,7 +322,11 @@ export async function mount(
             findButton.addEventListener(
                 "click",
                 () => {
-                    if (isMeetingActive()) return;
+                    if (
+                        isMeetingActive() &&
+                        !state.meeting?.hasInvitedParticipants
+                    )
+                        return;
                     openSearchPopup({
                         endpoint: "/api/v1/modules/jitsi-meet/participants",
                         category: "user",
@@ -376,7 +380,10 @@ export async function mount(
         container.addEventListener(
             "dragstart",
             (event) => {
-                if (isMeetingActive()) {
+                if (
+                    isMeetingActive() &&
+                    !state.meeting?.hasInvitedParticipants
+                ) {
                     event.preventDefault();
                     return;
                 }
@@ -400,7 +407,11 @@ export async function mount(
             overlay.addEventListener(
                 "dragover",
                 (event) => {
-                    if (isMeetingActive()) return;
+                    if (
+                        isMeetingActive() &&
+                        !state.meeting?.hasInvitedParticipants
+                    )
+                        return;
                     const username =
                         state.dragUsername ??
                         event.dataTransfer?.types?.includes("text/plain");
@@ -422,14 +433,18 @@ export async function mount(
             overlay.addEventListener(
                 "drop",
                 (event) => {
-                    if (isMeetingActive()) return;
+                    if (
+                        isMeetingActive() &&
+                        !state.meeting?.hasInvitedParticipants
+                    )
+                        return;
                     overlay.classList.remove("jitsi-drop-active");
                     const username =
                         state.dragUsername ??
                         event.dataTransfer?.getData("text/plain");
                     state.dragUsername = null;
                     event.preventDefault();
-                    applyDrop(username, "stage");
+                    void applyDrop(username, "stage");
                 },
                 { signal: bindSignal },
             );
@@ -456,7 +471,7 @@ export async function mount(
                         event.dataTransfer?.getData("text/plain");
                     state.dragUsername = null;
                     event.preventDefault();
-                    applyDrop(username, "available");
+                    void applyDrop(username, "available");
                 },
                 { signal: bindSignal },
             );

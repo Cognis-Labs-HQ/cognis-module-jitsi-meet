@@ -96,7 +96,8 @@ export function createPreflightHandlers({
         );
         void hydrateProfileAvatars(stagedArea);
 
-        const participantSelectionLocked = utils.isMeetingActive();
+        const participantSelectionLocked =
+            utils.isMeetingActive() && !state.meeting?.hasInvitedParticipants;
         if (participantsPane instanceof HTMLElement) {
             participantsPane.classList.toggle(
                 "jitsi-participants-disabled",
@@ -104,7 +105,7 @@ export function createPreflightHandlers({
             );
         }
         if (findButton instanceof HTMLButtonElement) {
-            findButton.disabled = participantSelectionLocked;
+            findButton.disabled = utils.isMeetingActive();
         }
 
         const participantCount = state.selectedParticipants.length;
@@ -137,8 +138,7 @@ export function createPreflightHandlers({
         );
     }
 
-    function applyDrop(username, targetZone) {
-        if (utils.isMeetingActive()) return;
+    async function applyDrop(username, targetZone) {
         if (!username) return;
         const normalized = normalizeUsername(username);
         if (!normalized) return;
@@ -151,13 +151,44 @@ export function createPreflightHandlers({
         );
 
         if (targetZone === "stage" && fromAvailable) {
+            if (utils.isMeetingActive()) {
+                if (!state.meeting?.hasInvitedParticipants) return;
+                const response = await apiFetch(
+                    "/api/v1/modules/jitsi-meet/meetings/participants/add",
+                    {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                            meetingId: state.meeting.id,
+                            username: normalized,
+                        }),
+                    },
+                );
+                if (!response.ok) {
+                    showToast(
+                        i18n.t("module.jitsi_meet.overlay.invite_failed"),
+                        {
+                            variant: "error",
+                        },
+                    );
+                    return;
+                }
+                const payload = await response
+                    .json()
+                    .catch(() => ({ data: null }));
+                if (payload?.data) state.meeting = payload.data;
+            }
             state.availableParticipants = state.availableParticipants.filter(
                 (entry) => entry.username !== normalized,
             );
             addParticipant(fromAvailable);
         }
 
-        if (targetZone === "available" && fromSelected) {
+        if (
+            !utils.isMeetingActive() &&
+            targetZone === "available" &&
+            fromSelected
+        ) {
             removeParticipant(normalized);
             if (
                 !state.availableParticipants.some(

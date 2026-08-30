@@ -234,6 +234,44 @@ export class JitsiMeetStore {
         return (result.rows ?? []).map((row) => String(row.username));
     }
 
+    async addMeetingParticipant(meetingId, username, { chatRoomId } = {}) {
+        const normalizedUsername = normalizeHandleKey(username);
+        if (!normalizedUsername) return this.getMeetingById(meetingId);
+        const participants = normalizeHandleKeys([
+            ...(await this.listParticipants(meetingId)),
+            normalizedUsername,
+        ]);
+        const meeting = await this.getMeetingById(meetingId);
+        if (!meeting) return null;
+        const updatedAt = new Date().toISOString();
+        await this.db.transaction(async (executor) => {
+            await executor.executeCommand({
+                option: "INSERT",
+                table: "jitsi_meeting_participants",
+                values: {
+                    meeting_id: meetingId,
+                    username: normalizedUsername,
+                    added_at: updatedAt,
+                },
+                conflict: { action: "ignore" },
+            });
+            await executor.executeCommand({
+                option: "UPDATE",
+                table: "jitsi_meetings",
+                set: {
+                    participant_key: buildParticipantKey(
+                        participants,
+                        meeting.classroomId,
+                    ),
+                    ...(chatRoomId ? { chat_room_id: chatRoomId } : {}),
+                    updated_at: updatedAt,
+                },
+                where: [{ column: "id", value: meetingId }],
+            });
+        });
+        return this.getMeetingById(meetingId);
+    }
+
     async findMeetingByParticipants(usernames, classroomId = null) {
         const participantKey = buildParticipantKey(usernames, classroomId);
         const result = await this.db.executeCommand({

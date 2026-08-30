@@ -345,6 +345,16 @@ test("jitsi meetings lock participants and block navigation while meeting is act
     );
 });
 
+test("active non-disposable meetings accept participant drops without unstaging invitees", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /meeting\?\.hasInvitedParticipants/);
+    assert.match(source, /meetings\/participants\/add/);
+    assert.match(
+        source,
+        /!utils\.isMeetingActive\(\)[\s\S]*targetZone === "available"/,
+    );
+});
+
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");

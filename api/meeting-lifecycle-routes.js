@@ -225,6 +225,144 @@ export function registerMeetingLifecycleRoutes({
     );
 
     router.post(
+        "/api/v1/modules/jitsi-meet/meetings/participants/add",
+        async (req, res) => {
+            await store.ensureSchema();
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            const body = await readJson(req);
+            const resolved = await resolveMeetingPayload({
+                body,
+                profileStore,
+                store,
+                claims,
+                res,
+                listClassroomParticipantHandles,
+                requesterAccountId: claims.sub,
+            });
+            if (!resolved) return;
+            if (
+                !resolved.state.firstJoinedAt ||
+                resolved.state.endedAt ||
+                !resolved.participants.some(
+                    (username) => username !== resolved.meeting.createdBy,
+                )
+            ) {
+                sendError(
+                    res,
+                    409,
+                    "meeting_not_extendable",
+                    "Only active non-disposable meetings can receive participants.",
+                );
+                return;
+            }
+            const requestedParticipants = await resolveRequestedParticipants(
+                profileStore,
+                [body.username],
+                { includeHidden: hasMinRole(claims.role, "admin") },
+            );
+            const username = requestedParticipants[0];
+            if (!username) {
+                sendError(
+                    res,
+                    400,
+                    "bad_request",
+                    "A valid username is required.",
+                );
+                return;
+            }
+            if (resolved.participants.includes(username)) {
+                sendJson(res, 200, {
+                    data: await createMeetingPayload({
+                        store,
+                        meeting: resolved.meeting,
+                        state: resolved.state,
+                        participants: resolved.participants,
+                        requesterUsername: resolved.requesterUsername,
+                        chatUrl: resolved.meeting.chatRoomId
+                            ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                            : null,
+                        requiresReclaim: false,
+                    }),
+                });
+                return;
+            }
+            const participants = [...resolved.participants, username];
+            let chatRoom = null;
+            if (typeof resolveGroupChat === "function") {
+                chatRoom = await resolveGroupChat({
+                    usernames: participants,
+                    title: buildMeetingChatTitle(resolved.meeting.meetingName),
+                    createdByAccountId: claims.sub,
+                    allowSingleMember: true,
+                }).catch((error) => {
+                    log?.(
+                        "error",
+                        "Meeting participant chat access update failed.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation: "add_active_meeting_participant_chat",
+                            meetingId: resolved.meeting.id,
+                            username,
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : String(error),
+                        },
+                    );
+                    return null;
+                });
+            }
+            if (!chatRoom?.roomId) {
+                sendError(
+                    res,
+                    503,
+                    "chat_unavailable",
+                    "Chat access could not be provisioned.",
+                );
+                return;
+            }
+            const meeting = await store.addMeetingParticipant(
+                resolved.meeting.id,
+                username,
+                { chatRoomId: chatRoom.roomId },
+            );
+            await dispatchMeetingNotifications([username], {
+                subject: "Meeting Invitation",
+                body: `${resolved.requesterUsername} invited you to an active meeting.`,
+                senderName: resolved.requesterUsername,
+                metadata: {
+                    event: "meeting_invited",
+                    meetingId: meeting.id,
+                },
+                meetingId: meeting.id,
+                organizerUsername: meeting.createdBy,
+            });
+            log?.("info", "Participant added to active meeting.", {
+                component: "jitsi-meet-module",
+                operation: "add_active_meeting_participant",
+                meetingId: meeting.id,
+                username,
+                requestedBy: resolved.requesterUsername,
+            });
+            sendJson(res, 200, {
+                data: await createMeetingPayload({
+                    store,
+                    meeting,
+                    state: resolved.state,
+                    participants,
+                    requesterUsername: resolved.requesterUsername,
+                    chatUrl:
+                        chatRoom.url ??
+                        `/messages/${encodeURIComponent(chatRoom.roomId)}`,
+                    requiresReclaim: false,
+                }),
+            });
+        },
+        { access: { minRole: "user" } },
+    );
+
+    router.post(
         "/api/v1/modules/jitsi-meet/meetings/join",
         async (req, res) => {
             await store.ensureSchema();

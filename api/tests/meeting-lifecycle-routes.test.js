@@ -176,3 +176,82 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     assert.equal(createResponse.body.data.chatRoomId, "chat-1");
     assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
 });
+
+test("active non-disposable meetings invite a newly dropped participant", async () => {
+    const handlers = new Map();
+    const notifications = [];
+    const additions = [];
+    const meeting = {
+        id: "meeting-1",
+        meetingName: "Bright-Otters-Meet-Safely",
+        chatRoomId: "chat-old",
+        createdBy: "alice",
+    };
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            async ensureSchema() {},
+            async addMeetingParticipant(meetingId, username, options) {
+                additions.push({ meetingId, username, options });
+                return { ...meeting, chatRoomId: options.chatRoomId };
+            },
+        },
+        requireAuth: () => ({ sub: "account-alice", role: "user" }),
+        readJson: async (req) => req.body,
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("active meeting invitation was rejected"),
+        profileStore: {},
+        resolveMeetingPayload: async () => ({
+            meeting,
+            requesterUsername: "alice",
+            participants: ["alice", "bob"],
+            state: {
+                firstJoinedAt: "2026-08-29T10:00:00.000Z",
+                endedAt: null,
+            },
+        }),
+        resolveRequestedParticipants: async () => ["carol"],
+        hasMinRole: () => false,
+        resolveGroupChat: async ({ usernames }) => ({
+            roomId: "chat-expanded",
+            url: "/messages/chat-expanded",
+            usernames,
+        }),
+        buildMeetingChatTitle: (name) => name,
+        createMeetingPayload: async (input) => ({
+            ...input.meeting,
+            participants: input.participants,
+            meetingPassword: "",
+            chatUrl: input.chatUrl,
+        }),
+        dispatchMeetingNotifications: async (...args) =>
+            notifications.push(args),
+        log: () => {},
+    });
+
+    const response = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/participants/add")(
+        { body: { meetingId: meeting.id, username: "carol" } },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(additions, [
+        {
+            meetingId: "meeting-1",
+            username: "carol",
+            options: { chatRoomId: "chat-expanded" },
+        },
+    ]);
+    assert.deepEqual(response.body.data.participants, [
+        "alice",
+        "bob",
+        "carol",
+    ]);
+    assert.equal(response.body.data.meetingPassword, "");
+    assert.equal(notifications[0][0][0], "carol");
+    assert.equal(notifications[0][1].metadata.event, "meeting_invited");
+});

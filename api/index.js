@@ -312,6 +312,7 @@ export function registerApiRoutes(router, ctx) {
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",
             "/api/v1/modules/jitsi-meet/meetings/join",
+            "/api/v1/modules/jitsi-meet/meetings/participants/add",
             "/api/v1/modules/jitsi-meet/meetings/reclaim",
             "/api/v1/modules/jitsi-meet/meetings/presence",
             "/api/v1/modules/jitsi-meet/meetings/auth-required",
