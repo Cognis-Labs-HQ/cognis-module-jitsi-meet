@@ -184,6 +184,14 @@ export function closeMeetingWhiteboard(root) {
     closeComponentWindow(mountedWhiteboardButtons.get(root));
 }
 
+export function placeMeetingOverlayForActiveWindow(root) {
+    const trigger = mountedWhiteboardButtons.get(root);
+    if (!trigger) return;
+    placeMeetingOverlay(trigger, {
+        floating: Boolean(trigger.releaseFloatingWindow),
+    });
+}
+
 export async function bindWhiteboardButton({
     root,
     signal,

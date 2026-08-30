@@ -371,6 +371,7 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /setActiveParticipantDropzoneVisible/);
+    assert.match(source, /placeMeetingOverlayForActiveWindow\(root\)/);
     assert.match(
         source,
         /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,

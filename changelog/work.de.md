@@ -66,7 +66,13 @@ Das Meeting-Bild-in-Bild hat nun nur zwei Mindestgrößen: 400 × 225 Pixel für
 
 DOM-Referenzen für Besprechungsrahmen und Einblendung bleiben jetzt lokal in der Meetings-Oberfläche, statt erneut aus der Whiteboard-Capability-Antwort deklariert zu werden. Der Browser kann die Steuerung wieder parsen und laden; eine direkte JavaScript-Syntaxprüfung schützt den Einstiegspunkt.
 
+## Ablage für aktive Meetings im Bild-in-Bild halten
+
+Der Start eines Teilnehmer-Ziehvorgangs bestätigt jetzt erneut das Einblendungs-Elternelement des aktuell aktiven Besprechungsfensters. Bei geöffnetem Whiteboard-Bild-in-Bild erscheint der grüne Teilnehmer-Ablagebereich über dem schwebenden Jitsi-Rahmen; andernfalls bleibt er über der normalen Besprechungsbühne.
+
 ## Commits
+
+- [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 
 - [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 

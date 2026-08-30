@@ -177,6 +177,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
+        /placeMeetingOverlayForActiveWindow[\s\S]*?floating: Boolean\(trigger\.releaseFloatingWindow\)/,
+    );
+    assert.match(
+        buttonSource,
         /function closeComponentWindow[\s\S]*?placeMeetingOverlay\(trigger\)/,
     );
     assert.match(buttonSource, /loadRetryAfter:\s*0/);

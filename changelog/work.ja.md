@@ -66,7 +66,13 @@ Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.ex
 
 ミーティングフレームとオーバーレイの DOM 参照は、Whiteboard Capability ペイロードから再宣言せず Meetings サーフェス内のローカル参照として保持するようになりました。ブラウザがコントローラーを再び解析して読み込めるようになり、直接の JavaScript 構文回帰チェックでエントリポイントを保護します。
 
+## 進行中ミーティングのドロップ先を PiP 内に保持
+
+参加者のドラッグ開始時に、現在アクティブなミーティングウィンドウのオーバーレイ親要素を再確認するようになりました。Whiteboard PiP が開いている場合、緑色の参加者ドロップ先はフローティング Jitsi フレーム上に表示され、それ以外では通常のミーティングステージ上に残ります。
+
 ## コミット
+
+- [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 
 - [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 

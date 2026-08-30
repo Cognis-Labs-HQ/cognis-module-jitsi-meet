@@ -8,6 +8,7 @@ import {
     STATE_REFRESH_INTERVAL_MS,
 } from "../constants.js";
 import { createParticipantAvatarEl } from "../jitsi-helpers.js";
+import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
 
 const { normalizeUsername } = await importReuseModule("value-normalizers.js");
@@ -212,6 +213,7 @@ export function createPreflightHandlers({
         ) {
             return;
         }
+        placeMeetingOverlayForActiveWindow(root);
         const overlay = root.querySelector("#jitsi-overlay");
         if (!(overlay instanceof HTMLElement)) return;
         overlay.classList.toggle("jitsi-overlay-participant-drop", visible);

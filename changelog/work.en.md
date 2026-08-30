@@ -66,7 +66,13 @@ The meeting PiP now has only two minimum-size states: 400 × 225 pixels for up t
 
 Meeting-frame and overlay DOM references now remain local to the Meetings surface instead of being redeclared from the Whiteboard capability payload. The browser can parse and load the controller again, and a direct JavaScript syntax regression check protects the entrypoint.
 
+## Keep active-meeting drops on PiP
+
+Starting a participant drag now reasserts the overlay parent for the currently active meeting window. When Whiteboard PiP is open, the green participant dropzone appears over the floating Jitsi frame; otherwise it remains over the normal meeting stage.
+
 ## Commits
+
+- [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
 
 - [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 
