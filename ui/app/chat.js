@@ -229,7 +229,13 @@ export function createChatHandlers({
                 }),
             ),
         );
-        void hydrateProfileAvatars(strip);
+        void hydrateProfileAvatars(strip).catch((error) =>
+            logUi(
+                "error",
+                "[jitsi-meet] chat participant hydration failed:",
+                error,
+            ),
+        );
         if (returnButton instanceof HTMLButtonElement) {
             returnButton.hidden =
                 state.chatMode !== "private" || !state.lastMeetingChatRoomId;

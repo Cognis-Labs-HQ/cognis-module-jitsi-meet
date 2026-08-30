@@ -83,7 +83,8 @@ export function createPreflightHandlers({
 
         if (state.availableParticipants.length === 0) {
             const emptyMessage = document.createElement("p");
-            emptyMessage.className = "jitsi-participants-empty";
+            emptyMessage.className =
+                "jitsi-active-meetings-empty jitsi-participants-empty";
             emptyMessage.textContent = i18n.t(
                 "module.jitsi_meet.participants.available_none",
             );
@@ -95,7 +96,13 @@ export function createPreflightHandlers({
                 ),
             );
         }
-        void hydrateProfileAvatars(availablePool);
+        void hydrateProfileAvatars(availablePool).catch((error) =>
+            logUi(
+                "error",
+                "[jitsi-meet] participant availability hydration failed:",
+                error,
+            ),
+        );
 
         const stagedEntries = utils.isMeetingActive()
             ? []
@@ -103,7 +110,13 @@ export function createPreflightHandlers({
         stagedArea.replaceChildren(
             ...stagedEntries.map((entry) => createParticipantAvatarEl(entry)),
         );
-        void hydrateProfileAvatars(stagedArea);
+        void hydrateProfileAvatars(stagedArea).catch((error) =>
+            logUi(
+                "error",
+                "[jitsi-meet] staged participant hydration failed:",
+                error,
+            ),
+        );
 
         const participantSelectionLocked =
             utils.isMeetingActive() && !state.meeting?.hasInvitedParticipants;
@@ -125,6 +138,51 @@ export function createPreflightHandlers({
             });
         }
         callbacks.renderActiveMeetings();
+    }
+
+    async function refreshAvailableParticipants() {
+        if (state.shareAccessToken) return;
+        const meetingId = String(state.meeting?.id ?? "").trim();
+        const query = meetingId
+            ? `?meetingId=${encodeURIComponent(meetingId)}`
+            : "";
+        const response = await apiFetch(
+            `/api/v1/modules/jitsi-meet/participants${query}`,
+        );
+        if (!response.ok) return;
+        const payload = await response.json().catch(() => ({ data: [] }));
+        const selectedByUsername = new Map(
+            state.selectedParticipants.map((entry) => [entry.username, entry]),
+        );
+        state.allParticipants = (
+            Array.isArray(payload?.data) ? payload.data : []
+        )
+            .map((entry) => ({
+                username: normalizeUsername(entry?.handle ?? entry?.username),
+                displayName: String(entry?.displayName ?? entry?.handle ?? ""),
+                avatarKey:
+                    typeof entry?.avatarKey === "string"
+                        ? entry.avatarKey
+                        : null,
+            }))
+            .filter((entry) => entry.username)
+            .sort((left, right) => left.username.localeCompare(right.username));
+        state.selectedParticipants = state.selectedParticipants.map(
+            (entry) =>
+                state.allParticipants.find(
+                    (candidate) => candidate.username === entry.username,
+                ) ?? selectedByUsername.get(entry.username),
+        );
+        const selectedUsernames = new Set(
+            state.selectedParticipants.map((entry) => entry.username),
+        );
+        for (const username of state.meeting?.participants ?? []) {
+            selectedUsernames.add(normalizeUsername(username));
+        }
+        state.availableParticipants = state.allParticipants.filter(
+            (entry) => !selectedUsernames.has(entry.username),
+        );
+        renderParticipants();
     }
 
     function removeParticipant(username) {
@@ -208,7 +266,20 @@ export function createPreflightHandlers({
                 const payload = await response
                     .json()
                     .catch(() => ({ data: null }));
-                if (payload?.data) state.meeting = payload.data;
+                if (payload?.data) {
+                    state.meeting = payload.data;
+                    await callbacks.updateNativeChat();
+                    await callbacks.syncMeetingWhiteboardComponent?.();
+                }
+                showToast(
+                    i18n
+                        .t("module.jitsi_meet.participants.invite_success")
+                        .replace(
+                            "{{participant}}",
+                            fromAvailable.displayName || normalized,
+                        ),
+                    { variant: "success" },
+                );
             }
             state.availableParticipants = state.availableParticipants.filter(
                 (entry) => entry.username !== normalized,
@@ -295,7 +366,11 @@ export function createPreflightHandlers({
                 (entry) => !participantUsernames.has(entry.username),
             );
             state.meeting.participants = payload.data.participants;
+            if (typeof payload.data.chatRoomId === "string") {
+                state.meeting.chatRoomId = payload.data.chatRoomId;
+            }
             renderParticipants();
+            await callbacks.updateNativeChat();
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {
@@ -509,6 +584,7 @@ export function createPreflightHandlers({
         recoverMeetingSessionAfterComposerRender,
         removeParticipant,
         renderParticipants,
+        refreshAvailableParticipants,
         runPreflightCheck,
         setActiveParticipantDropzoneVisible,
     };

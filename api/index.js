@@ -30,6 +30,7 @@ import {
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
+const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 320, height: 180 });
 
 function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
     if (typeof registerScriptOrigins !== "function") {
@@ -116,6 +117,7 @@ export function registerUi(ctx) {
                 labelKey: "module.jitsi_meet.page_title",
                 descriptionKey: "module.jitsi_meet.description",
                 modes: ["overlay", "fullscreen", "pip"],
+                minSize: JITSI_PIP_MINIMUM_SIZE,
             },
         },
         {

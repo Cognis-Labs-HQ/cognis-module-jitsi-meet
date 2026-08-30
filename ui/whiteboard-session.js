@@ -14,6 +14,41 @@ function getParticipantHandles(meeting) {
         .filter(Boolean);
 }
 
+export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
+    const whiteboardId = String(
+        state.meeting?.state?.whiteboardId ??
+            trigger.preparedWhiteboardId ??
+            "",
+    ).trim();
+    if (!whiteboardId || state.shareAccessToken || trigger.disposableCanvas) {
+        return null;
+    }
+    if (typeof trigger.whiteboardGateway?.expandCanvasAccess !== "function") {
+        return false;
+    }
+    const participantHandles = getParticipantHandles(state.meeting).sort();
+    const signature = `${whiteboardId}:${participantHandles.join(",")}`;
+    if (trigger.participantAccessSignature === signature) return true;
+    if (trigger.participantAccessPromise) {
+        await trigger.participantAccessPromise;
+        if (trigger.participantAccessSignature === signature) return true;
+    }
+    const accessPromise = trigger.whiteboardGateway.expandCanvasAccess({
+        whiteboardId,
+        participantHandles,
+    });
+    trigger.participantAccessPromise = accessPromise;
+    try {
+        await accessPromise;
+        trigger.participantAccessSignature = signature;
+        return true;
+    } finally {
+        if (trigger.participantAccessPromise === accessPromise) {
+            trigger.participantAccessPromise = null;
+        }
+    }
+}
+
 export function meetingHasInvitedParticipants(meeting) {
     if (typeof meeting?.hasInvitedParticipants === "boolean") {
         return meeting.hasInvitedParticipants;

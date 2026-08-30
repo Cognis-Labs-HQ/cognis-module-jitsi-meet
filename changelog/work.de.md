@@ -32,9 +32,15 @@ Geroutete, freigegebene und eingebettete Meetings-Mounts beanspruchen kein berei
 
 ## Teilnehmerschlüssel-Kollisionen verhindern und reservierte Benutzer ausblenden
 
-Änderungen der aktiven Mitgliedschaft verwenden nun einen besprechungsbezogenen Teilnehmerschlüssel. Dadurch entstehen keine PostgreSQL-Eindeutigkeitsfehler mehr, wenn die neue Teilnehmerliste einer anderen Besprechung entspricht. Die Teilnehmersuche blendet Benutzer aus, die für eine andere aktive oder geplante Besprechung reserviert sind; die API für aktive Einladungen erzwingt dieselbe Verfügbarkeitsregel.
+Änderungen der aktiven Mitgliedschaft verwenden nun einen besprechungsbezogenen Teilnehmerschlüssel. Dadurch entstehen keine PostgreSQL-Eindeutigkeitsfehler mehr, wenn die neue Teilnehmerliste einer anderen Besprechung entspricht. Die Teilnehmersuche blendet Benutzer aus, die in einer anderen Besprechung aktiv anwesend sind; die API für aktive Einladungen erzwingt dieselbe Verfügbarkeitsregel, ohne geplante Eingeladene auszublenden.
+
+## Live-Teilnehmerintegrationen aktualisieren
+
+Verfügbare Teilnehmer und aktive Besprechungen werden jetzt alle fünf Sekunden aktualisiert, Avatar-Anwesenheitsanbieter nach SPA-Navigation initialisiert, der Besprechungschat mit erweitertem Teilnehmerkreis und neuen Nachrichten neu geladen und erfolgreiche aktive Einladungen per Toast bestätigt. Vorhandene dauerhafte Whiteboards erhalten über eine optionale Anbieter-Capability erweiterten Teilnehmerzugriff. Der leere Teilnehmerhinweis entspricht dem Zustand für leere aktive Besprechungen, der Entfernungshinweis ist kürzer und die angegebene Mindestgröße für Bild-in-Bild beträgt 320 × 180 Pixel.
 
 ## Commits
+
+- [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)

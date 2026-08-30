@@ -466,8 +466,7 @@
 }
 
 .jitsi-route-root .jitsi-participants-empty {
-    margin: 0;
-    color: var(--color-text-muted);
+    grid-column: auto;
 }
 
 .jitsi-route-root .jitsi-active-meeting-item {

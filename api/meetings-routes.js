@@ -728,6 +728,7 @@ export function registerMeetingRoutes({
                                 : activeUsernames;
                         })(),
                         sessionActive: true,
+                        chatRoomId: meeting.chatRoomId,
                     },
                 });
                 return;
@@ -764,6 +765,7 @@ export function registerMeetingRoutes({
                         .filterCurrentPresenceEntries(presence)
                         .map((entry) => entry.username),
                     participants: resolved.participants,
+                    chatRoomId: resolved.meeting.chatRoomId,
                     sessionActive: sessionPresence
                         ? store.isPresenceEntryCurrent(sessionPresence)
                         : true,

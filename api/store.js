@@ -907,27 +907,15 @@ export class JitsiMeetStore {
     }
 
     async listReservedParticipantUsernames(excludedMeetingId = "") {
-        const [activeMeetings, upcomingMeetings] = await Promise.all([
-            this.listActiveMeetings(),
-            this.listUpcomingMeetings(),
-        ]);
-        const meetingIds = Array.from(
-            new Set(
-                [
-                    ...activeMeetings.filter((meeting) => !meeting.endedAt),
-                    ...upcomingMeetings,
-                ]
-                    .map((meeting) => String(meeting?.id ?? ""))
-                    .filter(
-                        (meetingId) =>
-                            meetingId && meetingId !== excludedMeetingId,
-                    ),
-            ),
+        const activeMeetings = await this.listActiveMeetings();
+        return normalizeHandleKeys(
+            activeMeetings
+                .filter(
+                    (meeting) =>
+                        !meeting.endedAt && meeting.id !== excludedMeetingId,
+                )
+                .flatMap((meeting) => meeting.activeUsernames ?? []),
         );
-        const participantLists = await Promise.all(
-            meetingIds.map((meetingId) => this.listParticipants(meetingId)),
-        );
-        return normalizeHandleKeys(participantLists.flat());
     }
 
     normalizeMeetingCreationInput({

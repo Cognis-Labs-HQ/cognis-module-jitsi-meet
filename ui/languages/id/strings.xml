@@ -34,7 +34,7 @@
   <string name="module.jitsi_meet.overlay.remain_in_meeting">Tetap di Rapat</string>
   <string name="module.jitsi_meet.overlay.meeting_closed">Rapat ini telah ditutup.</string>
   <string name="module.jitsi_meet.overlay.meeting_left">Anda telah meninggalkan rapat.</string>
-  <string name="module.jitsi_meet.overlay.kicked">Anda dikeluarkan dari rapat dan harus diundang kembali.</string>
+  <string name="module.jitsi_meet.overlay.kicked">Anda dikeluarkan dari rapat.</string>
   <string name="module.jitsi_meet.overlay.kick_sync_failed">Rapat tidak dapat mencatat bahwa Anda telah dikeluarkan.</string>
   <string name="module.jitsi_meet.overlay.leave_blocked">Keluar dari rapat dulu sebelum berpindah dari halaman ini.</string>
   <string name="module.jitsi_meet.overlay.probe_done">Pemeriksaan Pra-Penerbangan Berhasil.</string>
@@ -63,6 +63,7 @@
   <string name="module.jitsi_meet.participants.none">Tidak ada peserta untuk ditampilkan.</string>
   <string name="module.jitsi_meet.participants.available_none">Tidak ada peserta yang tersedia.</string>
   <string name="module.jitsi_meet.participants.drop_to_invite">Letakkan peserta di sini untuk mengundangnya ke rapat.</string>
+  <string name="module.jitsi_meet.participants.invite_success">{{participant}} ditambahkan ke rapat aktif.</string>
   <string name="module.jitsi_meet.participants.add_selected">Tambahkan yang Dipilih</string>
   <string name="module.jitsi_meet.admin.config.instance_url">URL Instans Jitsi</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Masukkan URL dasar lengkap dari deployment Jitsi kamu.</string>

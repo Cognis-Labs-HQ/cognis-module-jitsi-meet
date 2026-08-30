@@ -32,9 +32,15 @@ Mount Meetings yang dirutekan, dibagikan, dan disematkan kini tidak mengambil ro
 
 ## Cegah benturan kunci peserta dan sembunyikan pengguna yang dicadangkan
 
-Perubahan keanggotaan aktif kini menggunakan kunci peserta yang tercakup pada rapat sehingga kegagalan keunikan PostgreSQL tidak terjadi saat daftar peserta yang dihasilkan sama dengan rapat lain. Pencarian peserta menyembunyikan pengguna yang dicadangkan oleh rapat aktif atau terjadwal lain, dan API undangan aktif menerapkan aturan ketersediaan yang sama.
+Perubahan keanggotaan aktif kini menggunakan kunci peserta yang tercakup pada rapat sehingga kegagalan keunikan PostgreSQL tidak terjadi saat daftar peserta yang dihasilkan sama dengan rapat lain. Pencarian peserta menyembunyikan pengguna yang sedang hadir aktif dalam rapat lain, dan API undangan aktif menerapkan aturan ketersediaan yang sama tanpa menyembunyikan pengguna yang hanya dijadwalkan untuk diundang.
+
+## Segarkan integrasi peserta langsung
+
+Peserta tersedia dan rapat aktif kini disegarkan setiap lima detik, penyedia kehadiran avatar diinisialisasi setelah navigasi SPA, chat rapat memuat ulang keanggotaan yang diperluas beserta pesan baru, dan undangan aktif yang berhasil menampilkan toast. Papan tulis persisten yang sudah ada menerima perluasan akses peserta melalui kapabilitas penyedia opsional. Pesan peserta kosong cocok dengan status rapat aktif kosong, pesan pengeluaran dipersingkat, dan ukuran minimum gambar-dalam-gambar yang diumumkan adalah 320 × 180 piksel.
 
 ## Commit
+
+- [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
 
 - [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
 - [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)

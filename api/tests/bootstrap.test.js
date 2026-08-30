@@ -158,6 +158,7 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         labelKey: "module.jitsi_meet.page_title",
         descriptionKey: "module.jitsi_meet.description",
         modes: ["overlay", "fullscreen", "pip"],
+        minSize: { width: 320, height: 180 },
     });
     assert.deepEqual(
         firstEnabledSnapshot.uiContributions.find(

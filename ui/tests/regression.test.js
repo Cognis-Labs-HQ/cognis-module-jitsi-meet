@@ -180,7 +180,7 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
         source,
         /const stagedEntries = utils\.isMeetingActive\(\)\s*\?\s*\[\]\s*:\s*state\.selectedParticipants;/,
     );
-    assert.match(source, /void hydrateProfileAvatars\(availablePool\);/);
+    assert.match(source, /hydrateProfileAvatars\(availablePool\)\.catch/);
     assert.match(cssSource, /\.jitsi-participant-avatar-img/);
 });
 
@@ -407,6 +407,38 @@ test("local Jitsi kick events remove account participants or invalidate guest li
         source,
         /payload\.data\.participants[\s\S]*state\.availableParticipants = state\.allParticipants\.filter/,
     );
+});
+
+test("meeting participant surfaces and chat refresh membership in real time", () => {
+    const source = readJitsiUiBundle();
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
+    assert.match(source, /async function refreshAvailableParticipants\(\)/);
+    assert.match(
+        source,
+        /loadActiveMeetings[\s\S]*callbacks\.refreshAvailableParticipants/,
+    );
+    assert.match(
+        source,
+        /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateNativeChat\(\)/,
+    );
+    assert.match(source, /module\.jitsi_meet\.participants\.invite_success/);
+    assert.match(
+        source,
+        /jitsi-active-meetings-empty jitsi-participants-empty/,
+    );
+    assert.match(
+        cssSource,
+        /\.jitsi-participants-empty\s*{\s*grid-column: auto;/,
+    );
+    assert.doesNotMatch(source, /and must be invited again/);
+});
+
+test("SPA participant avatars force availability-provider refresh", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /ui:ensureProvidersLoaded/);
+    assert.match(source, /ui:availabilityRenderer/);
+    assert.match(source, /availabilityRenderer\.refresh\(container\)/);
 });
 
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {

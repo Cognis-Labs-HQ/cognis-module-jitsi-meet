@@ -9,6 +9,7 @@ import {
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
     spawnComponentWindowWithRetry,
+    synchronizeWhiteboardParticipantAccess,
 } from "./whiteboard-session.js";
 const mountedWhiteboardButtons = new WeakMap();
 let componentStageSequence = 0;
@@ -122,6 +123,31 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (!trigger?.button) return;
     syncWhiteboardButtonAvailability({ root, state });
+    void synchronizeWhiteboardParticipantAccess(trigger, state)
+        .then((expanded) => {
+            if (expanded !== false || trigger.participantAccessWarningLogged)
+                return;
+            trigger.participantAccessWarningLogged = true;
+            return logUi(
+                "warn",
+                "Whiteboard provider cannot expand participant access.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "expand_meeting_whiteboard_access_unavailable",
+                    meetingId: state.meeting?.id,
+                    whiteboardId: state.meeting?.state?.whiteboardId,
+                },
+            );
+        })
+        .catch((error) =>
+            logUi("error", "Whiteboard participant access expansion failed.", {
+                component: "module:jitsi-meet",
+                operation: "expand_meeting_whiteboard_access",
+                meetingId: state.meeting?.id,
+                whiteboardId: state.meeting?.state?.whiteboardId,
+                error: error instanceof Error ? error.message : String(error),
+            }),
+        );
     const shouldOpen = meetingWhiteboardShouldOpen(state.meeting);
     if (!shouldOpen && trigger.componentWindowPending !== true) {
         closeComponentWindow(trigger);
@@ -236,6 +262,9 @@ export async function bindWhiteboardButton({
         preparedMeetingId: state.meeting?.id ?? "",
         preparationPromise: null,
         preparationFailedMeetingId: "",
+        participantAccessPromise: null,
+        participantAccessSignature: "",
+        participantAccessWarningLogged: false,
         releaseFloatingWindow: null,
         sharedOpenRequested: false,
         signal,

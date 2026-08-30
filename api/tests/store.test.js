@@ -3,6 +3,36 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { JitsiMeetStore } from "../store.js";
 
+test("reserved participants include only active presence in other meetings", async () => {
+    const store = new JitsiMeetStore({ db: {} });
+    store.listActiveMeetings = async () => [
+        {
+            id: "current-meeting",
+            endedAt: null,
+            activeUsernames: ["alice"],
+        },
+        {
+            id: "other-meeting",
+            endedAt: null,
+            activeUsernames: ["Bob", "bob"],
+            participants: ["bob", "invited-only"],
+        },
+        {
+            id: "ended-meeting",
+            endedAt: "2026-08-30T00:00:00.000Z",
+            activeUsernames: ["carol"],
+        },
+    ];
+    store.listUpcomingMeetings = async () => {
+        throw new Error("scheduled meetings must not reserve participants");
+    };
+
+    assert.deepEqual(
+        await store.listReservedParticipantUsernames("current-meeting"),
+        ["bob"],
+    );
+});
+
 function createMockJitsiDb({
     meetingRows = [],
     participantRows = [],

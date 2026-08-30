@@ -281,7 +281,7 @@ export function registerMeetingLifecycleRoutes({
                     res,
                     409,
                     "participant_unavailable",
-                    "The participant is in another current or scheduled meeting.",
+                    "The participant is active in another meeting.",
                 );
                 return;
             }

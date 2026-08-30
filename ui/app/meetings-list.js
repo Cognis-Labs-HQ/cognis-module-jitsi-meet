@@ -267,9 +267,10 @@ export function createMeetingHandlers({
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
         renderActiveMeetings({ loading: true });
-        const response = await apiFetch(
-            "/api/v1/modules/jitsi-meet/meetings/active",
-        );
+        const [response] = await Promise.all([
+            apiFetch("/api/v1/modules/jitsi-meet/meetings/active"),
+            callbacks.refreshAvailableParticipants?.(),
+        ]);
         if (!response.ok) {
             state.activeMeetings = [];
             renderActiveMeetings();

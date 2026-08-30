@@ -73,7 +73,7 @@ test("meeting participant search preserves follow filtering and omits the curren
     ]);
 });
 
-test("participant search hides users reserved by current or scheduled meetings", async () => {
+test("participant search hides users active in another meeting", async () => {
     const routes = [];
     registerMeetingParticipantRoutes({
         router: { get: (path, handler) => routes.push({ path, handler }) },

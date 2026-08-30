@@ -6,6 +6,7 @@ import {
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
     spawnComponentWindowWithRetry,
+    synchronizeWhiteboardParticipantAccess,
 } from "../whiteboard-session.js";
 
 test("component page discovery makes one broker request per mount", async () => {
@@ -209,4 +210,41 @@ test("share guests wait for a host mapping instead of creating a canvas", async 
     await prepareMeetingCanvas(trigger, state);
 
     assert.equal(trigger.preparedWhiteboardId, "");
+});
+
+test("persistent whiteboards expand access when meeting membership changes", async () => {
+    const requests = [];
+    const trigger = {
+        disposableCanvas: false,
+        participantAccessPromise: null,
+        participantAccessSignature: "",
+        preparedWhiteboardId: "board-1",
+        whiteboardGateway: {
+            async expandCanvasAccess(request) {
+                requests.push(request);
+            },
+        },
+    };
+    const state = {
+        shareAccessToken: "",
+        meeting: {
+            participants: ["carol", "alice", "bob"],
+            state: { whiteboardId: "board-1" },
+        },
+    };
+
+    assert.equal(
+        await synchronizeWhiteboardParticipantAccess(trigger, state),
+        true,
+    );
+    assert.equal(
+        await synchronizeWhiteboardParticipantAccess(trigger, state),
+        true,
+    );
+    assert.deepEqual(requests, [
+        {
+            whiteboardId: "board-1",
+            participantHandles: ["alice", "bob", "carol"],
+        },
+    ]);
 });

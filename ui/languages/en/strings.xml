@@ -34,7 +34,7 @@
   <string name="module.jitsi_meet.overlay.remain_in_meeting">Remain in Meeting</string>
   <string name="module.jitsi_meet.overlay.meeting_closed">This meeting has been closed.</string>
   <string name="module.jitsi_meet.overlay.meeting_left">You left the meeting.</string>
-  <string name="module.jitsi_meet.overlay.kicked">You were removed from the meeting and must be invited again.</string>
+  <string name="module.jitsi_meet.overlay.kicked">You were removed from the meeting.</string>
   <string name="module.jitsi_meet.overlay.kick_sync_failed">The meeting could not record that you were removed.</string>
   <string name="module.jitsi_meet.overlay.leave_blocked">Leave the meeting before navigating away from this page.</string>
   <string name="module.jitsi_meet.overlay.probe_done">Pre-Flight Check Passed.</string>
@@ -63,6 +63,7 @@
   <string name="module.jitsi_meet.participants.none">No participants to display.</string>
   <string name="module.jitsi_meet.participants.available_none">No available participants.</string>
   <string name="module.jitsi_meet.participants.drop_to_invite">Drop participant here to invite them to the meeting.</string>
+  <string name="module.jitsi_meet.participants.invite_success">{{participant}} was added to the active meeting.</string>
   <string name="module.jitsi_meet.participants.add_selected">Add Selected</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Instance URL</string>
   <string name="module.jitsi_meet.admin.config.instance_url_description">Enter the full base URL of your Jitsi deployment.</string>
