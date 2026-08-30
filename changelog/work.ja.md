@@ -46,7 +46,13 @@ Whiteboard ボタンはボードを開くときに確認スタイルを使用し
 
 ミーティング PiP の基本最小サイズを従来より 25% 大きい 400 × 225 ピクセルにしました。進行中の参加者が3人目以降になると、参加者ごとに両方の寸法をさらに 25% 増やし、Cognis のフローティングウィンドウ最小サイズ更新機能で直ちに適用します。
 
+## Whiteboard 拡張契約を検証
+
+Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.expandCanvasAccess` の正確な契約を検証するようになりました。更新を同期済みとして記録する前に、成功応答は要求したキャンバスを識別し、要求した全参加者を拡張後のアクセス一覧として返す必要があります。
+
 ## コミット
+
+- [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 
 - [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 

@@ -46,7 +46,13 @@ Die Whiteboard-Schaltfläche verwendet jetzt beim Öffnen die Bestätigungsdarst
 
 Die Mindestgröße des Meeting-Bild-in-Bild beträgt nun 400 × 225 Pixel und ist damit 25 % größer als zuvor. Ab dem dritten aktiven Teilnehmer wachsen beide Maße pro Teilnehmer um weitere 25 % und werden sofort über Cognis’ Aktualisierung der Floating-Window-Mindestgröße angewendet.
 
+## Whiteboard-Erweiterungsvertrag prüfen
+
+Meetings validiert nun den exakten Vertrag `whiteboard:uiGateway.expandCanvasAccess`, den Nextcloud Whiteboard PR 24 bereitstellt. Eine erfolgreiche Aktualisierung muss die angeforderte Arbeitsfläche identifizieren und jeden angeforderten Teilnehmer in der erweiterten Zugriffsliste zurückgeben, bevor Meetings die Synchronisierung als abgeschlossen speichert.
+
 ## Commits
+
+- [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 
 - [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 

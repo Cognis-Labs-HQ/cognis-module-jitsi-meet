@@ -247,6 +247,10 @@ test("persistent whiteboards expand access when meeting membership changes", asy
         whiteboardGateway: {
             async expandCanvasAccess(request) {
                 requests.push(request);
+                return {
+                    whiteboardId: request.whiteboardId,
+                    participants: request.participantHandles,
+                };
             },
         },
     };
@@ -272,4 +276,30 @@ test("persistent whiteboards expand access when meeting membership changes", asy
             participantHandles: ["alice", "bob", "carol"],
         },
     ]);
+});
+
+test("whiteboard expansion rejects a provider response missing participants", async () => {
+    const trigger = {
+        disposableCanvas: false,
+        participantAccessPromise: null,
+        participantAccessSignature: "",
+        preparedWhiteboardId: "board-1",
+        whiteboardGateway: {
+            async expandCanvasAccess() {
+                return { whiteboardId: "board-1", participants: ["alice"] };
+            },
+        },
+    };
+
+    await assert.rejects(
+        synchronizeWhiteboardParticipantAccess(trigger, {
+            shareAccessToken: "",
+            meeting: {
+                participants: ["alice", "bob"],
+                state: { whiteboardId: "board-1" },
+            },
+        }),
+        /whiteboard_participant_access_invalid_response/,
+    );
+    assert.equal(trigger.participantAccessSignature, "");
 });

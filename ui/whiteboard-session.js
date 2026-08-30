@@ -52,10 +52,37 @@ export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
         await trigger.participantAccessPromise;
         if (trigger.participantAccessSignature === signature) return true;
     }
-    const accessPromise = trigger.whiteboardGateway.expandCanvasAccess({
-        whiteboardId,
-        participantHandles,
-    });
+    const accessPromise = trigger.whiteboardGateway
+        .expandCanvasAccess({
+            whiteboardId,
+            participantHandles,
+        })
+        .then((result) => {
+            const expandedWhiteboardId = String(
+                result?.whiteboardId ?? "",
+            ).trim();
+            const expandedParticipants = new Set(
+                (Array.isArray(result?.participants) ? result.participants : [])
+                    .map((participant) =>
+                        String(participant ?? "")
+                            .trim()
+                            .toLowerCase(),
+                    )
+                    .filter(Boolean),
+            );
+            if (
+                expandedWhiteboardId !== whiteboardId ||
+                participantHandles.some(
+                    (participant) =>
+                        !expandedParticipants.has(participant.toLowerCase()),
+                )
+            ) {
+                throw new Error(
+                    "whiteboard_participant_access_invalid_response",
+                );
+            }
+            return result;
+        });
     trigger.participantAccessPromise = accessPromise;
     try {
         await accessPromise;

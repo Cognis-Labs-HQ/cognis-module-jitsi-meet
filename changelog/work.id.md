@@ -46,7 +46,13 @@ Tombol Papan Tulis kini memakai tampilan konfirmasi saat membuka papan dan beral
 
 Minimum gambar-dalam-gambar rapat kini 400 × 225 piksel, 25% lebih besar dari sebelumnya. Mulai peserta aktif ketiga, kedua dimensi bertambah 25% lagi per peserta dan langsung diterapkan melalui pembaru ukuran minimum jendela mengambang Cognis.
 
+## Verifikasi kontrak perluasan Papan Tulis
+
+Meetings kini memvalidasi kontrak `whiteboard:uiGateway.expandCanvasAccess` persis yang disediakan PR 24 Nextcloud Whiteboard. Pembaruan yang berhasil harus mengidentifikasi kanvas yang diminta dan mengembalikan setiap peserta yang diminta dalam daftar akses yang diperluas sebelum Meetings mencatat sinkronisasi sebagai selesai.
+
 ## Commit
+
+- [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 
 - [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 

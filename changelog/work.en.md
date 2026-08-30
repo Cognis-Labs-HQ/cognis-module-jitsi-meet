@@ -46,7 +46,13 @@ The Whiteboard button now uses the confirm treatment when it opens a board and s
 
 The base meeting PiP minimum is now 400 × 225 pixels, 25% larger than before. Starting with the third active participant, both dimensions grow by another 25% per participant and are applied immediately through Cognis’ floating-window minimum-size updater.
 
+## Verify the Whiteboard expansion contract
+
+Meetings now validates the exact `whiteboard:uiGateway.expandCanvasAccess` contract supplied by Nextcloud Whiteboard PR 24. A successful update must identify the requested canvas and return every requested participant in the expanded access list before Meetings records the synchronization as complete.
+
 ## Commits
+
+- [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
 
 - [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
 
