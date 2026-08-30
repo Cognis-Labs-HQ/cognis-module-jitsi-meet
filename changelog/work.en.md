@@ -62,7 +62,13 @@ Meeting overlays, including the alone-participant prompt, now move into the floa
 
 The meeting PiP now has only two minimum-size states: 400 × 225 pixels for up to two active participants and 500 × 282 pixels for three or more. Larger meetings no longer keep increasing the minimum and taking over the available screen.
 
+## Restore Whiteboard controller parsing
+
+Meeting-frame and overlay DOM references now remain local to the Meetings surface instead of being redeclared from the Whiteboard capability payload. The browser can parse and load the controller again, and a direct JavaScript syntax regression check protects the entrypoint.
+
 ## Commits
+
+- [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 
 - [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 

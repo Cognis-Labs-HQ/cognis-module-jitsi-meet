@@ -62,7 +62,13 @@ Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.ex
 
 ミーティング PiP の最小サイズは、進行中の参加者が2人までは 400 × 225 ピクセル、3人以上は 500 × 282 ピクセルの2段階だけになりました。大規模なミーティングでも最小サイズが増え続けて画面を占有することはありません。
 
+## Whiteboard コントローラーの解析を復旧
+
+ミーティングフレームとオーバーレイの DOM 参照は、Whiteboard Capability ペイロードから再宣言せず Meetings サーフェス内のローカル参照として保持するようになりました。ブラウザがコントローラーを再び解析して読み込めるようになり、直接の JavaScript 構文回帰チェックでエントリポイントを保護します。
+
 ## コミット
+
+- [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 
 - [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 

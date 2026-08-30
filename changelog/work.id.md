@@ -62,7 +62,13 @@ Overlay rapat, termasuk permintaan peserta sendirian, kini berpindah ke bingkai 
 
 PiP rapat kini hanya memiliki dua status ukuran minimum: 400 × 225 piksel untuk hingga dua peserta aktif dan 500 × 282 piksel untuk tiga atau lebih. Rapat yang lebih besar tidak lagi terus meningkatkan minimum dan mengambil alih layar yang tersedia.
 
+## Pulihkan penguraian pengendali Papan Tulis
+
+Referensi DOM bingkai rapat dan overlay kini tetap lokal pada permukaan Meetings, bukan dideklarasikan ulang dari payload kapabilitas Papan Tulis. Browser dapat kembali mengurai dan memuat pengendali, dan pemeriksaan regresi sintaks JavaScript langsung melindungi entrypoint tersebut.
+
 ## Commit
+
+- [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 
 - [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 

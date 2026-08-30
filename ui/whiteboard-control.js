@@ -235,8 +235,6 @@ export async function bindWhiteboardButton({
         discardComponentPage,
         isKeyringUnlocked,
         makeFloatingWindow,
-        meetingFrame,
-        overlay,
         requestKeyringUnlock,
         spawnComponentPage,
         whiteboardGateway,

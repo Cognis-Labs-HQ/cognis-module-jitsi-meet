@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +12,12 @@ function readJitsiUiBundle() {
 }
 
 test("meeting whiteboards use ctx discovery and synchronized component windows", () => {
+    assert.doesNotThrow(() =>
+        execFileSync(process.execPath, [
+            "--check",
+            resolve(ROOT, "ui/whiteboard-control.js"),
+        ]),
+    );
     const apiSource = readFileSync(
         resolve(ROOT, "api/whiteboard-routes.js"),
         "utf8",

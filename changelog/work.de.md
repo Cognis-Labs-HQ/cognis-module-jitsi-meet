@@ -62,7 +62,13 @@ Besprechungseinblendungen einschließlich der Aufforderung für alleinige Teilne
 
 Das Meeting-Bild-in-Bild hat nun nur zwei Mindestgrößen: 400 × 225 Pixel für bis zu zwei aktive Teilnehmer und 500 × 282 Pixel für drei oder mehr. Größere Besprechungen erhöhen das Minimum nicht weiter und nehmen nicht mehr den verfügbaren Bildschirm ein.
 
+## Parsing der Whiteboard-Steuerung wiederherstellen
+
+DOM-Referenzen für Besprechungsrahmen und Einblendung bleiben jetzt lokal in der Meetings-Oberfläche, statt erneut aus der Whiteboard-Capability-Antwort deklariert zu werden. Der Browser kann die Steuerung wieder parsen und laden; eine direkte JavaScript-Syntaxprüfung schützt den Einstiegspunkt.
+
 ## Commits
+
+- [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
 
 - [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
 
