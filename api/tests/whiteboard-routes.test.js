@@ -156,7 +156,7 @@ test("screen sharing closes and blocks meeting Whiteboards", async () => {
     assert.equal(blockedResponse.body.error.code, "screen_sharing_active");
 });
 
-test("only the meeting organizer can synchronize screen sharing", async () => {
+test("every authorized attendee can synchronize observed screen sharing", async () => {
     for (const options of [
         { requesterUsername: "bob", organizerUsername: "alice" },
         {
@@ -170,9 +170,12 @@ test("only the meeting organizer can synchronize screen sharing", async () => {
             "POST /api/v1/modules/jitsi-meet/screen-sharing",
         )({ body: { meetingId: "meeting-1", active: true } }, response);
 
-        assert.equal(response.status, 403);
-        assert.equal(response.body.error.code, "forbidden");
-        assert.equal(routes.stateUpdates.length, 0);
+        assert.equal(response.status, 200);
+        assert.deepEqual(routes.stateUpdates[0].update, {
+            screenSharingActive: true,
+            whiteboardActive: false,
+            whiteboardOpenVotes: [],
+        });
     }
 });
 

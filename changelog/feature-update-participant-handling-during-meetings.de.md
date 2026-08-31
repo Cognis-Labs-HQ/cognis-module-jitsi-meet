@@ -110,6 +110,14 @@ Das Hinzufügen von Teilnehmern zu aktiven Besprechungen erfordert nun direkt di
 
 Das Verlassen oder Beenden einer Konferenz führt nun einen einzigen sofortigen Abbau aus, stellt das Besprechungs-Overlay wieder her, leert die Teilnehmerauswahl und wartet auf die Aktualisierung aktiver Besprechungen und verfügbarer Teilnehmer. Die Whiteboard-Zugriffssynchronisierung behandelt die anfängliche Mitgliedschaft als bereits berechtigt und ruft den Erweiterungsanbieter erst nach Teilnehmeränderungen auf, wodurch wiederholte nur für Eigentümer erlaubte Anfragen während des Pollings entfallen.
 
+## Besprechungsstatus und Teilnehmersuche absichern
+
+Die Teilnehmersuche prüft jetzt den Besprechungszugriff, bevor eine Besprechung von der Filterung aktiver Anwesenheit ausgenommen wird. Der Bildschirmfreigabestatus verwendet einen unabhängigen Meetings-Endpunkt und wird zwischen Besprechungsinstanzen zurückgesetzt, damit keine veraltete Sperre übernommen wird.
+
+## Bildschirmfreigabe jedes Teilnehmers priorisieren
+
+Jeder autorisierte Kontoteilnehmer oder Share-Gast kann das von Jitsi beobachtete Bildschirmfreigabeereignis melden. Damit schließt und sperrt die Bildschirmfreigabe jedes Teilnehmers das synchronisierte Whiteboard für die gesamte Besprechung, bis Jitsi das Ende der Freigabe meldet.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -140,3 +148,5 @@ Das Verlassen oder Beenden einer Konferenz führt nun einen einzigen sofortigen 
 - [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
 - [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)
 - [2d72282](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d722820c4bd77d0c7ef6dd8991ec63c8ed11b52)
+- [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
+- [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)

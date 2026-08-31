@@ -110,6 +110,14 @@ Active-meeting participant additions now require the declared `share:requestAppr
 
 Leaving or terminating a conference now runs one immediate teardown, restores the meeting overlay, clears participant selection, and awaits the active-meeting and available-participant refresh. Whiteboard access synchronization now treats the initial membership as already authorized and calls the expansion provider only after participants change, preventing repeated owner-only requests during polling.
 
+## Secure meeting state and participant discovery
+
+Participant discovery now verifies meeting access before excluding a meeting from active-presence filtering. Screen-sharing state uses its independent Meetings endpoint and is reset between meeting instances so stale locks cannot carry forward.
+
+## Prioritize every attendee's screen sharing
+
+Every authorized account participant or Share guest can report Jitsi's observed screen-sharing event. Any attendee's screen share therefore closes and locks the synchronized Whiteboard for the whole meeting until Jitsi reports that sharing stopped.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -140,3 +148,5 @@ Leaving or terminating a conference now runs one immediate teardown, restores th
 - [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
 - [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)
 - [2d72282](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d722820c4bd77d0c7ef6dd8991ec63c8ed11b52)
+- [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
+- [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
