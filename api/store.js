@@ -65,8 +65,6 @@ export class JitsiMeetStore {
     async ensureSchemaTables() {
         await ensureJitsiStoreSchema({
             db: this.db,
-            generatePassphrase: this.generatePassphrase,
-            log: this.log,
         });
     }
 

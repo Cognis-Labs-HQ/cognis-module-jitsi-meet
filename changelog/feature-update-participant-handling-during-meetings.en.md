@@ -182,6 +182,10 @@ The active-participant dropzone now switches from its normal stage grid placemen
 
 The participant-add API now reuses the meeting’s persisted Messages room directly instead of asking exact-member resolution to return that room and rejecting the different room it creates. The browser updates membership through the host Messages client, redraws the existing mini chat, and reports a localized error with structured diagnostics if chat membership cannot be changed.
 
+## Keep meeting identity, chat, and Whiteboard membership aligned
+
+The meeting module now requires and invokes one server-side Messages membership capability before committing participant additions or removals. The persisted chat room ID never changes, clients only redraw that room, and Whiteboard expansion receives the same committed participant set. Schema initialization no longer regenerates stored meeting names, slugs, or URLs, removing the identity drift that separated Jitsi, Messages, and Whiteboard resources.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -229,3 +233,4 @@ The participant-add API now reuses the meeting’s persisted Messages room direc
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
+- [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)

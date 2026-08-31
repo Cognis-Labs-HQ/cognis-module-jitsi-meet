@@ -1,11 +1,10 @@
-import { refreshGeneratedMeetingNames } from "../meeting-name-store.js";
 import {
     deriveScopedKey,
     encryptPayload,
     getDataEncryptionKey,
 } from "./crypto.js";
 
-export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
+export async function ensureJitsiStoreSchema({ db }) {
     await db.ensureTable({
         name: "jitsi_module_config",
         columns: [
@@ -149,12 +148,6 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
             "meeting_password",
             "meeting_password_iv",
         ],
-    });
-    await refreshGeneratedMeetingNames({
-        db: db,
-        meetings: meetings.rows ?? [],
-        generatePassphrase: generatePassphrase,
-        log: log,
     });
     for (const meeting of meetings.rows ?? []) {
         if (

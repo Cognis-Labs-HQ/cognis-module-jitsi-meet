@@ -63,6 +63,7 @@ export function registerMeetingLifecycleRoutes({
     listClassroomParticipantHandles,
     canAccessMeeting,
     resolveGroupChat,
+    synchronizeGroupChatMembership,
     buildMeetingChatTitle,
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
@@ -358,6 +359,32 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
+            const synchronizedChatRoom = await synchronizeGroupChatMembership({
+                roomId: chatRoom.roomId,
+                usernames: participants,
+                actorAccountId: claims.sub,
+                title: buildMeetingChatTitle(resolved.meeting.meetingName),
+            }).catch((error) => {
+                log?.("error", "Meeting chat membership update failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "add_active_meeting_participant_chat",
+                    meetingId: resolved.meeting.id,
+                    chatRoomId: chatRoom.roomId,
+                    username,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return null;
+            });
+            if (synchronizedChatRoom?.roomId !== chatRoom.roomId) {
+                sendError(
+                    res,
+                    503,
+                    "chat_membership_unavailable",
+                    "The existing meeting chat membership could not be updated.",
+                );
+                return;
+            }
             const meeting = await store.addMeetingParticipant(
                 resolved.meeting.id,
                 username,
@@ -464,6 +491,49 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
+            if (resolved.meeting.chatRoomId) {
+                const participants = resolved.participants.filter(
+                    (username) => username !== resolved.requesterUsername,
+                );
+                const synchronizedChatRoom =
+                    await synchronizeGroupChatMembership({
+                        roomId: resolved.meeting.chatRoomId,
+                        usernames: participants,
+                        actorAccountId: claims.sub,
+                        title: buildMeetingChatTitle(
+                            resolved.meeting.meetingName,
+                        ),
+                    }).catch((error) => {
+                        log?.(
+                            "error",
+                            "Meeting chat membership removal failed.",
+                            {
+                                component: "jitsi-meet-module",
+                                operation:
+                                    "remove_kicked_meeting_participant_chat",
+                                meetingId: resolved.meeting.id,
+                                chatRoomId: resolved.meeting.chatRoomId,
+                                username: resolved.requesterUsername,
+                                error:
+                                    error instanceof Error
+                                        ? error.message
+                                        : String(error),
+                            },
+                        );
+                        return null;
+                    });
+                if (
+                    synchronizedChatRoom?.roomId !== resolved.meeting.chatRoomId
+                ) {
+                    sendError(
+                        res,
+                        503,
+                        "chat_membership_unavailable",
+                        "The existing meeting chat membership could not be updated.",
+                    );
+                    return;
+                }
+            }
             await store.removeMeetingParticipant(
                 resolved.meeting.id,
                 resolved.requesterUsername,

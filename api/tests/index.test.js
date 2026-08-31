@@ -16,6 +16,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "files:uiClient",
         "social:profileUiClient",
         "social:messagesUiClient",
+        "social:messages:synchronizeGroupChatMembership",
         "share:uiClient",
         "share:uiGateway",
         "share:openPopup",
@@ -142,6 +143,7 @@ test("jitsi authorizes its scoped guest chat through a neutral Messages contract
     assert.match(source, /social:messages:registerExternalRoomAuthorizer/);
     assert.match(source, /getMeetingByChatRoomId\(roomId\)/);
     assert.match(source, /requiredCapability/);
+    assert.match(source, /social:messages:synchronizeGroupChatMembership/);
 });
 
 test("participant-free meetings delete their identity, shares, and chat when closed", () => {

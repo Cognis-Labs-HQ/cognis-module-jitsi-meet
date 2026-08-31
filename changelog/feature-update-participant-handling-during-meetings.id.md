@@ -130,6 +130,10 @@ Target peletakan peserta aktif kini beralih dari penempatan kisi panggung normal
 
 API penambahan peserta kini langsung menggunakan ruang Messages rapat yang tersimpan, bukan meminta resolusi anggota persis mengembalikan ruang tersebut lalu menolak ruang berbeda yang dibuatnya. Browser memperbarui keanggotaan melalui klien Messages host, menggambar ulang chat mini yang sama, dan melaporkan kesalahan terlokalisasi dengan diagnostik terstruktur jika keanggotaan chat tidak dapat diubah.
 
+## Selaraskan identitas rapat, chat, dan keanggotaan Whiteboard
+
+Modul rapat kini mewajibkan dan memanggil satu kapabilitas keanggotaan Messages di sisi server sebelum menyimpan penambahan atau penghapusan peserta. ID ruang chat tersimpan tidak pernah berubah, klien hanya menggambar ulang ruang tersebut, dan perluasan Whiteboard menerima kumpulan peserta tersimpan yang sama. Inisialisasi skema tidak lagi membuat ulang nama, slug, atau URL rapat tersimpan sehingga penyimpangan identitas antara sumber daya Jitsi, Messages, dan Whiteboard dihapus.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -177,3 +181,4 @@ API penambahan peserta kini langsung menggunakan ruang Messages rapat yang tersi
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
+- [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)

@@ -470,10 +470,6 @@ test("local Jitsi kick events remove account participants or invalidate guest li
 
 test("meeting participant surfaces and chat refresh membership in real time", () => {
     const source = readJitsiUiBundle();
-    const chatMembershipSource = readFileSync(
-        resolve(ROOT, "ui/reuse/meeting-chat-membership.js"),
-        "utf8",
-    );
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
     assert.match(source, /async function refreshAvailableParticipants\(\)/);
@@ -490,10 +486,6 @@ test("meeting participant surfaces and chat refresh membership in real time", ()
         /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateNativeChat\(\)/,
     );
     assert.match(source, /module\.jitsi_meet\.participants\.invite_success/);
-    assert.match(source, /updateMeetingChatMembership/);
-    assert.match(chatMembershipSource, /messagesClient\(\)/);
-    assert.match(chatMembershipSource, /client\.addRoomMember/);
-    assert.match(chatMembershipSource, /client\.removeRoomMember/);
     assert.match(
         source,
         /jitsi-active-meetings-empty jitsi-participants-empty/,

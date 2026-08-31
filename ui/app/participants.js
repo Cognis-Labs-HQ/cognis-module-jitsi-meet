@@ -1,7 +1,6 @@
 import { logUi } from "../reuse/feedback.js";
 import { showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
-import { updateMeetingChatMembership } from "../reuse/meeting-chat-membership.js";
 import {
     HEARTBEAT_INTERVAL_MS,
     MEETING_DESTROYED_TEXT,
@@ -351,35 +350,19 @@ export function createPreflightHandlers({
                 const payload = await response
                     .json()
                     .catch(() => ({ data: null }));
-                let chatMembershipUpdated = true;
                 if (payload?.data) {
-                    if (payload.data.chatRoomId) {
-                        chatMembershipUpdated =
-                            await updateMeetingChatMembership({
-                                roomId: payload.data.chatRoomId,
-                                username: normalized,
-                                action: "add",
-                                meetingId: payload.data.id,
-                            });
-                    }
                     state.meeting = payload.data;
                     await callbacks.updateNativeChat();
                     await callbacks.syncMeetingWhiteboardComponent?.();
                 }
                 showToast(
-                    chatMembershipUpdated
-                        ? i18n
-                              .t(
-                                  "module.jitsi_meet.participants.invite_success",
-                              )
-                              .replace(
-                                  "{{participant}}",
-                                  fromAvailable.displayName || normalized,
-                              )
-                        : i18n.t(
-                              "module.jitsi_meet.participants.chat_sync_failed",
-                          ),
-                    { variant: chatMembershipUpdated ? "success" : "error" },
+                    i18n
+                        .t("module.jitsi_meet.participants.invite_success")
+                        .replace(
+                            "{{participant}}",
+                            fromAvailable.displayName || normalized,
+                        ),
+                    { variant: "success" },
                 );
                 return;
             }

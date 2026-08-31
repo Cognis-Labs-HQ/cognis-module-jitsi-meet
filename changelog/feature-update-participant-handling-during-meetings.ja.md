@@ -130,6 +130,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者追加 API は、完全一致メンバーの解決処理に既存ルームの返却を求めて新規作成された別ルームを拒否するのではなく、保存済みの Messages ミーティングルームを直接再利用します。ブラウザーはホストの Messages クライアントを通じてメンバーを更新し、既存のミニチャットを再描画します。チャットメンバーを変更できない場合は、構造化された診断情報とローカライズ済みエラーを報告します。
 
+## ミーティング識別情報、チャット、Whiteboard メンバーを整合
+
+ミーティングモジュールは、参加者の追加または削除を保存する前に、単一のサーバー側 Messages メンバー管理 capability を必須として呼び出します。保存済みチャットルーム ID は変更されず、クライアントはそのルームだけを再描画し、Whiteboard のアクセス拡張にも同じ保存済み参加者構成を渡します。スキーマ初期化による保存済みミーティング名、スラッグ、URL の再生成を廃止し、Jitsi、Messages、Whiteboard リソース間の識別情報のずれを解消しました。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -177,3 +181,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
+- [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)

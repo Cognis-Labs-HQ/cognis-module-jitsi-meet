@@ -182,6 +182,10 @@ Die Ablagezone für aktive Teilnehmer wechselt jetzt von ihrer normalen Rasterpo
 
 Die API zum Hinzufügen von Teilnehmern verwendet jetzt direkt den gespeicherten Messages-Raum des Meetings, statt von der Auflösung exakter Mitglieder diesen Raum zu erwarten und den dabei erstellten anderen Raum abzulehnen. Der Browser aktualisiert die Mitgliedschaft über den Messages-Client des Hosts, zeichnet den vorhandenen Mini-Chat neu und meldet einen lokalisierten Fehler mit strukturierten Diagnosedaten, wenn die Chat-Mitgliedschaft nicht geändert werden kann.
 
+## Halte Meeting-Identität, Chat und Whiteboard-Mitgliedschaft konsistent
+
+Das Meeting-Modul verlangt und verwendet jetzt eine serverseitige Messages-Mitgliedschafts-Capability, bevor Teilnehmer hinzugefügt oder entfernt werden. Die gespeicherte Chatraumkennung ändert sich niemals, Clients zeichnen nur diesen Raum neu und die Whiteboard-Erweiterung erhält denselben gespeicherten Teilnehmerkreis. Die Schemainitialisierung erzeugt gespeicherte Meeting-Namen, Raumkennungen oder URLs nicht mehr neu und beseitigt damit die Identitätsabweichung zwischen Jitsi-, Messages- und Whiteboard-Ressourcen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -229,3 +233,4 @@ Die API zum Hinzufügen von Teilnehmern verwendet jetzt direkt den gespeicherten
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
+- [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)

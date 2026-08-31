@@ -410,67 +410,33 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     );
 });
 
-test("jitsi store refreshes an unsafe reused name before reconnecting its chat", async () => {
-    const participantKey = createHash("sha256")
-        .update(
-            JSON.stringify({
-                classroomId: null,
-                participants: ["alice", "bob"],
-            }),
-        )
-        .digest("hex");
-    const mockDb = createMockJitsiDb({
-        meetingRows: [
-            {
-                id: "meeting-1",
-                participant_key: participantKey,
-                meeting_url: "https://meet.example.com/classroom-existing",
-                meeting_password: "secret",
-                meeting_name: "2026-08-28 16:27 UTC · 98BBC2",
-                room_slug: "classroom-existing",
-                chat_room_id: "deleted-room",
-                classroom_id: null,
-                created_by: "alice",
-                scheduled_at: "2026-08-01T09:30:00.000Z",
-                created_at: "2026-08-01T09:30:00.000Z",
-                updated_at: "2026-08-01T09:30:00.000Z",
-            },
-        ],
-        participantRows: [
-            { meeting_id: "meeting-1", username: "alice" },
-            { meeting_id: "meeting-1", username: "bob" },
-        ],
-    });
-    const logs = [];
+test("schema initialization preserves the persisted meeting identity", async () => {
+    const now = new Date().toISOString();
+    const meetingRow = {
+        id: "meeting-1",
+        participant_key: "participants",
+        meeting_url: "https://meet.example.test/Persisted-Room-Name-Here",
+        meeting_password: "secret",
+        meeting_password_iv: "iv",
+        meeting_name: "Persisted-Room-Name-Here",
+        room_slug: "Persisted-Room-Name-Here",
+        classroom_id: null,
+        created_by: "alice",
+        created_at: now,
+        updated_at: now,
+    };
     const store = new JitsiMeetStore({
-        db: mockDb,
-        generatePassphrase: () => "Amber-Cedar-Otter-Willow",
-        log: (...entry) => logs.push(entry),
+        db: createMockJitsiDb({ meetingRows: [meetingRow] }),
+        generatePassphrase: () => "Unused-Meeting-Name-Here",
     });
 
     await store.ensureSchema();
-    const meeting = await store.createMeeting({
-        instanceUrl: "https://meet.example.com",
-        usernames: ["alice", "bob"],
-        classroomId: null,
-        createdBy: "alice",
-        chatRoomId: "resolved-room",
-    });
 
-    assert.equal(meeting?.reused, true);
-    assert.equal(meeting?.chatRoomId, "resolved-room");
-    assert.equal(meeting?.meetingName, "Amber-Cedar-Otter-Willow");
-    assert.equal(meeting?.roomSlug, "Amber-Cedar-Otter-Willow");
+    assert.equal(meetingRow.meeting_name, "Persisted-Room-Name-Here");
+    assert.equal(meetingRow.room_slug, "Persisted-Room-Name-Here");
     assert.equal(
-        meeting?.meetingUrl,
-        "https://meet.example.com/Amber-Cedar-Otter-Willow",
-    );
-    assert.equal(logs[0][0], "info");
-    assert.equal(logs[0][2].operation, "regenerate_meeting_name");
-    assert.equal(mockDb.insertedMeetingRows.length, 0);
-    assert.equal(
-        (await store.getMeetingById("meeting-1"))?.chatRoomId,
-        "resolved-room",
+        meetingRow.meeting_url,
+        "https://meet.example.test/Persisted-Room-Name-Here",
     );
 });
 
