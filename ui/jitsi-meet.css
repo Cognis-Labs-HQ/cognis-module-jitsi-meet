@@ -81,6 +81,11 @@
     );
 }
 
+.jitsi-route-root .jitsi-stage-frame > .jitsi-overlay.jitsi-drop-active {
+    position: absolute;
+    inset: 0;
+}
+
 .jitsi-route-root .jitsi-overlay-title {
     margin: 0;
     font-size: 1.25rem;

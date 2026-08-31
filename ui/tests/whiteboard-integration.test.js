@@ -261,6 +261,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(stylesheet, /\.jitsi-overlay\s*\{[\s\S]*?grid-area: 1 \/ 1;/);
     assert.match(
         stylesheet,
+        /\.jitsi-stage-frame > \.jitsi-overlay\.jitsi-drop-active\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?inset:\s*0;/,
+    );
+    assert.match(
+        stylesheet,
         /\.jitsi-whiteboard-component-shell\s*\{[\s\S]*?grid-area: 1 \/ 1;/,
     );
     assert.match(

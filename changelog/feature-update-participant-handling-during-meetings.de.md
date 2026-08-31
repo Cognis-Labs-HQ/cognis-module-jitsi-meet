@@ -174,6 +174,10 @@ Die Overlay-Wiederherstellung behält jetzt den vollständigen Meeting-Frame-Wra
 
 Dauerhafte Whiteboards bestätigen jetzt bei der ersten Synchronisierung den Zugriff aller Teilnehmer, damit nach dem Meeting-Start eingeladene Personen die vorhandene Arbeitsfläche öffnen können. Messages-Aktualisierungen behalten den bestehenden Chatraum des Meetings bei, während seine Mitgliedschaft für hinzugefügte und entfernte Benutzer geändert wird; der Mini-Chat wird aus diesem Raum neu gezeichnet. Tests sichern außerdem, dass der erzeugte Meeting-Name und die URL bei Mitgliedschaftsänderungen am gespeicherten, nicht verwerfbaren Meeting erhalten bleiben.
 
+## Stelle die Teilnehmer-Ablagezone über Bild-in-Bild wieder her
+
+Die Ablagezone für aktive Teilnehmer wechselt jetzt von ihrer normalen Rasterposition auf der Bühne zur absoluten Innenpositionierung, wenn sie in den schwebenden Jitsi-Rahmen verschoben wird. Beim Ziehen eines verfügbaren Teilnehmers bedeckt das Einladungsziel wieder das vollständige Bild-in-Bild-Meetingfenster.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -219,3 +223,4 @@ Dauerhafte Whiteboards bestätigen jetzt bei der ersten Synchronisierung den Zug
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
+- [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
