@@ -150,6 +150,10 @@ Der Abbau beim Verlassen einer Besprechung verwendet wieder die zuvor funktionie
 
 Die Whiteboard-Komponente wird jetzt in einen eigenen Host eingebunden, statt den Rahmen zu übernehmen, der auch Jitsi und den Besprechungshinweis enthält. Beim Verwerfen der Komponente kann die Oberfläche für geschlossene Besprechungen nicht mehr entfernt werden. Der PiP-Abbau blendet nur den Whiteboard-Host aus und verwirft ihn; Jitsi und sein Hinweis werden davon unabhängig wiederhergestellt.
 
+## Besprechungshinweis im Bühnenlayout halten
+
+Der Hinweis vor und nach der Besprechung ist jetzt ein vollflächiges Rasterelement statt eines absolut positionierten Kindelements, dessen übergeordnetes Element zusammenbrechen konnte, wenn Jitsi und Whiteboard ausgeblendet waren. Eine schützende Whiteboard-Hülle schafft eine zusätzliche Besitzgrenze um den Komponenten-Host und verhindert, dass die Komponentenbereinigung benachbarte Besprechungsoberflächen entfernt, selbst wenn die Hostplattform das übergeordnete Element eines Ziels bereinigt.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -189,3 +193,4 @@ Die Whiteboard-Komponente wird jetzt in einen eigenen Host eingebunden, statt de
 - [d105cf3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d105cf394e47fefc26c894d8ba0278e97b7f09b2)
 - [0e5340a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0e5340abd33d63446a5d6bf557748040c1e49fc7)
 - [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
+- [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)

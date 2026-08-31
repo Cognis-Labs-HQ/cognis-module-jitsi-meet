@@ -71,8 +71,8 @@ function closeComponentWindow(trigger) {
     trigger?.automaticActivationCleanup?.();
     trigger?.releaseFloatingWindow?.();
     placeMeetingOverlay(trigger);
-    if (trigger?.componentHost instanceof HTMLElement) {
-        trigger.componentHost.hidden = true;
+    if (trigger?.componentShell instanceof HTMLElement) {
+        trigger.componentShell.hidden = true;
     }
     void discardComponentWindow(trigger);
     if (trigger) {
@@ -321,6 +321,9 @@ export async function bindWhiteboardButton({
     const slot = root.querySelector("#jitsi-whiteboard-button-slot");
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
     const meetingFrame = frameWrap?.querySelector(".jitsi-stage-frame");
+    const componentShell = frameWrap?.querySelector(
+        ".jitsi-whiteboard-component-shell",
+    );
     const componentHost = frameWrap?.querySelector(
         ".jitsi-whiteboard-component-host",
     );
@@ -329,6 +332,7 @@ export async function bindWhiteboardButton({
         !(slot instanceof HTMLElement) ||
         !(frameWrap instanceof HTMLElement) ||
         !(meetingFrame instanceof HTMLElement) ||
+        !(componentShell instanceof HTMLElement) ||
         !(componentHost instanceof HTMLElement) ||
         !(overlay instanceof HTMLElement)
     )
@@ -427,6 +431,7 @@ export async function bindWhiteboardButton({
         button,
         componentPage: null,
         componentHost,
+        componentShell,
         componentWindow: null,
         componentWindowPending: false,
         discardComponentPage,
@@ -614,7 +619,7 @@ export async function bindWhiteboardButton({
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
                     state.meeting.state.whiteboardOpen = true;
-                    componentHost.hidden = false;
+                    componentShell.hidden = false;
                     loadStage = "float";
                     const minimumSize = resolveMeetingPipMinimumSize(
                         state.meeting,

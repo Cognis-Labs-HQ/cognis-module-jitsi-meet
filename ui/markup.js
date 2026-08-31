@@ -11,7 +11,7 @@ export function buildStageMarkup(i18n) {
       </header>
       <div class="jitsi-stage-frame-wrap">
         <div id="jitsi-meeting-frame" class="jitsi-stage-frame" title="${escapeHtml(i18n.t("ui.reuse.meeting"))}" hidden></div>
-        <div class="jitsi-whiteboard-component-host" hidden></div>
+        <div class="jitsi-whiteboard-component-shell" hidden><div class="jitsi-whiteboard-component-host"></div></div>
         <div id="jitsi-overlay" class="jitsi-overlay">
           <div id="jitsi-staged-participants" class="jitsi-staged-participants" role="list"></div>
           <h3 class="jitsi-overlay-title">${escapeHtml(i18n.t("module.jitsi_meet.overlay.title"))}</h3>

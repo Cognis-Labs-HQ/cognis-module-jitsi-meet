@@ -256,7 +256,12 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(
         buttonSource,
-        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentHost\.hidden = true;[\s\S]*?void discardComponentWindow\(trigger\);/,
+        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentShell\.hidden = true;[\s\S]*?void discardComponentWindow\(trigger\);/,
+    );
+    assert.match(stylesheet, /\.jitsi-overlay\s*\{[\s\S]*?grid-area: 1 \/ 1;/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-whiteboard-component-shell\s*\{[\s\S]*?grid-area: 1 \/ 1;/,
     );
     assert.match(
         meetingsListSource,

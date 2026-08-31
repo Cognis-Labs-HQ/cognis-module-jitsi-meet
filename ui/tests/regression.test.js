@@ -438,7 +438,7 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     assert.doesNotMatch(source, /"dragleave"/);
     assert.match(
         cssSource,
-        /\.jitsi-stage-frame[\s\S]*z-index: 2;[\s\S]*\.jitsi-overlay[\s\S]*inset: 0;[\s\S]*z-index: 3;[\s\S]*\.jitsi-overlay\.jitsi-drop-active[\s\S]*z-index: 4;/,
+        /\.jitsi-stage-frame[\s\S]*z-index: 2;[\s\S]*\.jitsi-overlay[\s\S]*grid-area: 1 \/ 1;[\s\S]*z-index: 3;[\s\S]*\.jitsi-overlay\.jitsi-drop-active[\s\S]*z-index: 4;/,
     );
 });
 
