@@ -117,9 +117,22 @@ export function createMountUtilities({ root, state }) {
             visible,
         };
         state.overlayPresentation = overlayPresentation;
+        let frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
+        if (!(frameWrap instanceof HTMLElement)) {
+            const meetingStage = root.querySelector(".jitsi-meeting-stage");
+            if (
+                meetingStage instanceof HTMLElement &&
+                state.meetingFrameWrap instanceof HTMLElement
+            ) {
+                meetingStage.append(state.meetingFrameWrap);
+                frameWrap = state.meetingFrameWrap;
+            }
+        }
+        if (frameWrap instanceof HTMLElement) {
+            state.meetingFrameWrap = frameWrap;
+        }
         let overlay = root.querySelector("#jitsi-overlay");
         if (!(overlay instanceof HTMLElement)) {
-            const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
             if (
                 frameWrap instanceof HTMLElement &&
                 state.meetingOverlay instanceof HTMLElement

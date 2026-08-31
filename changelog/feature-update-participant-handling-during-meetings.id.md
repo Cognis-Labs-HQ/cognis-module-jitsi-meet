@@ -114,6 +114,10 @@ Keluar atau berakhirnya konferensi kini menjalankan satu pembongkaran langsung, 
 
 Proses penutupan rapat kini menghapus rapat aktif sebelum menyinkronkan kontrol Whiteboard. Dengan demikian, pembuka Whiteboard otomatis yang tertunda tidak dapat diaktifkan kembali selama proses keluar dan memakai klik berikutnya untuk menyembunyikan overlay Rapat Ditutup atau Rapat Ditinggalkan.
 
+## Pulihkan seluruh panggung rapat setelah pembersihan
+
+Pemulihan overlay kini mempertahankan dan memulihkan seluruh pembungkus bingkai rapat ketika pembersihan komponen melepaskannya. Tampilan Rapat Ditutup atau Rapat Ditinggalkan pun kembali bersama panggung setelah daftar peserta dan rapat aktif digambar ulang.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -157,3 +161,4 @@ Proses penutupan rapat kini menghapus rapat aktif sebelum menyinkronkan kontrol 
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
+- [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)

@@ -166,6 +166,10 @@ Die Wiederherstellung des Hinweises nach dem Whiteboard verwendet jetzt direkt d
 
 Beim Beenden wird das aktive Meeting jetzt vor der Synchronisierung der Whiteboard-Steuerelemente gelöscht. Dadurch kann ein verzögerter automatischer Whiteboard-Öffner während des Beendens nicht erneut aktiviert werden und den nächsten Klick verwenden, um das Overlay „Meeting beendet“ oder „Meeting verlassen“ auszublenden.
 
+## Stelle nach der Bereinigung die vollständige Meeting-Bühne wieder her
+
+Die Overlay-Wiederherstellung behält jetzt den vollständigen Meeting-Frame-Wrapper und stellt ihn wieder her, wenn die Komponentenbereinigung ihn entfernt. Dadurch erscheint die Anzeige „Meeting beendet“ oder „Meeting verlassen“ zusammen mit der Bühne erneut, nachdem Teilnehmer- und aktive Meeting-Listen neu gezeichnet wurden.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -209,3 +213,4 @@ Beim Beenden wird das aktive Meeting jetzt vor der Synchronisierung der Whiteboa
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
+- [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)

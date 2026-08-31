@@ -277,6 +277,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         appSource,
         /state\.meetingOverlay instanceof HTMLElement[\s\S]*?frameWrap\.append\(state\.meetingOverlay\)/,
     );
+    assert.match(
+        appSource,
+        /state\.meetingFrameWrap instanceof HTMLElement[\s\S]*?meetingStage\.append\(state\.meetingFrameWrap\)[\s\S]*?state\.meetingFrameWrap = frameWrap/,
+    );
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
     assert.match(
         stylesheet,
