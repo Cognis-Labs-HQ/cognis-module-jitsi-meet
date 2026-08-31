@@ -118,6 +118,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 オーバーレイ復元処理は、コンポーネントのクリーンアップによって切り離されたミーティングフレームラッパー全体を保持して復元するようになりました。参加者一覧とアクティブミーティング一覧の再描画後も、ステージとともに「ミーティング終了」または「ミーティング退出」の表示が戻ります。
 
+## 進行中のミーティングリソースを同期
+
+永続 Whiteboard は初回同期時に全参加者のアクセスを確認するようになり、ミーティング開始後に招待された参加者も既存のキャンバスを開けます。Messages の更新では、ユーザーの追加や削除に応じてメンバーを変更しながら既存のミーティングチャットルームを維持し、ミニチャットを同じルームから再描画します。テストでは、生成されたミーティング名と URL がメンバー変更後も保存済みの非破棄ミーティングエンティティに保持されることも保証します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -162,3 +166,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
+- [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)

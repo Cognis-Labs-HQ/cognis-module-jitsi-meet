@@ -170,6 +170,10 @@ Beim Beenden wird das aktive Meeting jetzt vor der Synchronisierung der Whiteboa
 
 Die Overlay-Wiederherstellung behält jetzt den vollständigen Meeting-Frame-Wrapper und stellt ihn wieder her, wenn die Komponentenbereinigung ihn entfernt. Dadurch erscheint die Anzeige „Meeting beendet“ oder „Meeting verlassen“ zusammen mit der Bühne erneut, nachdem Teilnehmer- und aktive Meeting-Listen neu gezeichnet wurden.
 
+## Halte Ressourcen aktiver Meetings synchron
+
+Dauerhafte Whiteboards bestätigen jetzt bei der ersten Synchronisierung den Zugriff aller Teilnehmer, damit nach dem Meeting-Start eingeladene Personen die vorhandene Arbeitsfläche öffnen können. Messages-Aktualisierungen behalten den bestehenden Chatraum des Meetings bei, während seine Mitgliedschaft für hinzugefügte und entfernte Benutzer geändert wird; der Mini-Chat wird aus diesem Raum neu gezeichnet. Tests sichern außerdem, dass der erzeugte Meeting-Name und die URL bei Mitgliedschaftsänderungen am gespeicherten, nicht verwerfbaren Meeting erhalten bleiben.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -214,3 +218,4 @@ Die Overlay-Wiederherstellung behält jetzt den vollständigen Meeting-Frame-Wra
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
+- [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)

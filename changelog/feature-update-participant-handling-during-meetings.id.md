@@ -118,6 +118,10 @@ Proses penutupan rapat kini menghapus rapat aktif sebelum menyinkronkan kontrol 
 
 Pemulihan overlay kini mempertahankan dan memulihkan seluruh pembungkus bingkai rapat ketika pembersihan komponen melepaskannya. Tampilan Rapat Ditutup atau Rapat Ditinggalkan pun kembali bersama panggung setelah daftar peserta dan rapat aktif digambar ulang.
 
+## Jaga sinkronisasi sumber daya rapat aktif
+
+Whiteboard persisten kini mengonfirmasi akses seluruh peserta pada sinkronisasi pertama agar peserta yang diundang setelah rapat dimulai dapat membuka kanvas yang sudah ada. Pembaruan Messages mempertahankan ruang chat rapat yang sama sambil mengubah keanggotaannya untuk pengguna yang ditambahkan dan dihapus, lalu chat mini digambar ulang dari ruang tersebut. Pengujian juga memastikan nama dan URL rapat yang dibuat tetap tersimpan pada entitas rapat yang tidak sekali pakai selama perubahan keanggotaan.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -162,3 +166,4 @@ Pemulihan overlay kini mempertahankan dan memulihkan seluruh pembungkus bingkai 
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
+- [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)

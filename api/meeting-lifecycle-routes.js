@@ -322,6 +322,7 @@ export function registerMeetingLifecycleRoutes({
             let chatRoom = null;
             if (typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
+                    roomId: resolved.meeting.chatRoomId,
                     usernames: participants,
                     title: buildMeetingChatTitle(resolved.meeting.meetingName),
                     createdByAccountId: claims.sub,
@@ -344,7 +345,11 @@ export function registerMeetingLifecycleRoutes({
                     return null;
                 });
             }
-            if (!chatRoom?.roomId) {
+            if (
+                !chatRoom?.roomId ||
+                (resolved.meeting.chatRoomId &&
+                    chatRoom.roomId !== resolved.meeting.chatRoomId)
+            ) {
                 sendError(
                     res,
                     503,
@@ -459,6 +464,41 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
+            if (
+                resolved.meeting.chatRoomId &&
+                typeof resolveGroupChat === "function"
+            ) {
+                const participants = resolved.participants.filter(
+                    (username) => username !== resolved.requesterUsername,
+                );
+                const chatRoom = await resolveGroupChat({
+                    roomId: resolved.meeting.chatRoomId,
+                    usernames: participants,
+                    title: buildMeetingChatTitle(resolved.meeting.meetingName),
+                    allowSingleMember: true,
+                }).catch((error) => {
+                    log?.("error", "Meeting chat membership removal failed.", {
+                        component: "jitsi-meet-module",
+                        operation: "remove_kicked_meeting_participant_chat",
+                        meetingId: resolved.meeting.id,
+                        username: resolved.requesterUsername,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                    return null;
+                });
+                if (chatRoom?.roomId !== resolved.meeting.chatRoomId) {
+                    sendError(
+                        res,
+                        503,
+                        "chat_unavailable",
+                        "Chat membership could not be updated.",
+                    );
+                    return;
+                }
+            }
             await store.removeMeetingParticipant(
                 resolved.meeting.id,
                 resolved.requesterUsername,

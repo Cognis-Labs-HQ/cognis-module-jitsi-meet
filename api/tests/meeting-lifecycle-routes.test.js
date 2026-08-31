@@ -181,6 +181,7 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     const handlers = new Map();
     const notifications = [];
     const additions = [];
+    const chatResolutions = [];
     const approvals = [];
     let approvalApproved = true;
     const meeting = {
@@ -223,11 +224,14 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         }),
         resolveRequestedParticipants: async () => ["carol"],
         hasMinRole: () => false,
-        resolveGroupChat: async ({ usernames }) => ({
-            roomId: "chat-expanded",
-            url: "/messages/chat-expanded",
-            usernames,
-        }),
+        resolveGroupChat: async (request) => {
+            chatResolutions.push(request);
+            return {
+                roomId: request.roomId,
+                url: `/messages/${request.roomId}`,
+                usernames: request.usernames,
+            };
+        },
         buildMeetingChatTitle: (name) => name,
         createMeetingPayload: async (input) => ({
             ...input.meeting,
@@ -255,7 +259,7 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         {
             meetingId: "meeting-1",
             username: "carol",
-            options: { chatRoomId: "chat-expanded" },
+            options: { chatRoomId: "chat-old" },
         },
     ]);
     assert.deepEqual(response.body.data.participants, [
@@ -266,6 +270,13 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(response.body.data.meetingPassword, "");
     assert.equal(notifications[0][0][0], "carol");
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
+    assert.deepEqual(chatResolutions[0], {
+        roomId: "chat-old",
+        usernames: ["alice", "bob", "carol"],
+        title: "Bright-Otters-Meet-Safely",
+        createdByAccountId: "account-alice",
+        allowSingleMember: true,
+    });
     assert.deepEqual(approvals, [
         {
             meetingId: "meeting-1",
@@ -313,9 +324,19 @@ test("a kicked account participant is removed and made inactive", async () => {
         sendError: () => assert.fail("kick report was rejected"),
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
         resolveMeetingPayload: async () => ({
-            meeting: { id: "meeting-1" },
+            meeting: {
+                id: "meeting-1",
+                meetingName: "Bright-Otters-Meet-Safely",
+                chatRoomId: "chat-1",
+            },
             requesterUsername: "bob",
+            participants: ["alice", "bob"],
         }),
+        resolveGroupChat: async (request) => {
+            operations.push(["chat", request.roomId, request.usernames]);
+            return { roomId: request.roomId };
+        },
+        buildMeetingChatTitle: (name) => name,
         log: () => {},
     });
     const response = createRecorder();
@@ -324,6 +345,7 @@ test("a kicked account participant is removed and made inactive", async () => {
     )({ body: { meetingId: "meeting-1" } }, response);
     assert.equal(response.status, 200);
     assert.deepEqual(operations, [
+        ["chat", "chat-1", ["alice"]],
         ["remove", "meeting-1", "bob"],
         ["inactive", "meeting-1", "bob"],
     ]);

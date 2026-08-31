@@ -170,6 +170,10 @@ Meeting teardown now clears the active meeting before synchronizing Whiteboard c
 
 Overlay recovery now retains and restores the complete meeting frame wrapper when component cleanup detaches it. The Meeting Closed or Meeting Left presentation therefore returns together with the stage after participant and active-meeting lists redraw.
 
+## Keep active meeting resources synchronized
+
+Persistent Whiteboards now confirm their full participant access on the first synchronization, so attendees invited after a meeting starts can open the existing canvas. Messages updates retain the meeting’s existing chat room while changing its membership for added and removed users, and the mini chat redraws from that room. Tests also lock the generated meeting name and URL to the persisted non-disposable meeting entity across membership changes.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -214,3 +218,4 @@ Overlay recovery now retains and restores the complete meeting frame wrapper whe
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
 - [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
+- [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)

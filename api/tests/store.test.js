@@ -618,9 +618,9 @@ test("active membership changes use a meeting-scoped participant key", async () 
     const meetingRow = {
         id: "meeting-1",
         participant_key: "original-key",
-        meeting_url: "https://meet.example.test/team-room",
+        meeting_url: "https://meet.example.test/Bright-Otters-Meet-Safely",
         meeting_password: "secret",
-        meeting_name: "Team Room",
+        meeting_name: "Bright-Otters-Meet-Safely",
         classroom_id: null,
         created_by: "alice",
         created_at: now,
@@ -636,7 +636,10 @@ test("active membership changes use a meeting-scoped participant key", async () 
         }),
     });
 
-    await store.addMeetingParticipant("meeting-1", "carol");
+    const updatedMeeting = await store.addMeetingParticipant(
+        "meeting-1",
+        "carol",
+    );
 
     const expectedScopedKey = createHash("sha256")
         .update(
@@ -648,4 +651,9 @@ test("active membership changes use a meeting-scoped participant key", async () 
         )
         .digest("hex");
     assert.equal(meetingRow.participant_key, expectedScopedKey);
+    assert.equal(updatedMeeting.meetingName, "Bright-Otters-Meet-Safely");
+    assert.equal(
+        updatedMeeting.meetingUrl,
+        "https://meet.example.test/Bright-Otters-Meet-Safely",
+    );
 });

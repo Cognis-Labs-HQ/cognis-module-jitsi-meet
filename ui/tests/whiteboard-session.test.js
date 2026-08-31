@@ -304,7 +304,7 @@ test("persistent whiteboards expand access when meeting membership changes", asy
 
     assert.equal(
         await synchronizeWhiteboardParticipantAccess(trigger, state),
-        null,
+        true,
     );
     state.meeting.participants.push("carol");
     assert.equal(
@@ -312,6 +312,10 @@ test("persistent whiteboards expand access when meeting membership changes", asy
         true,
     );
     assert.deepEqual(requests, [
+        {
+            whiteboardId: "board-1",
+            participantHandles: ["alice", "bob"],
+        },
         {
             whiteboardId: "board-1",
             participantHandles: ["alice", "bob", "carol"],
