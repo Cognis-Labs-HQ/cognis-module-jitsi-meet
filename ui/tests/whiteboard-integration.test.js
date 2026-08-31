@@ -265,7 +265,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         meetingsListSource,
-        /const whiteboardCleanup = closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);[\s\S]*?whiteboardCleanup\?\.then\(\(\) => utils\.restoreMeetingOverlay\(\)\)/,
+        /const whiteboardCleanup = closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);[\s\S]*?whiteboardCleanup\?\.then\(\(\) => \{[\s\S]*?utils\.updateOverlay\(state\.overlayPresentation\)/,
     );
     assert.match(
         appSource,

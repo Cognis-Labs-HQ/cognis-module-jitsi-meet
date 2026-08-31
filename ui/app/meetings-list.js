@@ -119,7 +119,11 @@ export function createMeetingHandlers({
         state.lastMeetingParticipants = [];
         callbacks.stopNativeChatPolling();
         await callbacks.updateNativeChat();
-        void whiteboardCleanup?.then(() => utils.restoreMeetingOverlay());
+        void whiteboardCleanup?.then(() => {
+            if (state.overlayPresentation) {
+                utils.updateOverlay(state.overlayPresentation);
+            }
+        });
     }
 
     function clearRequestedMeetingParameters() {
@@ -378,7 +382,11 @@ export function createMeetingHandlers({
         }
         await callbacks.updateNativeChat();
         await loadActiveMeetings({ resolveRequested: false });
-        void whiteboardCleanup?.then(() => utils.restoreMeetingOverlay());
+        void whiteboardCleanup?.then(() => {
+            if (state.overlayPresentation) {
+                utils.updateOverlay(state.overlayPresentation);
+            }
+        });
         if (toastMessageKey) {
             showToast(i18n.t(toastMessageKey), {
                 variant: toastVariant,

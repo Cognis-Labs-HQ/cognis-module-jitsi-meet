@@ -195,19 +195,12 @@ export function createMountUtilities({ root, state }) {
         }
     }
 
-    function restoreMeetingOverlay() {
-        if (state.overlayPresentation) {
-            updateOverlay(state.overlayPresentation);
-        }
-    }
-
     return {
         clearTimers,
         deferAloneParticipantPrompt,
         isMeetingActive,
         isMeetingEmbedMissing,
         resetParticipantSelection,
-        restoreMeetingOverlay,
         selectedUsernames,
         setPreflightStatus,
         syncShareButtonAvailability,

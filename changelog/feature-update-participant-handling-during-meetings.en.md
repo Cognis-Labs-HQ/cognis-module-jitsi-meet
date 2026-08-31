@@ -158,6 +158,10 @@ The pre-meeting and closed-meeting overlay is now a full-size grid item rather t
 
 Periodic available-participant refreshes now update only participant and active-meeting surfaces. They no longer rerender staged avatars or replace the stage message, so Meeting Closed and Left Meeting remain visible. Whiteboard disposal also triggers a final restoration from the retained overlay element and its last presentation state if host cleanup detached it.
 
+## Keep overlay recovery compatible with SPA module caching
+
+Post-Whiteboard overlay recovery now reuses the established `updateOverlay` utility directly instead of adding a new cross-module utility method. Mixed module instances during SPA navigation can no longer reject the cleanup promise with `restoreMeetingOverlay is not a function`, while current mounts still reapply the retained Meeting Closed or Left Meeting presentation.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -199,3 +203,4 @@ Periodic available-participant refreshes now update only participant and active-
 - [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
+- [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)

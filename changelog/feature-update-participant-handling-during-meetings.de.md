@@ -158,6 +158,10 @@ Der Hinweis vor und nach der Besprechung ist jetzt ein vollflächiges Rasterelem
 
 Regelmäßige Aktualisierungen verfügbarer Teilnehmer ändern jetzt nur noch Teilnehmer- und aktive Besprechungsflächen. Sie rendern weder bereitgestellte Avatare neu noch ersetzen sie den Bühnenhinweis, sodass die Hinweise zur geschlossenen oder verlassenen Besprechung sichtbar bleiben. Nach dem Whiteboard-Abbau wird außerdem das beibehaltene Hinweiselement mit seinem letzten Darstellungszustand wiederhergestellt, falls die Hostbereinigung es gelöst hat.
 
+## Hinweiswiederherstellung mit SPA-Modulcache kompatibel halten
+
+Die Wiederherstellung des Hinweises nach dem Whiteboard verwendet jetzt direkt die vorhandene `updateOverlay`-Funktion, statt eine neue modulübergreifende Hilfsmethode hinzuzufügen. Gemischte Modulinstanzen während der SPA-Navigation können das Bereinigungsversprechen nicht mehr mit `restoreMeetingOverlay is not a function` ablehnen. Aktuelle Einbindungen wenden den beibehaltenen Hinweis zur geschlossenen oder verlassenen Besprechung weiterhin erneut an.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -199,3 +203,4 @@ Regelmäßige Aktualisierungen verfügbarer Teilnehmer ändern jetzt nur noch Te
 - [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
+- [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
