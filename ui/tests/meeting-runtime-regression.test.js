@@ -95,7 +95,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
     );
     assert.match(meetingRoomSource, /contentSharingParticipantsChanged/);
-    assert.match(meetingRoomSource, /whiteboard\/screen-sharing/);
+    assert.match(meetingRoomSource, /jitsi-meet\/screen-sharing/);
     assert.match(controlSource, /screenSharingActive === true/);
     assert.match(
         controlSource,

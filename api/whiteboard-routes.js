@@ -97,7 +97,7 @@ export function registerMeetingWhiteboardRoutes({
     );
 
     router.post(
-        "/api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
+        "/api/v1/modules/jitsi-meet/screen-sharing",
         async (req, res) => {
             const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
@@ -114,6 +114,18 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
+            if (
+                resolved.shareGuest ||
+                resolved.requesterUsername !== resolved.meeting.createdBy
+            ) {
+                sendError(
+                    res,
+                    403,
+                    "forbidden",
+                    "Only the meeting organizer may synchronize screen-sharing state.",
+                );
+                return;
+            }
             if (typeof body.active !== "boolean") {
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;

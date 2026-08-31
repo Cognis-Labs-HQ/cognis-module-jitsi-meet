@@ -585,6 +585,7 @@ export function registerMeetingLifecycleRoutes({
                     endedBy: null,
                     endedAt: null,
                     whiteboardActive: false,
+                    screenSharingActive: false,
                     whiteboardOpenVotes: [],
                 });
                 meetingStarted = true;
@@ -863,6 +864,7 @@ export function registerMeetingLifecycleRoutes({
                         endedBy: resolved.requesterUsername,
                         endedAt: new Date().toISOString(),
                         whiteboardActive: false,
+                        screenSharingActive: false,
                         whiteboardOpenVotes: [],
                     });
                     await dispatchMeetingNotifications(resolved.participants, {

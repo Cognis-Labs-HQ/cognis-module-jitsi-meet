@@ -120,9 +120,10 @@ test("screen sharing closes and blocks meeting Whiteboards", async () => {
         },
     });
     const response = createRecorder();
-    await routes.handlers.get(
-        "POST /api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
-    )({ body: { meetingId: "meeting-1", active: true } }, response);
+    await routes.handlers.get("POST /api/v1/modules/jitsi-meet/screen-sharing")(
+        { body: { meetingId: "meeting-1", active: true } },
+        response,
+    );
 
     assert.equal(response.status, 200);
     assert.deepEqual(routes.stateUpdates[0].update, {
@@ -153,6 +154,26 @@ test("screen sharing closes and blocks meeting Whiteboards", async () => {
     );
     assert.equal(blockedResponse.status, 409);
     assert.equal(blockedResponse.body.error.code, "screen_sharing_active");
+});
+
+test("only the meeting organizer can synchronize screen sharing", async () => {
+    for (const options of [
+        { requesterUsername: "bob", organizerUsername: "alice" },
+        {
+            claims: { sub: "share:share-17:guest-session-4" },
+            guestAllowed: true,
+        },
+    ]) {
+        const routes = createRoutes(options);
+        const response = createRecorder();
+        await routes.handlers.get(
+            "POST /api/v1/modules/jitsi-meet/screen-sharing",
+        )({ body: { meetingId: "meeting-1", active: true } }, response);
+
+        assert.equal(response.status, 403);
+        assert.equal(response.body.error.code, "forbidden");
+        assert.equal(routes.stateUpdates.length, 0);
+    }
 });
 
 test("meeting share guests synchronize the mapped state with their stable presence identity", async () => {

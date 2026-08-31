@@ -287,7 +287,7 @@ export function createEmbedHandlers({
             };
             callbacks.syncMeetingWhiteboardComponent?.();
             const response = await apiFetch(
-                "/api/v1/modules/jitsi-meet/whiteboard/screen-sharing",
+                "/api/v1/modules/jitsi-meet/screen-sharing",
                 {
                     method: "POST",
                     headers: { "content-type": "application/json" },

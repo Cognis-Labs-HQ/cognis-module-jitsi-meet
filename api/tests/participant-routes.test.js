@@ -112,3 +112,45 @@ test("participant search hides users active in another meeting", async () => {
         {},
     );
 });
+
+test("participant search does not exclude an unauthorized meeting", async () => {
+    const routes = [];
+    const exclusions = [];
+    registerMeetingParticipantRoutes({
+        router: { get: (path, handler) => routes.push({ path, handler }) },
+        requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileStore: {
+            async getProfile() {
+                return { handle: "bob" };
+            },
+            async searchProfiles() {
+                return [];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async getMeetingById(id) {
+                return { id, createdBy: "alice" };
+            },
+            async listReservedParticipantUsernames(excludedMeetingId) {
+                exclusions.push(excludedMeetingId);
+                return [];
+            },
+        },
+        sendJson: (_res, status) => assert.equal(status, 200),
+        sendError: () => assert.fail("participant search should not fail"),
+        hasMinRole: () => false,
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+        canAccessMeeting: async () => false,
+        listClassroomParticipantHandles: async () => [],
+    });
+
+    await routes[0].handler(
+        {
+            url: "/api/v1/modules/jitsi-meet/participants?q=&meetingId=private-meeting",
+        },
+        {},
+    );
+
+    assert.deepEqual(exclusions, [""]);
+});

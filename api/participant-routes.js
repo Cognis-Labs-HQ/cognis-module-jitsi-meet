@@ -1,4 +1,5 @@
 import { normalizeHandleKey } from "./reuse/normalize-handle.js";
+import { resolveRequesterUsername } from "./reuse/requester.js";
 
 export function registerMeetingParticipantRoutes({
     router,
@@ -9,6 +10,8 @@ export function registerMeetingParticipantRoutes({
     sendError,
     hasMinRole,
     resolveShareGuestMeetingAccess,
+    canAccessMeeting,
+    listClassroomParticipantHandles,
 }) {
     router.get(
         "/api/v1/modules/jitsi-meet/participants",
@@ -43,8 +46,32 @@ export function registerMeetingParticipantRoutes({
             }
             const query = (requestUrl.searchParams.get("q") ?? "").trim();
             await store.ensureSchema();
+            let authorizedMeetingId = "";
+            if (meetingId) {
+                const meeting = await store.getMeetingById(meetingId);
+                const requesterUsername = await resolveRequesterUsername(
+                    profileStore,
+                    claims.sub,
+                ).catch(() => "");
+                if (
+                    meeting &&
+                    requesterUsername &&
+                    (await canAccessMeeting({
+                        store,
+                        meeting,
+                        username: requesterUsername,
+                        listClassroomParticipantHandles,
+                        profileStore,
+                        requesterAccountId: claims.sub,
+                    }))
+                ) {
+                    authorizedMeetingId = meeting.id;
+                }
+            }
             const reservedUsernames = new Set(
-                await store.listReservedParticipantUsernames(meetingId),
+                await store.listReservedParticipantUsernames(
+                    authorizedMeetingId,
+                ),
             );
             const includeHidden = hasMinRole(claims.role, "admin");
             const candidates = await profileStore.searchProfiles(query, 50, {
