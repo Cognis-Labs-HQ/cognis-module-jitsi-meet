@@ -184,7 +184,11 @@ Die API zum Hinzufügen von Teilnehmern verwendet jetzt direkt den gespeicherten
 
 ## Halte Meeting-Identität, Chat und Whiteboard-Mitgliedschaft konsistent
 
-Das Meeting-Modul verlangt und verwendet jetzt eine serverseitige Messages-Mitgliedschafts-Capability, bevor Teilnehmer hinzugefügt oder entfernt werden. Die gespeicherte Chatraumkennung ändert sich niemals, Clients zeichnen nur diesen Raum neu und die Whiteboard-Erweiterung erhält denselben gespeicherten Teilnehmerkreis. Die Schemainitialisierung erzeugt gespeicherte Meeting-Namen, Raumkennungen oder URLs nicht mehr neu und beseitigt damit die Identitätsabweichung zwischen Jitsi-, Messages- und Whiteboard-Ressourcen.
+Das Meeting-Modul ruft die gezielte serverseitige Messages-Operation zum Hinzufügen oder Entfernen eines Mitglieds auf, bevor es die entsprechende Teilnehmeränderung speichert. Die gespeicherte Chatraumkennung ändert sich niemals, Clients zeichnen nur diesen Raum neu und die Whiteboard-Erweiterung erhält denselben gespeicherten Teilnehmerkreis. Die Schemainitialisierung erzeugt gespeicherte Meeting-Namen, Raumkennungen oder URLs nicht mehr neu und beseitigt damit die Identitätsabweichung zwischen Jitsi-, Messages- und Whiteboard-Ressourcen.
+
+## Verwende gezielte Messages-Mitgliederoperationen
+
+Änderungen an Meeting-Teilnehmern verwenden jetzt die einfache Capability `social:messages:addRoomMember` oder `social:messages:removeRoomMember` für den gespeicherten Meeting-Raum. Die Raumerstellung bleibt eine separate einmalige Operation, das Meeting verwaltet weiterhin die Raumzuordnung und es ist keine zusammengefasste Synchronisierungs-Capability erforderlich.
 
 ## Commits
 
@@ -234,3 +238,4 @@ Das Meeting-Modul verlangt und verwendet jetzt eine serverseitige Messages-Mitgl
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
+- [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)

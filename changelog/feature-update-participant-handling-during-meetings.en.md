@@ -184,7 +184,11 @@ The participant-add API now reuses the meeting’s persisted Messages room direc
 
 ## Keep meeting identity, chat, and Whiteboard membership aligned
 
-The meeting module now requires and invokes one server-side Messages membership capability before committing participant additions or removals. The persisted chat room ID never changes, clients only redraw that room, and Whiteboard expansion receives the same committed participant set. Schema initialization no longer regenerates stored meeting names, slugs, or URLs, removing the identity drift that separated Jitsi, Messages, and Whiteboard resources.
+The meeting module invokes the focused server-side Messages add-member or remove-member operation before committing the corresponding participant change. The persisted chat room ID never changes, clients only redraw that room, and Whiteboard expansion receives the same committed participant set. Schema initialization no longer regenerates stored meeting names, slugs, or URLs, removing the identity drift that separated Jitsi, Messages, and Whiteboard resources.
+
+## Use focused Messages member operations
+
+Meeting participant changes now call the simple `social:messages:addRoomMember` or `social:messages:removeRoomMember` capability for the meeting’s stored room. Room creation remains a separate one-time operation, the meeting keeps owning the room association, and no aggregate synchronization capability is required.
 
 ## Commits
 
@@ -234,3 +238,4 @@ The meeting module now requires and invokes one server-side Messages membership 
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
+- [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)

@@ -63,7 +63,8 @@ export function registerMeetingLifecycleRoutes({
     listClassroomParticipantHandles,
     canAccessMeeting,
     resolveGroupChat,
-    synchronizeGroupChatMembership,
+    addGroupChatMember,
+    removeGroupChatMember,
     buildMeetingChatTitle,
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
@@ -359,24 +360,27 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-            const synchronizedChatRoom = await synchronizeGroupChatMembership({
+            const chatMemberAdded = await addGroupChatMember({
                 roomId: chatRoom.roomId,
-                usernames: participants,
+                username,
                 actorAccountId: claims.sub,
-                title: buildMeetingChatTitle(resolved.meeting.meetingName),
-            }).catch((error) => {
-                log?.("error", "Meeting chat membership update failed.", {
-                    component: "jitsi-meet-module",
-                    operation: "add_active_meeting_participant_chat",
-                    meetingId: resolved.meeting.id,
-                    chatRoomId: chatRoom.roomId,
-                    username,
-                    error:
-                        error instanceof Error ? error.message : String(error),
+            })
+                .then(() => true)
+                .catch((error) => {
+                    log?.("error", "Meeting chat membership update failed.", {
+                        component: "jitsi-meet-module",
+                        operation: "add_active_meeting_participant_chat",
+                        meetingId: resolved.meeting.id,
+                        chatRoomId: chatRoom.roomId,
+                        username,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                    return false;
                 });
-                return null;
-            });
-            if (synchronizedChatRoom?.roomId !== chatRoom.roomId) {
+            if (!chatMemberAdded) {
                 sendError(
                     res,
                     503,
@@ -492,18 +496,13 @@ export function registerMeetingLifecycleRoutes({
             });
             if (!resolved) return;
             if (resolved.meeting.chatRoomId) {
-                const participants = resolved.participants.filter(
-                    (username) => username !== resolved.requesterUsername,
-                );
-                const synchronizedChatRoom =
-                    await synchronizeGroupChatMembership({
-                        roomId: resolved.meeting.chatRoomId,
-                        usernames: participants,
-                        actorAccountId: claims.sub,
-                        title: buildMeetingChatTitle(
-                            resolved.meeting.meetingName,
-                        ),
-                    }).catch((error) => {
+                const chatMemberRemoved = await removeGroupChatMember({
+                    roomId: resolved.meeting.chatRoomId,
+                    username: resolved.requesterUsername,
+                    actorAccountId: claims.sub,
+                })
+                    .then(() => true)
+                    .catch((error) => {
                         log?.(
                             "error",
                             "Meeting chat membership removal failed.",
@@ -520,11 +519,9 @@ export function registerMeetingLifecycleRoutes({
                                         : String(error),
                             },
                         );
-                        return null;
+                        return false;
                     });
-                if (
-                    synchronizedChatRoom?.roomId !== resolved.meeting.chatRoomId
-                ) {
+                if (!chatMemberRemoved) {
                     sendError(
                         res,
                         503,

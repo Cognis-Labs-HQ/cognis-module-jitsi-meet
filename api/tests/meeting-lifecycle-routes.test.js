@@ -182,7 +182,7 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     const notifications = [];
     const additions = [];
     const chatResolutions = [];
-    const chatSynchronizations = [];
+    const chatMemberAdditions = [];
     const approvals = [];
     let approvalApproved = true;
     const meeting = {
@@ -233,10 +233,9 @@ test("active non-disposable meetings invite a newly dropped participant", async 
                 usernames: request.usernames,
             };
         },
-        synchronizeGroupChatMembership: async (request) => {
-            chatSynchronizations.push(request);
-            return { roomId: request.roomId };
-        },
+        addGroupChatMember: async (request) =>
+            chatMemberAdditions.push(request),
+        removeGroupChatMember: async () => {},
         buildMeetingChatTitle: (name) => name,
         createMeetingPayload: async (input) => ({
             ...input.meeting,
@@ -276,12 +275,11 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(notifications[0][0][0], "carol");
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
     assert.deepEqual(chatResolutions, []);
-    assert.deepEqual(chatSynchronizations, [
+    assert.deepEqual(chatMemberAdditions, [
         {
             roomId: "chat-old",
-            usernames: ["alice", "bob", "carol"],
+            username: "carol",
             actorAccountId: "account-alice",
-            title: "Bright-Otters-Meet-Safely",
         },
     ]);
     assert.deepEqual(approvals, [
@@ -343,10 +341,9 @@ test("a kicked account participant is removed and made inactive", async () => {
             operations.push(["chat", request.roomId, request.usernames]);
             return { roomId: request.roomId };
         },
-        synchronizeGroupChatMembership: async (request) => {
-            operations.push(["chat", request.roomId, request.usernames]);
-            return { roomId: request.roomId };
-        },
+        addGroupChatMember: async () => {},
+        removeGroupChatMember: async (request) =>
+            operations.push(["chat", request.roomId, request.username]),
         buildMeetingChatTitle: (name) => name,
         log: () => {},
     });
@@ -356,7 +353,7 @@ test("a kicked account participant is removed and made inactive", async () => {
     )({ body: { meetingId: "meeting-1" } }, response);
     assert.equal(response.status, 200);
     assert.deepEqual(operations, [
-        ["chat", "chat-1", ["alice"]],
+        ["chat", "chat-1", "bob"],
         ["remove", "meeting-1", "bob"],
         ["inactive", "meeting-1", "bob"],
     ]);

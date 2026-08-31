@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.124",
+    "version": "1.5.125",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -49,7 +49,8 @@
         "files:uiClient",
         "social:profileUiClient",
         "social:messagesUiClient",
-        "social:messages:synchronizeGroupChatMembership",
+        "social:messages:addRoomMember",
+        "social:messages:removeRoomMember",
         "share:uiClient",
         "share:uiGateway",
         "share:openPopup",
@@ -139,11 +140,11 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "95f813a39d8d61d1ad3398a91be5d4d491dbe9a7be2b89d3eacaa1f7aa654c88"
+            "sha256": "2aac0805c9d187572c49bf63d3e0f603c5f5ea58b3b318d00fcb4d17125b2ba9"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "666641664f24ce21649e5d32db5c729884bed90b701ae7f02149011cc2e374c4"
+            "sha256": "c0a155968d90f672c0ae5fc7cb6cb618b5ece4ca41510f9fd2f354da6621a2f2"
         },
         {
             "path": "api/meeting-name.js",
@@ -223,7 +224,7 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "3b2172547709e794e0ab8579f247d66341a1a4ea0e2ed5f7e59f81c50008b85b"
+            "sha256": "896c7d3d1e176a455b5e1ce4a406d5374dfb0d6dd6262b48fdde6f50cb669000"
         },
         {
             "path": "api/tests/config-routes.test.js",
@@ -235,7 +236,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "965bb4e3b53dc6eb91b25c88bb41260ca5e1145b833b3401d0ce29a6eed32d05"
+            "sha256": "5362d38b02a71f494370662407dec24afbe81186040bc5c7eeb70d0546373684"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -243,7 +244,7 @@
         },
         {
             "path": "api/tests/meeting-lifecycle-routes.test.js",
-            "sha256": "bdaa4b5787de5fb6082a45182d35b29c025a6c5ddf00faf6468468b85e8ae221"
+            "sha256": "8b0a80ad2f6a2e892d41f63df84f446bb045abd5b665a34c259d1dc41fc1cc95"
         },
         {
             "path": "api/tests/participant-routes.test.js",
@@ -319,11 +320,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "2543a7abcf8a6695f84c83c49bb5f516fbb869a30659249bdf771c4c089ca919"
+            "sha256": "07e176e9af029502179183451e2f0f05398bdf9792b9eebd4de55bed2bda1415"
         },
         {
             "path": "package.json",
-            "sha256": "ef51e3d6ae2d9ae7568d071c47e7a257c48d9ca6e4a83cf54e6afaadd647ffb2"
+            "sha256": "2d93eea6c4353fad322adf52478f39765fe014149546e0b70d2083aafa142104"
         },
         {
             "path": "routes.json",

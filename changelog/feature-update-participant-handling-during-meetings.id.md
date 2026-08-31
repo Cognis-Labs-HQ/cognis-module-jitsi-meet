@@ -132,7 +132,11 @@ API penambahan peserta kini langsung menggunakan ruang Messages rapat yang tersi
 
 ## Selaraskan identitas rapat, chat, dan keanggotaan Whiteboard
 
-Modul rapat kini mewajibkan dan memanggil satu kapabilitas keanggotaan Messages di sisi server sebelum menyimpan penambahan atau penghapusan peserta. ID ruang chat tersimpan tidak pernah berubah, klien hanya menggambar ulang ruang tersebut, dan perluasan Whiteboard menerima kumpulan peserta tersimpan yang sama. Inisialisasi skema tidak lagi membuat ulang nama, slug, atau URL rapat tersimpan sehingga penyimpangan identitas antara sumber daya Jitsi, Messages, dan Whiteboard dihapus.
+Modul rapat memanggil operasi Messages sisi server yang terfokus untuk menambah atau menghapus anggota sebelum menyimpan perubahan peserta yang sesuai. ID ruang chat tersimpan tidak pernah berubah, klien hanya menggambar ulang ruang tersebut, dan perluasan Whiteboard menerima kumpulan peserta tersimpan yang sama. Inisialisasi skema tidak lagi membuat ulang nama, slug, atau URL rapat tersimpan sehingga penyimpangan identitas antara sumber daya Jitsi, Messages, dan Whiteboard dihapus.
+
+## Gunakan operasi anggota Messages yang terfokus
+
+Perubahan peserta rapat kini memanggil kapabilitas sederhana `social:messages:addRoomMember` atau `social:messages:removeRoomMember` untuk ruang rapat yang tersimpan. Pembuatan ruang tetap menjadi operasi satu kali yang terpisah, rapat tetap memiliki asosiasi ruang, dan tidak diperlukan kapabilitas sinkronisasi agregat.
 
 ## Commit
 
@@ -182,3 +186,4 @@ Modul rapat kini mewajibkan dan memanggil satu kapabilitas keanggotaan Messages 
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
+- [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)

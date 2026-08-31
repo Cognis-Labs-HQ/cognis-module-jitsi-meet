@@ -7,10 +7,8 @@ function createScopedRuntime() {
     const capabilities = new Map([
         ["auth:requireAuth", () => null],
         ["share:requestApproval", async () => ({ approved: true })],
-        [
-            "social:messages:synchronizeGroupChatMembership",
-            async ({ roomId }) => ({ roomId }),
-        ],
+        ["social:messages:addRoomMember", async () => {}],
+        ["social:messages:removeRoomMember", async () => {}],
     ]);
     const flows = new Set([
         "bootstrap-platform",
