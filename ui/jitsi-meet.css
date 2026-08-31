@@ -25,6 +25,12 @@
     border: 0;
 }
 
+.jitsi-route-root .jitsi-whiteboard-component-host {
+    grid-area: 1 / 1;
+    min-width: 0;
+    min-height: 0;
+}
+
 .jitsi-route-root .jitsi-stage-actions {
     display: flex;
     align-items: center;

@@ -71,7 +71,7 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     const componentWindow = { discard() {} };
     const trigger = {
         disposableCanvas: false,
-        frameWrap: { id: "meeting-stage" },
+        componentHost: { id: "whiteboard-stage" },
         signal: new AbortController().signal,
         spawnComponentPage(request) {
             spawnRequests.push(request);
@@ -92,7 +92,7 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     assert.equal(result, componentWindow);
     assert.equal(spawnRequests.length, 5);
     assert.deepEqual(retryDelays, [250, 500, 1_000, 2_000]);
-    assert.equal(spawnRequests.at(-1).elementId, "meeting-stage");
+    assert.equal(spawnRequests.at(-1).elementId, "whiteboard-stage");
     assert.equal(spawnRequests.at(-1).context.whiteboardId, "mapped-board");
 });
 
@@ -101,7 +101,7 @@ test("automatic whiteboard opening retries transient module imports", async () =
     const componentWindow = { discard() {} };
     const trigger = {
         disposableCanvas: false,
-        frameWrap: { id: "meeting-stage" },
+        componentHost: { id: "whiteboard-stage" },
         signal: new AbortController().signal,
         spawnComponentPage() {
             requests += 1;

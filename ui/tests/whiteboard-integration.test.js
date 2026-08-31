@@ -230,7 +230,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.doesNotMatch(buttonSource, /pointer(?:move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
-    assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
+    assert.match(buttonSource, /elementId:\s*trigger\.componentHost\.id/);
     assert.match(buttonSource, /whiteboardId/);
     assert.match(
         buttonSource,
@@ -256,7 +256,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(
         buttonSource,
-        /placeMeetingOverlay\(trigger\);\s*trigger\?\.releaseFloatingWindow\?\.\(\);\s*void discardComponentWindow\(trigger\);/,
+        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentHost\.hidden = true;[\s\S]*?void discardComponentWindow\(trigger\);/,
     );
     assert.match(
         meetingsListSource,

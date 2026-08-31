@@ -53,8 +53,8 @@ async function discardComponentWindow(trigger) {
     try {
         if (typeof trigger?.componentWindow?.discard === "function") {
             await trigger.componentWindow.discard();
-        } else if (trigger?.frameWrap?.id) {
-            await trigger.discardComponentPage?.(trigger.frameWrap.id);
+        } else if (trigger?.componentHost?.id) {
+            await trigger.discardComponentPage?.(trigger.componentHost.id);
         }
     } catch (error) {
         await logUi("error", "Meeting Whiteboard window cleanup failed.", {
@@ -69,8 +69,11 @@ async function discardComponentWindow(trigger) {
 function closeComponentWindow(trigger) {
     if (trigger) trigger.windowRequestSequence += 1;
     trigger?.automaticActivationCleanup?.();
-    placeMeetingOverlay(trigger);
     trigger?.releaseFloatingWindow?.();
+    placeMeetingOverlay(trigger);
+    if (trigger?.componentHost instanceof HTMLElement) {
+        trigger.componentHost.hidden = true;
+    }
     void discardComponentWindow(trigger);
     if (trigger) {
         trigger.componentWindowPending = false;
@@ -318,11 +321,15 @@ export async function bindWhiteboardButton({
     const slot = root.querySelector("#jitsi-whiteboard-button-slot");
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
     const meetingFrame = frameWrap?.querySelector(".jitsi-stage-frame");
+    const componentHost = frameWrap?.querySelector(
+        ".jitsi-whiteboard-component-host",
+    );
     const overlay = frameWrap?.querySelector("#jitsi-overlay");
     if (
         !(slot instanceof HTMLElement) ||
         !(frameWrap instanceof HTMLElement) ||
         !(meetingFrame instanceof HTMLElement) ||
+        !(componentHost instanceof HTMLElement) ||
         !(overlay instanceof HTMLElement)
     )
         return;
@@ -368,7 +375,7 @@ export async function bindWhiteboardButton({
     if (signal?.aborted) return;
     componentStageSequence += 1;
     const uniqueStageId = globalThis.crypto?.randomUUID?.();
-    frameWrap.id = uniqueStageId
+    componentHost.id = uniqueStageId
         ? `jitsi-whiteboard-stage-${uniqueStageId}`
         : `jitsi-whiteboard-stage-${Date.now()}-${componentStageSequence}`;
     const button = document.createElement("button");
@@ -419,6 +426,7 @@ export async function bindWhiteboardButton({
         apiFetch,
         button,
         componentPage: null,
+        componentHost,
         componentWindow: null,
         componentWindowPending: false,
         discardComponentPage,
@@ -606,6 +614,7 @@ export async function bindWhiteboardButton({
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
                     state.meeting.state.whiteboardOpen = true;
+                    componentHost.hidden = false;
                     loadStage = "float";
                     const minimumSize = resolveMeetingPipMinimumSize(
                         state.meeting,

@@ -177,7 +177,7 @@ function spawnComponentWindow(
         componentUuid: WHITEBOARD_MODULE_UUID,
         routeId: WHITEBOARD_ROUTE_ID,
         mode: "overlay",
-        elementId: trigger.frameWrap.id,
+        elementId: trigger.componentHost.id,
         context: {
             meetingId,
             title: meetingName,
