@@ -4,7 +4,10 @@ import { readFile } from "node:fs/promises";
 import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
 
 function createScopedRuntime() {
-    const capabilities = new Map([["auth:requireAuth", () => null]]);
+    const capabilities = new Map([
+        ["auth:requireAuth", () => null],
+        ["share:requestApproval", async () => ({ approved: true })],
+    ]);
     const flows = new Set([
         "bootstrap-platform",
         "mint-share-token",

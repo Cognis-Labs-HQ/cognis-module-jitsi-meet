@@ -102,6 +102,11 @@ Pelepasan peserta aktif kini memperbarui kumpulan peserta secara optimistis dan 
 
 Saat kapabilitas persetujuan Share langsung tidak ada, penambahan peserta aktif kini menjalankan tahap persetujuan mint Share yang sudah ada, menunggu keputusannya, lalu segera mencabut token sementara, sehingga penerapan saat ini tidak lagi melewati konsensus. PiP Whiteboard tidak lagi mengikat header panggung rapat sebagai pengendali gerak tambahan di samping bilah alat jendela mengambang Cognis.
 
+
+## Wajibkan persetujuan akhir Share untuk undangan rapat aktif
+
+Penambahan peserta ke rapat aktif kini langsung mewajibkan kapabilitas `share:requestApproval` yang dideklarasikan. Hanya persetujuan akhir yang eksplisit yang menerima peserta; keputusan yang ditolak, tertunda, atau tidak valid mengembalikan peserta ke daftar tersedia. Kegagalan runtime tetap fail-open dan dicatat tanpa jalur kompatibilitas lama untuk membuat lalu mencabut berbagi.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -140,3 +145,5 @@ Saat kapabilitas persetujuan Share langsung tidak ada, penambahan peserta aktif 
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
 - [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)
+
+- [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)

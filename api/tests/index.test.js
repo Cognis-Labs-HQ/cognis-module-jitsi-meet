@@ -19,6 +19,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "share:uiClient",
         "share:uiGateway",
         "share:openPopup",
+        "share:requestApproval",
         "ui:log",
         "ui:showToast",
         "ui:openErrorPopup",
@@ -46,14 +47,15 @@ function readJitsiApiBundle() {
         .join("\n");
 }
 
-test("active participant additions reuse Share approval with fail-open fallback", () => {
+test("active participant additions require a final Share approval decision", () => {
     const source = readJitsiApiBundle();
     assert.match(source, /getCapability\("share:requestApproval"\)/);
-    assert.match(source, /result !== false && result\?\.approved !== false/);
     assert.match(
         source,
-        /flow\.run\(\s*"mint-share-token"[\s\S]*?stageResults\[[\s\S]*?"request-approval"[\s\S]*?flow\.run\(\s*"revoke-share-token"/,
+        /result === true \|\| result\?\.approved === true[\s\S]*?result === false \|\| result\?\.approved === false/,
     );
+    assert.doesNotMatch(source, /Participant addition consensus/);
+    assert.doesNotMatch(source, /share_approval_mint_failed/);
     assert.match(source, /participant addition is fail-open/);
     assert.match(source, /participant_addition_declined/);
 });

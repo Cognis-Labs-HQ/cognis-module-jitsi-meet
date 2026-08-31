@@ -268,7 +268,6 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
     assert.deepEqual(approvals, [
         {
-            claims: { sub: "account-alice", role: "user" },
             meetingId: "meeting-1",
             requesterAccountId: "account-alice",
             requesterDisplayName: "alice",

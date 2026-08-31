@@ -150,9 +150,12 @@ export function registerApiRoutes(router, ctx) {
     const dbExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const systemCtx = ctx.getCapability("system:ctx");
-    const requestShareApproval =
-        ctx.getCapability("share:requestApproval") ??
-        systemCtx?.getCapability?.("share:requestApproval");
+    const requestShareApproval = ctx.getCapability("share:requestApproval");
+    if (typeof requestShareApproval !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the share:requestApproval capability.",
+        );
+    }
     const profileStore = ctx.getCapability("social:profileStore");
     const messagesUiResources = resolveMessagesUiResources(ctx);
     const resolveGroupChat = ctx.getCapability(
@@ -683,67 +686,33 @@ export function registerApiRoutes(router, ctx) {
         deleteResourceShares,
         deleteChatRoom,
         requestParticipantAdditionApproval: async ({
-            claims,
             meetingId,
             requesterAccountId,
             requesterDisplayName,
         }) => {
             try {
-                if (typeof requestShareApproval === "function") {
-                    const result = await requestShareApproval({
-                        resourceType: "meeting",
-                        resourceId: meetingId,
-                        requesterAccountId,
-                        requesterDisplayName,
-                    });
-                    return {
-                        approved:
-                            result !== false && result?.approved !== false,
-                        failOpen: false,
-                    };
-                }
-                if (
-                    !systemCtx?.flow?.exists?.("mint-share-token") ||
-                    !systemCtx.flow.exists("revoke-share-token")
-                ) {
-                    throw new Error("share_approval_unavailable");
-                }
-                const approvalFlowResult = await systemCtx.flow.run(
-                    "mint-share-token",
-                    {
-                        claims,
-                        ownerAccountId: requesterAccountId,
-                        resourceType: "meeting",
-                        resourceId: meetingId,
-                        label: "Participant addition consensus",
-                        grantedCapabilities: ["meeting:join"],
-                    },
-                );
-                const approvalResult = approvalFlowResult.stageResults[
-                    "request-approval"
-                ]?.find((result) => typeof result?.approved === "boolean");
-                if (approvalResult?.approved === false) {
-                    return { approved: false, failOpen: false };
-                }
-                const issued = approvalFlowResult.stageResults[
-                    "issue-token"
-                ]?.find((result) => result?.minted === true);
-                const ephemeralShareId = String(
-                    issued?.shareRecord?.id ??
-                        issued?.shareRecord?.shareId ??
-                        issued?.shareId ??
-                        "",
-                ).trim();
-                if (!issued || !ephemeralShareId)
-                    throw new Error("share_approval_mint_failed");
-                await systemCtx.flow.run("revoke-share-token", {
-                    claims,
-                    shareId: ephemeralShareId,
-                    ownerAccountId: requesterAccountId,
+                const result = await requestShareApproval({
                     resourceType: "meeting",
                     resourceId: meetingId,
+                    requesterAccountId,
+                    requesterDisplayName,
                 });
-                return { approved: true, failOpen: false };
+                const approved = result === true || result?.approved === true;
+                const declined = result === false || result?.approved === false;
+                if (!approved && !declined) {
+                    log?.(
+                        "error",
+                        "Share approval returned an invalid decision; participant addition is rejected.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation:
+                                "approve_active_meeting_participant_addition",
+                            meetingId,
+                        },
+                    );
+                    return { approved: false, failOpen: false };
+                }
+                return { approved, failOpen: false };
             } catch (error) {
                 log?.(
                     "error",
