@@ -178,6 +178,10 @@ Persistent Whiteboards now confirm their full participant access on the first sy
 
 The active-participant dropzone now switches from its normal stage grid placement to absolute inset positioning when it is moved inside the floating Jitsi frame. Dragging an available participant once again covers the complete PiP meeting window with the invitation target.
 
+## Stop participant additions from failing during chat reuse
+
+The participant-add API now reuses the meeting’s persisted Messages room directly instead of asking exact-member resolution to return that room and rejecting the different room it creates. The browser updates membership through the host Messages client, redraws the existing mini chat, and reports a localized error with structured diagnostics if chat membership cannot be changed.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -224,3 +228,4 @@ The active-participant dropzone now switches from its normal stage grid placemen
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
+- [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)

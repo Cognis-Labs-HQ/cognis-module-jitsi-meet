@@ -1,4 +1,5 @@
 import { showToast } from "../reuse/feedback.js";
+import { updateMeetingChatMembership } from "../reuse/meeting-chat-membership.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import {
     loadJitsiExternalApi,
@@ -227,6 +228,16 @@ export function createEmbedHandlers({
             const meetingId = state.meeting?.id;
             if (!meetingId || state.kickReportedMeetingId === meetingId) return;
             state.kickReportedMeetingId = meetingId;
+            if (!state.shareAccessToken && state.meeting?.chatRoomId) {
+                await updateMeetingChatMembership({
+                    roomId: state.meeting.chatRoomId,
+                    username:
+                        state.currentProfile?.handle ??
+                        state.currentProfile?.username,
+                    action: "remove",
+                    meetingId,
+                });
+            }
             const response = await apiFetch(
                 "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
                 {

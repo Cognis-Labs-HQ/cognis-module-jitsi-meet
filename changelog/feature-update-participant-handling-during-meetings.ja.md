@@ -126,6 +126,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 進行中参加者のドロップ先は、フローティング Jitsi フレーム内へ移動すると、通常のステージグリッド配置から絶対配置のインセットへ切り替わります。利用可能な参加者をドラッグすると、招待先が再び PiP ミーティングウィンドウ全体を覆います。
 
+## チャット再利用時の参加者追加エラーを防止
+
+参加者追加 API は、完全一致メンバーの解決処理に既存ルームの返却を求めて新規作成された別ルームを拒否するのではなく、保存済みの Messages ミーティングルームを直接再利用します。ブラウザーはホストの Messages クライアントを通じてメンバーを更新し、既存のミニチャットを再描画します。チャットメンバーを変更できない場合は、構造化された診断情報とローカライズ済みエラーを報告します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -172,3 +176,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
+- [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)

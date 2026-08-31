@@ -126,6 +126,10 @@ Whiteboard persisten kini mengonfirmasi akses seluruh peserta pada sinkronisasi 
 
 Target peletakan peserta aktif kini beralih dari penempatan kisi panggung normal ke posisi inset absolut saat dipindahkan ke dalam bingkai Jitsi mengambang. Menyeret peserta yang tersedia kembali menutupi seluruh jendela rapat PiP dengan target undangan.
 
+## Cegah kegagalan penambahan peserta saat menggunakan kembali chat
+
+API penambahan peserta kini langsung menggunakan ruang Messages rapat yang tersimpan, bukan meminta resolusi anggota persis mengembalikan ruang tersebut lalu menolak ruang berbeda yang dibuatnya. Browser memperbarui keanggotaan melalui klien Messages host, menggambar ulang chat mini yang sama, dan melaporkan kesalahan terlokalisasi dengan diagnostik terstruktur jika keanggotaan chat tidak dapat diubah.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -172,3 +176,4 @@ Target peletakan peserta aktif kini beralih dari penempatan kisi panggung normal
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
+- [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)

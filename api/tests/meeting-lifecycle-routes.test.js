@@ -270,13 +270,7 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(response.body.data.meetingPassword, "");
     assert.equal(notifications[0][0][0], "carol");
     assert.equal(notifications[0][1].metadata.event, "meeting_invited");
-    assert.deepEqual(chatResolutions[0], {
-        roomId: "chat-old",
-        usernames: ["alice", "bob", "carol"],
-        title: "Bright-Otters-Meet-Safely",
-        createdByAccountId: "account-alice",
-        allowSingleMember: true,
-    });
+    assert.deepEqual(chatResolutions, []);
     assert.deepEqual(approvals, [
         {
             meetingId: "meeting-1",
@@ -345,7 +339,6 @@ test("a kicked account participant is removed and made inactive", async () => {
     )({ body: { meetingId: "meeting-1" } }, response);
     assert.equal(response.status, 200);
     assert.deepEqual(operations, [
-        ["chat", "chat-1", ["alice"]],
         ["remove", "meeting-1", "bob"],
         ["inactive", "meeting-1", "bob"],
     ]);

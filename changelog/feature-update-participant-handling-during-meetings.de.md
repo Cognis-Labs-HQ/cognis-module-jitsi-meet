@@ -178,6 +178,10 @@ Dauerhafte Whiteboards bestätigen jetzt bei der ersten Synchronisierung den Zug
 
 Die Ablagezone für aktive Teilnehmer wechselt jetzt von ihrer normalen Rasterposition auf der Bühne zur absoluten Innenpositionierung, wenn sie in den schwebenden Jitsi-Rahmen verschoben wird. Beim Ziehen eines verfügbaren Teilnehmers bedeckt das Einladungsziel wieder das vollständige Bild-in-Bild-Meetingfenster.
 
+## Verhindere Fehler beim Hinzufügen von Teilnehmern während der Chat-Wiederverwendung
+
+Die API zum Hinzufügen von Teilnehmern verwendet jetzt direkt den gespeicherten Messages-Raum des Meetings, statt von der Auflösung exakter Mitglieder diesen Raum zu erwarten und den dabei erstellten anderen Raum abzulehnen. Der Browser aktualisiert die Mitgliedschaft über den Messages-Client des Hosts, zeichnet den vorhandenen Mini-Chat neu und meldet einen lokalisierten Fehler mit strukturierten Diagnosedaten, wenn die Chat-Mitgliedschaft nicht geändert werden kann.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -224,3 +228,4 @@ Die Ablagezone für aktive Teilnehmer wechselt jetzt von ihrer normalen Rasterpo
 - [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
 - [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
 - [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
+- [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)

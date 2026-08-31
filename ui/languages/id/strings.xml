@@ -64,6 +64,7 @@
   <string name="module.jitsi_meet.participants.available_none">Tidak ada peserta yang tersedia.</string>
   <string name="module.jitsi_meet.participants.drop_to_invite">Letakkan peserta di sini untuk mengundangnya ke rapat.</string>
   <string name="module.jitsi_meet.participants.invite_success">{{participant}} ditambahkan ke rapat aktif.</string>
+  <string name="module.jitsi_meet.participants.chat_sync_failed">Peserta telah ditambahkan, tetapi akses chat rapatnya tidak dapat diperbarui.</string>
   <string name="module.jitsi_meet.participants.invite_rejected">Peserta saat ini menolak undangan tersebut.</string>
   <string name="module.jitsi_meet.participants.add_selected">Tambahkan yang Dipilih</string>
   <string name="module.jitsi_meet.admin.config.instance_url">URL Instans Jitsi</string>

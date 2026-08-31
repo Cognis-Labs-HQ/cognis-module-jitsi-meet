@@ -64,6 +64,7 @@
   <string name="module.jitsi_meet.participants.available_none">No available participants.</string>
   <string name="module.jitsi_meet.participants.drop_to_invite">Drop participant here to invite them to the meeting.</string>
   <string name="module.jitsi_meet.participants.invite_success">{{participant}} was added to the active meeting.</string>
+  <string name="module.jitsi_meet.participants.chat_sync_failed">The participant was added, but their meeting chat access could not be updated.</string>
   <string name="module.jitsi_meet.participants.invite_rejected">Current participants rejected the invitation.</string>
   <string name="module.jitsi_meet.participants.add_selected">Add Selected</string>
   <string name="module.jitsi_meet.admin.config.instance_url">Jitsi Instance URL</string>
