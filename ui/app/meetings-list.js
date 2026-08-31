@@ -107,11 +107,11 @@ export function createMeetingHandlers({
         await callbacks.keepPresenceAlive(false).catch(() => undefined);
         utils.clearTimers();
         const whiteboardCleanup = closeMeetingWhiteboard(root);
+        state.meeting = null;
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
-        state.meeting = null;
         state.pendingParticipantUsernames.clear();
         state.kickReportedMeetingId = "";
         state.chatMode = "meeting";
@@ -358,11 +358,11 @@ export function createMeetingHandlers({
         }
         utils.clearTimers();
         const whiteboardCleanup = closeMeetingWhiteboard(root);
+        state.meeting = null;
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
-        state.meeting = null;
         state.pendingParticipantUsernames.clear();
         state.kickReportedMeetingId = "";
         state.chatMode = "meeting";

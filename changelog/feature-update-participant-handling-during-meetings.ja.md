@@ -110,6 +110,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 カンファレンスの退出または終了時に 1 回だけ即座に破棄処理を行い、ミーティングオーバーレイを復元して参加者選択を消去し、アクティブなミーティングと利用可能な参加者の更新完了を待ちます。Whiteboard アクセス同期は初期メンバー構成を承認済みとして扱い、参加者が変わった場合だけ拡張プロバイダーを呼ぶため、ポーリング中の所有者専用要求の繰り返しを防ぎます。
 
+## 終了オーバーレイが次のクリックに反応しないようにする
+
+ミーティング終了処理では、Whiteboard コントロールを同期する前にアクティブなミーティングをクリアするようになりました。これにより、遅延中の Whiteboard 自動オープン処理が終了中に再登録され、次のクリックで「ミーティング終了」または「ミーティング退出」オーバーレイを非表示にすることがなくなります。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -152,3 +156,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
+- [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)

@@ -162,6 +162,10 @@ Regelmäßige Aktualisierungen verfügbarer Teilnehmer ändern jetzt nur noch Te
 
 Die Wiederherstellung des Hinweises nach dem Whiteboard verwendet jetzt direkt die vorhandene `updateOverlay`-Funktion, statt eine neue modulübergreifende Hilfsmethode hinzuzufügen. Gemischte Modulinstanzen während der SPA-Navigation können das Bereinigungsversprechen nicht mehr mit `restoreMeetingOverlay is not a function` ablehnen. Aktuelle Einbindungen wenden den beibehaltenen Hinweis zur geschlossenen oder verlassenen Besprechung weiterhin erneut an.
 
+## Verhindere Reaktionen von Beenden-Overlays auf den nächsten Klick
+
+Beim Beenden wird das aktive Meeting jetzt vor der Synchronisierung der Whiteboard-Steuerelemente gelöscht. Dadurch kann ein verzögerter automatischer Whiteboard-Öffner während des Beendens nicht erneut aktiviert werden und den nächsten Klick verwenden, um das Overlay „Meeting beendet“ oder „Meeting verlassen“ auszublenden.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -204,3 +208,4 @@ Die Wiederherstellung des Hinweises nach dem Whiteboard verwendet jetzt direkt d
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
+- [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)

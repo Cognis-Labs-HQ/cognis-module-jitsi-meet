@@ -110,6 +110,10 @@ Penambahan peserta ke rapat aktif kini langsung mewajibkan kapabilitas `share:re
 
 Keluar atau berakhirnya konferensi kini menjalankan satu pembongkaran langsung, memulihkan overlay rapat, mengosongkan pilihan peserta, dan menunggu pemuatan ulang rapat aktif serta peserta tersedia. Sinkronisasi akses Whiteboard kini menganggap keanggotaan awal telah diizinkan dan hanya memanggil penyedia perluasan setelah peserta berubah, sehingga permintaan khusus pemilik tidak berulang saat polling.
 
+## Cegah overlay keluar bereaksi terhadap klik berikutnya
+
+Proses penutupan rapat kini menghapus rapat aktif sebelum menyinkronkan kontrol Whiteboard. Dengan demikian, pembuka Whiteboard otomatis yang tertunda tidak dapat diaktifkan kembali selama proses keluar dan memakai klik berikutnya untuk menyembunyikan overlay Rapat Ditutup atau Rapat Ditinggalkan.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -152,3 +156,4 @@ Keluar atau berakhirnya konferensi kini menjalankan satu pembongkaran langsung, 
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
 - [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
 - [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
+- [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
