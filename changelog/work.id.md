@@ -98,6 +98,10 @@ Tindakan Whiteboard yang dinonaktifkan kini menampilkan penjelasan hover terloka
 
 Pelepasan peserta aktif kini memperbarui kumpulan peserta secara optimistis dan segera mengirim permintaan API berbasis persetujuan. Suara yang menolak mengembalikan peserta yang diusulkan ke daftar tersedia dan memberi pengundang toast penolakan terlokalisasi khusus. Kisi Rapat Aktif dan kontrolnya kini selalu dinonaktifkan selama pengguna lokal masih bergabung ke suatu rapat.
 
+## Gunakan alur persetujuan Share nyata dan hapus pegangan PiP ganda
+
+Saat kapabilitas persetujuan Share langsung tidak ada, penambahan peserta aktif kini menjalankan tahap persetujuan mint Share yang sudah ada, menunggu keputusannya, lalu segera mencabut token sementara, sehingga penerapan saat ini tidak lagi melewati konsensus. PiP Whiteboard tidak lagi mengikat header panggung rapat sebagai pengendali gerak tambahan di samping bilah alat jendela mengambang Cognis.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -135,3 +139,4 @@ Pelepasan peserta aktif kini memperbarui kumpulan peserta secara optimistis dan 
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
+- [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)

@@ -98,6 +98,10 @@ The disabled Whiteboard action now exposes a localized hover explanation while s
 
 Active participant drops now optimistically update the participant pools and immediately issue the approval-backed API request. A declined vote restores the proposed participant to the available list and gives the inviter a dedicated localized rejection toast. The Active Meetings grid and its controls are now always disabled while the local user remains joined to a meeting.
 
+## Use Share’s real approval flow and remove the duplicate PiP handle
+
+When the direct Share approval capability is absent, active participant additions now run the existing Share mint approval stage, wait for its decision, and revoke the temporary token immediately, so current deployments no longer skip consensus. Whiteboard PiP no longer binds the meeting stage header as an extra movement controller alongside Cognis’ floating-window toolbar.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -135,3 +139,4 @@ Active participant drops now optimistically update the participant pools and imm
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
+- [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)

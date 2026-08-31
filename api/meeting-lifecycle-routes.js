@@ -303,6 +303,7 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
             const approval = await requestParticipantAdditionApproval?.({
+                claims,
                 meetingId: resolved.meeting.id,
                 requesterAccountId: claims.sub,
                 requesterDisplayName: resolved.requesterUsername,

@@ -303,13 +303,11 @@ export async function bindWhiteboardButton({
     const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
     const meetingFrame = frameWrap?.querySelector(".jitsi-stage-frame");
     const overlay = frameWrap?.querySelector("#jitsi-overlay");
-    const pipHandle = root.querySelector(".jitsi-stage-header");
     if (
         !(slot instanceof HTMLElement) ||
         !(frameWrap instanceof HTMLElement) ||
         !(meetingFrame instanceof HTMLElement) ||
-        !(overlay instanceof HTMLElement) ||
-        !(pipHandle instanceof HTMLElement)
+        !(overlay instanceof HTMLElement)
     )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
@@ -415,7 +413,6 @@ export async function bindWhiteboardButton({
         loadRetryAfter: 0,
         makeFloatingWindow,
         meetingFrame,
-        pipHandle,
         preparedWhiteboardId:
             state.meeting?.state?.whiteboardDisposable ===
             !meetingHasInvitedParticipants(state.meeting)
@@ -599,7 +596,6 @@ export async function bindWhiteboardButton({
                     trigger.releaseFloatingWindow = makeFloatingWindow(
                         meetingFrame,
                         {
-                            handle: pipHandle,
                             minWidth: minimumSize.width,
                             minHeight: minimumSize.height,
                             signal,

@@ -683,34 +683,67 @@ export function registerApiRoutes(router, ctx) {
         deleteResourceShares,
         deleteChatRoom,
         requestParticipantAdditionApproval: async ({
+            claims,
             meetingId,
             requesterAccountId,
             requesterDisplayName,
         }) => {
-            if (typeof requestShareApproval !== "function") {
-                log?.(
-                    "warn",
-                    "Share approval capability unavailable; participant addition is fail-open.",
+            try {
+                if (typeof requestShareApproval === "function") {
+                    const result = await requestShareApproval({
+                        resourceType: "meeting",
+                        resourceId: meetingId,
+                        requesterAccountId,
+                        requesterDisplayName,
+                    });
+                    return {
+                        approved:
+                            result !== false && result?.approved !== false,
+                        failOpen: false,
+                    };
+                }
+                if (
+                    !systemCtx?.flow?.exists?.("mint-share-token") ||
+                    !systemCtx.flow.exists("revoke-share-token")
+                ) {
+                    throw new Error("share_approval_unavailable");
+                }
+                const approvalFlowResult = await systemCtx.flow.run(
+                    "mint-share-token",
                     {
-                        component: "jitsi-meet-module",
-                        operation:
-                            "approve_active_meeting_participant_addition",
-                        meetingId,
+                        claims,
+                        ownerAccountId: requesterAccountId,
+                        resourceType: "meeting",
+                        resourceId: meetingId,
+                        label: "Participant addition consensus",
+                        grantedCapabilities: ["meeting:join"],
                     },
                 );
-                return { approved: true, failOpen: true };
-            }
-            try {
-                const result = await requestShareApproval({
+                const approvalResult = approvalFlowResult.stageResults[
+                    "request-approval"
+                ]?.find((result) => typeof result?.approved === "boolean");
+                if (approvalResult?.approved === false) {
+                    return { approved: false, failOpen: false };
+                }
+                const issued = approvalFlowResult.stageResults[
+                    "issue-token"
+                ]?.find((result) => result?.minted === true);
+                const ephemeralShareId = String(
+                    issued?.shareRecord?.id ??
+                        issued?.shareRecord?.shareId ??
+                        issued?.shareId ??
+                        "",
+                ).trim();
+                if (!issued || !ephemeralShareId)
+                    throw new Error("share_approval_mint_failed");
+                await systemCtx.flow.run("revoke-share-token", {
+                    claims,
+                    shareId: ephemeralShareId,
+                    ownerAccountId: requesterAccountId,
                     resourceType: "meeting",
                     resourceId: meetingId,
-                    requesterAccountId,
-                    requesterDisplayName,
                 });
-                return {
-                    approved: result !== false && result?.approved !== false,
-                    failOpen: false,
-                };
+                return { approved: true, failOpen: false };
             } catch (error) {
                 log?.(
                     "error",

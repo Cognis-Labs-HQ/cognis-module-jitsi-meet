@@ -98,6 +98,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 アクティブな参加者のドロップでは参加者プールを一時的に更新し、承認付き API 要求を直ちに送信します。投票で拒否された場合、提案した参加者を利用可能一覧へ戻し、招待者に専用のローカライズ済み拒否トーストを表示します。ローカルユーザーがミーティングへ参加中は、アクティブなミーティングのグリッドと操作を常に無効にします。
 
+## 実際の Share 承認フローを使用し、重複する PiP ハンドルを削除
+
+直接の Share 承認 Capability がない場合、アクティブな参加者追加は既存の Share トークン生成承認ステージを実行して結果を待ち、一時トークンを直ちに失効させます。これにより現在の環境でも合意を省略しません。Whiteboard の PiP は Cognis のフローティングウィンドウツールバーに加えてミーティングステージヘッダーを移動コントローラーとして関連付けません。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -135,3 +139,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
 - [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
+- [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)

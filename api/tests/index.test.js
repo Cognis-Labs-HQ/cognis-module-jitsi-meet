@@ -50,6 +50,10 @@ test("active participant additions reuse Share approval with fail-open fallback"
     const source = readJitsiApiBundle();
     assert.match(source, /getCapability\("share:requestApproval"\)/);
     assert.match(source, /result !== false && result\?\.approved !== false/);
+    assert.match(
+        source,
+        /flow\.run\(\s*"mint-share-token"[\s\S]*?stageResults\[[\s\S]*?"request-approval"[\s\S]*?flow\.run\(\s*"revoke-share-token"/,
+    );
     assert.match(source, /participant addition is fail-open/);
     assert.match(source, /participant_addition_declined/);
 });

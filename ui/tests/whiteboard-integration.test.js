@@ -162,8 +162,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /apiFetch\([\s\S]*?active:\s*true[\s\S]*?makeFloatingWindow\([\s\S]*?await spawnComponentWindowWithRetry/,
+        /apiFetch\([\s\S]*?active:\s*true[\s\S]*?makeFloatingWindow\(\s*meetingFrame,\s*\{[\s\S]*?await spawnComponentWindowWithRetry/,
     );
+    assert.doesNotMatch(buttonSource, /handle:\s*pipHandle/);
+    assert.doesNotMatch(buttonSource, /jitsi-stage-header/);
     assert.match(
         buttonSource,
         /for \(let attempt = 0; attempt < 6; attempt \+= 1\)[\s\S]*?Math\.min\(250 \* 2 \*\* attempt, 2_000\)/,
