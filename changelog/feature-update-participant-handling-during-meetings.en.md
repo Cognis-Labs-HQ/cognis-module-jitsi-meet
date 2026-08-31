@@ -142,6 +142,10 @@ Whiteboard teardown now discards the component canvas before moving the meeting 
 
 Whiteboard component disposal can replace its stage wrapper, making previously captured DOM references stale. Exit cleanup now resolves the current meeting frame and stage wrapper from the mounted route before restoring the overlay, so Meeting Closed remains visible in the live composer surface after moderator termination.
 
+## Restore the proven PiP exit sequence
+
+Meeting exit teardown now matches the previously working sequence: the overlay returns to the stage before the floating Jitsi window is released, while Whiteboard component disposal continues asynchronously with structured failure logging. Closing the Jitsi embed and rendering Meeting Closed no longer wait for component-page disposal that can reclaim the stage DOM.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -179,3 +183,4 @@ Whiteboard component disposal can replace its stage wrapper, making previously c
 - [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)
 - [8019153](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8019153c46dd027cc05b849a272327e3114a1c63)
 - [d105cf3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d105cf394e47fefc26c894d8ba0278e97b7f09b2)
+- [0e5340a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0e5340abd33d63446a5d6bf557748040c1e49fc7)

@@ -253,18 +253,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /component-pages:discard/);
     assert.match(buttonSource, /whiteboard\/state/);
-    assert.match(buttonSource, /export async function closeMeetingWhiteboard/);
+    assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(
         buttonSource,
-        /trigger\?\.releaseFloatingWindow\?\.\(\);[\s\S]*?await trigger\.componentWindow\.discard\(\);[\s\S]*?placeMeetingOverlay\(trigger\);/,
-    );
-    assert.match(
-        buttonSource,
-        /trigger\?\.root\?\.querySelector\([\s\S]*?\.jitsi-stage-frame-wrap[\s\S]*?liveFrameWrap \?\? trigger\?\.frameWrap/,
+        /placeMeetingOverlay\(trigger\);\s*trigger\?\.releaseFloatingWindow\?\.\(\);\s*void discardComponentWindow\(trigger\);/,
     );
     assert.match(
         meetingsListSource,
-        /await closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);/,
+        /closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);/,
     );
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
     assert.match(

@@ -38,15 +38,7 @@ function setButtonDisabled(button, disabled) {
 
 function placeMeetingOverlay(trigger, { floating = false } = {}) {
     const overlay = trigger?.overlay;
-    const liveFrameWrap = trigger?.root?.querySelector(
-        ".jitsi-stage-frame-wrap",
-    );
-    const liveMeetingFrame = trigger?.root?.querySelector(
-        "#jitsi-meeting-frame",
-    );
-    const parent = floating
-        ? (liveMeetingFrame ?? trigger?.meetingFrame)
-        : (liveFrameWrap ?? trigger?.frameWrap);
+    const parent = floating ? trigger?.meetingFrame : trigger?.frameWrap;
     if (
         overlay instanceof HTMLElement &&
         parent instanceof HTMLElement &&
@@ -57,10 +49,7 @@ function placeMeetingOverlay(trigger, { floating = false } = {}) {
     return overlay instanceof HTMLElement ? overlay : null;
 }
 
-async function closeComponentWindow(trigger) {
-    if (trigger) trigger.windowRequestSequence += 1;
-    trigger?.automaticActivationCleanup?.();
-    trigger?.releaseFloatingWindow?.();
+async function discardComponentWindow(trigger) {
     try {
         if (typeof trigger?.componentWindow?.discard === "function") {
             await trigger.componentWindow.discard();
@@ -75,7 +64,14 @@ async function closeComponentWindow(trigger) {
             error: error instanceof Error ? error.message : String(error),
         });
     }
+}
+
+function closeComponentWindow(trigger) {
+    if (trigger) trigger.windowRequestSequence += 1;
+    trigger?.automaticActivationCleanup?.();
     placeMeetingOverlay(trigger);
+    trigger?.releaseFloatingWindow?.();
+    void discardComponentWindow(trigger);
     if (trigger) {
         trigger.componentWindowPending = false;
         trigger.componentWindow = null;
@@ -282,8 +278,8 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     }
 }
 
-export async function closeMeetingWhiteboard(root) {
-    await closeComponentWindow(mountedWhiteboardButtons.get(root));
+export function closeMeetingWhiteboard(root) {
+    closeComponentWindow(mountedWhiteboardButtons.get(root));
 }
 
 export function placeMeetingOverlayForActiveWindow(root) {
@@ -475,7 +471,6 @@ export async function bindWhiteboardButton({
             });
         },
         requestKeyringUnlock,
-        root,
         slot,
         whiteboardId: "",
         windowRequestSequence: 0,
