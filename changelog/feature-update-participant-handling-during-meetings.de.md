@@ -130,6 +130,10 @@ Beim Verlassen oder Beenden einer Besprechung wird jetzt die Whiteboard-Arbeitsf
 
 Teilnehmer, die vorläufig in eine aktive Besprechung verschoben wurden, bleiben jetzt auf der Bühne, während sich die Einladungsanfrage und regelmäßige Mitgliedschaftsaktualisierungen überschneiden. Die ausstehende Markierung wird entfernt, wenn der Server die Mitgliedschaft bestätigt oder die Einladung fehlschlägt. Dadurch wechseln Avatare nicht mehr zwischen Bühne und verfügbarer Liste.
 
+## Ausstehende Einladungen nach SPA-Navigation initialisieren
+
+Die Teilnehmersteuerung für Besprechungen initialisiert jetzt bei jeder Routeneinbindung ihre Menge ausstehender Einladungen. Die SPA-Navigation kann Besprechungen dadurch auch dann sicher einbinden, wenn der Host den Zustand einer früheren Modulinstanz beibehalten hat, ohne dass Teilnehmeraktualisierungen fehlschlagen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -164,3 +168,4 @@ Teilnehmer, die vorläufig in eine aktive Besprechung verschoben wurden, bleiben
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
 - [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
 - [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
+- [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)

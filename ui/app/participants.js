@@ -34,6 +34,10 @@ export function createPreflightHandlers({
     callbacks,
     utils,
 }) {
+    if (!(state.pendingParticipantUsernames instanceof Set)) {
+        state.pendingParticipantUsernames = new Set();
+    }
+
     async function runPreflightCheck({ showErrors = false } = {}) {
         if (state.preflightStatus === "running") {
             return false;

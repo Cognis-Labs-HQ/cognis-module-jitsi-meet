@@ -130,6 +130,10 @@ Leaving or terminating a meeting now closes the Whiteboard canvas, releases its 
 
 Participants optimistically moved into an active meeting now remain staged while the invitation request and periodic membership refreshes overlap. The pending marker is cleared when the server confirms membership or the invitation fails, preventing avatars from oscillating between the stage and available list.
 
+## Initialize pending invitations after SPA navigation
+
+The Meetings participant controller now initializes its pending-invitation set when each route mount binds the controller. SPA navigation can therefore safely mount Meetings even when the host retained state from an earlier module instance, without failing participant refreshes.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -164,3 +168,4 @@ Participants optimistically moved into an active meeting now remain staged while
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
 - [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
 - [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
+- [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)

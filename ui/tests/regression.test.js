@@ -347,6 +347,10 @@ test("jitsi meetings lock participants and block navigation while meeting is act
 
 test("active non-disposable meetings accept participant drops without unstaging invitees", () => {
     const source = readJitsiUiBundle();
+    assert.match(
+        source,
+        /if \(!\(state\.pendingParticipantUsernames instanceof Set\)\) \{\s*state\.pendingParticipantUsernames = new Set\(\)/,
+    );
     assert.match(source, /meeting\?\.hasInvitedParticipants/);
     assert.match(source, /meetings\/participants\/add/);
     assert.match(
