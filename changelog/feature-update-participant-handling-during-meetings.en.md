@@ -134,6 +134,10 @@ Participants optimistically moved into an active meeting now remain staged while
 
 The Meetings participant controller now initializes its pending-invitation set when each route mount binds the controller. SPA navigation can therefore safely mount Meetings even when the host retained state from an earlier module instance, without failing participant refreshes.
 
+## Restore the closed-meeting overlay after PiP disposal
+
+Whiteboard teardown now discards the component canvas before moving the meeting overlay back to the normal Jitsi stage. Component-page cleanup can no longer remove the restored overlay, so moderator termination from an open PiP shows the Meeting Closed message instead of an empty stage.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -169,3 +173,4 @@ The Meetings participant controller now initializes its pending-invitation set w
 - [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
 - [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
 - [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)
+- [8019153](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8019153c46dd027cc05b849a272327e3114a1c63)

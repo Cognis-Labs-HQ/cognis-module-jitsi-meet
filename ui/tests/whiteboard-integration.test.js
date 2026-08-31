@@ -256,7 +256,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /export async function closeMeetingWhiteboard/);
     assert.match(
         buttonSource,
-        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);/,
+        /trigger\?\.releaseFloatingWindow\?\.\(\);[\s\S]*?await trigger\.componentWindow\.discard\(\);[\s\S]*?placeMeetingOverlay\(trigger\);/,
     );
     assert.match(
         meetingsListSource,

@@ -53,7 +53,6 @@ async function closeComponentWindow(trigger) {
     if (trigger) trigger.windowRequestSequence += 1;
     trigger?.automaticActivationCleanup?.();
     trigger?.releaseFloatingWindow?.();
-    placeMeetingOverlay(trigger);
     try {
         if (typeof trigger?.componentWindow?.discard === "function") {
             await trigger.componentWindow.discard();
@@ -68,6 +67,7 @@ async function closeComponentWindow(trigger) {
             error: error instanceof Error ? error.message : String(error),
         });
     }
+    placeMeetingOverlay(trigger);
     if (trigger) {
         trigger.componentWindowPending = false;
         trigger.componentWindow = null;
