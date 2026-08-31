@@ -190,6 +190,9 @@ export function createPreflightHandlers({
         const selectedUsernames = new Set(
             state.selectedParticipants.map((entry) => entry.username),
         );
+        for (const username of state.pendingParticipantUsernames) {
+            selectedUsernames.add(username);
+        }
         for (const username of state.meeting?.participants ?? []) {
             selectedUsernames.add(normalizeUsername(username));
         }
@@ -274,6 +277,7 @@ export function createPreflightHandlers({
                     state.availableParticipants.filter(
                         (entry) => entry.username !== normalized,
                     );
+                state.pendingParticipantUsernames.add(normalized);
                 addParticipant(fromAvailable);
                 renderParticipants();
                 let response = null;
@@ -306,6 +310,7 @@ export function createPreflightHandlers({
                         ? await response.json().catch(() => ({ error: null }))
                         : { error: null };
                     removeParticipant(normalized);
+                    state.pendingParticipantUsernames.delete(normalized);
                     if (
                         !state.availableParticipants.some(
                             (entry) => entry.username === normalized,
@@ -434,6 +439,12 @@ export function createPreflightHandlers({
                         (username) => username && username !== currentUsername,
                     ),
             );
+            for (const username of participantUsernames) {
+                state.pendingParticipantUsernames.delete(username);
+            }
+            for (const username of state.pendingParticipantUsernames) {
+                participantUsernames.add(username);
+            }
             state.selectedParticipants = state.allParticipants.filter((entry) =>
                 participantUsernames.has(entry.username),
             );

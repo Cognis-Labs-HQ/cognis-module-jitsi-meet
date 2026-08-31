@@ -365,6 +365,14 @@ test("active non-disposable meetings accept participant drops without unstaging 
         source,
         /removeParticipant\(normalized\)[\s\S]*?state\.availableParticipants\.push\(fromAvailable\)[\s\S]*?renderParticipants\(\)/,
     );
+    assert.match(
+        source,
+        /pendingParticipantUsernames\.add\(normalized\)[\s\S]*?meetings\/participants\/add/,
+    );
+    assert.match(
+        source,
+        /for \(const username of state\.pendingParticipantUsernames\)[\s\S]*?participantUsernames\.add\(username\)/,
+    );
 });
 
 test("active meetings are locked while the user is joined to a meeting", () => {

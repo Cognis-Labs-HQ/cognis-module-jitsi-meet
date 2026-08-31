@@ -126,6 +126,10 @@ Genehmigungen für Einladungen zu aktiven Besprechungen teilen Share jetzt mit, 
 
 Beim Verlassen oder Beenden einer Besprechung wird jetzt die Whiteboard-Arbeitsfläche geschlossen, ihr Bild-in-Bild-Fenster freigegeben und der Hinweis vor dem Schließen der Konferenz auf die Jitsi-Bühne zurückgesetzt. Hinweise zu geschlossenen oder verlassenen Besprechungen erscheinen dadurch auf der normalen Bühne.
 
+## Bereitgestellte Einladungen während Aktualisierungen stabil halten
+
+Teilnehmer, die vorläufig in eine aktive Besprechung verschoben wurden, bleiben jetzt auf der Bühne, während sich die Einladungsanfrage und regelmäßige Mitgliedschaftsaktualisierungen überschneiden. Die ausstehende Markierung wird entfernt, wenn der Server die Mitgliedschaft bestätigt oder die Einladung fehlschlägt. Dadurch wechseln Avatare nicht mehr zwischen Bühne und verfügbarer Liste.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -159,3 +163,4 @@ Beim Verlassen oder Beenden einer Besprechung wird jetzt die Whiteboard-Arbeitsf
 - [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
 - [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
+- [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)

@@ -126,6 +126,10 @@ Active-meeting invitation approvals now tell Share which participant is being ad
 
 Leaving or terminating a meeting now closes the Whiteboard canvas, releases its picture-in-picture window, and restores the overlay to the Jitsi stage before disposing the conference. Meeting Closed and Meeting Left messages therefore appear in the normal stage.
 
+## Keep staged invitations stable during refreshes
+
+Participants optimistically moved into an active meeting now remain staged while the invitation request and periodic membership refreshes overlap. The pending marker is cleared when the server confirms membership or the invitation fails, preventing avatars from oscillating between the stage and available list.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -159,3 +163,4 @@ Leaving or terminating a meeting now closes the Whiteboard canvas, releases its 
 - [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
 - [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
+- [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)

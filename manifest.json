@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.109",
+    "version": "1.5.110",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -322,11 +322,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "f878ae8c3f6b61b5682fa0315b914e73f80bec67b0a309baf3852497219f44bd"
+            "sha256": "1e4eb0c2e91dc32e19a69d567a2b70b374f2630131d47246ba678eca32f39ca5"
         },
         {
             "path": "package.json",
-            "sha256": "0627ea885522a822ee0b175cf4c969f9ee32db05028470ed049aa153de93a700"
+            "sha256": "398f3714d1a01b6f9bcbea8261a7f01fb70ffc42a43905480d4a42e27a57000a"
         },
         {
             "path": "routes.json",
@@ -350,7 +350,7 @@
         },
         {
             "path": "ui/app/index.js",
-            "sha256": "3ebe5c086b761032555e00ce7dfbdc24dbdc2b0cd4987cad0469750a87421c0a"
+            "sha256": "761163cf971f1047ce5ff159b7474aa893efe37135bc22a8b75ef64467edac44"
         },
         {
             "path": "ui/app/meeting-room.js",
@@ -362,7 +362,7 @@
         },
         {
             "path": "ui/app/meetings-list.js",
-            "sha256": "f0b03fd1f9dd6536e9aae955b0dbfa1b82c5b2d8938a310e68c1ecbf5a1578c9"
+            "sha256": "c1f2bc73131381ac477ecf146f0a02c263e627637e00ce5bd51a5695b43b82eb"
         },
         {
             "path": "ui/app/mount-surface.js",
@@ -370,7 +370,7 @@
         },
         {
             "path": "ui/app/participants.js",
-            "sha256": "3851e1f9d7d92e91d97f2cce69c60e8c58ade89bbaf4d29fb1c60eca5ea919e4"
+            "sha256": "156a99698fe77c74a55160d300d07d306f23c4b62794a6e34124973bf0107fc2"
         },
         {
             "path": "ui/app/profile-avatars.js",
@@ -462,7 +462,7 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "a061d615b8206f6e4c19bc393af80b46986968606ac1dd9e9a11264635e85a48"
+            "sha256": "e6f4f57399e64ff17795db62cca7178c5a0712631774ae8b51b31fbeea58d2be"
         },
         {
             "path": "ui/tests/route-root-lifecycle.test.js",

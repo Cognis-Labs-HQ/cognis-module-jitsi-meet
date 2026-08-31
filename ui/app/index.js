@@ -41,7 +41,6 @@ const [
     importReuseModule("search-util/popup.js"),
     importReuseModule("value-normalizers.js"),
 ]);
-
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
     destroy: () => undefined,
@@ -119,6 +118,7 @@ export async function mount(
         allParticipants: [],
         availableParticipants: [],
         selectedParticipants: [],
+        pendingParticipantUsernames: new Set(),
         meeting: null,
         heartbeatTimer: null,
         stateRefreshTimer: null,
