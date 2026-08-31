@@ -259,6 +259,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /trigger\?\.releaseFloatingWindow\?\.\(\);[\s\S]*?await trigger\.componentWindow\.discard\(\);[\s\S]*?placeMeetingOverlay\(trigger\);/,
     );
     assert.match(
+        buttonSource,
+        /trigger\?\.root\?\.querySelector\([\s\S]*?\.jitsi-stage-frame-wrap[\s\S]*?liveFrameWrap \?\? trigger\?\.frameWrap/,
+    );
+    assert.match(
         meetingsListSource,
         /await closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);/,
     );

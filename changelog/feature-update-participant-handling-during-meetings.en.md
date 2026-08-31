@@ -138,6 +138,10 @@ The Meetings participant controller now initializes its pending-invitation set w
 
 Whiteboard teardown now discards the component canvas before moving the meeting overlay back to the normal Jitsi stage. Component-page cleanup can no longer remove the restored overlay, so moderator termination from an open PiP shows the Meeting Closed message instead of an empty stage.
 
+## Restore exit overlays into the live stage
+
+Whiteboard component disposal can replace its stage wrapper, making previously captured DOM references stale. Exit cleanup now resolves the current meeting frame and stage wrapper from the mounted route before restoring the overlay, so Meeting Closed remains visible in the live composer surface after moderator termination.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -174,3 +178,4 @@ Whiteboard teardown now discards the component canvas before moving the meeting 
 - [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
 - [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)
 - [8019153](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8019153c46dd027cc05b849a272327e3114a1c63)
+- [d105cf3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d105cf394e47fefc26c894d8ba0278e97b7f09b2)

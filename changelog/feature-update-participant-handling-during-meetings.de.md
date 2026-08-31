@@ -138,6 +138,10 @@ Die Teilnehmersteuerung für Besprechungen initialisiert jetzt bei jeder Routene
 
 Beim Whiteboard-Abbau wird jetzt zuerst die Komponenten-Arbeitsfläche verworfen und danach der Besprechungshinweis auf die normale Jitsi-Bühne zurückgesetzt. Die Bereinigung der Komponentenseite kann den wiederhergestellten Hinweis nicht mehr entfernen. Wenn ein Moderator die Besprechung bei geöffnetem PiP beendet, erscheint daher der Hinweis zur geschlossenen Besprechung statt einer leeren Bühne.
 
+## Ausgangshinweise auf der aktuellen Bühne wiederherstellen
+
+Beim Verwerfen der Whiteboard-Komponente kann deren Bühnenrahmen ersetzt werden, wodurch zuvor erfasste DOM-Referenzen veralten. Die Ausgangsbereinigung ermittelt jetzt den aktuellen Besprechungsrahmen und Bühnenrahmen aus der eingebundenen Route, bevor der Hinweis wiederhergestellt wird. Dadurch bleibt der Hinweis zur geschlossenen Besprechung nach dem Beenden durch einen Moderator in der aktuellen Composer-Ansicht sichtbar.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -174,3 +178,4 @@ Beim Whiteboard-Abbau wird jetzt zuerst die Komponenten-Arbeitsfläche verworfen
 - [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
 - [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)
 - [8019153](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8019153c46dd027cc05b849a272327e3114a1c63)
+- [d105cf3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d105cf394e47fefc26c894d8ba0278e97b7f09b2)

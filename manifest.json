@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.112",
+    "version": "1.5.113",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -322,11 +322,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "f65b156151df8dc33f6a11de6a527a45367b2b049acc949316976e2e712cc71d"
+            "sha256": "c466124e0731081ebb0de44741489fb57746228b09ac36568355e6d9de8e1f04"
         },
         {
             "path": "package.json",
-            "sha256": "32834448e1a4a1e659b7484897dbeda319affb6241abb6674ffa66c25eda0057"
+            "sha256": "d064dc8bee88fb62c8b0c9167a5e8937bec99d99d0c086dd9a5b66bb9b2fd49b"
         },
         {
             "path": "routes.json",
@@ -470,7 +470,7 @@
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "be0fd185ad0581cc70ac4390f81921a18ef9716972cb62e32650500dc6805841"
+            "sha256": "ad127124d54f19e479068c6b672cb40948ecc1dd8f90ac82c77d468020dd659d"
         },
         {
             "path": "ui/tests/whiteboard-session.test.js",
@@ -478,7 +478,7 @@
         },
         {
             "path": "ui/whiteboard-control.js",
-            "sha256": "dd3feda310cb8419b451eb23f719d6a30e21eb56c20ecb877174aec0d68df374"
+            "sha256": "942dcc1091acddc2e3ad96aa37893f9cd01358baba7e08c2bb87d5b80b2c3900"
         },
         {
             "path": "ui/whiteboard-provider.js",

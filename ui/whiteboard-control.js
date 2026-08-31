@@ -38,7 +38,15 @@ function setButtonDisabled(button, disabled) {
 
 function placeMeetingOverlay(trigger, { floating = false } = {}) {
     const overlay = trigger?.overlay;
-    const parent = floating ? trigger?.meetingFrame : trigger?.frameWrap;
+    const liveFrameWrap = trigger?.root?.querySelector(
+        ".jitsi-stage-frame-wrap",
+    );
+    const liveMeetingFrame = trigger?.root?.querySelector(
+        "#jitsi-meeting-frame",
+    );
+    const parent = floating
+        ? (liveMeetingFrame ?? trigger?.meetingFrame)
+        : (liveFrameWrap ?? trigger?.frameWrap);
     if (
         overlay instanceof HTMLElement &&
         parent instanceof HTMLElement &&
@@ -467,6 +475,7 @@ export async function bindWhiteboardButton({
             });
         },
         requestKeyringUnlock,
+        root,
         slot,
         whiteboardId: "",
         windowRequestSequence: 0,
