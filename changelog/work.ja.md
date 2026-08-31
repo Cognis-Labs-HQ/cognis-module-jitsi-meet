@@ -102,10 +102,13 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 直接の Share 承認 Capability がない場合、アクティブな参加者追加は既存の Share トークン生成承認ステージを実行して結果を待ち、一時トークンを直ちに失効させます。これにより現在の環境でも合意を省略しません。Whiteboard の PiP は Cognis のフローティングウィンドウツールバーに加えてミーティングステージヘッダーを移動コントローラーとして関連付けません。
 
-
 ## アクティブなミーティングへの招待に Share の最終承認を必須化
 
 アクティブなミーティングへの参加者追加は、宣言済みの `share:requestApproval` Capability を直接必須とします。明示的な最終承認だけが参加者を受け入れ、拒否、保留、または不正な判断では参加者を利用可能リストへ戻します。実行時エラーは引き続きログを残してフェイルオープンとし、作成後に取り消す旧互換経路は使用しません。
+
+## ミーティング破棄を復元し、不要な Whiteboard アクセス拡張を防止
+
+カンファレンスの退出または終了時に 1 回だけ即座に破棄処理を行い、ミーティングオーバーレイを復元して参加者選択を消去し、アクティブなミーティングと利用可能な参加者の更新完了を待ちます。Whiteboard アクセス同期は初期メンバー構成を承認済みとして扱い、参加者が変わった場合だけ拡張プロバイダーを呼ぶため、ポーリング中の所有者専用要求の繰り返しを防ぎます。
 
 ## コミット
 
@@ -147,3 +150,5 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)
 
 - [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
+
+- [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)

@@ -278,6 +278,7 @@ test("persistent whiteboards expand access when meeting membership changes", asy
     const requests = [];
     const trigger = {
         disposableCanvas: false,
+        participantAccessBaselineSignature: "",
         participantAccessPromise: null,
         participantAccessSignature: "",
         preparedWhiteboardId: "board-1",
@@ -296,15 +297,16 @@ test("persistent whiteboards expand access when meeting membership changes", asy
         currentProfile: { handle: "owner" },
         meeting: {
             createdBy: "owner",
-            participants: ["carol", "alice", "bob"],
+            participants: ["alice", "bob"],
             state: { whiteboardId: "board-1" },
         },
     };
 
     assert.equal(
         await synchronizeWhiteboardParticipantAccess(trigger, state),
-        true,
+        null,
     );
+    state.meeting.participants.push("carol");
     assert.equal(
         await synchronizeWhiteboardParticipantAccess(trigger, state),
         true,
@@ -320,6 +322,7 @@ test("persistent whiteboards expand access when meeting membership changes", asy
 test("whiteboard expansion rejects a provider response missing participants", async () => {
     const trigger = {
         disposableCanvas: false,
+        participantAccessBaselineSignature: "board-1:alice",
         participantAccessAttemptSignature: "",
         participantAccessPromise: null,
         participantAccessSignature: "",
@@ -350,6 +353,7 @@ test("invited users never request owner-only whiteboard expansion", async () => 
     let requests = 0;
     const trigger = {
         disposableCanvas: false,
+        participantAccessBaselineSignature: "",
         participantAccessAttemptSignature: "",
         participantAccessPromise: null,
         participantAccessSignature: "",
@@ -381,6 +385,7 @@ test("failed owner expansion is attempted once per participant set", async () =>
     let requests = 0;
     const trigger = {
         disposableCanvas: false,
+        participantAccessBaselineSignature: "board-1:owner",
         participantAccessAttemptSignature: "",
         participantAccessPromise: null,
         participantAccessSignature: "",

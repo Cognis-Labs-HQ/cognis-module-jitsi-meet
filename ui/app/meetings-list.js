@@ -22,6 +22,8 @@ export function createMeetingHandlers({
     utils,
     allowParticipantlessJoin = false,
 }) {
+    let meetingExitPromise = null;
+
     function renderActiveMeetings({ loading = false } = {}) {
         const activeMeetingsEl = root.querySelector("#jitsi-active-meetings");
         if (!(activeMeetingsEl instanceof HTMLElement)) {
@@ -372,7 +374,7 @@ export function createMeetingHandlers({
             });
         }
         await callbacks.updateNativeChat();
-        void loadActiveMeetings({ resolveRequested: false });
+        await loadActiveMeetings({ resolveRequested: false });
         if (toastMessageKey) {
             showToast(i18n.t(toastMessageKey), {
                 variant: toastVariant,
@@ -386,28 +388,55 @@ export function createMeetingHandlers({
         honorMeetingClosed = true,
         reportTerminated = false,
     }) {
+        if (meetingExitPromise) return meetingExitPromise;
+        const exitPromise = performMeetingExit({
+            fallbackOverlayMessageKey,
+            forceClosedOverlay,
+            honorMeetingClosed,
+            reportTerminated,
+        });
+        meetingExitPromise = exitPromise;
+        try {
+            return await exitPromise;
+        } finally {
+            if (meetingExitPromise === exitPromise) {
+                meetingExitPromise = null;
+            }
+        }
+    }
+
+    async function performMeetingExit({
+        fallbackOverlayMessageKey,
+        forceClosedOverlay,
+        honorMeetingClosed,
+        reportTerminated,
+    }) {
         const leaveStatePromise = callbacks
             .keepPresenceAlive(false, {
                 terminated: reportTerminated,
             })
             .catch(() => null);
-        if (forceClosedOverlay) {
-            await resetMeetingState({
-                overlayMessageKey: "module.jitsi_meet.overlay.meeting_closed",
-                skipPresenceUpdate: true,
-            });
-            await leaveStatePromise;
-            return;
-        }
-        const leaveState = await leaveStatePromise;
-        const overlayMessageKey =
-            honorMeetingClosed && leaveState?.meetingClosed
-                ? "module.jitsi_meet.overlay.meeting_closed"
-                : fallbackOverlayMessageKey;
+        const initialOverlayMessageKey = forceClosedOverlay
+            ? "module.jitsi_meet.overlay.meeting_closed"
+            : fallbackOverlayMessageKey;
         await resetMeetingState({
-            overlayMessageKey,
+            overlayMessageKey: initialOverlayMessageKey,
             skipPresenceUpdate: true,
         });
+        const leaveState = await leaveStatePromise;
+        if (
+            !forceClosedOverlay &&
+            honorMeetingClosed &&
+            leaveState?.meetingClosed
+        ) {
+            utils.updateOverlay({
+                message: i18n.t("module.jitsi_meet.overlay.meeting_closed"),
+                canStart: state.preflightPassed,
+                showAuth: false,
+                showReclaim: false,
+                visible: true,
+            });
+        }
     }
 
     function shouldPromptLocalUserAlone(activeParticipants) {

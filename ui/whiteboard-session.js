@@ -64,6 +64,11 @@ export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
     }
     const participantHandles = getParticipantHandles(state.meeting).sort();
     const signature = `${whiteboardId}:${participantHandles.join(",")}`;
+    if (!trigger.participantAccessBaselineSignature) {
+        trigger.participantAccessBaselineSignature = signature;
+        trigger.participantAccessSignature = signature;
+        return null;
+    }
     if (trigger.participantAccessSignature === signature) return true;
     if (trigger.participantAccessAttemptSignature === signature) return null;
     if (trigger.participantAccessPromise) {

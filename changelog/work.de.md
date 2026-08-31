@@ -102,10 +102,13 @@ Beim Ablegen aktiver Teilnehmer werden die Teilnehmerpools nun vorläufig aktual
 
 Wenn die direkte Share-Genehmigungs-Capability fehlt, führen aktive Teilnehmereinladungen nun die vorhandene Share-Genehmigungsphase beim Erstellen aus, warten auf deren Entscheidung und widerrufen den temporären Token sofort, sodass aktuelle Installationen den Konsens nicht mehr überspringen. Whiteboard-Bild-in-Bild bindet den Besprechungsbühnenkopf nicht mehr zusätzlich zur Cognis-Floating-Window-Werkzeugleiste als Bewegungssteuerung.
 
-
 ## Endgültige Share-Genehmigung für Einladungen zu aktiven Besprechungen verlangen
 
 Das Hinzufügen von Teilnehmern zu aktiven Besprechungen erfordert nun direkt die deklarierte Capability `share:requestApproval`. Nur eine ausdrückliche endgültige Zustimmung nimmt den Teilnehmer auf; abgelehnte, ausstehende oder ungültige Entscheidungen setzen ihn zurück in die Liste der verfügbaren Teilnehmer. Laufzeitfehler bleiben fehlertolerant und werden protokolliert, ohne veralteten Kompatibilitätsweg zum Erstellen und Widerrufen.
+
+## Besprechungsabbau wiederherstellen und unnötige Whiteboard-Erweiterungen vermeiden
+
+Das Verlassen oder Beenden einer Konferenz führt nun einen einzigen sofortigen Abbau aus, stellt das Besprechungs-Overlay wieder her, leert die Teilnehmerauswahl und wartet auf die Aktualisierung aktiver Besprechungen und verfügbarer Teilnehmer. Die Whiteboard-Zugriffssynchronisierung behandelt die anfängliche Mitgliedschaft als bereits berechtigt und ruft den Erweiterungsanbieter erst nach Teilnehmeränderungen auf, wodurch wiederholte nur für Eigentümer erlaubte Anfragen während des Pollings entfallen.
 
 ## Commits
 
@@ -146,3 +149,5 @@ Das Hinzufügen von Teilnehmern zu aktiven Besprechungen erfordert nun direkt di
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
 - [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)
 - [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
+
+- [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)

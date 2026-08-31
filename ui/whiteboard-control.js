@@ -116,6 +116,9 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             trigger.preparedMeetingId = meetingId;
             trigger.preparedWhiteboardId = "";
             trigger.preparationFailedMeetingId = "";
+            trigger.participantAccessBaselineSignature = "";
+            trigger.participantAccessAttemptSignature = "";
+            trigger.participantAccessSignature = "";
         }
         const stateWhiteboardId = String(
             state.meeting?.state?.whiteboardId ?? "",
@@ -422,6 +425,7 @@ export async function bindWhiteboardButton({
         preparationPromise: null,
         preparationFailedMeetingId: "",
         participantAccessPromise: null,
+        participantAccessBaselineSignature: "",
         participantAccessSignature: "",
         participantAccessAttemptSignature: "",
         participantAccessWarningLogged: false,

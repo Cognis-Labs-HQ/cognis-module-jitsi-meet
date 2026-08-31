@@ -634,9 +634,10 @@ test("meetings session state polling handles closed meetings and distinct leave 
     );
     assert.match(source, /message\.includes\(MEETING_DESTROYED_TEXT\)/);
     assert.match(source, /canStart: state\.preflightPassed/);
+    assert.match(source, /if \(meetingExitPromise\) return meetingExitPromise/);
     assert.match(
         source,
-        /if \(forceClosedOverlay\) \{[\s\S]*resetMeetingState\([\s\S]*meeting_closed[\s\S]*await leaveStatePromise/,
+        /await resetMeetingState\([\s\S]*await leaveStatePromise/,
     );
     assert.match(source, /addEventListener\("notificationTriggered"/);
     assert.match(source, /reportTerminated: true/);

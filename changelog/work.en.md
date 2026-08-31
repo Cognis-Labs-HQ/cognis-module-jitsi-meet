@@ -102,10 +102,13 @@ Active participant drops now optimistically update the participant pools and imm
 
 When the direct Share approval capability is absent, active participant additions now run the existing Share mint approval stage, wait for its decision, and revoke the temporary token immediately, so current deployments no longer skip consensus. Whiteboard PiP no longer binds the meeting stage header as an extra movement controller alongside Cognis’ floating-window toolbar.
 
-
 ## Require final Share approval for active-meeting invitations
 
 Active-meeting participant additions now require the declared `share:requestApproval` capability directly. Only an explicit final approval accepts the participant; declined, pending, or malformed decisions return the participant to the available list. Runtime failures remain fail-open and are logged, without any legacy mint-and-revoke compatibility path.
+
+## Restore meeting teardown and avoid redundant Whiteboard expansion
+
+Leaving or terminating a conference now runs one immediate teardown, restores the meeting overlay, clears participant selection, and awaits the active-meeting and available-participant refresh. Whiteboard access synchronization now treats the initial membership as already authorized and calls the expansion provider only after participants change, preventing repeated owner-only requests during polling.
 
 ## Commits
 
@@ -146,3 +149,5 @@ Active-meeting participant additions now require the declared `share:requestAppr
 - [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
 - [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)
 - [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
+
+- [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)
