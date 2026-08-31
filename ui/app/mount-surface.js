@@ -106,7 +106,31 @@ export function createMountUtilities({ root, state }) {
         showAlonePrompt = false,
         visible = true,
     }) {
-        const overlay = root.querySelector("#jitsi-overlay");
+        const overlayPresentation = {
+            message,
+            loading,
+            probed,
+            canStart,
+            showAuth,
+            showReclaim,
+            showAlonePrompt,
+            visible,
+        };
+        state.overlayPresentation = overlayPresentation;
+        let overlay = root.querySelector("#jitsi-overlay");
+        if (!(overlay instanceof HTMLElement)) {
+            const frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
+            if (
+                frameWrap instanceof HTMLElement &&
+                state.meetingOverlay instanceof HTMLElement
+            ) {
+                frameWrap.append(state.meetingOverlay);
+                overlay = state.meetingOverlay;
+            }
+        }
+        if (overlay instanceof HTMLElement) {
+            state.meetingOverlay = overlay;
+        }
         const startButton = root.querySelector("#jitsi-start-btn");
         const authButton = root.querySelector("#jitsi-auth-btn");
         const reclaimButton = root.querySelector("#jitsi-reclaim-btn");
@@ -171,12 +195,19 @@ export function createMountUtilities({ root, state }) {
         }
     }
 
+    function restoreMeetingOverlay() {
+        if (state.overlayPresentation) {
+            updateOverlay(state.overlayPresentation);
+        }
+    }
+
     return {
         clearTimers,
         deferAloneParticipantPrompt,
         isMeetingActive,
         isMeetingEmbedMissing,
         resetParticipantSelection,
+        restoreMeetingOverlay,
         selectedUsernames,
         setPreflightStatus,
         syncShareButtonAvailability,

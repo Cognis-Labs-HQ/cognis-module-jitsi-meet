@@ -85,7 +85,7 @@ export function createPreflightHandlers({
         return true;
     }
 
-    function renderParticipants() {
+    function renderParticipants({ updateStage = true } = {}) {
         const availablePool = root.querySelector(
             "#jitsi-available-participants",
         );
@@ -125,16 +125,20 @@ export function createPreflightHandlers({
         const stagedEntries = utils.isMeetingActive()
             ? []
             : state.selectedParticipants;
-        stagedArea.replaceChildren(
-            ...stagedEntries.map((entry) => createParticipantAvatarEl(entry)),
-        );
-        void hydrateProfileAvatars(stagedArea).catch((error) =>
-            logUi(
-                "error",
-                "[jitsi-meet] staged participant hydration failed:",
-                error,
-            ),
-        );
+        if (updateStage) {
+            stagedArea.replaceChildren(
+                ...stagedEntries.map((entry) =>
+                    createParticipantAvatarEl(entry),
+                ),
+            );
+            void hydrateProfileAvatars(stagedArea).catch((error) =>
+                logUi(
+                    "error",
+                    "[jitsi-meet] staged participant hydration failed:",
+                    error,
+                ),
+            );
+        }
 
         const participantSelectionLocked =
             utils.isMeetingActive() && !state.meeting?.hasInvitedParticipants;
@@ -149,7 +153,7 @@ export function createPreflightHandlers({
         }
 
         const participantCount = state.selectedParticipants.length;
-        if (!utils.isMeetingActive() && !state.meeting?.id) {
+        if (updateStage && !utils.isMeetingActive() && !state.meeting?.id) {
             utils.updateOverlay({
                 message: i18n.t(callbacks.lobbyMessageKey(participantCount)),
                 canStart: state.preflightPassed && !state.meeting?.id,
@@ -203,7 +207,7 @@ export function createPreflightHandlers({
         state.availableParticipants = state.allParticipants.filter(
             (entry) => !selectedUsernames.has(entry.username),
         );
-        renderParticipants();
+        renderParticipants({ updateStage: false });
     }
 
     function removeParticipant(username) {

@@ -400,7 +400,7 @@ test("participant rendering preserves an active meeting overlay state and shows 
     const source = readJitsiUiBundle();
     assert.match(
         source,
-        /if \(!utils\.isMeetingActive\(\) && !state\.meeting\?\.id\) \{\s*utils\.updateOverlay/,
+        /if \(updateStage && !utils\.isMeetingActive\(\) && !state\.meeting\?\.id\) \{\s*utils\.updateOverlay/,
     );
     assert.match(
         source,
@@ -473,6 +473,10 @@ test("meeting participant surfaces and chat refresh membership in real time", ()
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
     assert.match(source, /async function refreshAvailableParticipants\(\)/);
+    assert.match(
+        source,
+        /refreshAvailableParticipants[\s\S]*?renderParticipants\(\{ updateStage: false \}\)/,
+    );
     assert.match(
         source,
         /loadActiveMeetings[\s\S]*callbacks\.refreshAvailableParticipants/,

@@ -256,7 +256,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
     assert.match(
         buttonSource,
-        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentShell\.hidden = true;[\s\S]*?void discardComponentWindow\(trigger\);/,
+        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentShell\.hidden = true;[\s\S]*?const discardPromise = discardComponentWindow\(trigger\);/,
     );
     assert.match(stylesheet, /\.jitsi-overlay\s*\{[\s\S]*?grid-area: 1 \/ 1;/);
     assert.match(
@@ -265,7 +265,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         meetingsListSource,
-        /closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);/,
+        /const whiteboardCleanup = closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);[\s\S]*?whiteboardCleanup\?\.then\(\(\) => utils\.restoreMeetingOverlay\(\)\)/,
+    );
+    assert.match(
+        appSource,
+        /state\.meetingOverlay instanceof HTMLElement[\s\S]*?frameWrap\.append\(state\.meetingOverlay\)/,
     );
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
     assert.match(

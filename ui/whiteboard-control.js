@@ -74,7 +74,7 @@ function closeComponentWindow(trigger) {
     if (trigger?.componentShell instanceof HTMLElement) {
         trigger.componentShell.hidden = true;
     }
-    void discardComponentWindow(trigger);
+    const discardPromise = discardComponentWindow(trigger);
     if (trigger) {
         trigger.componentWindowPending = false;
         trigger.componentWindow = null;
@@ -83,6 +83,7 @@ function closeComponentWindow(trigger) {
         trigger.whiteboardId = "";
         setButtonActive(trigger.button, false);
     }
+    return discardPromise;
 }
 
 async function handleWhiteboardLoadError(
@@ -282,7 +283,7 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
 }
 
 export function closeMeetingWhiteboard(root) {
-    closeComponentWindow(mountedWhiteboardButtons.get(root));
+    return closeComponentWindow(mountedWhiteboardButtons.get(root));
 }
 
 export function placeMeetingOverlayForActiveWindow(root) {

@@ -154,6 +154,10 @@ The Whiteboard component now mounts into a dedicated host instead of taking owne
 
 The pre-meeting and closed-meeting overlay is now a full-size grid item rather than an absolutely positioned child whose parent could collapse when Jitsi and Whiteboard were hidden. A protective Whiteboard shell adds another ownership boundary around the component host, preventing component cleanup from removing sibling meeting UI even when the host platform cleans a target's parent.
 
+## Exclude the meeting stage from participant refreshes
+
+Periodic available-participant refreshes now update only participant and active-meeting surfaces. They no longer rerender staged avatars or replace the stage message, so Meeting Closed and Left Meeting remain visible. Whiteboard disposal also triggers a final restoration from the retained overlay element and its last presentation state if host cleanup detached it.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -194,3 +198,4 @@ The pre-meeting and closed-meeting overlay is now a full-size grid item rather t
 - [0e5340a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0e5340abd33d63446a5d6bf557748040c1e49fc7)
 - [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
+- [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)

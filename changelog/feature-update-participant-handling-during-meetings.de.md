@@ -154,6 +154,10 @@ Die Whiteboard-Komponente wird jetzt in einen eigenen Host eingebunden, statt de
 
 Der Hinweis vor und nach der Besprechung ist jetzt ein vollflächiges Rasterelement statt eines absolut positionierten Kindelements, dessen übergeordnetes Element zusammenbrechen konnte, wenn Jitsi und Whiteboard ausgeblendet waren. Eine schützende Whiteboard-Hülle schafft eine zusätzliche Besitzgrenze um den Komponenten-Host und verhindert, dass die Komponentenbereinigung benachbarte Besprechungsoberflächen entfernt, selbst wenn die Hostplattform das übergeordnete Element eines Ziels bereinigt.
 
+## Besprechungsbühne von Teilnehmeraktualisierungen ausschließen
+
+Regelmäßige Aktualisierungen verfügbarer Teilnehmer ändern jetzt nur noch Teilnehmer- und aktive Besprechungsflächen. Sie rendern weder bereitgestellte Avatare neu noch ersetzen sie den Bühnenhinweis, sodass die Hinweise zur geschlossenen oder verlassenen Besprechung sichtbar bleiben. Nach dem Whiteboard-Abbau wird außerdem das beibehaltene Hinweiselement mit seinem letzten Darstellungszustand wiederhergestellt, falls die Hostbereinigung es gelöst hat.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -194,3 +198,4 @@ Der Hinweis vor und nach der Besprechung ist jetzt ein vollflächiges Rasterelem
 - [0e5340a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0e5340abd33d63446a5d6bf557748040c1e49fc7)
 - [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
 - [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
+- [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
