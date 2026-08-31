@@ -58,6 +58,11 @@ test("active participant additions require a final Share approval decision", () 
     assert.doesNotMatch(source, /share_approval_mint_failed/);
     assert.match(source, /participant addition is fail-open/);
     assert.match(source, /participant_addition_declined/);
+    assert.match(
+        source,
+        /action: `add \$\{participantUsername\} as a meeting participant`/,
+    );
+    assert.match(source, /target: meetingName/);
 });
 
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {

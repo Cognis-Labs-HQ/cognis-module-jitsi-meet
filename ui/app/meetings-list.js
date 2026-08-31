@@ -106,7 +106,7 @@ export function createMeetingHandlers({
         if (!utils.isMeetingActive()) return;
         await callbacks.keepPresenceAlive(false).catch(() => undefined);
         utils.clearTimers();
-        closeMeetingWhiteboard(root);
+        await closeMeetingWhiteboard(root);
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
@@ -351,7 +351,7 @@ export function createMeetingHandlers({
             await callbacks.keepPresenceAlive(false).catch(() => undefined);
         }
         utils.clearTimers();
-        closeMeetingWhiteboard(root);
+        await closeMeetingWhiteboard(root);
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";

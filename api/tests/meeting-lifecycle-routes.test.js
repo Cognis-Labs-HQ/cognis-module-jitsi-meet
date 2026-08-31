@@ -269,6 +269,8 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.deepEqual(approvals, [
         {
             meetingId: "meeting-1",
+            meetingName: "Bright-Otters-Meet-Safely",
+            participantUsername: "carol",
             requesterAccountId: "account-alice",
             requesterDisplayName: "alice",
         },

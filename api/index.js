@@ -687,6 +687,8 @@ export function registerApiRoutes(router, ctx) {
         deleteChatRoom,
         requestParticipantAdditionApproval: async ({
             meetingId,
+            meetingName,
+            participantUsername,
             requesterAccountId,
             requesterDisplayName,
         }) => {
@@ -696,6 +698,8 @@ export function registerApiRoutes(router, ctx) {
                     resourceId: meetingId,
                     requesterAccountId,
                     requesterDisplayName,
+                    action: `add ${participantUsername} as a meeting participant`,
+                    target: meetingName,
                 });
                 const approved = result === true || result?.approved === true;
                 const declined = result === false || result?.approved === false;

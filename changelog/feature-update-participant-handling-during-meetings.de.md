@@ -118,6 +118,14 @@ Die Teilnehmersuche prüft jetzt den Besprechungszugriff, bevor eine Besprechung
 
 Jeder autorisierte Kontoteilnehmer oder Share-Gast kann das von Jitsi beobachtete Bildschirmfreigabeereignis melden. Damit schließt und sperrt die Bildschirmfreigabe jedes Teilnehmers das synchronisierte Whiteboard für die gesamte Besprechung, bis Jitsi das Ende der Freigabe meldet.
 
+## Genehmigungsanfragen für aktive Teilnehmer erklären
+
+Genehmigungen für Einladungen zu aktiven Besprechungen teilen Share jetzt mit, welcher Teilnehmer hinzugefügt wird, und benennen die Zielbesprechung. Genehmigende sehen dadurch die konkrete Aktion und das Ziel statt eines allgemeinen Freigabelinktexts.
+
+## Whiteboard-Abbau vor der Anzeige von Ausgangshinweisen abschließen
+
+Beim Verlassen oder Beenden einer Besprechung wird jetzt die Whiteboard-Arbeitsfläche geschlossen, ihr Bild-in-Bild-Fenster freigegeben und der Hinweis vor dem Schließen der Konferenz auf die Jitsi-Bühne zurückgesetzt. Hinweise zu geschlossenen oder verlassenen Besprechungen erscheinen dadurch auf der normalen Bühne.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -150,3 +158,4 @@ Jeder autorisierte Kontoteilnehmer oder Share-Gast kann das von Jitsi beobachtet
 - [2d72282](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d722820c4bd77d0c7ef6dd8991ec63c8ed11b52)
 - [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
+- [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)

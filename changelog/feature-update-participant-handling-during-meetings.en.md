@@ -118,6 +118,14 @@ Participant discovery now verifies meeting access before excluding a meeting fro
 
 Every authorized account participant or Share guest can report Jitsi's observed screen-sharing event. Any attendee's screen share therefore closes and locks the synchronized Whiteboard for the whole meeting until Jitsi reports that sharing stopped.
 
+## Explain active participant approval requests
+
+Active-meeting invitation approvals now tell Share which participant is being added and name the target meeting, so approvers see the concrete action and destination instead of generic share-link wording.
+
+## Finish Whiteboard teardown before showing exit overlays
+
+Leaving or terminating a meeting now closes the Whiteboard canvas, releases its picture-in-picture window, and restores the overlay to the Jitsi stage before disposing the conference. Meeting Closed and Meeting Left messages therefore appear in the normal stage.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -150,3 +158,4 @@ Every authorized account participant or Share guest can report Jitsi's observed 
 - [2d72282](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d722820c4bd77d0c7ef6dd8991ec63c8ed11b52)
 - [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
 - [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
+- [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)

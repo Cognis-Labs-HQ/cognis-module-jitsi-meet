@@ -49,15 +49,24 @@ function placeMeetingOverlay(trigger, { floating = false } = {}) {
     return overlay instanceof HTMLElement ? overlay : null;
 }
 
-function closeComponentWindow(trigger) {
+async function closeComponentWindow(trigger) {
     if (trigger) trigger.windowRequestSequence += 1;
     trigger?.automaticActivationCleanup?.();
-    placeMeetingOverlay(trigger);
     trigger?.releaseFloatingWindow?.();
-    if (typeof trigger?.componentWindow?.discard === "function") {
-        void trigger.componentWindow.discard();
-    } else if (trigger?.frameWrap?.id) {
-        void trigger.discardComponentPage?.(trigger.frameWrap.id);
+    placeMeetingOverlay(trigger);
+    try {
+        if (typeof trigger?.componentWindow?.discard === "function") {
+            await trigger.componentWindow.discard();
+        } else if (trigger?.frameWrap?.id) {
+            await trigger.discardComponentPage?.(trigger.frameWrap.id);
+        }
+    } catch (error) {
+        await logUi("error", "Meeting Whiteboard window cleanup failed.", {
+            component: "module:jitsi-meet",
+            operation: "close_meeting_whiteboard_window",
+            whiteboardId: trigger?.whiteboardId,
+            error: error instanceof Error ? error.message : String(error),
+        });
     }
     if (trigger) {
         trigger.componentWindowPending = false;
@@ -265,8 +274,8 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     }
 }
 
-export function closeMeetingWhiteboard(root) {
-    closeComponentWindow(mountedWhiteboardButtons.get(root));
+export async function closeMeetingWhiteboard(root) {
+    await closeComponentWindow(mountedWhiteboardButtons.get(root));
 }
 
 export function placeMeetingOverlayForActiveWindow(root) {
