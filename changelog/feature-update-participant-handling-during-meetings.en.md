@@ -222,6 +222,10 @@ Canonical Profile identity normalization is also applied when comparing director
 
 Passive active-meeting discovery now returns a successful empty list when the authenticated account does not yet resolve to a usable profile handle. The resolution failure is logged with structured context while profile-dependent meeting operations continue to require a profile, preventing the periodic refresh from producing repeated 409 conflicts.
 
+## Reliably detect active participant meetings
+
+When current profile resolution does not provide a handle, active-meeting discovery now continues authorization with the authenticated account identity. This keeps every Cognis-active meeting visible when the account belongs to its stored participants, including meetings that retain an earlier profile handle.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -283,3 +287,4 @@ Passive active-meeting discovery now returns a successful empty list when the au
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
+- [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)

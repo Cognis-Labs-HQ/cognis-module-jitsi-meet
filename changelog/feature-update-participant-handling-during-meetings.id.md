@@ -170,6 +170,10 @@ Normalisasi identitas Profile yang kanonis juga diterapkan saat membandingkan pe
 
 Penemuan rapat aktif pasif kini mengembalikan daftar kosong yang berhasil ketika akun terautentikasi belum dapat diselesaikan menjadi handle profil yang dapat digunakan. Kegagalan penyelesaian dicatat dengan konteks terstruktur sementara operasi rapat yang bergantung pada profil tetap memerlukan profil, sehingga penyegaran berkala tidak lagi menghasilkan konflik 409 berulang.
 
+## Deteksi rapat peserta aktif secara andal
+
+Ketika penyelesaian profil saat ini tidak menyediakan handle, penemuan rapat aktif kini melanjutkan otorisasi dengan identitas akun terautentikasi. Dengan demikian, setiap rapat yang dianggap aktif oleh Cognis tetap terlihat ketika akun termasuk dalam peserta tersimpannya, termasuk rapat yang masih menyimpan handle profil sebelumnya.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -231,3 +235,4 @@ Penemuan rapat aktif pasif kini mengembalikan daftar kosong yang berhasil ketika
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
+- [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)

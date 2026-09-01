@@ -170,6 +170,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 認証済みアカウントから使用可能なプロファイルハンドルをまだ解決できない場合、進行中ミーティングの受動的な検索は成功した空の一覧を返すようになりました。解決エラーは構造化されたコンテキストとともに記録し、プロファイル依存のミーティング操作では引き続きプロファイルを必須とすることで、定期更新による 409 競合の繰り返しを防ぎます。
 
+## 参加者の進行中ミーティングを確実に検出
+
+現在のプロファイル解決でハンドルを取得できない場合も、進行中ミーティングの検索は認証済みアカウント ID で認可を続行するようになりました。これにより、以前のプロファイルハンドルが保存されているミーティングを含め、保存済み参加者にそのアカウントが属するすべての Cognis 進行中ミーティングが表示され続けます。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -231,3 +235,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
+- [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)

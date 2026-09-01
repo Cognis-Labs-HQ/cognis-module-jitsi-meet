@@ -257,7 +257,7 @@ export function registerMeetingRoutes({
             ).catch((error) => {
                 log?.(
                     "error",
-                    "Active meeting discovery skipped because the requester profile could not be resolved.",
+                    "Active meeting discovery is continuing with account identity because the requester profile could not be resolved.",
                     {
                         component: "jitsi-meet-module",
                         operation: "list_active_meetings",
@@ -268,12 +268,8 @@ export function registerMeetingRoutes({
                                 : String(error),
                     },
                 );
-                return null;
+                return "";
             });
-            if (!requesterUsername) {
-                sendJson(res, 200, { data: [] });
-                return;
-            }
             const activeMeetings = await store.listActiveMeetings();
             const visibleMeetings = [];
             for (const activeMeeting of activeMeetings) {

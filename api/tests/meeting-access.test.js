@@ -74,7 +74,7 @@ test("resolveMeetingPayloadOrReject reports profile_required instead of throwing
     ]);
 });
 
-test("jitsi meetings active endpoint returns an empty list when the caller has no visible profile handle", async () => {
+test("jitsi meetings active endpoint uses account identity when the caller has no visible profile handle", async () => {
     class RouterStub {
         routes = [];
         get(routePath, handler) {
@@ -88,17 +88,62 @@ test("jitsi meetings active endpoint returns an empty list when the caller has n
     const sendErrorCalls = [];
     const sendJsonCalls = [];
     const logCalls = [];
+    const accessChecks = [];
+    const profileStore = {
+        async getProfile() {
+            return null;
+        },
+        async getProfileByHandle(handle) {
+            if (handle === "previous-handle") {
+                return {
+                    accountId: "account-without-profile",
+                    handle,
+                };
+            }
+            return null;
+        },
+        async isBlocked() {
+            return false;
+        },
+        async searchProfiles() {
+            return [];
+        },
+    };
     const sendError = (res, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
 
     registerMeetingRoutes({
         router,
-        store: new JitsiMeetStore({
-            profileIdentity: profileIdentityFake,
-            db: createInMemoryJitsiDb(),
-        }),
-        profileStore: createProfileStoreWithoutHandle(),
+        store: {
+            async ensureSchema() {},
+            async listActiveMeetings() {
+                return [
+                    {
+                        id: "meeting-1",
+                        activeUsernames: [],
+                        activeParticipantCount: 1,
+                        activeSessionCount: 1,
+                    },
+                ];
+            },
+            async getMeetingById() {
+                return {
+                    id: "meeting-1",
+                    meetingName: "Active Meeting",
+                    meetingUrl: "https://meet.example/active-meeting",
+                    createdBy: "organizer",
+                    classroomId: null,
+                };
+            },
+            async listParticipants() {
+                return ["previous-handle"];
+            },
+            async getMeetingState() {
+                return { endedAt: null, authRequired: false };
+            },
+        },
+        profileStore,
         listCalendarsByOwner: async () => [],
         listCalendarEvents: async () => [],
         listClassroomParticipantHandles: async () => [],
@@ -113,7 +158,13 @@ test("jitsi meetings active endpoint returns an empty list when the caller has n
                         accountId,
                     ),
             ),
-        canAccessMeeting: async () => true,
+        canAccessMeeting: async (input) => {
+            accessChecks.push(input);
+            return canAccessMeeting({
+                ...input,
+                profileIdentity: profileIdentityFake,
+            });
+        },
         filterUsernamesForGuestVisibility: async (usernames) => usernames,
         requireAuth: () => ({ sub: "account-without-profile", role: "user" }),
         readJson: async () => ({}),
@@ -135,12 +186,17 @@ test("jitsi meetings active endpoint returns an empty list when the caller has n
 
     await assert.doesNotReject(() => activeRoute.handler({}, {}));
     assert.deepEqual(sendErrorCalls, []);
-    assert.deepEqual(sendJsonCalls, [
-        {
-            status: 200,
-            payload: { data: [] },
-        },
-    ]);
+    assert.equal(sendJsonCalls.length, 1);
+    assert.equal(sendJsonCalls[0].status, 200);
+    assert.equal(sendJsonCalls[0].payload.data.length, 1);
+    assert.equal(sendJsonCalls[0].payload.data[0].id, "meeting-1");
+    assert.equal(
+        sendJsonCalls[0].payload.data[0].meetingName,
+        "Active Meeting",
+    );
+    assert.equal(accessChecks.length, 1);
+    assert.equal(accessChecks[0].username, "");
+    assert.equal(accessChecks[0].requesterAccountId, "account-without-profile");
     assert.equal(logCalls.length, 1);
     assert.equal(logCalls[0][0], "error");
     assert.equal(logCalls[0][2].operation, "list_active_meetings");
