@@ -206,6 +206,10 @@ Active participant additions and removals now update persistent canvases through
 
 When no more than one participant is actively present, adding another participant now succeeds immediately instead of waiting for consensus from people who have already left. Meetings with multiple active attendees continue to use the Share approval decision.
 
+## Stabilize notification joins and active-meeting locking
+
+Consumed notification meeting parameters are now removed from the URL before joining, and the active-meetings section locks as soon as a meeting is selected, including notification entry paths. Meeting-ended notifications no longer include an action URL or an email meeting link.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -262,3 +266,4 @@ When no more than one participant is actively present, adding another participan
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
+- [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)

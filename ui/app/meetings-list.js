@@ -29,7 +29,9 @@ export function createMeetingHandlers({
         if (!(activeMeetingsEl instanceof HTMLElement)) {
             return;
         }
-        const activeMeetingsLocked = utils.isMeetingActive();
+        const activeMeetingsLocked = Boolean(
+            state.meeting?.id || utils.isMeetingActive(),
+        );
         activeMeetingsEl.classList.toggle(
             "jitsi-active-meetings-disabled",
             activeMeetingsLocked,
@@ -136,6 +138,9 @@ export function createMeetingHandlers({
     async function joinMeetingById(meetingId, { autoStart = true } = {}) {
         const normalizedMeetingId = normalizeMeetingId(meetingId);
         if (!normalizedMeetingId) return;
+        state.requestedMeetingId = "";
+        state.requestedMeetingStart = false;
+        clearRequestedMeetingParameters();
         if (
             utils.isMeetingActive() &&
             state.meeting?.id === normalizedMeetingId

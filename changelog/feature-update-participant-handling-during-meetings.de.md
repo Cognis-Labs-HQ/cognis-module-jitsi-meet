@@ -206,6 +206,10 @@ Beim Hinzufügen und Entfernen aktiver Teilnehmer werden dauerhafte Arbeitsfläc
 
 Wenn höchstens ein Teilnehmer aktiv anwesend ist, wird das Hinzufügen eines weiteren Teilnehmers nun sofort genehmigt, statt auf die Zustimmung bereits abwesender Personen zu warten. Bei Meetings mit mehreren aktiven Teilnehmern wird weiterhin die Share-Genehmigungsentscheidung verwendet.
 
+## Benachrichtigungsbeitritte und Sperre aktiver Meetings stabilisieren
+
+Verarbeitete Meeting-Parameter aus Benachrichtigungen werden nun vor dem Beitritt aus der URL entfernt, und der Bereich aktiver Meetings wird bereits bei Auswahl eines Meetings gesperrt, auch bei Einstiegen über Benachrichtigungen. Benachrichtigungen über beendete Meetings enthalten keine Aktions-URL und keinen Meeting-Link in der E-Mail mehr.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -262,3 +266,4 @@ Wenn höchstens ein Teilnehmer aktiv anwesend ist, wird das Hinzufügen eines we
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
+- [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)

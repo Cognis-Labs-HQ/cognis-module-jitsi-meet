@@ -384,11 +384,15 @@ test("active meetings are locked while the user is joined to a meeting", () => {
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(
         source,
-        /activeMeetingsLocked = utils\.isMeetingActive\(\)[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
+        /activeMeetingsLocked = Boolean\([\s\S]*?state\.meeting\?\.id[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
     );
     assert.match(
         source,
-        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(isMeetingActive\(\)\) return/,
+        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(state\.meeting\?\.id \|\| isMeetingActive\(\)\) return/,
+    );
+    assert.match(
+        source,
+        /joinMeetingById[\s\S]*?state\.requestedMeetingId = ""[\s\S]*?state\.requestedMeetingStart = false[\s\S]*?clearRequestedMeetingParameters\(\)/,
     );
     assert.match(
         cssSource,

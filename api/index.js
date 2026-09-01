@@ -605,10 +605,10 @@ export function registerApiRoutes(router, ctx) {
                     recipientUsername,
             });
         }
-        const bodyWithMeetingLink = appendMeetingLinkToBody(
-            body,
-            notificationMeetingId,
-        );
+        const notificationHasMeetingLink = metadata?.event !== "meeting_ended";
+        const bodyWithMeetingLink = notificationHasMeetingLink
+            ? appendMeetingLinkToBody(body, notificationMeetingId)
+            : body;
         for (const recipient of normalizedRecipients) {
             try {
                 await dispatchNotification({
@@ -617,7 +617,13 @@ export function registerApiRoutes(router, ctx) {
                     subject,
                     body: bodyWithMeetingLink,
                     senderName,
-                    actionUrl: buildMeetingActionUrl(notificationMeetingId),
+                    ...(notificationHasMeetingLink
+                        ? {
+                              actionUrl: buildMeetingActionUrl(
+                                  notificationMeetingId,
+                              ),
+                          }
+                        : {}),
                     metadata,
                 });
             } catch (error) {

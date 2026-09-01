@@ -317,7 +317,12 @@ test("jitsi API dispatches meeting lifecycle and participant notifications", () 
     assert.match(source, /excludeUsernames: \[resolved\.requesterUsername\]/);
     assert.match(source, /excludedRecipients\.has\(normalizedCandidate\)/);
     assert.match(source, /senderName:/);
-    assert.match(source, /actionUrl: buildMeetingActionUrl/);
+    assert.match(source, /notificationHasMeetingLink/);
+    assert.match(source, /metadata\?\.event !== "meeting_ended"/);
+    assert.match(
+        source,
+        /notificationHasMeetingLink[\s\S]*?actionUrl:[\s\S]*?buildMeetingActionUrl/,
+    );
     assert.match(source, /resolveMessagesUiResources/);
     assert.match(
         uiResourcesSource,
