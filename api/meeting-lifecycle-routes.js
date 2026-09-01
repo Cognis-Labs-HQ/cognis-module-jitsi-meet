@@ -1,50 +1,7 @@
 import { randomUUID } from "node:crypto";
 
-export async function deleteDisposableMeeting({
-    meeting,
-    ownerAccountId,
-    store,
-    deleteResourceShares,
-    deleteChatRoom,
-    log,
-}) {
-    await deleteResourceShares?.({
-        ownerAccountId,
-        resourceType: "meeting",
-        resourceId: meeting.id,
-    });
-    if (meeting.chatRoomId) {
-        try {
-            if (typeof deleteChatRoom !== "function") {
-                throw new Error(
-                    "The Messages chat deletion capability is unavailable.",
-                );
-            }
-            await deleteChatRoom({
-                roomId: meeting.chatRoomId,
-                ownerAccountId,
-            });
-        } catch (error) {
-            log?.("error", "Failed to delete disposable meeting chat.", {
-                component: "jitsi-meet-module",
-                operation: "delete_disposable_meeting_chat",
-                meetingId: meeting.id,
-                chatRoomId: meeting.chatRoomId,
-                error: error instanceof Error ? error.message : String(error),
-            });
-            throw error;
-        }
-    }
-    await store.deleteMeeting(meeting.id);
-    log?.("info", "Disposable meeting data deleted.", {
-        component: "jitsi-meet-module",
-        operation: "delete_disposable_meeting",
-        meetingId: meeting.id,
-        chatRoomId: meeting.chatRoomId,
-        ownerAccountId,
-    });
-}
-
+export { deleteDisposableMeeting } from "./disposable-meeting.js";
+import { deleteDisposableMeeting } from "./disposable-meeting.js";
 export function registerMeetingLifecycleRoutes({
     router,
     store,
@@ -636,6 +593,35 @@ export function registerMeetingLifecycleRoutes({
             if (!sessionId) {
                 sendError(res, 400, "bad_request", "sessionId is required.");
                 return;
+            }
+
+            if (resolved.meeting.chatRoomId) {
+                try {
+                    await groupChatMembership.add({
+                        roomId: resolved.meeting.chatRoomId,
+                        actorAccountId: claims.sub,
+                        userAccountId: claims.sub,
+                    });
+                } catch (error) {
+                    log?.("error", "Meeting chat membership restore failed.", {
+                        component: "jitsi-meet-module",
+                        operation: "restore_joining_participant_chat",
+                        meetingId: resolved.meeting.id,
+                        chatRoomId: resolved.meeting.chatRoomId,
+                        userAccountId: claims.sub,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                    sendError(
+                        res,
+                        503,
+                        "chat_membership_unavailable",
+                        "Meeting chat access could not be restored.",
+                    );
+                    return;
+                }
             }
 
             const conflictingSessions = await store.getActiveSessionsForUser(
