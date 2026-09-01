@@ -464,6 +464,152 @@
     min-width: 0;
 }
 
+.jitsi-route-root .jitsi-participants-layout {
+    display: grid;
+    grid-template-columns: minmax(12rem, 3fr) minmax(0, 7fr);
+    gap: 1rem;
+    min-height: 0;
+}
+
+.jitsi-route-root .jitsi-available-participants-column,
+.jitsi-route-root .jitsi-persisted-meetings-column {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.jitsi-route-root .jitsi-available-participants-column .jitsi-avatar-pool {
+    max-height: 14rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.jitsi-route-root .jitsi-persisted-meetings {
+    display: flex;
+    gap: 0.75rem;
+    min-height: 10rem;
+    padding: 0.2rem 0 0.55rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline proximity;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card {
+    position: relative;
+    isolation: isolate;
+    flex: 0 0 15rem;
+    min-height: 8.5rem;
+    padding: 0.7rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border, var(--border));
+    border-radius: 0.85rem;
+    background: var(--color-surface-elevated);
+    scroll-snap-align: start;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-active::before {
+    position: absolute;
+    z-index: -2;
+    inset: -55%;
+    content: "";
+    background: conic-gradient(
+        transparent 0deg 245deg,
+        var(--color-success, #22c55e) 285deg 325deg,
+        transparent 360deg
+    );
+    animation: module-jitsi-meet-active-card-orbit 2.8s linear infinite;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-active::after {
+    position: absolute;
+    z-index: -1;
+    inset: 2px;
+    content: "";
+    border-radius: calc(0.85rem - 2px);
+    background: var(--color-surface-elevated);
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-title {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.86rem;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-avatars {
+    position: relative;
+    z-index: 1;
+    height: 6.1rem;
+    margin-top: 0.35rem;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-avatar {
+    position: absolute;
+    width: 2.15rem;
+    height: 2.15rem;
+    transform: translate(-50%, -50%);
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(1) {
+    left: 15%;
+    top: 30%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(2) {
+    left: 38%;
+    top: 22%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(3) {
+    left: 62%;
+    top: 24%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(4) {
+    left: 85%;
+    top: 32%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(5) {
+    left: 24%;
+    top: 66%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(6) {
+    left: 48%;
+    top: 58%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(7) {
+    left: 73%;
+    top: 65%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(8) {
+    left: 9%;
+    top: 80%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(9) {
+    left: 89%;
+    top: 79%;
+}
+.jitsi-route-root .jitsi-persisted-meeting-avatar:nth-child(10) {
+    left: 50%;
+    top: 88%;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-avatar-link,
+.jitsi-route-root .jitsi-persisted-meeting-avatar-image,
+.jitsi-route-root .jitsi-persisted-meeting-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+}
+
+@keyframes module-jitsi-meet-active-card-orbit {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
 .jitsi-route-root .jitsi-active-meetings {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -686,6 +832,10 @@ body[data-theme="light"]
 }
 
 @media (max-width: 720px) {
+    .jitsi-route-root .jitsi-participants-layout {
+        grid-template-columns: 1fr;
+    }
+
     .jitsi-route-root .jitsi-active-meetings {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }

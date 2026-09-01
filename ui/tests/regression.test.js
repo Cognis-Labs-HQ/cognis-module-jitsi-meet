@@ -190,6 +190,31 @@ test("active meetings render inside the initial overlay above its start action",
     );
 });
 
+test("persisted meetings fill the scrollable participant workspace", () => {
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const meetingsSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(markupSource, /jitsi-participants-layout/);
+    assert.match(markupSource, /id="jitsi-persisted-meetings"/);
+    assert.match(meetingsSource, /meetings\/persisted/);
+    assert.match(meetingsSource, /meeting\.participants\.slice\(0, 10\)/);
+    assert.match(
+        cssSource,
+        /grid-template-columns: minmax\(12rem, 3fr\) minmax\(0, 7fr\)/,
+    );
+    assert.match(
+        cssSource,
+        /jitsi-available-participants-column[\s\S]*overflow-y: auto/,
+    );
+    assert.match(cssSource, /jitsi-persisted-meetings[\s\S]*overflow-x: auto/);
+    assert.match(cssSource, /jitsi-persisted-meeting-avatar:nth-child\(10\)/);
+    assert.match(cssSource, /module-jitsi-meet-active-card-orbit/);
+});
+
 test("jitsi participant avatars reuse social avatar hydration and hide staged avatars while active", () => {
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");

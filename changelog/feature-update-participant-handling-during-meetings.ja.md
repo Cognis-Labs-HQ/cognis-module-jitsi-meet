@@ -194,6 +194,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 「参加者を検索」では Cognis core が対応する `user` 結果フィルターを渡し、ユーザー結果だけを表示するようになりました。ドラッグ中でないフォーカス変更ではミーティングオーバーレイを変更しません。進行中ミーティングは参加者ペインから初期オーバーレイの「ミーティングを開始」ボタン直上にある調和したカードへ移動し、ミーティングを選択または参加すると非表示になります。進行中ミーティングで追加した参加者は永続参加者レコードに引き続き保持され、再利用するミーティング ID を決定します。
 
+## 参加者ワークスペースに永続ミーティングを表示
+
+参加者ワークスペースの左側約30%を、縦スクロール可能な既知ユーザー選択に使用し、右側約70%を、現在のアカウントが参加する永続ミーティングの横スクロールギャラリーに使用するようになりました。各ショートカードは安定したミーティング名を上部中央に置き、標準プロファイルアバターを最大10人まで軽く重なるように配置します。Cognis が進行中と判断したミーティングではアプリグリーンの光が縁を周回し、参加者のいない破棄可能ミーティングはギャラリーから除外します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -260,3 +264,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
+- [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)

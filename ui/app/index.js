@@ -144,6 +144,7 @@ export async function mount(
             new URL(window.location.href).searchParams.get("start") === "1",
         shareAccessToken: String(shareContext?.guestAccessToken ?? ""),
         activeMeetings: [],
+        persistedMeetings: [],
         activeMeetingsRefreshTimer: null,
         dragUsername: null,
         jitsiApi: null,
@@ -971,7 +972,6 @@ export async function mount(
             });
         },
     });
-
     await composer.init();
     if (signal?.aborted) return;
     if (state.requestedMeetingId) {

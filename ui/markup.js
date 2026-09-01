@@ -62,9 +62,15 @@ export function buildParticipantsMarkup(i18n) {
           ${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}
         </button>
       </header>
-      <div class="jitsi-participants-grid-column">
-        <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
-        <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list"></div>
+      <div class="jitsi-participants-layout">
+        <div class="jitsi-participants-grid-column jitsi-available-participants-column">
+          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
+          <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list"></div>
+        </div>
+        <div class="jitsi-participants-grid-column jitsi-persisted-meetings-column">
+          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_meetings"))}</p>
+          <div id="jitsi-persisted-meetings" class="jitsi-persisted-meetings" role="list"></div>
+        </div>
       </div>
     </section>
   `;

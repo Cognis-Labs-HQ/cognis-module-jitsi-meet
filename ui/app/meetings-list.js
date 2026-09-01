@@ -1,11 +1,13 @@
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-control.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {
+    buildProfileAvatarMarkup,
     getProfileInitials as getInitialsText,
     getProfileInitialsColor as pickInitialsColor,
+    hydrateProfileAvatars,
 } from "./profile-avatars.js";
 
 const [{ escapeHtml }, { normalizeUsername }] = await Promise.all([
@@ -23,6 +25,60 @@ export function createMeetingHandlers({
     allowParticipantlessJoin = false,
 }) {
     let meetingExitPromise = null;
+
+    function renderPersistedMeetings() {
+        const persistedMeetingsEl = root.querySelector(
+            "#jitsi-persisted-meetings",
+        );
+        if (!(persistedMeetingsEl instanceof HTMLElement)) return;
+        if (!state.persistedMeetings.length) {
+            persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_none"))}</p>`;
+            return;
+        }
+        persistedMeetingsEl.replaceChildren(
+            ...state.persistedMeetings.map((meeting) => {
+                const card = document.createElement("article");
+                card.className = "jitsi-persisted-meeting-card";
+                if (meeting.active) {
+                    card.classList.add("jitsi-persisted-meeting-card-active");
+                }
+                card.setAttribute("role", "listitem");
+                const title = document.createElement("h4");
+                title.className = "jitsi-persisted-meeting-title";
+                title.textContent = meeting.meetingName;
+                const avatars = document.createElement("div");
+                avatars.className = "jitsi-persisted-meeting-avatars";
+                avatars.replaceChildren(
+                    ...meeting.participants.slice(0, 10).map((participant) => {
+                        const avatar = document.createElement("span");
+                        avatar.className = "jitsi-persisted-meeting-avatar";
+                        avatar.dataset.username = participant.username;
+                        avatar.innerHTML = buildProfileAvatarMarkup({
+                            avatarKey: participant.avatarKey,
+                            label:
+                                participant.displayName ?? participant.username,
+                            colorSeed: participant.username,
+                            avatarClass: "jitsi-persisted-meeting-avatar-link",
+                            imageClass: "jitsi-persisted-meeting-avatar-image",
+                            fallbackClass:
+                                "jitsi-persisted-meeting-avatar-fallback",
+                            profileHandle: participant.username,
+                        });
+                        return avatar;
+                    }),
+                );
+                card.append(title, avatars);
+                return card;
+            }),
+        );
+        void hydrateProfileAvatars(persistedMeetingsEl).catch((error) =>
+            logUi("error", "Persisted meeting avatar hydration failed.", {
+                component: "module:jitsi-meet",
+                operation: "hydrate_persisted_meeting_avatars",
+                error: error instanceof Error ? error.message : String(error),
+            }),
+        );
+    }
 
     function renderActiveMeetings({ loading = false } = {}) {
         const activeMeetingsEl = root.querySelector("#jitsi-active-meetings");
@@ -293,8 +349,9 @@ export function createMeetingHandlers({
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
         renderActiveMeetings({ loading: true });
-        const [response] = await Promise.all([
+        const [response, persistedResponse] = await Promise.all([
             apiFetch("/api/v1/modules/jitsi-meet/meetings/active"),
+            apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted"),
             callbacks.refreshAvailableParticipants?.(),
         ]);
         if (!response.ok) {
@@ -304,7 +361,14 @@ export function createMeetingHandlers({
         }
         const payload = await response.json().catch(() => ({ data: [] }));
         state.activeMeetings = Array.isArray(payload?.data) ? payload.data : [];
+        const persistedPayload = persistedResponse.ok
+            ? await persistedResponse.json().catch(() => ({ data: [] }))
+            : { data: [] };
+        state.persistedMeetings = Array.isArray(persistedPayload.data)
+            ? persistedPayload.data
+            : [];
         renderActiveMeetings();
+        renderPersistedMeetings();
         const requestedMeetingId = resolveRequested
             ? normalizeMeetingId(state.requestedMeetingId)
             : "";

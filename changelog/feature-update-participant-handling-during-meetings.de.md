@@ -246,6 +246,10 @@ Beim Erstellen einer Besprechung sucht Meetings nun zusätzlich anhand des volls
 
 „Teilnehmer suchen“ übergibt nun den von Cognis Core angebotenen Ergebnisfilter `user`, sodass nur Benutzerergebnisse erscheinen. Fokuswechsel ohne laufenden Ziehvorgang verändern die Besprechungseinblendung nicht mehr. Die aktiven Besprechungen wurden aus dem Teilnehmerbereich in eine angepasste Karte der anfänglichen Einblendung direkt über „Besprechung starten“ verschoben und werden ausgeblendet, sobald eine Besprechung ausgewählt oder beigetreten wurde. Während einer aktiven Besprechung hinzugefügte Teilnehmer bleiben weiterhin im dauerhaften Teilnehmerdatensatz und bestimmen die wiederverwendete Besprechungsidentität.
 
+## Dauerhafte Besprechungen im Teilnehmerbereich anzeigen
+
+Der Teilnehmerbereich verwendet nun links etwa 30 Prozent für die vertikal scrollbare Auswahl bekannter Benutzer und rechts etwa 70 Prozent für eine horizontal scrollbare Galerie dauerhafter Besprechungen, an denen das aktuelle Konto teilnimmt. Jede kurze Karte zeigt den stabilen Besprechungsnamen oben zentriert und verteilt bis zu zehn Standard-Profilbilder mit leichter Überlappung. Von Cognis als aktiv erkannte Besprechungen erhalten ein umlaufendes app-grünes Kantenlicht; teilnehmerlose verwerfbare Besprechungen erscheinen nicht in der Galerie.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -312,3 +316,4 @@ Beim Erstellen einer Besprechung sucht Meetings nun zusätzlich anhand des volls
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
+- [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)

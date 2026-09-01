@@ -57,6 +57,8 @@
   <string name="module.jitsi_meet.participants.search">Cari Peserta</string>
   <string name="module.jitsi_meet.participants.available">Peserta Tersedia</string>
   <string name="module.jitsi_meet.participants.active_meetings">Rapat Aktif</string>
+  <string name="module.jitsi_meet.participants.persisted_meetings">Rapat Persisten</string>
+  <string name="module.jitsi_meet.participants.persisted_none">Tidak ada rapat persisten.</string>
   <string name="module.jitsi_meet.participants.active_loading">Memuat rapat aktif...</string>
   <string name="module.jitsi_meet.participants.active_none">Tidak ada rapat aktif.</string>
   <string name="module.jitsi_meet.participants.selected">Peserta Rapat</string>

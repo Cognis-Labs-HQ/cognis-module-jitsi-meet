@@ -246,6 +246,10 @@ Meeting creation now also resolves the complete normalized participant set from 
 
 Find Participants now passes Cognis core’s supported `user` result filter so only user results are shown. Focus changes without an active drag no longer alter the meeting overlay. Active meetings have moved from the participant pane into a blended card in the initial overlay directly above Start Meeting and are hidden as soon as a meeting is selected or joined. Participants added during an active meeting continue to remain in the persistent participant record and determine the reused meeting identity.
 
+## Show persisted meetings in the participant workspace
+
+The Participants workspace now uses roughly 30% on the left for vertically scrollable known-user selection and roughly 70% on the right for a horizontally scrollable gallery of persistent meetings containing the current account. Each short card centers its stable meeting name at the top and distributes up to ten standard profile avatars with slight overlap. Meetings Cognis considers active receive an orbiting app-green edge light, while participant-free disposable meetings are excluded from the gallery.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -312,3 +316,4 @@ Find Participants now passes Cognis core’s supported `user` result filter so o
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
+- [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)

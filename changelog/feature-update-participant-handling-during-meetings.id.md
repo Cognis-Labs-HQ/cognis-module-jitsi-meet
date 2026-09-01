@@ -194,6 +194,10 @@ Pembuatan rapat kini juga menyelesaikan seluruh kumpulan peserta yang dinormalis
 
 Cari Peserta kini meneruskan filter hasil `user` yang didukung Cognis core sehingga hanya hasil pengguna yang ditampilkan. Perubahan fokus tanpa penyeretan aktif tidak lagi mengubah overlay rapat. Rapat aktif dipindahkan dari panel peserta ke kartu yang menyatu di overlay awal tepat di atas Mulai Rapat dan disembunyikan segera setelah rapat dipilih atau dimasuki. Peserta yang ditambahkan selama rapat aktif tetap berada dalam rekaman peserta persisten dan menentukan identitas rapat yang digunakan kembali.
 
+## Tampilkan rapat persisten di ruang kerja peserta
+
+Ruang kerja Peserta kini menggunakan sekitar 30% di kiri untuk pemilihan pengguna dikenal yang dapat digulir vertikal dan sekitar 70% di kanan untuk galeri rapat persisten yang memuat akun saat ini dan dapat digulir horizontal. Setiap kartu pendek memusatkan nama rapat stabil di atas dan menyebarkan hingga sepuluh avatar profil standar dengan sedikit tumpang tindih. Rapat yang dianggap aktif oleh Cognis memperoleh cahaya tepi hijau aplikasi yang mengorbit, sedangkan rapat sekali pakai tanpa peserta tidak dimasukkan ke galeri.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -260,3 +264,4 @@ Cari Peserta kini meneruskan filter hasil `user` yang didukung Cognis core sehin
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
+- [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)

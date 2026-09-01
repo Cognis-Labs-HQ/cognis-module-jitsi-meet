@@ -26,6 +26,7 @@ import {
     resolveRequestedParticipants,
     resolveShareGuestPresenceUsername,
 } from "./reuse/meeting-access.js";
+import { listPersistedMeetings } from "./reuse/persisted-meetings.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
@@ -339,6 +340,12 @@ export function registerApiRoutes(router, ctx) {
         );
         router.get(
             "/api/v1/modules/jitsi-meet/meetings/active",
+            async (_req, res) => {
+                sendJson(res, 200, { data: [] });
+            },
+        );
+        router.get(
+            "/api/v1/modules/jitsi-meet/meetings/persisted",
             async (_req, res) => {
                 sendJson(res, 200, { data: [] });
             },
@@ -836,6 +843,12 @@ export function registerApiRoutes(router, ctx) {
         profileIdentity,
         listCalendarsByOwner,
         listCalendarEvents,
+        listPersistedMeetings: () =>
+            listPersistedMeetings({
+                db: dbExecutor,
+                getMeetingById: (id) => store.getMeetingById(id),
+                listParticipants: (id) => store.listParticipants(id),
+            }),
         listClassroomParticipantHandles,
         resolveMeetingPayloadOrReject: resolveMeetingPayload,
         createMeetingPayload,
