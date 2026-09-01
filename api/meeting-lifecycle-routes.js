@@ -32,6 +32,7 @@ export function registerMeetingLifecycleRoutes({
     deleteChatRoom,
     revokeKickedGuestShare,
     requestParticipantAdditionApproval,
+    normalizeHandleKey,
     log,
 }) {
     const updateWhiteboardMember = (input) =>
@@ -274,6 +275,7 @@ export function registerMeetingLifecycleRoutes({
                     requesterAccountId: claims.sub,
                     requesterDisplayName: resolved.requesterUsername,
                 },
+                normalizeHandleKey,
             });
             if (approval?.approved === false) {
                 sendError(
@@ -654,7 +656,6 @@ export function registerMeetingLifecycleRoutes({
                 sessionId,
                 !requiresReclaim,
             );
-
             let state = resolved.state;
             let meetingStarted = false;
             if (!state.firstJoinedBy || state.endedAt) {
@@ -674,7 +675,6 @@ export function registerMeetingLifecycleRoutes({
                 });
                 meetingStarted = true;
             }
-
             const payload = await createMeetingPayload({
                 store,
                 meeting: resolved.meeting,
@@ -691,7 +691,6 @@ export function registerMeetingLifecycleRoutes({
                         resolved.requesterUsername,
                     )) ?? "",
             });
-
             if (meetingStarted) {
                 await dispatchMeetingNotifications(resolved.participants, {
                     subject: "Meeting Started",

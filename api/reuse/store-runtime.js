@@ -2,7 +2,12 @@ import { JitsiMeetStore } from "../store.js";
 
 const storeByExecutor = new WeakMap();
 
-export function resolveStore(dbExecutor, log, generatePassphrase) {
+export function resolveStore(
+    dbExecutor,
+    log,
+    generatePassphrase,
+    profileIdentity,
+) {
     const existingStore = storeByExecutor.get(dbExecutor);
     if (existingStore) {
         return existingStore;
@@ -11,6 +16,7 @@ export function resolveStore(dbExecutor, log, generatePassphrase) {
         db: dbExecutor,
         log,
         generatePassphrase,
+        profileIdentity,
     });
     storeByExecutor.set(dbExecutor, nextStore);
     return nextStore;

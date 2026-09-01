@@ -1,10 +1,14 @@
+import { profileIdentityFake } from "./profile-identity-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { JitsiMeetStore } from "../store.js";
 
 test("reserved participants include only active presence in other meetings", async () => {
-    const store = new JitsiMeetStore({ db: {} });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: {},
+    });
     store.listActiveMeetings = async () => [
         {
             id: "current-meeting",
@@ -226,6 +230,7 @@ test("active whiteboard mappings resolve only to an existing open meeting", asyn
         ended_at: null,
     };
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: createMockJitsiDb({
             meetingRows: [meetingRow],
             stateRows: [activeState],
@@ -258,8 +263,14 @@ test("schema initialization is shared across concurrent store instances", async 
             return { rows: [] };
         },
     };
-    const firstStore = new JitsiMeetStore({ db: databaseExecutor });
-    const secondStore = new JitsiMeetStore({ db: databaseExecutor });
+    const firstStore = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
+    const secondStore = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
 
     const firstInitialization = firstStore.ensureSchema();
     await Promise.resolve();
@@ -287,7 +298,10 @@ test("schema initialization can retry after a failed create", async () => {
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: databaseExecutor });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
 
     await assert.rejects(store.ensureSchema(), /create raced/);
     await store.ensureSchema();
@@ -299,6 +313,7 @@ test("jitsi store meeting creation uses the modern column set", async () => {
     const mockDb = createMockJitsiDb();
     const passphraseRequests = [];
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: mockDb,
         generatePassphrase(options) {
             passphraseRequests.push(options);
@@ -368,6 +383,7 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     const mockDb = createMockJitsiDb();
     let passphraseIndex = 0;
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: mockDb,
         generatePassphrase: () =>
             ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
@@ -426,6 +442,7 @@ test("schema initialization preserves the persisted meeting identity", async () 
         updated_at: now,
     };
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: createMockJitsiDb({ meetingRows: [meetingRow] }),
         generatePassphrase: () => "Unused-Meeting-Name-Here",
     });
@@ -471,7 +488,10 @@ test("jitsi store meeting state backfill writes an ISO timestamp when the driver
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     await store.getMeetingState("meeting-1");
 
@@ -505,7 +525,10 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     const saved = await store.saveConfig({
         instanceUrl: "https://new.example.com",
@@ -569,7 +592,10 @@ test("jitsi active meeting summaries report invited and active participants sepa
         ],
         stateRows: [{ meeting_id: "meeting-1" }],
     });
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     const meetings = await store.listActiveMeetings();
 
@@ -593,6 +619,7 @@ test("active membership changes use a meeting-scoped participant key", async () 
         updated_at: now,
     };
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: createMockJitsiDb({
             meetingRows: [meetingRow],
             participantRows: [

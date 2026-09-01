@@ -7,7 +7,6 @@ import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
 import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
-import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { isModeratorRole } from "./meeting-values.js";
 import {
     registerJitsiUiResourcesRoute,
@@ -157,6 +156,18 @@ export function registerApiRoutes(router, ctx) {
         );
     }
     const profileStore = ctx.getCapability("social:profileStore");
+    const profileIdentity = ctx.getCapability("social:profile:identity");
+    if (
+        typeof profileIdentity?.normalizeHandleKey !== "function" ||
+        typeof profileIdentity?.normalizeHandleKeys !== "function" ||
+        typeof profileIdentity?.resolveAccountHandle !== "function"
+    ) {
+        throw new Error(
+            "Jitsi Meet requires the social:profile:identity capability.",
+        );
+    }
+    const normalizeHandleKey = (handle) =>
+        profileIdentity.normalizeHandleKey(handle);
     const messagesUiResources = resolveMessagesUiResources(ctx);
     const resolveGroupChat = ctx.getCapability(
         "social:messages:resolveGroupChatUrl",
@@ -240,14 +251,32 @@ export function registerApiRoutes(router, ctx) {
     const resolveMeetingPayload = (input) =>
         resolveMeetingPayloadOrReject({
             ...input,
+            profileIdentity,
             sendError,
             resolveShareUserAccess,
         });
     const canAccessMeetingForRequester = (input) =>
-        canAccessMeeting({ ...input, resolveShareUserAccess });
+        canAccessMeeting({
+            ...input,
+            profileIdentity,
+            resolveShareUserAccess,
+        });
+    const resolveRequesterHandle = (profileStoreInput, accountId) =>
+        resolveRequesterUsername(profileStoreInput, profileIdentity, accountId);
+    const resolveParticipantHandles = (
+        profileStoreInput,
+        requestedHandles,
+        options,
+    ) =>
+        resolveRequestedParticipants(
+            profileStoreInput,
+            profileIdentity,
+            requestedHandles,
+            options,
+        );
 
     const store = dbExecutor
-        ? resolveStore(dbExecutor, log, generatePassphrase)
+        ? resolveStore(dbExecutor, log, generatePassphrase, profileIdentity)
         : null;
     if (store) {
         registerMeetingWhiteboardDelegationHook(ctx, { store });
@@ -524,6 +553,7 @@ export function registerApiRoutes(router, ctx) {
         ctx,
         requireAuth,
         profileStore,
+        profileIdentity,
     });
 
     async function dispatchMeetingNotifications(
@@ -677,17 +707,19 @@ export function registerApiRoutes(router, ctx) {
         router,
         store,
         profileStore,
+        profileIdentity,
         requireAuth,
         readJson,
         sendJson,
         sendError,
         hasMinRole,
         normalizeHttpUrl,
+        normalizeHandleKey,
         registerConfiguredJitsiOrigin,
         registerScriptOrigins,
         log,
-        resolveRequesterUsername,
-        resolveRequestedParticipants,
+        resolveRequesterUsername: resolveRequesterHandle,
+        resolveRequestedParticipants: resolveParticipantHandles,
         createMeetingPayload,
         resolveMeetingPayload,
         resolveShareGuestMeetingAccess,
@@ -808,7 +840,11 @@ export function registerApiRoutes(router, ctx) {
         resolveRequesterUsername,
         canAccessMeeting: canAccessMeetingForRequester,
         filterUsernamesForGuestVisibility: (usernames) =>
-            filterUsernamesForGuestVisibility(profileStore, usernames),
+            filterUsernamesForGuestVisibility(
+                profileStore,
+                profileIdentity,
+                usernames,
+            ),
         requireAuth,
         readJson,
         sendJson,

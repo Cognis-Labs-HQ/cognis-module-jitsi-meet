@@ -210,6 +210,14 @@ When no more than one participant is actively present, adding another participan
 
 Consumed notification meeting parameters are now removed from the URL before joining, and the active-meetings section locks as soon as a meeting is selected, including notification entry paths. Meeting-ended notifications no longer include an action URL or an email meeting link.
 
+## Delegate handle normalization to Profile identity
+
+All server-side handle canonicalization now uses the public `social:profile:identity` capability. Meeting storage, access checks, participant discovery, Share orchestration, Whiteboard routes, and lifecycle operations no longer maintain or import module-owned normalization rules.
+
+## Preserve directory-backed participant matching
+
+Canonical Profile identity normalization is also applied when comparing directory-backed participant identifiers, preserving meeting access after a profile handle changes without reintroducing module-owned normalization.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -267,3 +275,6 @@ Consumed notification meeting parameters are now removed from the URL before joi
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
 - [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)
+- [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
+- [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
+- [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)

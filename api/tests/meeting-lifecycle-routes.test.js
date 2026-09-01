@@ -4,6 +4,7 @@ import {
     deleteDisposableMeeting,
     registerMeetingLifecycleRoutes,
 } from "../meeting-lifecycle-routes.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRecorder() {
     return {
@@ -266,6 +267,8 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             approvals.push(input);
             return { approved: approvalApproved };
         },
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
         log: () => {},
     });
 

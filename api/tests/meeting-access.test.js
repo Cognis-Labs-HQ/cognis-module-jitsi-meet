@@ -1,3 +1,4 @@
+import { profileIdentityFake } from "./profile-identity-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -50,9 +51,13 @@ test("resolveMeetingPayloadOrReject reports profile_required instead of throwing
     };
 
     const result = await resolveMeetingPayloadOrReject({
+        profileIdentity: profileIdentityFake,
         body: { meetingId: "meeting-1" },
         profileStore: createProfileStoreWithoutHandle(),
-        store: new JitsiMeetStore({ db: createInMemoryJitsiDb() }),
+        store: new JitsiMeetStore({
+            profileIdentity: profileIdentityFake,
+            db: createInMemoryJitsiDb(),
+        }),
         claims: { sub: "account-without-profile" },
         sendError,
         res: {},
@@ -87,15 +92,25 @@ test("jitsi meetings active endpoint reports profile_required instead of throwin
 
     registerMeetingRoutes({
         router,
-        store: new JitsiMeetStore({ db: createInMemoryJitsiDb() }),
+        store: new JitsiMeetStore({
+            profileIdentity: profileIdentityFake,
+            db: createInMemoryJitsiDb(),
+        }),
         profileStore: createProfileStoreWithoutHandle(),
         listCalendarsByOwner: async () => [],
         listCalendarEvents: async () => [],
         listClassroomParticipantHandles: async () => [],
         resolveMeetingPayloadOrReject,
         createMeetingPayload: async () => ({}),
-        resolveRequesterUsername: (await import("../reuse/requester.js"))
-            .resolveRequesterUsername,
+        resolveRequesterUsername: (profileStore, accountId) =>
+            import("../reuse/requester.js").then(
+                ({ resolveRequesterUsername }) =>
+                    resolveRequesterUsername(
+                        profileStore,
+                        profileIdentityFake,
+                        accountId,
+                    ),
+            ),
         canAccessMeeting: async () => true,
         filterUsernamesForGuestVisibility: async (usernames) => usernames,
         requireAuth: () => ({ sub: "account-without-profile", role: "user" }),
@@ -125,6 +140,7 @@ test("jitsi meetings active endpoint reports profile_required instead of throwin
 
 test("LDAP participants retain meeting access when their profile handle changes", async () => {
     const allowed = await canAccessMeeting({
+        profileIdentity: profileIdentityFake,
         store: {
             async listParticipants() {
                 return ["alice", "ldap:students:student-42"];
@@ -166,6 +182,7 @@ test("active user shares grant meeting access until the share is removed", async
         },
         username: "bob",
         requesterAccountId: "account-bob",
+        profileIdentity: profileIdentityFake,
         profileStore: {
             async getProfileByHandle() {
                 return null;

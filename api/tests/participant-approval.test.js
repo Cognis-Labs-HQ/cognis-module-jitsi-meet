@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { requestParticipantAdditionDecision } from "../reuse/participant-approval.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createStore(usernames) {
     return {
@@ -23,6 +24,8 @@ test("participant addition automatically succeeds with one active attendee", asy
             return { approved: false };
         },
         approvalInput: { participantUsername: "carol" },
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
     });
 
     assert.deepEqual(result, { approved: true, consensusSkipped: true });
@@ -40,6 +43,8 @@ test("participant addition requests consensus from multiple active attendees", a
             return { approved: false };
         },
         approvalInput,
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
     });
 
     assert.deepEqual(result, { approved: false });

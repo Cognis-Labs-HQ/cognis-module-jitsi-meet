@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { Readable } from "node:stream";
 import { registerMeetingShareRoutes } from "../share-routes.js";
 import { registerShareFlowHooks } from "../share-hooks.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createProfileStore() {
     const accountIdByHandle = {
@@ -150,8 +151,10 @@ function createFlowHarness(executor, profileStore = createProfileStore()) {
     const capabilities = new Map([
         ["db:executor", executor],
         ["social:profileStore", profileStore],
+        ["social:profile:identity", profileIdentityFake],
         ["logging:log", () => undefined],
         ["reuse:generatePassphrase", () => "Amber-Cedar-Otter-Willow"],
+        ["social:profile:identity", profileIdentityFake],
     ]);
     registerShareFlowHooks({
         flow: ctx.flow,
@@ -181,6 +184,7 @@ function createRouterHarness({
         ["db:executor", executor],
         ["logging:log", () => undefined],
         ["reuse:generatePassphrase", () => "Amber-Cedar-Otter-Willow"],
+        ["social:profile:identity", profileIdentityFake],
         ["system:ctx", { flow: { run: runFlow } }],
         ["share:listByResource", listByResource],
     ]);

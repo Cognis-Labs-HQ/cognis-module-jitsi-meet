@@ -3,16 +3,13 @@ export async function requestParticipantAdditionDecision({
     meetingId,
     requestApproval,
     approvalInput,
+    normalizeHandleKey,
 }) {
     const presence = await store.listPresence(meetingId);
     const activeUsernames = new Set(
         store
             .filterCurrentPresenceEntries(presence)
-            .map((entry) =>
-                String(entry.username ?? "")
-                    .trim()
-                    .toLowerCase(),
-            )
+            .map((entry) => normalizeHandleKey(entry.username))
             .filter(Boolean),
     );
     if (activeUsernames.size <= 1) {

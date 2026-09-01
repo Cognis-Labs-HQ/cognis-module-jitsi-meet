@@ -158,6 +158,14 @@ Jika paling banyak satu peserta yang aktif hadir, penambahan peserta lain kini l
 
 Parameter rapat dari notifikasi yang telah digunakan kini dihapus dari URL sebelum bergabung, dan bagian rapat aktif dikunci segera setelah rapat dipilih, termasuk melalui notifikasi. Notifikasi rapat berakhir tidak lagi menyertakan URL tindakan atau tautan rapat dalam email.
 
+## Delegasikan normalisasi handle kepada identitas Profile
+
+Seluruh kanonisasi handle di sisi server kini menggunakan kapabilitas publik `social:profile:identity`. Penyimpanan rapat, pemeriksaan akses, pencarian peserta, orkestrasi Share, rute Whiteboard, dan operasi siklus hidup tidak lagi menyimpan atau mengimpor aturan normalisasi milik modul.
+
+## Pertahankan pencocokan peserta berbasis direktori
+
+Normalisasi identitas Profile yang kanonis juga diterapkan saat membandingkan pengenal peserta berbasis direktori, sehingga akses rapat tetap ada setelah handle profil berubah tanpa memperkenalkan kembali normalisasi milik modul.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -215,3 +223,6 @@ Parameter rapat dari notifikasi yang telah digunakan kini dihapus dari URL sebel
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
 - [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)
+- [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
+- [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
+- [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)

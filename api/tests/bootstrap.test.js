@@ -2,11 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createScopedRuntime() {
     const capabilities = new Map([
         ["auth:requireAuth", () => null],
         ["share:requestApproval", async () => ({ approved: true })],
+        ["social:profile:identity", profileIdentityFake],
         [
             "social:messages:membership",
             { add: async () => {}, remove: async () => {} },
@@ -188,6 +190,9 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
     const commands = [];
     const ctx = {
         getCapability(capabilityId) {
+            if (capabilityId === "social:profile:identity") {
+                return profileIdentityFake;
+            }
             assert.equal(capabilityId, "db:executor");
             return {
                 async ensureTable() {},

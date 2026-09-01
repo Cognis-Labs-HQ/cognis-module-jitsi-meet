@@ -7,6 +7,7 @@ async function resolveAuthorizedMeeting({
     body,
     store,
     profileStore,
+    profileIdentity,
     requireAuth,
     sendError,
     canAccessMeeting,
@@ -38,12 +39,14 @@ async function resolveAuthorizedMeeting({
     }
     const requesterUsername = shareGuestAccess.isGuest
         ? resolveShareGuestPresenceUsername(claims)
-        : await resolveRequesterUsername(profileStore, claims.sub).catch(
-              (error) => {
-                  sendError(res, 409, "profile_required", error.message);
-                  return null;
-              },
-          );
+        : await resolveRequesterUsername(
+              profileStore,
+              profileIdentity,
+              claims.sub,
+          ).catch((error) => {
+              sendError(res, 409, "profile_required", error.message);
+              return null;
+          });
     if (!requesterUsername) return null;
     const authorized =
         shareGuestAccess.isGuest ||
@@ -71,6 +74,7 @@ export function registerMeetingWhiteboardRoutes({
     ctx,
     store,
     profileStore,
+    profileIdentity,
     requireAuth,
     readJson,
     sendJson,
@@ -106,6 +110,7 @@ export function registerMeetingWhiteboardRoutes({
                 body,
                 store,
                 profileStore,
+                profileIdentity,
                 requireAuth,
                 sendError,
                 canAccessMeeting,
@@ -150,6 +155,7 @@ export function registerMeetingWhiteboardRoutes({
                 body,
                 store,
                 profileStore,
+                profileIdentity,
                 requireAuth,
                 sendError,
                 canAccessMeeting,

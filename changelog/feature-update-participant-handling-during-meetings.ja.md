@@ -158,6 +158,14 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 通知から受け取って処理したミーティングパラメーターを参加前に URL から削除し、通知経由を含めてミーティングを選択した時点で進行中ミーティング欄をロックします。ミーティング終了通知には操作 URL もメール内のミーティングリンクも含めません。
 
+## ハンドル正規化を Profile identity に委譲
+
+サーバー側のハンドル正規化はすべて公開 capability `social:profile:identity` を使用します。ミーティングストア、アクセス確認、参加者検索、Share オーケストレーション、Whiteboard ルート、ライフサイクル処理では、モジュール独自の正規化規則を保持または import しません。
+
+## ディレクトリ由来の参加者照合を維持
+
+ディレクトリ由来の参加者識別子を比較するときも正規の Profile identity 正規化を適用し、モジュール独自の正規化を再導入せずに、プロフィールハンドル変更後のミーティングアクセスを維持します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -215,3 +223,6 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
 - [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)
+- [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
+- [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
+- [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)

@@ -210,6 +210,14 @@ Wenn höchstens ein Teilnehmer aktiv anwesend ist, wird das Hinzufügen eines we
 
 Verarbeitete Meeting-Parameter aus Benachrichtigungen werden nun vor dem Beitritt aus der URL entfernt, und der Bereich aktiver Meetings wird bereits bei Auswahl eines Meetings gesperrt, auch bei Einstiegen über Benachrichtigungen. Benachrichtigungen über beendete Meetings enthalten keine Aktions-URL und keinen Meeting-Link in der E-Mail mehr.
 
+## Handle-Normalisierung an die Profilidentität delegieren
+
+Die gesamte serverseitige Vereinheitlichung von Handles verwendet nun die öffentliche Capability `social:profile:identity`. Meeting-Speicher, Zugriffsprüfungen, Teilnehmersuche, Share-Orchestrierung, Whiteboard-Routen und Lebenszyklusoperationen unterhalten oder importieren keine moduleigenen Normalisierungsregeln mehr.
+
+## Abgleich verzeichnisgestützter Teilnehmer beibehalten
+
+Die kanonische Normalisierung der Profilidentität wird auch beim Vergleich verzeichnisgestützter Teilnehmerkennungen angewendet. Dadurch bleibt der Meeting-Zugriff nach einer Änderung des Profil-Handles erhalten, ohne moduleigene Normalisierung erneut einzuführen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -267,3 +275,6 @@ Verarbeitete Meeting-Parameter aus Benachrichtigungen werden nun vor dem Beitrit
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
 - [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)
+- [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
+- [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
+- [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)

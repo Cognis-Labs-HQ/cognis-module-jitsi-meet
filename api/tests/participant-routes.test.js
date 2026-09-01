@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { registerMeetingParticipantRoutes } from "../participant-routes.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 test("meeting participant search preserves follow filtering and omits the current user", async () => {
     const routes = [];
@@ -12,6 +13,8 @@ test("meeting participant search preserves follow filtering and omits the curren
     };
     registerMeetingParticipantRoutes({
         router,
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
         requireAuth: () => ({ sub: "bob-account", role: "user" }),
         profileStore: {
             async searchProfiles(query, limit, options) {
@@ -77,6 +80,8 @@ test("participant search hides users active in another meeting", async () => {
     const routes = [];
     registerMeetingParticipantRoutes({
         router: { get: (path, handler) => routes.push({ path, handler }) },
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
         requireAuth: () => ({ sub: "bob-account", role: "user" }),
         profileStore: {
             async searchProfiles() {

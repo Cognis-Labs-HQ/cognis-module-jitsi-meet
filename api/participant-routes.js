@@ -1,4 +1,3 @@
-import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 
 export function registerMeetingParticipantRoutes({
@@ -12,6 +11,7 @@ export function registerMeetingParticipantRoutes({
     resolveShareGuestMeetingAccess,
     canAccessMeeting,
     listClassroomParticipantHandles,
+    normalizeHandleKey,
 }) {
     router.get(
         "/api/v1/modules/jitsi-meet/participants",

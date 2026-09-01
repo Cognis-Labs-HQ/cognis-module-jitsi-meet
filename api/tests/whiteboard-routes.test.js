@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { registerMeetingWhiteboardRoutes } from "../whiteboard-routes.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRecorder() {
     return {
@@ -73,6 +74,7 @@ function createRoutes({
                 return { handle: requesterUsername };
             },
         },
+        profileIdentity: profileIdentityFake,
         requireAuth: () => claims,
         readJson: async (req) => req.body,
         sendJson(res, status, body) {
