@@ -161,18 +161,13 @@ export function registerApiRoutes(router, ctx) {
     const resolveGroupChat = ctx.getCapability(
         "social:messages:resolveGroupChatUrl",
     );
-    const addGroupChatMember = ctx.getCapability(
-        "social:messages:addRoomMember",
-    );
-    const removeGroupChatMember = ctx.getCapability(
-        "social:messages:removeRoomMember",
-    );
+    const groupChatMembership = ctx.getCapability("social:messages:membership");
     if (
-        typeof addGroupChatMember !== "function" ||
-        typeof removeGroupChatMember !== "function"
+        typeof groupChatMembership?.add !== "function" ||
+        typeof groupChatMembership?.remove !== "function"
     ) {
         throw new Error(
-            "Jitsi Meet requires the Messages room member capabilities.",
+            "Jitsi Meet requires the Messages room membership capability.",
         );
     }
     const listClassroomParticipantHandles =
@@ -694,8 +689,7 @@ export function registerApiRoutes(router, ctx) {
         listClassroomParticipantHandles,
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
-        addGroupChatMember,
-        removeGroupChatMember,
+        groupChatMembership,
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,

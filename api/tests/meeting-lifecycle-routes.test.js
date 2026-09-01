@@ -213,7 +213,11 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             res.writeHead(status);
             res.end(JSON.stringify({ error: { code, message } }));
         },
-        profileStore: {},
+        profileStore: {
+            async getProfileByHandle(handle) {
+                return { accountId: `account-${handle}`, handle };
+            },
+        },
         resolveMeetingPayload: async () => ({
             meeting,
             requesterUsername: "alice",
@@ -233,9 +237,10 @@ test("active non-disposable meetings invite a newly dropped participant", async 
                 usernames: request.usernames,
             };
         },
-        addGroupChatMember: async (request) =>
-            chatMemberAdditions.push(request),
-        removeGroupChatMember: async () => {},
+        groupChatMembership: {
+            add: async (request) => chatMemberAdditions.push(request),
+            remove: async () => {},
+        },
         buildMeetingChatTitle: (name) => name,
         createMeetingPayload: async (input) => ({
             ...input.meeting,
@@ -278,8 +283,8 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.deepEqual(chatMemberAdditions, [
         {
             roomId: "chat-old",
-            username: "carol",
             actorAccountId: "account-alice",
+            userAccountId: "account-carol",
         },
     ]);
     assert.deepEqual(approvals, [
@@ -341,9 +346,15 @@ test("a kicked account participant is removed and made inactive", async () => {
             operations.push(["chat", request.roomId, request.usernames]);
             return { roomId: request.roomId };
         },
-        addGroupChatMember: async () => {},
-        removeGroupChatMember: async (request) =>
-            operations.push(["chat", request.roomId, request.username]),
+        groupChatMembership: {
+            add: async () => {},
+            remove: async (request) =>
+                operations.push([
+                    "chat",
+                    request.roomId,
+                    request.userAccountId,
+                ]),
+        },
         buildMeetingChatTitle: (name) => name,
         log: () => {},
     });
@@ -353,7 +364,7 @@ test("a kicked account participant is removed and made inactive", async () => {
     )({ body: { meetingId: "meeting-1" } }, response);
     assert.equal(response.status, 200);
     assert.deepEqual(operations, [
-        ["chat", "chat-1", "bob"],
+        ["chat", "chat-1", "account-bob"],
         ["remove", "meeting-1", "bob"],
         ["inactive", "meeting-1", "bob"],
     ]);

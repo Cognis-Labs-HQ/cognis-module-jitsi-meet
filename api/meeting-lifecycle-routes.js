@@ -63,8 +63,7 @@ export function registerMeetingLifecycleRoutes({
     listClassroomParticipantHandles,
     canAccessMeeting,
     resolveGroupChat,
-    addGroupChatMember,
-    removeGroupChatMember,
+    groupChatMembership,
     buildMeetingChatTitle,
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
@@ -201,7 +200,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/password/acknowledge",
         async (req, res) => {
@@ -227,7 +225,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/participants/add",
         async (req, res) => {
@@ -360,11 +357,23 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-            const chatMemberAdded = await addGroupChatMember({
-                roomId: chatRoom.roomId,
-                username,
-                actorAccountId: claims.sub,
-            })
+            const participantProfile =
+                await profileStore.getProfileByHandle(username);
+            if (!participantProfile?.accountId) {
+                sendError(
+                    res,
+                    404,
+                    "participant_not_found",
+                    "The participant profile could not be resolved.",
+                );
+                return;
+            }
+            const chatMemberAdded = await groupChatMembership
+                .add({
+                    roomId: chatRoom.roomId,
+                    actorAccountId: claims.sub,
+                    userAccountId: participantProfile.accountId,
+                })
                 .then(() => true)
                 .catch((error) => {
                     log?.("error", "Meeting chat membership update failed.", {
@@ -428,7 +437,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
         async (req, res) => {
@@ -496,11 +504,12 @@ export function registerMeetingLifecycleRoutes({
             });
             if (!resolved) return;
             if (resolved.meeting.chatRoomId) {
-                const chatMemberRemoved = await removeGroupChatMember({
-                    roomId: resolved.meeting.chatRoomId,
-                    username: resolved.requesterUsername,
-                    actorAccountId: claims.sub,
-                })
+                const chatMemberRemoved = await groupChatMembership
+                    .remove({
+                        roomId: resolved.meeting.chatRoomId,
+                        actorAccountId: claims.sub,
+                        userAccountId: claims.sub,
+                    })
                     .then(() => true)
                     .catch((error) => {
                         log?.(
@@ -549,7 +558,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/join",
         async (req, res) => {
