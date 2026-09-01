@@ -117,14 +117,10 @@ export function registerMeetingLifecycleRoutes({
                     return null;
                 });
                 if (chatRoom?.roomId) {
-                    meeting = await store.createMeeting({
-                        instanceUrl: config.instanceUrl,
-                        usernames: participants,
-                        classroomId: meeting.classroomId,
-                        createdBy: meeting.createdBy,
-                        chatRoomId: chatRoom.roomId,
-                        scheduledAt: meeting.scheduledAt,
-                    });
+                    meeting = await store.setMeetingChatRoomId(
+                        meeting.id,
+                        chatRoom.roomId,
+                    );
                 }
             }
             const state = await store.getMeetingState(meeting.id);

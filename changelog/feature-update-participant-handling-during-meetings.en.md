@@ -238,6 +238,10 @@ After consensus succeeds, participant invitation now reads the mapped persistent
 
 When the local user is kicked or the meeting is otherwise torn down, Meetings now stops the chat polling timer first and clears the active and last-used room identities plus the cached room key. The subsequent redraw therefore cannot reactivate the removed meeting room or send further unauthorized message requests.
 
+## Reuse persistent meeting identities
+
+Meeting creation now also resolves the complete normalized participant set from stored participant rows. A persistent meeting is therefore reused after a server restart and after active membership changes with the same ID, name, URL, and Messages room. Participant-free meetings skip reuse, receive a new identity every time, and attach their chat to that new record; ending them still permanently deletes the chat before deleting the meeting record.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -302,3 +306,4 @@ When the local user is kicked or the meeting is otherwise torn down, Meetings no
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
+- [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)

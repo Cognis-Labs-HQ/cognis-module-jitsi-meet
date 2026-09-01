@@ -319,10 +319,15 @@ export class JitsiMeetStore {
     }
 
     async findMeetingByParticipants(usernames, classroomId = null) {
+        const normalizedUsernames = this.normalizeHandleKeys(usernames);
+        if (normalizedUsernames.length <= 1) return null;
+        const normalizedClassroomId = classroomId
+            ? String(classroomId).trim() || null
+            : null;
         const participantKey = buildParticipantKey(
             this.normalizeHandleKeys,
-            usernames,
-            classroomId,
+            normalizedUsernames,
+            normalizedClassroomId,
         );
         const result = await this.db.executeCommand({
             option: "SELECT",
@@ -330,13 +335,55 @@ export class JitsiMeetStore {
             where: [{ column: "participant_key", value: participantKey }],
             limit: 1,
         });
-        const row = result.rows?.[0];
+        let row = result.rows?.[0];
+        if (!row) {
+            const candidates = await this.db.executeCommand({
+                option: "SELECT",
+                table: "jitsi_meetings",
+                orderBy: [{ column: "updated_at", direction: "DESC" }],
+                limit: 200,
+            });
+            for (const candidate of candidates.rows ?? []) {
+                const candidateClassroomId = candidate.classroom_id
+                    ? String(candidate.classroom_id)
+                    : null;
+                if (candidateClassroomId !== normalizedClassroomId) continue;
+                const candidateUsernames = this.normalizeHandleKeys(
+                    await this.listParticipants(String(candidate.id)),
+                );
+                if (
+                    candidateUsernames.length === normalizedUsernames.length &&
+                    candidateUsernames.every(
+                        (username, index) =>
+                            username === normalizedUsernames[index],
+                    )
+                ) {
+                    row = candidate;
+                    break;
+                }
+            }
+        }
         if (!row) return null;
         const meeting = await this.getMeetingById(String(row.id));
         if (!meeting?.meetingUrl || !meeting.meetingPassword) {
             return null;
         }
         return meeting;
+    }
+
+    async setMeetingChatRoomId(meetingId, chatRoomId) {
+        const normalizedChatRoomId = String(chatRoomId ?? "").trim();
+        if (!normalizedChatRoomId) return this.getMeetingById(meetingId);
+        await this.db.executeCommand({
+            option: "UPDATE",
+            table: "jitsi_meetings",
+            set: {
+                chat_room_id: normalizedChatRoomId,
+                updated_at: new Date().toISOString(),
+            },
+            where: [{ column: "id", value: meetingId }],
+        });
+        return this.getMeetingById(meetingId);
     }
 
     async createMeeting({

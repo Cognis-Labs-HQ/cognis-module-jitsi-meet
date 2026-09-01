@@ -119,8 +119,12 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
                 classroomId: null,
             };
         },
-        async createMeeting({ chatRoomId }) {
-            if (chatRoomId) meeting.chatRoomId = chatRoomId;
+        async createMeeting() {
+            return meeting;
+        },
+        async setMeetingChatRoomId(meetingId, chatRoomId) {
+            assert.equal(meetingId, meeting.id);
+            meeting.chatRoomId = chatRoomId;
             return meeting;
         },
         async listParticipants() {

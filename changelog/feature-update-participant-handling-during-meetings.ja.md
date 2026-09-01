@@ -186,6 +186,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 ローカルユーザーがキックされた場合、またはミーティングが別の理由で破棄される場合、Meetings は最初にチャットのポーリングタイマーを停止し、現在および最後に使用したルーム ID とキャッシュ済みルームキーを消去するようになりました。その後の再描画で退出済みミーティングルームが再び有効になったり、認可されていないメッセージ要求が送信されたりすることはありません。
 
+## 永続ミーティング ID を再利用
+
+ミーティング作成時に、保存済み参加者行から正規化済みの全参加者セットも解決するようになりました。これにより、永続ミーティングはサーバー再起動後や進行中のメンバー変更後も、同じ ID、名前、URL、Messages ルームで再利用されます。参加者のいないミーティングは再利用せず毎回新しい ID を受け取り、その新規レコードへチャットを関連付けます。終了時は引き続き、ミーティングレコードを削除する前にチャットを完全に削除します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -250,3 +254,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
+- [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)

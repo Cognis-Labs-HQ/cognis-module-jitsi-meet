@@ -426,6 +426,73 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     );
 });
 
+test("persistent meetings reuse their stored identity after store reconstruction", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const createStore = () =>
+        new JitsiMeetStore({
+            profileIdentity: profileIdentityFake,
+            db: mockDb,
+            generatePassphrase: () =>
+                generatedNames++ === 0
+                    ? "Amber-Cedar-Otter-Willow"
+                    : "Unexpected-Different-Room-Name",
+        });
+    const firstStore = createStore();
+    const firstMeeting = await firstStore.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+    });
+    await firstStore.addMeetingParticipant(firstMeeting.id, "carol");
+
+    const reconstructedStore = createStore();
+    const reusedMeeting = await reconstructedStore.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob", "carol"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+    });
+
+    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(generatedNames, 1);
+    assert.equal(reusedMeeting.id, firstMeeting.id);
+    assert.equal(reusedMeeting.meetingName, firstMeeting.meetingName);
+    assert.equal(reusedMeeting.meetingUrl, firstMeeting.meetingUrl);
+    assert.equal(reusedMeeting.reused, true);
+});
+
+test("participant-free disposable meetings always receive distinct identities", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+        generatePassphrase: () =>
+            ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
+                generatedNames++
+            ],
+    });
+    const input = {
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+    };
+
+    const firstMeeting = await store.createMeeting(input);
+    const secondMeeting = await store.createMeeting(input);
+
+    assert.equal(mockDb.insertedMeetingRows.length, 2);
+    assert.notEqual(secondMeeting.id, firstMeeting.id);
+    assert.notEqual(secondMeeting.meetingName, firstMeeting.meetingName);
+    assert.notEqual(secondMeeting.meetingUrl, firstMeeting.meetingUrl);
+});
+
 test("schema initialization preserves the persisted meeting identity", async () => {
     const now = new Date().toISOString();
     const meetingRow = {

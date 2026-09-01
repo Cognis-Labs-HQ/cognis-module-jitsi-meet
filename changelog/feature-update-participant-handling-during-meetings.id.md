@@ -186,6 +186,10 @@ Setelah konsensus berhasil, undangan peserta kini membaca pemilik sebenarnya dar
 
 Ketika pengguna lokal dikeluarkan atau rapat dibongkar karena alasan lain, Meetings kini terlebih dahulu menghentikan timer polling chat dan membersihkan identitas ruang aktif serta terakhir digunakan beserta kunci ruang yang di-cache. Karena itu, penggambaran ulang berikutnya tidak dapat mengaktifkan kembali ruang rapat yang sudah dilepas atau mengirim permintaan pesan tanpa izin lebih lanjut.
 
+## Gunakan kembali identitas rapat persisten
+
+Pembuatan rapat kini juga menyelesaikan seluruh kumpulan peserta yang dinormalisasi dari baris peserta tersimpan. Karena itu, rapat persisten digunakan kembali setelah server dimulai ulang dan setelah perubahan keanggotaan aktif dengan ID, nama, URL, serta ruang Messages yang sama. Rapat tanpa peserta melewati penggunaan kembali, menerima identitas baru setiap kali, dan memasang chat ke rekaman baru tersebut; saat berakhir, chat tetap dihapus permanen sebelum rekaman rapat dihapus.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -250,3 +254,4 @@ Ketika pengguna lokal dikeluarkan atau rapat dibongkar karena alasan lain, Meeti
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
+- [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
