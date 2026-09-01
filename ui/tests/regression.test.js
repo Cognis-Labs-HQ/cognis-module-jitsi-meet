@@ -152,6 +152,7 @@ test("meeting link guests can join without participant-card data", () => {
 
 test("meetings search popup adds confirmed users directly to meeting participants", () => {
     const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    assert.match(source, /category: "user",\s*typeFilter: "user"/);
     assert.match(
         source,
         /onSelectMultiple:\s*\(results\)\s*=>[\s\S]*addParticipant\(participantEntry\)/,
@@ -163,6 +164,29 @@ test("meetings search popup adds confirmed users directly to meeting participant
     assert.match(
         source,
         /avatarKey:\s*typeof result\?\.avatarKey === "string"/,
+    );
+});
+
+test("active meetings render inside the initial overlay above its start action", () => {
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const meetingsSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const activeMeetingsIndex = markupSource.indexOf(
+        'id="jitsi-active-meetings"',
+    );
+    const startButtonIndex = markupSource.indexOf('id="jitsi-start-btn"');
+    const participantsMarkupIndex = markupSource.indexOf(
+        "export function buildParticipantsMarkup",
+    );
+
+    assert.ok(activeMeetingsIndex > 0);
+    assert.ok(activeMeetingsIndex < startButtonIndex);
+    assert.ok(activeMeetingsIndex < participantsMarkupIndex);
+    assert.match(
+        meetingsSource,
+        /activeMeetingsSection\.hidden = activeMeetingsLocked/,
     );
 });
 

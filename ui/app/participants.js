@@ -242,7 +242,7 @@ export function createPreflightHandlers({
             root.querySelector("#jitsi-overlay");
         if (!(overlay instanceof HTMLElement)) return;
         overlay.classList.toggle("jitsi-drop-active", visible);
-        overlay.hidden = !visible;
+        if (visible) overlay.hidden = false;
         const message = overlay.querySelector("#jitsi-overlay-message");
         if (visible) {
             overlay.dataset.dropLabel = i18n.t(
@@ -264,6 +264,9 @@ export function createPreflightHandlers({
         delete overlay.dataset.dropPreviousMessage;
         delete overlay.dataset.dropLabel;
         overlay.removeAttribute("aria-label");
+        if (state.overlayPresentation) {
+            utils.updateOverlay(state.overlayPresentation);
+        }
     }
 
     async function applyDrop(username, targetZone) {

@@ -16,6 +16,10 @@ export function buildStageMarkup(i18n) {
           <div id="jitsi-staged-participants" class="jitsi-staged-participants" role="list"></div>
           <h3 class="jitsi-overlay-title">${escapeHtml(i18n.t("module.jitsi_meet.overlay.title"))}</h3>
           <p id="jitsi-overlay-message" class="jitsi-overlay-message">${escapeHtml(i18n.t("module.jitsi_meet.overlay.select_participants"))}</p>
+          <section class="jitsi-overlay-active-meetings" aria-label="${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}">
+            <p class="jitsi-overlay-active-meetings-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}</p>
+            <div id="jitsi-active-meetings" class="jitsi-active-meetings" role="grid"></div>
+          </section>
           <div class="jitsi-overlay-actions">
             <button id="jitsi-start-btn" class="btn-confirm btn-animated" type="button" disabled>${escapeHtml(i18n.t("module.jitsi_meet.overlay.start_meeting"))}</button>
             <button id="jitsi-auth-btn" class="btn-cancel" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.overlay.authenticate"))}</button>
@@ -58,15 +62,9 @@ export function buildParticipantsMarkup(i18n) {
           ${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}
         </button>
       </header>
-      <div class="jitsi-participants-grid">
-        <div class="jitsi-participants-grid-column">
-          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
-          <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list"></div>
-        </div>
-        <div class="jitsi-participants-grid-column">
-          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}</p>
-          <div id="jitsi-active-meetings" class="jitsi-active-meetings" role="grid"></div>
-        </div>
+      <div class="jitsi-participants-grid-column">
+        <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
+        <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list"></div>
       </div>
     </section>
   `;

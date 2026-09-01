@@ -190,6 +190,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 ミーティング作成時に、保存済み参加者行から正規化済みの全参加者セットも解決するようになりました。これにより、永続ミーティングはサーバー再起動後や進行中のメンバー変更後も、同じ ID、名前、URL、Messages ルームで再利用されます。参加者のいないミーティングは再利用せず毎回新しい ID を受け取り、その新規レコードへチャットを関連付けます。終了時は引き続き、ミーティングレコードを削除する前にチャットを完全に削除します。
 
+## 参加者検索と初期ミーティングオーバーレイを修正
+
+「参加者を検索」では Cognis core が対応する `user` 結果フィルターを渡し、ユーザー結果だけを表示するようになりました。ドラッグ中でないフォーカス変更ではミーティングオーバーレイを変更しません。進行中ミーティングは参加者ペインから初期オーバーレイの「ミーティングを開始」ボタン直上にある調和したカードへ移動し、ミーティングを選択または参加すると非表示になります。進行中ミーティングで追加した参加者は永続参加者レコードに引き続き保持され、再利用するミーティング ID を決定します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -255,3 +259,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
+- [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)

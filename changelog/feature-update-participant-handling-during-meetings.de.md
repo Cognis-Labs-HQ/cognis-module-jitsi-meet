@@ -242,6 +242,10 @@ Wird der lokale Benutzer entfernt oder die Besprechung anderweitig abgebaut, sto
 
 Beim Erstellen einer Besprechung sucht Meetings nun zusätzlich anhand des vollständigen normalisierten Teilnehmerkreises in den gespeicherten Teilnehmerzeilen. Dadurch wird eine dauerhafte Besprechung nach einem Serverneustart und nach aktiven Mitgliedschaftsänderungen mit derselben ID, demselben Namen, derselben URL und demselben Messages-Raum wiederverwendet. Teilnehmerlose Besprechungen überspringen die Wiederverwendung, erhalten jedes Mal eine neue Identität und speichern ihren Chat auf dem neuen Datensatz; beim Ende wird der Chat weiterhin vor dem Besprechungsdatensatz dauerhaft gelöscht.
 
+## Teilnehmersuche und anfängliche Besprechungseinblendung korrigieren
+
+„Teilnehmer suchen“ übergibt nun den von Cognis Core angebotenen Ergebnisfilter `user`, sodass nur Benutzerergebnisse erscheinen. Fokuswechsel ohne laufenden Ziehvorgang verändern die Besprechungseinblendung nicht mehr. Die aktiven Besprechungen wurden aus dem Teilnehmerbereich in eine angepasste Karte der anfänglichen Einblendung direkt über „Besprechung starten“ verschoben und werden ausgeblendet, sobald eine Besprechung ausgewählt oder beigetreten wurde. Während einer aktiven Besprechung hinzugefügte Teilnehmer bleiben weiterhin im dauerhaften Teilnehmerdatensatz und bestimmen die wiederverwendete Besprechungsidentität.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -307,3 +311,4 @@ Beim Erstellen einer Besprechung sucht Meetings nun zusätzlich anhand des volls
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
+- [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)

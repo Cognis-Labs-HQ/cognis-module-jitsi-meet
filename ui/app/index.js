@@ -334,6 +334,7 @@ export async function mount(
                     openSearchPopup({
                         endpoint: "/api/v1/modules/jitsi-meet/participants",
                         category: "user",
+                        typeFilter: "user",
                         ariaLabel: i18n.t(
                             "module.jitsi_meet.participants.search",
                         ),
@@ -412,6 +413,7 @@ export async function mount(
             "#jitsi-available-participants",
         );
         const clearActiveParticipantDrag = () => {
+            if (state.dragUsername === null) return;
             state.dragUsername = null;
             setActiveParticipantDropzoneVisible(false);
         };
@@ -912,7 +914,6 @@ export async function mount(
         void updateNativeChat();
     }
     const elements = createMeetingPageElements(i18n, limitedShareView);
-
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
         fetchCurrentProfile({
@@ -933,7 +934,6 @@ export async function mount(
     state.availableParticipants = state.allParticipants.map((entry) => ({
         ...entry,
     }));
-
     const composer = createPageComposer(root, {
         allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,

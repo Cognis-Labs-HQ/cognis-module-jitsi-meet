@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.139",
+    "version": "1.5.140",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -332,27 +332,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "33ec6c9d7165923731e1759f4741c30c9881983e513bb319fc90ddc0af137e8f"
+            "sha256": "d02652409582e4b5336cbf2cc3edfec97debc880622a8c35c9a810108ed75adc"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "058bdd4b29dbc44f0580d2b49aba15c35c7667ca6a20a0f42040f7c588ebfd65"
+            "sha256": "bc7e5fcc29ab7dfed64f0f2ad4b1850288e691792ad8f70c41ce40826c0a1d3f"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "a6f37a6cb282a13ec2256dd0a9b6643af340235860c71a8f23dd3d5aef11e4e1"
+            "sha256": "9c63cf4ebf374f29711f13d60f33a21377efbef14da4323bf48c9ed30a5b56a5"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "b9e569a20e8d6b16536476312f19672da7954234233648e68a4b373d71b7a5f9"
+            "sha256": "1fd34841c38e65dd7d42f714d9ce35270bc663020098ceb15337701cb5ca28e0"
         },
         {
             "path": "package-lock.json",
-            "sha256": "6dfbde59e26b0a3453dbccec5ec034717bc258b84b7b01c02aca4bb165b04fc3"
+            "sha256": "4f5dc6749bccb056394176416dc9cc30b97616105e74fb0c4c471ebdd1ba6832"
         },
         {
             "path": "package.json",
-            "sha256": "6987e5f0c6558464d2390a8c018d0fc8f09fd5abcfd782a550f359104d20d1a5"
+            "sha256": "f88e456e59f6c169d7570fc0727efe14184bdfb41136c742167254a24cef6def"
         },
         {
             "path": "routes.json",
@@ -380,7 +380,7 @@
         },
         {
             "path": "ui/app/index.js",
-            "sha256": "06d80914d04c3fc675cb22666d39e23c17ce42dadb5813a714e081f6eacfbdbc"
+            "sha256": "09056bc10e2d7a21945411058484803a588100c76a4b5d82e364bd010a9430ca"
         },
         {
             "path": "ui/app/meeting-room.js",
@@ -392,7 +392,7 @@
         },
         {
             "path": "ui/app/meetings-list.js",
-            "sha256": "094e4fd9598a42de31790c58104fda14ff464987455116f515b65eeff559acb2"
+            "sha256": "b8d14f01fc25b0540c0e27fbb6a21027bb1e2e796bcf6d72447619c8b13c7b85"
         },
         {
             "path": "ui/app/mount-surface.js",
@@ -400,7 +400,7 @@
         },
         {
             "path": "ui/app/participants.js",
-            "sha256": "c232e223a1ffad223f315628174bb656833a973fba77d9cda98dc9c34732c7b3"
+            "sha256": "43b7e29492befd34944dca62f18575acd5bb0952af0f5b7126a693175cc3afbc"
         },
         {
             "path": "ui/app/profile-avatars.js",
@@ -424,7 +424,7 @@
         },
         {
             "path": "ui/jitsi-meet.css",
-            "sha256": "b47604aee251c6afbb6753d9ca1b87cc54ce8693081eff5fd24357ccddf81b9a"
+            "sha256": "a4b7fa1dcac8fb95c0b0ef3aa076b84bf535a832e75dbcdb6b01560afb205c3d"
         },
         {
             "path": "ui/languages/de/strings.xml",
@@ -444,7 +444,7 @@
         },
         {
             "path": "ui/markup.js",
-            "sha256": "c933a21bac250927fd544a88e041f3664a058f2874b640342a8645e680101883"
+            "sha256": "e59f86711c1325c09e2b12d3a6278ae1de98fb585daeaf941efb7d3f09bbda5c"
         },
         {
             "path": "ui/meeting-embed.js",
@@ -488,11 +488,11 @@
         },
         {
             "path": "ui/tests/meeting-runtime-regression.test.js",
-            "sha256": "302191c846778a64b9c7e1b5001b5c8929d47b6c431a3328df277537c07c9d29"
+            "sha256": "5a5c3a9431e6e89c32e54a712706e7d6b4f75c0143f51e30f1edc9bfb6b7b8c7"
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "11c131c3a0c9eb34e40194da7a3a3479b5b6d77184844e13260b3a3c0e945aa6"
+            "sha256": "e7cf3b23ced20772ca696bdc4b2a9e2e742576586a4de0a559f05fce0c6323e8"
         },
         {
             "path": "ui/tests/route-root-lifecycle.test.js",

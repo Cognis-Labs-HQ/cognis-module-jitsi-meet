@@ -54,6 +54,23 @@ test("meeting state polling ignores responses after meeting teardown", () => {
     );
 });
 
+test("window focus changes do not dismiss an idle meeting overlay", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const participantsSource = readFileSync(
+        resolve(ROOT, "ui/app/participants.js"),
+        "utf8",
+    );
+
+    assert.match(
+        appSource,
+        /if \(state\.dragUsername === null\) return;[\s\S]*setActiveParticipantDropzoneVisible\(false\)/,
+    );
+    assert.match(
+        participantsSource,
+        /if \(state\.overlayPresentation\) \{\s*utils\.updateOverlay\(state\.overlayPresentation\)/,
+    );
+});
+
 test("meeting chat teardown clears the room and polling state after a kick", () => {
     let pollingStopped = false;
     const state = {

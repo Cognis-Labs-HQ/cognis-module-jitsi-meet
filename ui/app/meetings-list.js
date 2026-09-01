@@ -32,6 +32,12 @@ export function createMeetingHandlers({
         const activeMeetingsLocked = Boolean(
             state.meeting?.id || utils.isMeetingActive(),
         );
+        const activeMeetingsSection = activeMeetingsEl.closest(
+            ".jitsi-overlay-active-meetings",
+        );
+        if (activeMeetingsSection instanceof HTMLElement) {
+            activeMeetingsSection.hidden = activeMeetingsLocked;
+        }
         activeMeetingsEl.classList.toggle(
             "jitsi-active-meetings-disabled",
             activeMeetingsLocked,

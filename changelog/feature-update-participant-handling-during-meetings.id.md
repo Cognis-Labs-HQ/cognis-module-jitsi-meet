@@ -190,6 +190,10 @@ Ketika pengguna lokal dikeluarkan atau rapat dibongkar karena alasan lain, Meeti
 
 Pembuatan rapat kini juga menyelesaikan seluruh kumpulan peserta yang dinormalisasi dari baris peserta tersimpan. Karena itu, rapat persisten digunakan kembali setelah server dimulai ulang dan setelah perubahan keanggotaan aktif dengan ID, nama, URL, serta ruang Messages yang sama. Rapat tanpa peserta melewati penggunaan kembali, menerima identitas baru setiap kali, dan memasang chat ke rekaman baru tersebut; saat berakhir, chat tetap dihapus permanen sebelum rekaman rapat dihapus.
 
+## Perbaiki pencarian peserta dan overlay rapat awal
+
+Cari Peserta kini meneruskan filter hasil `user` yang didukung Cognis core sehingga hanya hasil pengguna yang ditampilkan. Perubahan fokus tanpa penyeretan aktif tidak lagi mengubah overlay rapat. Rapat aktif dipindahkan dari panel peserta ke kartu yang menyatu di overlay awal tepat di atas Mulai Rapat dan disembunyikan segera setelah rapat dipilih atau dimasuki. Peserta yang ditambahkan selama rapat aktif tetap berada dalam rekaman peserta persisten dan menentukan identitas rapat yang digunakan kembali.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -255,3 +259,4 @@ Pembuatan rapat kini juga menyelesaikan seluruh kumpulan peserta yang dinormalis
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
 - [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
+- [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
