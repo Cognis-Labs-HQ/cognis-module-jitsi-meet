@@ -266,6 +266,10 @@ Karten früherer Besprechungen umbrechen Avatare jetzt auf ihre tatsächliche In
 
 Die gemeinsame Teilnehmerüberschrift steht wieder über der zweispaltigen Tabelle, sodass „Verfügbare Teilnehmer“ und „Frühere Besprechungen“ erneut in derselben Zeile beginnen. Vertikaler Überlauf wird sowohl im Teilnehmerbereich als auch in der Spalte früherer Besprechungen ausgeblendet; der vorgesehene horizontale Karten-Scroller und das innere Scrollen verfügbarer Teilnehmer bleiben erhalten.
 
+## Platz in der Teilnehmerüberschrift zurückgewinnen
+
+Die Teilnehmerüberschrift entfernt jetzt den standardmäßigen Überschriftenrand und verwendet eine kompakte Zeilenhöhe sowie einen kleineren Abstand. Frühere Besprechungen bleiben vollständig horizontal scrollbar, während die sichtbare Bildlaufleiste sowohl in standardbasierten als auch in WebKit-Browsern ausgeblendet wird.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -337,3 +341,4 @@ Die gemeinsame Teilnehmerüberschrift steht wieder über der zweispaltigen Tabel
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
+- [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)

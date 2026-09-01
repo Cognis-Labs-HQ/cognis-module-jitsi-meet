@@ -666,6 +666,18 @@ test("find participants is the first available-participant avatar", () => {
         styles,
         /jitsi-persisted-meetings-column \{[\s\S]*overflow-y: hidden/,
     );
+    assert.match(
+        styles,
+        /jitsi-participants-header h3 \{[\s\S]*margin: 0;[\s\S]*line-height: 1\.15/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings \{[\s\S]*overflow-x: auto;[\s\S]*scrollbar-width: none/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings::\-webkit-scrollbar \{[\s\S]*display: none/,
+    );
 });
 
 test("meetings mini chat sends on Enter and hides explicit send button", () => {

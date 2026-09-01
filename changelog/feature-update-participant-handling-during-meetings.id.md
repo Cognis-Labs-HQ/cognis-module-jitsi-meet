@@ -214,6 +214,10 @@ Cari Peserta kini berupa avatar profil bertanda tanya di awal Peserta Tersedia. 
 
 Judul Peserta bersama dikembalikan ke atas tabel dua kolom sehingga Peserta Tersedia dan Rapat Sebelumnya kembali dimulai pada baris yang sama. Luapan vertikal dipotong pada panel peserta dan kolom Rapat Sebelumnya, sementara penggulir kartu rapat horizontal dan pengguliran internal Peserta Tersedia tetap berfungsi.
 
+## Dapatkan kembali ruang judul peserta
+
+Judul Peserta kini menghapus margin judul bawaan serta memakai tinggi baris dan jarak yang ringkas. Rapat Sebelumnya tetap dapat digulir horizontal sepenuhnya sambil menyembunyikan bilah gulir yang terlihat pada perenderan browser berbasis standar dan WebKit.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -285,3 +289,4 @@ Judul Peserta bersama dikembalikan ke atas tabel dua kolom sehingga Peserta Ters
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
+- [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)

@@ -214,6 +214,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 共通の参加者見出しを2列テーブルの上へ戻し、利用可能な参加者と「以前のミーティング」が再び同じ行から始まるようにしました。参加者ペインと「以前のミーティング」列の両方で縦方向のオーバーフローを非表示にし、意図した横方向のミーティングカードスクロールと利用可能な参加者の内部スクロールは維持します。
 
+## 参加者見出しの領域を確保
+
+参加者見出しは既定の見出し余白をなくし、コンパクトな行高と間隔を使用します。「以前のミーティング」は横方向のスクロール機能を完全に維持しながら、標準準拠および WebKit ブラウザーの表示でスクロールバーを非表示にします。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -285,3 +289,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
+- [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)

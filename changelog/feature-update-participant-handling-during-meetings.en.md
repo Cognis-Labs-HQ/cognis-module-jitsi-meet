@@ -266,6 +266,10 @@ Find Participants is now a question-mark profile avatar at the start of Availabl
 
 The shared Participants heading is restored above the two-column table so Available Participants and Previous Meetings begin on the same row again. Vertical overflow is clipped at both the participant pane and Previous Meetings column while the intended horizontal meeting-card scroller and Available Participants inner scrolling remain available.
 
+## Reclaim participant header space
+
+The Participants header now removes the default heading margin and uses a compact line height and gap. Previous Meetings keeps horizontal scrolling fully functional while suppressing the visible scrollbar in both standards-based and WebKit browser rendering.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -337,3 +341,4 @@ The shared Participants heading is restored above the two-column table so Availa
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
+- [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
