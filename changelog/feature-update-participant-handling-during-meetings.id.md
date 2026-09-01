@@ -138,6 +138,14 @@ Modul rapat memanggil operasi Messages sisi server yang terfokus untuk menambah 
 
 Perubahan peserta rapat kini memanggil kapabilitas sederhana `social:messages:addRoomMember` atau `social:messages:removeRoomMember` untuk ruang rapat yang tersimpan. Pembuatan ruang tetap menjadi operasi satu kali yang terpisah, rapat tetap memiliki asosiasi ruang, dan tidak diperlukan kapabilitas sinkronisasi agregat.
 
+## Gunakan kapabilitas keanggotaan Messages yang kanonis
+
+Undangan rapat aktif dan penghapusan peserta kini menggunakan kapabilitas terpadu `social:messages:membership` dengan ID akun pelaku dan pengguna yang kanonis agar sesuai dengan kontrak integrasi Cognis Messages terkini.
+
+## Pulihkan akses chat saat bergabung kembali
+
+Setiap peserta terautentikasi yang bergabung ke rapat kini menjalankan kembali operasi keanggotaan Messages yang idempoten sebelum chat dimuat. Peserta yang sebelumnya meninggalkan atau mengarsipkan chat rapat dapat melihatnya kembali setelah bergabung kembali ke rapat.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -187,3 +195,8 @@ Perubahan peserta rapat kini memanggil kapabilitas sederhana `social:messages:ad
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
 - [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
+- [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
+
+- [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
+
+- [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)

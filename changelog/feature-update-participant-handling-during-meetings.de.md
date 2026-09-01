@@ -190,6 +190,14 @@ Das Meeting-Modul ruft die gezielte serverseitige Messages-Operation zum Hinzuf�
 
 Änderungen an Meeting-Teilnehmern verwenden jetzt die einfache Capability `social:messages:addRoomMember` oder `social:messages:removeRoomMember` für den gespeicherten Meeting-Raum. Die Raumerstellung bleibt eine separate einmalige Operation, das Meeting verwaltet weiterhin die Raumzuordnung und es ist keine zusammengefasste Synchronisierungs-Capability erforderlich.
 
+## Kanonische Messages-Mitgliedschafts-Capability verwenden
+
+Einladungen zu aktiven Meetings und das Entfernen von Teilnehmern verwenden nun die einheitliche Capability `social:messages:membership` mit kanonischen Konto-IDs für Akteur und Benutzer und entsprechen damit dem aktuellen Integrationsvertrag von Cognis Messages.
+
+## Chat-Zugriff beim erneuten Beitritt wiederherstellen
+
+Bei jedem authentifizierten Meeting-Beitritt wird nun vor dem Laden des Chats die idempotente Messages-Mitgliedschaftsoperation erneut ausgeführt. Teilnehmer, die den Meeting-Chat zuvor verlassen oder archiviert haben, können ihn daher nach dem erneuten Beitritt zum Meeting wieder sehen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -239,3 +247,8 @@ Das Meeting-Modul ruft die gezielte serverseitige Messages-Operation zum Hinzuf�
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
 - [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
+- [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
+
+- [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
+
+- [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)

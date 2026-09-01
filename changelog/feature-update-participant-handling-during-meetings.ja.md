@@ -138,6 +138,14 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 ミーティング参加者の変更では、保存済みミーティングルームに対して単純な `social:messages:addRoomMember` または `social:messages:removeRoomMember` capability を呼び出します。ルーム作成は独立した一度限りの操作のまま、ミーティングがルーム関連付けを所有し、集約同期 capability は不要です。
 
+## 正規の Messages メンバーシップ capability を使用
+
+進行中のミーティングへの招待と参加者の削除で、正規の実行者アカウント ID とユーザーアカウント ID を指定する統一された `social:messages:membership` capability を使用し、現在の Cognis Messages 統合契約に準拠しました。
+
+## 再参加時にチャットアクセスを復元
+
+認証済みユーザーがミーティングへ参加するたびに、チャットを読み込む前に冪等な Messages メンバーシップ操作を再適用します。以前ミーティングチャットを退出またはアーカイブした参加者も、ミーティングへ再参加するとチャットを再び表示できます。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -187,3 +195,8 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
 - [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
+- [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
+
+- [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
+
+- [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)

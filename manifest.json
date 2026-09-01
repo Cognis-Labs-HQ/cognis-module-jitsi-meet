@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.127",
+    "version": "1.5.128",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -327,11 +327,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "819564a8324de15e934bacf05525feb1bd4b00cb3147432a3078e024d1103f5e"
+            "sha256": "19c400702a55e443d3d9d669dab35a7a58a982c3076d49797a7e21a186b44e43"
         },
         {
             "path": "package.json",
-            "sha256": "385a4c32370932592db3fb35b7c5596c89e174b014d92c4141c85f3a339d2848"
+            "sha256": "8753938f0fd59a6bf78332496c793790e99c6a1fa6b0529cd0560fa665f6ac43"
         },
         {
             "path": "routes.json",

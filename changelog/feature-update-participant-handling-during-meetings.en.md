@@ -190,6 +190,14 @@ The meeting module invokes the focused server-side Messages add-member or remove
 
 Meeting participant changes now call the simple `social:messages:addRoomMember` or `social:messages:removeRoomMember` capability for the meeting’s stored room. Room creation remains a separate one-time operation, the meeting keeps owning the room association, and no aggregate synchronization capability is required.
 
+## Use the canonical Messages membership capability
+
+Active meeting invitations and participant removals now use the unified `social:messages:membership` capability with canonical actor and user account IDs, matching the current Cognis Messages integration contract.
+
+## Restore chat access when rejoining
+
+Every authenticated meeting join now re-applies the idempotent Messages membership operation before loading chat. A participant who previously left or archived the meeting chat can therefore see it again after rejoining the meeting.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -239,3 +247,8 @@ Meeting participant changes now call the simple `social:messages:addRoomMember` 
 - [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
 - [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
+- [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
+
+- [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
+
+- [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
