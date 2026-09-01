@@ -76,12 +76,12 @@ export function createMeetingHandlers({
                     label: i18n.t(
                         "module.jitsi_meet.participants.previous_remove_confirm",
                     ),
-                    variant: "danger",
+                    variant: "cancel",
                 },
                 {
                     id: "cancel",
                     label: i18n.t("ui.reuse.cancel"),
-                    variant: "cancel",
+                    variant: "neutral",
                 },
             ],
         });
@@ -101,7 +101,7 @@ export function createMeetingHandlers({
                     ? "module.jitsi_meet.participants.previous_remove_success"
                     : "module.jitsi_meet.participants.previous_remove_failed",
             ),
-            { variant: response.ok ? "success" : "error" },
+            { variant: response.ok ? "info" : "error" },
         );
         if (response.ok) {
             await loadActiveMeetings({ resolveRequested: false });

@@ -202,6 +202,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者ペインでは、コンパクトなカードを「以前のミーティング」と表示します。カードをクリックするとメンバーをステージへ復元して「ミーティングを開始」までスクロールします。3秒間長押しするとハイライトが緑から赤へ変わり、退出の確認を表示します。最後のメンバーが退出すると、保存済みミーティング、Messages チャット、関連付けられた Whiteboard を削除します。残り1人のミーティングも、そのメンバーがクリーンアップを完了できるよう一覧に残ります。
 
+## 以前のミーティングカードのフィードバックを改善
+
+「以前のミーティング」カードはアバターを実際のコンテンツ高で折り返して横方向ギャラリーの上端に揃え、不要な縦方向オーバーフローを解消しました。進行中のミーティングは、境界だけを移動するマスク済みのアプリグリーン区間で示します。削除の長押しでは一定の不透明度を保った滑らかな緑から赤へのグラデーションを直ちに開始します。ポップアップの「削除」はキャンセル表示、「キャンセル」は中立表示となり、削除成功は情報トーストで通知します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -270,3 +274,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
+- [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)

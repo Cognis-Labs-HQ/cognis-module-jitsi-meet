@@ -254,6 +254,10 @@ Der Teilnehmerbereich verwendet nun links etwa 30 Prozent für die vertikal scro
 
 Der Teilnehmerbereich nennt diese kompakten Karten jetzt „Frühere Besprechungen“. Ein Klick stellt ihre Mitglieder auf der Bühne wieder her und scrollt zu „Besprechung starten“. Drei Sekunden langes Halten wechselt die Hervorhebung von Grün zu Rot, bevor das Verlassen bestätigt wird. Beim letzten Austritt werden die gespeicherte Besprechung sowie ihr Messages-Chat und das zugeordnete Whiteboard gelöscht; Besprechungen mit einem verbleibenden Mitglied bleiben auffindbar, damit dieses Mitglied die Bereinigung abschließen kann.
 
+## Rückmeldung der Karten früherer Besprechungen verfeinern
+
+Karten früherer Besprechungen umbrechen Avatare jetzt auf ihre tatsächliche Inhaltshöhe und richten sich oben in der horizontalen Galerie aus, wodurch der unnötige vertikale Überlauf entfällt. Aktive Besprechungen verwenden ein maskiertes app-grünes Segment, das ausschließlich am Rand entlangläuft. Beim Gedrückthalten beginnt sofort ein weicher Grün-zu-Rot-Verlauf mit gleichbleibender Deckkraft; das Popup verwendet für „Entfernen“ die Abbruchdarstellung und für „Abbrechen“ die neutrale Darstellung, erfolgreiche Entfernungen zeigen einen Informationstoast.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -322,3 +326,4 @@ Der Teilnehmerbereich nennt diese kompakten Karten jetzt „Frühere Besprechung
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
+- [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)

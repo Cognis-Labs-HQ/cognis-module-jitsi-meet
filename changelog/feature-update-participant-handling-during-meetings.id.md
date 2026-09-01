@@ -202,6 +202,10 @@ Ruang kerja Peserta kini menggunakan sekitar 30% di kiri untuk pemilihan penggun
 
 Panel Peserta kini menyebut kartu ringkas ini “Rapat Sebelumnya”. Mengklik kartu memulihkan anggotanya ke panggung dan menggulir ke Mulai Rapat. Menahannya selama tiga detik mengubah sorotan dari hijau menjadi merah sebelum meminta konfirmasi untuk keluar. Kepergian terakhir menghapus rapat tersimpan beserta chat Messages dan Whiteboard terkait; rapat dengan satu anggota tersisa tetap dapat ditemukan agar anggota tersebut dapat menyelesaikan pembersihan.
 
+## Sempurnakan umpan balik kartu rapat sebelumnya
+
+Kartu Rapat Sebelumnya kini membungkus avatar sesuai tinggi konten sebenarnya dan merapat ke bagian atas galeri horizontal sehingga luapan vertikal yang tidak perlu hilang. Rapat aktif memakai segmen hijau aplikasi bertopeng yang hanya bergerak mengelilingi batas. Penahanan untuk menghapus langsung memulai gradien hijau-ke-merah yang halus dengan opasitas tetap; popup memakai perlakuan batal untuk Hapus dan netral untuk Batal, sedangkan penghapusan berhasil memakai toast informasi.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -270,3 +274,4 @@ Panel Peserta kini menyebut kartu ringkas ini “Rapat Sebelumnya”. Mengklik k
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
+- [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)

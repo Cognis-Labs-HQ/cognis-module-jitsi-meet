@@ -70,6 +70,13 @@ test("previous meeting cards restore the stage and support confirmed long-press 
     assert.match(styles, /module-jitsi-meet-card-removal-hold 3s linear/);
     assert.match(
         styles,
+        /module-jitsi-meet-card-removal-hold[\s\S]*linear-gradient/,
+    );
+    assert.match(source, /id: "remove"[\s\S]*variant: "cancel"/);
+    assert.match(source, /id: "cancel"[\s\S]*variant: "neutral"/);
+    assert.match(source, /response\.ok \? "info" : "error"/);
+    assert.match(
+        styles,
         /\.jitsi-persisted-meeting-card \{[\s\S]*?height: max-content;/,
     );
 });
@@ -229,8 +236,13 @@ test("persisted meetings fill the scrollable participant workspace", () => {
         /jitsi-available-participants-column[\s\S]*overflow-y: auto/,
     );
     assert.match(cssSource, /jitsi-persisted-meetings[\s\S]*overflow-x: auto/);
-    assert.match(cssSource, /jitsi-persisted-meeting-avatar:nth-child\(10\)/);
-    assert.match(cssSource, /module-jitsi-meet-active-card-orbit/);
+    assert.match(
+        cssSource,
+        /jitsi-persisted-meeting-avatars[\s\S]*flex-wrap: wrap/,
+    );
+    assert.match(cssSource, /module-jitsi-meet-active-card-border/);
+    assert.match(cssSource, /mask-composite: exclude/);
+    assert.doesNotMatch(cssSource, /active-card-orbit/);
 });
 
 test("jitsi participant avatars reuse social avatar hydration and hide staged avatars while active", () => {

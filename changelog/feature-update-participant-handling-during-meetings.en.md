@@ -254,6 +254,10 @@ The Participants workspace now uses roughly 30% on the left for vertically scrol
 
 The Participants pane now calls these compact cards “Previous Meetings.” Clicking a card restores its members to the stage and scrolls to Start Meeting. Holding it for three seconds transitions the highlight from green to red before asking for confirmation to leave. The final departure deletes the stored meeting and its Messages chat and mapped Whiteboard; meetings with one remaining member stay discoverable so that member can complete cleanup.
 
+## Refine previous meeting card feedback
+
+Previous Meeting cards now wrap avatars to their actual content height and align to the top of the horizontal gallery, eliminating the unnecessary vertical overflow. Active meetings use a masked app-green segment that travels only around the border. A removal hold begins a smooth constant-opacity green-to-red gradient immediately; its popup uses the cancel treatment for Remove and neutral treatment for Cancel, and successful removal uses an informational toast.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -322,3 +326,4 @@ The Participants pane now calls these compact cards “Previous Meetings.” Cli
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
+- [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
