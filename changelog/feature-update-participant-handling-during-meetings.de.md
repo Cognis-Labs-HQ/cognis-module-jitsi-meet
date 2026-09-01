@@ -234,6 +234,10 @@ Die Suche nach aktiven Besprechungen übergibt die Capability `social:profile:id
 
 Nach einer erfolgreichen Zustimmung liest die Teilnehmereinladung den tatsächlichen Eigentümer der zugeordneten dauerhaften Arbeitsfläche, löst dessen kanonische Konto-ID auf und verwendet sie für `whiteboard:membership`. So kann auch eine Arbeitsfläche, die von einem anderen berechtigten Teilnehmer geöffnet wurde, aktualisiert werden, ohne die Einladung mit 503 abzubrechen.
 
+## Chat-Abfrage nach dem Entfernen beenden
+
+Wird der lokale Benutzer entfernt oder die Besprechung anderweitig abgebaut, stoppt Meetings nun zuerst den Chat-Abfragezeitgeber und leert die aktive sowie die zuletzt verwendete Raumkennung und den zwischengespeicherten Raumschlüssel. Die anschließende Neudarstellung kann den entfernten Besprechungsraum dadurch nicht erneut aktivieren oder weitere nicht autorisierte Nachrichtenanfragen senden.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -297,3 +301,4 @@ Nach einer erfolgreichen Zustimmung liest die Teilnehmereinladung den tatsächli
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
+- [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)

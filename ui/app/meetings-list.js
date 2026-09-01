@@ -116,10 +116,7 @@ export function createMeetingHandlers({
         state.alonePromptBlockedUntil = 0;
         state.pendingParticipantUsernames.clear();
         state.kickReportedMeetingId = "";
-        state.chatMode = "meeting";
-        state.privateChatUsername = "";
-        state.lastMeetingParticipants = [];
-        callbacks.stopNativeChatPolling();
+        callbacks.deactivateMeetingChat();
         await callbacks.updateNativeChat();
         void whiteboardCleanup?.then(() => {
             if (state.overlayPresentation) {
@@ -370,10 +367,7 @@ export function createMeetingHandlers({
         state.alonePromptBlockedUntil = 0;
         state.pendingParticipantUsernames.clear();
         state.kickReportedMeetingId = "";
-        state.chatMode = "meeting";
-        state.privateChatUsername = "";
-        state.lastMeetingParticipants = [];
-        callbacks.stopNativeChatPolling();
+        callbacks.deactivateMeetingChat();
         utils.resetParticipantSelection();
         callbacks.renderParticipants();
         if (overlayMessageKey) {

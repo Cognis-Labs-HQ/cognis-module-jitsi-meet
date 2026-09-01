@@ -182,6 +182,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 合意成立後の参加者招待では、関連付けられた永続キャンバスの実際の所有者を読み取り、その所有者の正規アカウント ID を解決して `whiteboard:membership` に使用するようになりました。別の承認済み参加者が開いたキャンバスも更新でき、503 応答で招待が中断されません。
 
+## 退出後のチャットポーリングを停止
+
+ローカルユーザーがキックされた場合、またはミーティングが別の理由で破棄される場合、Meetings は最初にチャットのポーリングタイマーを停止し、現在および最後に使用したルーム ID とキャッシュ済みルームキーを消去するようになりました。その後の再描画で退出済みミーティングルームが再び有効になったり、認可されていないメッセージ要求が送信されたりすることはありません。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -245,3 +249,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
+- [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)

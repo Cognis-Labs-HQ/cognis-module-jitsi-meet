@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deactivateMeetingChatState } from "../app/chat-state.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -51,6 +52,28 @@ test("meeting state polling ignores responses after meeting teardown", () => {
         source,
         /meetings\/state[\s\S]*accessToken:\s*state\.shareAccessToken/,
     );
+});
+
+test("meeting chat teardown clears the room and polling state after a kick", () => {
+    let pollingStopped = false;
+    const state = {
+        chatRoomId: "meeting-room",
+        chatRoomKey: "room-key",
+        chatMode: "private",
+        privateChatUsername: "alice",
+        lastMeetingChatRoomId: "meeting-room",
+        lastMeetingParticipants: ["alice"],
+    };
+
+    deactivateMeetingChatState(state, () => {
+        pollingStopped = true;
+    });
+
+    assert.equal(pollingStopped, true);
+    assert.equal(state.chatRoomId, "");
+    assert.equal(state.chatRoomKey, null);
+    assert.equal(state.lastMeetingChatRoomId, "");
+    assert.deepEqual(state.lastMeetingParticipants, []);
 });
 
 test("share guests bind remote whiteboard orchestration without resharing controls", () => {

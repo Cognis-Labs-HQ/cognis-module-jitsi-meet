@@ -1,5 +1,6 @@
 import { logUi } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
+import { deactivateMeetingChatState } from "./chat-state.js";
 import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import { TEXT_ENCODER, CHAT_REFRESH_INTERVAL_MS } from "../constants.js";
@@ -156,6 +157,13 @@ export function createChatHandlers({
         if (state.chatRefreshTimer === null) return;
         clearInterval(state.chatRefreshTimer);
         state.chatRefreshTimer = null;
+    }
+
+    function deactivateMeetingChat() {
+        deactivateMeetingChatState(state, stopNativeChatPolling);
+        renderChatParticipantStrip();
+        setNativeChatReady(false);
+        clearNativeChatThread();
     }
 
     function applyActiveChatRoom(roomId) {
@@ -427,6 +435,7 @@ export function createChatHandlers({
         activateMeetingChat,
         activatePrivateChatForParticipant,
         cleanupChatHandlers,
+        deactivateMeetingChat,
         encryptChatMessage,
         getChatRoomKey,
         openEmojiPickerPopup,

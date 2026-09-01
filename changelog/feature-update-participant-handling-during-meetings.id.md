@@ -182,6 +182,10 @@ Penemuan rapat aktif kini meneruskan kapabilitas `social:profile:identity` secar
 
 Setelah konsensus berhasil, undangan peserta kini membaca pemilik sebenarnya dari kanvas persisten yang dipetakan, menyelesaikan ID akun kanonis pemilik tersebut, lalu menggunakannya untuk `whiteboard:membership`. Karena itu, kanvas yang dibuka peserta berwenang lain dapat diperbarui tanpa membatalkan undangan dengan respons 503.
 
+## Hentikan polling chat setelah pengguna dikeluarkan
+
+Ketika pengguna lokal dikeluarkan atau rapat dibongkar karena alasan lain, Meetings kini terlebih dahulu menghentikan timer polling chat dan membersihkan identitas ruang aktif serta terakhir digunakan beserta kunci ruang yang di-cache. Karena itu, penggambaran ulang berikutnya tidak dapat mengaktifkan kembali ruang rapat yang sudah dilepas atau mengirim permintaan pesan tanpa izin lebih lanjut.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -245,3 +249,4 @@ Setelah konsensus berhasil, undangan peserta kini membaca pemilik sebenarnya dar
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
 - [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
+- [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
