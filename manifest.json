@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.136",
+    "version": "1.5.137",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -144,11 +144,11 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "a7a1d5e9c566edebf92223c68ad5aa153ad2e2a1aad33432d62fc1c382e31ff1"
+            "sha256": "096a224789be4eef8dcc0f43cd20f338d9f447f2694bb3c901f3d42a0d8f3a69"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "3b1ec3161716cb354495177991528ca81dc8b69828e976439fbf8dc0582e7ba5"
+            "sha256": "145d869e3b8b050914a3cc7ed73d0943fea6e91f6c4faf77956a8b9982c416b3"
         },
         {
             "path": "api/meeting-name.js",
@@ -160,7 +160,7 @@
         },
         {
             "path": "api/meetings-routes.js",
-            "sha256": "549729596bc290e91ef6f3941f0070cf8fecbafb73fa563dd5a6b96741165131"
+            "sha256": "a4b892dcc19700a8b570ea42719fcf7fd9c5db9e9d02fe810ad50e795a299cfe"
         },
         {
             "path": "api/participant-routes.js",
@@ -220,7 +220,7 @@
         },
         {
             "path": "api/reuse/whiteboard-membership.js",
-            "sha256": "54baabe5db10ac16297944a257947c5f11aaf50929d422456680de54c16ba8be"
+            "sha256": "60eef8c0a7ecda336e8c911df4914434bcd3a680844798c1c165d0bd96ce47e3"
         },
         {
             "path": "api/share-hooks.js",
@@ -252,7 +252,7 @@
         },
         {
             "path": "api/tests/meeting-access.test.js",
-            "sha256": "5d620e660e1320b77ef7d7c26db2d71267bb8465815e954fe9e16f43aac3859e"
+            "sha256": "4b79fbc777165da4d029bd2820a351551a801ad72ab8f05610a75b909238b9f9"
         },
         {
             "path": "api/tests/meeting-chat-rejoin.test.js",
@@ -260,7 +260,7 @@
         },
         {
             "path": "api/tests/meeting-lifecycle-routes.test.js",
-            "sha256": "6ae70fbcd4baa45f4839c9dc779397c743ae0960b7af51a18be639b0deaae7be"
+            "sha256": "624ec8e5963233918da508a3795eeb2a6815514c116ac26ffbe1970101bf373f"
         },
         {
             "path": "api/tests/participant-approval.test.js",
@@ -292,7 +292,7 @@
         },
         {
             "path": "api/tests/whiteboard-membership.test.js",
-            "sha256": "4893f5d5efbf6091faa11ad5462277d84b72abde49eb29a3f31d9ef6c32278dc"
+            "sha256": "9373c16d5a27765ca5c511e7d1952db97201f4023c86b55fdc76000559d0554c"
         },
         {
             "path": "api/tests/whiteboard-routes.test.js",
@@ -332,27 +332,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "60683a226e4f92b4edbc846fa2c76af344159706032a0741cd0ea666cc90cd8a"
+            "sha256": "a2444bcaa677700c7781d20815ae9d382b8d0323164ce83d6f082f43cad728ee"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "bdeb2eb110a455da30670464f886fa9b352745db8373f3b0129ae8ff7ccb73a7"
+            "sha256": "dd74fd3cc4529bc0b7a1fc5bf0d8dac6a3b32b4490bb52e3fbb454beb1f30674"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "6599a52cd14501b9f70faf740853bf5bb134ac817a4d53ba62c93d468599ad82"
+            "sha256": "41271dcbeddffafbe1231abe2e3d6c296cdcf1b8ef4cf936bb59725de2142f84"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "021a1365b71ad50b74c8aa3b339070ed658261419d797cd9553c7743cd500b9c"
+            "sha256": "d9c49e3792558b22fefef644b7bbcf8e6d24d423f7c28fa658ec1ed957012a09"
         },
         {
             "path": "package-lock.json",
-            "sha256": "f9074e55cd0db300c53fd15878c70fca60aa31caf916d36807da8aeef433c171"
+            "sha256": "bc7c781496ee411fca0afef177dd9eed98ca62382c369fb1ca352235bc1ce93a"
         },
         {
             "path": "package.json",
-            "sha256": "63898ec2dd66cd24a69ea8a5d1ceec485bcb23083ffd7b6f7790a679f0fe091e"
+            "sha256": "200950a992664239c51f5f494d9a744772b4dfff5031081fae8b06fc0bac487d"
         },
         {
             "path": "routes.json",

@@ -254,6 +254,10 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         resolveWhiteboardMembership: () => ({
             add: async (request) => whiteboardMembershipAdditions.push(request),
         }),
+        fetchBoardData: async () => ({
+            id: "board-1",
+            createdBy: "canvas-owner",
+        }),
         buildMeetingChatTitle: (name) => name,
         createMeetingPayload: async (input) => ({
             ...input.meeting,
@@ -305,7 +309,7 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.deepEqual(whiteboardMembershipAdditions, [
         {
             whiteboardId: "board-1",
-            actorAccountId: "account-alice",
+            actorAccountId: "account-canvas-owner",
             userAccountId: "account-carol",
         },
     ]);
@@ -395,6 +399,10 @@ test("a kicked account participant is removed and made inactive", async () => {
                     request.actorAccountId,
                     request.userAccountId,
                 ]),
+        }),
+        fetchBoardData: async () => ({
+            id: "board-1",
+            createdBy: "alice",
         }),
         buildMeetingChatTitle: (name) => name,
         log: () => {},

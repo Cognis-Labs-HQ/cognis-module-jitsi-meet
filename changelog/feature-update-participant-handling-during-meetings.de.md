@@ -226,6 +226,14 @@ Die passive Suche nach aktiven Besprechungen gibt nun eine erfolgreiche leere Li
 
 Wenn die aktuelle Profilauflösung kein Handle liefert, führt die Suche nach aktiven Besprechungen die Autorisierung nun mit der authentifizierten Kontoidentität fort. Dadurch bleiben alle von Cognis als aktiv erkannten Besprechungen sichtbar, in denen das Konto über einen gespeicherten Teilnehmer gehört, einschließlich Besprechungen mit einem früheren Profil-Handle.
 
+## Profilidentität korrekt an aktive Abfragen übergeben
+
+Die Suche nach aktiven Besprechungen übergibt die Capability `social:profile:identity` nun explizit an die kanonische Handle-Auflösung. Dadurch werden normale Konten wie `admin`, `firehawk` und `test` wieder ohne wiederholte Normalisierungsfehler erkannt.
+
+## Einladungen mit dem tatsächlichen Whiteboard-Eigentümer abschließen
+
+Nach einer erfolgreichen Zustimmung liest die Teilnehmereinladung den tatsächlichen Eigentümer der zugeordneten dauerhaften Arbeitsfläche, löst dessen kanonische Konto-ID auf und verwendet sie für `whiteboard:membership`. So kann auch eine Arbeitsfläche, die von einem anderen berechtigten Teilnehmer geöffnet wurde, aktualisiert werden, ohne die Einladung mit 503 abzubrechen.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -288,3 +296,4 @@ Wenn die aktuelle Profilauflösung kein Handle liefert, führt die Suche nach ak
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
+- [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)

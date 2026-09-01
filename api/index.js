@@ -731,6 +731,7 @@ export function registerApiRoutes(router, ctx) {
         resolveWhiteboardMembership: () =>
             systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),
+        fetchBoardData,
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
@@ -832,6 +833,7 @@ export function registerApiRoutes(router, ctx) {
         router,
         store,
         profileStore,
+        profileIdentity,
         listCalendarsByOwner,
         listCalendarEvents,
         listClassroomParticipantHandles,

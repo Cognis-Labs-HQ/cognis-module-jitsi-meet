@@ -2,6 +2,7 @@ export function registerMeetingRoutes({
     router,
     store,
     profileStore,
+    profileIdentity,
     listCalendarsByOwner,
     listCalendarEvents,
     listClassroomParticipantHandles,
@@ -253,6 +254,7 @@ export function registerMeetingRoutes({
             if (!claims) return;
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
+                profileIdentity,
                 claims.sub,
             ).catch((error) => {
                 log?.(

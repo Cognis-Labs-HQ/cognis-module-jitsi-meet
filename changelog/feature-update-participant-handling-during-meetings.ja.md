@@ -174,6 +174,14 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 現在のプロファイル解決でハンドルを取得できない場合も、進行中ミーティングの検索は認証済みアカウント ID で認可を続行するようになりました。これにより、以前のプロファイルハンドルが保存されているミーティングを含め、保存済み参加者にそのアカウントが属するすべての Cognis 進行中ミーティングが表示され続けます。
 
+## 進行中ミーティングの検索へ Profile ID を正しく渡す
+
+進行中ミーティングの検索では、正規ハンドル解決へ `social:profile:identity` Capability を明示的に渡すようになりました。これにより、`admin`、`firehawk`、`test` などの通常アカウントを、正規化エラーを繰り返さず再び解決できます。
+
+## 実際の Whiteboard 所有者で招待を完了
+
+合意成立後の参加者招待では、関連付けられた永続キャンバスの実際の所有者を読み取り、その所有者の正規アカウント ID を解決して `whiteboard:membership` に使用するようになりました。別の承認済み参加者が開いたキャンバスも更新でき、503 応答で招待が中断されません。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -236,3 +244,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
+- [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)

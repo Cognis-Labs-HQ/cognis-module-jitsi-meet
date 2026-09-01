@@ -174,6 +174,14 @@ Penemuan rapat aktif pasif kini mengembalikan daftar kosong yang berhasil ketika
 
 Ketika penyelesaian profil saat ini tidak menyediakan handle, penemuan rapat aktif kini melanjutkan otorisasi dengan identitas akun terautentikasi. Dengan demikian, setiap rapat yang dianggap aktif oleh Cognis tetap terlihat ketika akun termasuk dalam peserta tersimpannya, termasuk rapat yang masih menyimpan handle profil sebelumnya.
 
+## Teruskan identitas Profil dengan benar ke penemuan aktif
+
+Penemuan rapat aktif kini meneruskan kapabilitas `social:profile:identity` secara eksplisit ke penyelesaian handle kanonis. Dengan demikian, akun normal seperti `admin`, `firehawk`, dan `test` kembali diselesaikan tanpa kesalahan normalisasi berulang.
+
+## Selesaikan undangan dengan pemilik Whiteboard sebenarnya
+
+Setelah konsensus berhasil, undangan peserta kini membaca pemilik sebenarnya dari kanvas persisten yang dipetakan, menyelesaikan ID akun kanonis pemilik tersebut, lalu menggunakannya untuk `whiteboard:membership`. Karena itu, kanvas yang dibuka peserta berwenang lain dapat diperbarui tanpa membatalkan undangan dengan respons 503.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -236,3 +244,4 @@ Ketika penyelesaian profil saat ini tidak menyediakan handle, penemuan rapat akt
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
+- [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)

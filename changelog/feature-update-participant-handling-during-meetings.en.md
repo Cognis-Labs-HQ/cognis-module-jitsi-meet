@@ -226,6 +226,14 @@ Passive active-meeting discovery now returns a successful empty list when the au
 
 When current profile resolution does not provide a handle, active-meeting discovery now continues authorization with the authenticated account identity. This keeps every Cognis-active meeting visible when the account belongs to its stored participants, including meetings that retain an earlier profile handle.
 
+## Pass Profile identity correctly to active discovery
+
+Active-meeting discovery now passes the `social:profile:identity` capability explicitly into canonical handle resolution. Normal accounts such as `admin`, `firehawk`, and `test` are therefore resolved again without repeated normalization errors.
+
+## Complete invitations with the actual Whiteboard owner
+
+After consensus succeeds, participant invitation now reads the mapped persistent canvas’s actual owner, resolves that owner’s canonical account ID, and uses it for `whiteboard:membership`. A canvas opened by another authorized participant can therefore be updated without aborting the invitation with a 503 response.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -288,3 +296,4 @@ When current profile resolution does not provide a handle, active-meeting discov
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
 - [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
 - [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
+- [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)

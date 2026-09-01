@@ -144,17 +144,18 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
             },
         },
         profileStore,
+        profileIdentity: profileIdentityFake,
         listCalendarsByOwner: async () => [],
         listCalendarEvents: async () => [],
         listClassroomParticipantHandles: async () => [],
         resolveMeetingPayloadOrReject,
         createMeetingPayload: async () => ({}),
-        resolveRequesterUsername: (profileStore, accountId) =>
+        resolveRequesterUsername: (profileStore, profileIdentity, accountId) =>
             import("../reuse/requester.js").then(
                 ({ resolveRequesterUsername }) =>
                     resolveRequesterUsername(
                         profileStore,
-                        profileIdentityFake,
+                        profileIdentity,
                         accountId,
                     ),
             ),

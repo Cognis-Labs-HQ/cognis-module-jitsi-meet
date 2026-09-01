@@ -1,18 +1,27 @@
 export async function updateMeetingWhiteboardMembership({
     operation,
-    meeting,
     state,
     userAccountId,
     profileStore,
     resolveWhiteboardMembership,
+    fetchBoardData,
 }) {
     const whiteboardId = String(state?.whiteboardId ?? "").trim();
     if (!whiteboardId || state?.whiteboardDisposable === true) return;
-    const ownerProfile = await profileStore.getProfileByHandle(
-        meeting.createdBy,
-    );
+    if (typeof fetchBoardData !== "function") {
+        throw new Error("Whiteboard owner resolution is unavailable.");
+    }
+    const whiteboard = await fetchBoardData(whiteboardId);
+    if (String(whiteboard?.id ?? "").trim() !== whiteboardId) {
+        throw new Error("The Whiteboard mapping could not be verified.");
+    }
+    const ownerHandle = String(whiteboard?.createdBy ?? "").trim();
+    if (!ownerHandle) {
+        throw new Error("The Whiteboard owner could not be resolved.");
+    }
+    const ownerProfile = await profileStore.getProfileByHandle(ownerHandle);
     if (!ownerProfile?.accountId) {
-        throw new Error("The meeting organizer profile could not be resolved.");
+        throw new Error("The Whiteboard owner profile could not be resolved.");
     }
     const membership = resolveWhiteboardMembership?.();
     if (typeof membership?.[operation] !== "function") {

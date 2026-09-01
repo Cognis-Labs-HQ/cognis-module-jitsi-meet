@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { updateMeetingWhiteboardMembership } from "../reuse/whiteboard-membership.js";
 
-const meeting = { id: "meeting-1", createdBy: "alice" };
+const meeting = { id: "meeting-1", createdBy: "organizer" };
 const profileStore = {
     async getProfileByHandle(handle) {
         return { accountId: `account-${handle}`, handle };
@@ -24,6 +24,10 @@ test("meeting Whiteboard membership uses canonical owner and participant account
         state: { whiteboardId: "board-1", whiteboardDisposable: false },
         userAccountId: "account-bob",
         profileStore,
+        fetchBoardData: async () => ({
+            id: "board-1",
+            createdBy: "alice",
+        }),
         resolveWhiteboardMembership: () => membership,
     };
 
@@ -57,6 +61,9 @@ test("meeting Whiteboard membership ignores absent and disposable canvases", asy
         meeting,
         userAccountId: "account-bob",
         profileStore,
+        fetchBoardData: async () => {
+            throw new Error("Unused for absent and disposable canvases.");
+        },
         resolveWhiteboardMembership: () => {
             resolutions += 1;
         },

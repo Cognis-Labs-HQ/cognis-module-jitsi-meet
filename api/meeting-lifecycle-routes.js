@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { restoreMeetingChatMembership } from "./reuse/chat-membership.js";
 import { requestParticipantAdditionDecision } from "./reuse/participant-approval.js";
 import { requireMeetingWhiteboardMembershipUpdate } from "./reuse/whiteboard-membership.js";
-
 export { deleteDisposableMeeting } from "./disposable-meeting.js";
 import { deleteDisposableMeeting } from "./disposable-meeting.js";
 export function registerMeetingLifecycleRoutes({
@@ -25,6 +24,7 @@ export function registerMeetingLifecycleRoutes({
     resolveGroupChat,
     groupChatMembership,
     resolveWhiteboardMembership,
+    fetchBoardData,
     buildMeetingChatTitle,
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
@@ -40,6 +40,7 @@ export function registerMeetingLifecycleRoutes({
             ...input,
             profileStore,
             resolveWhiteboardMembership,
+            fetchBoardData,
             sendError,
             log,
         });
@@ -704,7 +705,6 @@ export function registerMeetingLifecycleRoutes({
                     organizerUsername: resolved.meeting.createdBy,
                 });
             }
-
             const moderatorUsernames = await resolveModeratorUsernames(
                 resolved.meeting,
                 resolved.participants,
