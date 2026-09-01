@@ -210,6 +210,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 「参加者を検索」は利用可能な参加者の先頭にある疑問符付きプロフィールアバターになりました。参加者見出しを左列へ移動することで、「以前のミーティング」は空いた右上の領域から始まり、ギャラリーの余白を縮小して残っていた縦方向のオーバーフローを解消します。3秒間の削除長押しは専用の可視オーバーレイを使い、一定の不透明度の緑色グラデーションがポインター押下時に始まり、赤へ連続的にアニメーションします。
 
+## 参加者ワークスペースの見出しを再整列
+
+共通の参加者見出しを2列テーブルの上へ戻し、利用可能な参加者と「以前のミーティング」が再び同じ行から始まるようにしました。参加者ペインと「以前のミーティング」列の両方で縦方向のオーバーフローを非表示にし、意図した横方向のミーティングカードスクロールと利用可能な参加者の内部スクロールは維持します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -280,3 +284,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
+- [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)

@@ -659,7 +659,12 @@ test("find participants is the first available-participant avatar", () => {
     );
     assert.match(
         source,
-        /jitsi-available-participants-column[\s\S]*jitsi-participants-header[\s\S]*jitsi-persisted-meetings-column/,
+        /jitsi-participants-header[\s\S]*jitsi-participants-layout[\s\S]*jitsi-available-participants-column[\s\S]*jitsi-persisted-meetings-column/,
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-column \{[\s\S]*overflow-y: hidden/,
     );
 });
 

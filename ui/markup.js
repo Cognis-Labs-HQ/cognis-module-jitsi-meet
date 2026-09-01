@@ -56,11 +56,11 @@ export function buildChatMarkup(i18n) {
 export function buildParticipantsMarkup(i18n) {
     return `
     <section class="jitsi-participants-pane card-elevated">
+      <header class="jitsi-participants-header">
+        <h3>${escapeHtml(i18n.t("module.jitsi_meet.participants.heading"))}</h3>
+      </header>
       <div class="jitsi-participants-layout">
         <div class="jitsi-participants-grid-column jitsi-available-participants-column">
-          <header class="jitsi-participants-header">
-            <h3>${escapeHtml(i18n.t("module.jitsi_meet.participants.heading"))}</h3>
-          </header>
           <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
           <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list">
             <button id="jitsi-find-participants-btn" class="jitsi-find-participants-avatar" type="button" aria-label="${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}" title="${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}">

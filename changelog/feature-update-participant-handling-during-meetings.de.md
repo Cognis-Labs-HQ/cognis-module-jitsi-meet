@@ -262,6 +262,10 @@ Karten früherer Besprechungen umbrechen Avatare jetzt auf ihre tatsächliche In
 
 „Teilnehmer suchen“ ist jetzt ein Profilbild mit Fragezeichen am Anfang der verfügbaren Teilnehmer. Durch das Verschieben der Teilnehmerüberschrift in die linke Spalte beginnen frühere Besprechungen im freigewordenen Bereich oben rechts; verringerte Galerieabstände beseitigen den restlichen vertikalen Überlauf. Der dreisekündige Lösch-Haltevorgang verwendet nun eine eigene sichtbare Einblendung, deren grüner Verlauf mit fester Deckkraft beim Gedrückthalten beginnt und kontinuierlich zu Rot animiert.
 
+## Überschriften des Teilnehmerbereichs neu ausrichten
+
+Die gemeinsame Teilnehmerüberschrift steht wieder über der zweispaltigen Tabelle, sodass „Verfügbare Teilnehmer“ und „Frühere Besprechungen“ erneut in derselben Zeile beginnen. Vertikaler Überlauf wird sowohl im Teilnehmerbereich als auch in der Spalte früherer Besprechungen ausgeblendet; der vorgesehene horizontale Karten-Scroller und das innere Scrollen verfügbarer Teilnehmer bleiben erhalten.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -332,3 +336,4 @@ Karten früherer Besprechungen umbrechen Avatare jetzt auf ihre tatsächliche In
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
+- [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)

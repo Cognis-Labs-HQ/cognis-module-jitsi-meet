@@ -262,6 +262,10 @@ Previous Meeting cards now wrap avatars to their actual content height and align
 
 Find Participants is now a question-mark profile avatar at the start of Available Participants. Moving the Participants heading into the left column lets Previous Meetings start in the reclaimed upper-right space, while reduced gallery padding removes the remaining vertical overflow. The three-second removal hold now uses a dedicated visible overlay whose fixed-opacity green gradient begins on pointer down and animates continuously to red.
 
+## Realign participant workspace headings
+
+The shared Participants heading is restored above the two-column table so Available Participants and Previous Meetings begin on the same row again. Vertical overflow is clipped at both the participant pane and Previous Meetings column while the intended horizontal meeting-card scroller and Available Participants inner scrolling remain available.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -332,3 +336,4 @@ Find Participants is now a question-mark profile avatar at the start of Availabl
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
+- [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)

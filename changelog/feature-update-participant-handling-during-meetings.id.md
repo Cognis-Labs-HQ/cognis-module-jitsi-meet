@@ -210,6 +210,10 @@ Kartu Rapat Sebelumnya kini membungkus avatar sesuai tinggi konten sebenarnya da
 
 Cari Peserta kini berupa avatar profil bertanda tanya di awal Peserta Tersedia. Memindahkan judul Peserta ke kolom kiri membuat Rapat Sebelumnya dimulai di ruang kanan atas yang dibebaskan, sementara pengurangan jarak galeri menghapus sisa luapan vertikal. Penahanan penghapusan tiga detik kini memakai lapisan terlihat khusus; gradien hijau beropasitas tetap dimulai saat penunjuk ditekan dan terus dianimasikan menjadi merah.
 
+## Sejajarkan kembali judul ruang peserta
+
+Judul Peserta bersama dikembalikan ke atas tabel dua kolom sehingga Peserta Tersedia dan Rapat Sebelumnya kembali dimulai pada baris yang sama. Luapan vertikal dipotong pada panel peserta dan kolom Rapat Sebelumnya, sementara penggulir kartu rapat horizontal dan pengguliran internal Peserta Tersedia tetap berfungsi.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -280,3 +284,4 @@ Cari Peserta kini berupa avatar profil bertanda tanya di awal Peserta Tersedia. 
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
+- [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
