@@ -218,6 +218,10 @@ Die gesamte serverseitige Vereinheitlichung von Handles verwendet nun die öffen
 
 Die kanonische Normalisierung der Profilidentität wird auch beim Vergleich verzeichnisgestützter Teilnehmerkennungen angewendet. Dadurch bleibt der Meeting-Zugriff nach einer Änderung des Profil-Handles erhalten, ohne moduleigene Normalisierung erneut einzuführen.
 
+## Aktive Besprechungen ohne Profilkonflikte abfragen
+
+Die passive Suche nach aktiven Besprechungen gibt nun eine erfolgreiche leere Liste zurück, wenn für das authentifizierte Konto noch kein verwendbares Profil-Handle aufgelöst werden kann. Der Auflösungsfehler wird strukturiert protokolliert, während profilabhängige Besprechungsvorgänge weiterhin ein Profil erfordern; dadurch erzeugt die regelmäßige Aktualisierung keine wiederholten 409-Konflikte mehr.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -278,3 +282,4 @@ Die kanonische Normalisierung der Profilidentität wird auch beim Vergleich verz
 - [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
+- [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)

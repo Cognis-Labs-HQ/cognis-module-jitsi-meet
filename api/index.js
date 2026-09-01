@@ -849,6 +849,7 @@ export function registerApiRoutes(router, ctx) {
         readJson,
         sendJson,
         sendError,
+        log,
         checkHttpLiveness,
         LIVELINESS_TIMEOUT_MS,
         resolveShareGuestMeetingAccess,

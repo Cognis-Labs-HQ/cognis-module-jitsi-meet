@@ -218,6 +218,10 @@ All server-side handle canonicalization now uses the public `social:profile:iden
 
 Canonical Profile identity normalization is also applied when comparing directory-backed participant identifiers, preserving meeting access after a profile handle changes without reintroducing module-owned normalization.
 
+## Poll active meetings without profile conflicts
+
+Passive active-meeting discovery now returns a successful empty list when the authenticated account does not yet resolve to a usable profile handle. The resolution failure is logged with structured context while profile-dependent meeting operations continue to require a profile, preventing the periodic refresh from producing repeated 409 conflicts.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -278,3 +282,4 @@ Canonical Profile identity normalization is also applied when comparing director
 - [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
+- [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)

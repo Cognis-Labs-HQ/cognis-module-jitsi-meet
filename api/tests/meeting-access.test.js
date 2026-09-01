@@ -74,7 +74,7 @@ test("resolveMeetingPayloadOrReject reports profile_required instead of throwing
     ]);
 });
 
-test("jitsi meetings active endpoint reports profile_required instead of throwing when the caller has no visible profile handle", async () => {
+test("jitsi meetings active endpoint returns an empty list when the caller has no visible profile handle", async () => {
     class RouterStub {
         routes = [];
         get(routePath, handler) {
@@ -86,6 +86,8 @@ test("jitsi meetings active endpoint reports profile_required instead of throwin
     }
     const router = new RouterStub();
     const sendErrorCalls = [];
+    const sendJsonCalls = [];
+    const logCalls = [];
     const sendError = (res, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
@@ -115,8 +117,11 @@ test("jitsi meetings active endpoint reports profile_required instead of throwin
         filterUsernamesForGuestVisibility: async (usernames) => usernames,
         requireAuth: () => ({ sub: "account-without-profile", role: "user" }),
         readJson: async () => ({}),
-        sendJson: () => {},
+        sendJson: (res, status, payload) => {
+            sendJsonCalls.push({ status, payload });
+        },
         sendError,
+        log: (...args) => logCalls.push(args),
         checkHttpLiveness: async () => true,
         LIVELINESS_TIMEOUT_MS: 5000,
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
@@ -129,13 +134,16 @@ test("jitsi meetings active endpoint reports profile_required instead of throwin
     );
 
     await assert.doesNotReject(() => activeRoute.handler({}, {}));
-    assert.deepEqual(sendErrorCalls, [
+    assert.deepEqual(sendErrorCalls, []);
+    assert.deepEqual(sendJsonCalls, [
         {
-            status: 409,
-            code: "profile_required",
-            message: "A visible profile handle is required to use Meetings.",
+            status: 200,
+            payload: { data: [] },
         },
     ]);
+    assert.equal(logCalls.length, 1);
+    assert.equal(logCalls[0][0], "error");
+    assert.equal(logCalls[0][2].operation, "list_active_meetings");
 });
 
 test("LDAP participants retain meeting access when their profile handle changes", async () => {

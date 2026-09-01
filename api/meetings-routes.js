@@ -14,6 +14,7 @@ export function registerMeetingRoutes({
     readJson,
     sendJson,
     sendError,
+    log,
     checkHttpLiveness,
     LIVELINESS_TIMEOUT_MS,
     resolveShareGuestMeetingAccess,
@@ -254,10 +255,25 @@ export function registerMeetingRoutes({
                 profileStore,
                 claims.sub,
             ).catch((error) => {
-                sendError(res, 409, "profile_required", error.message);
+                log?.(
+                    "error",
+                    "Active meeting discovery skipped because the requester profile could not be resolved.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation: "list_active_meetings",
+                        accountId: claims.sub,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
                 return null;
             });
-            if (!requesterUsername) return;
+            if (!requesterUsername) {
+                sendJson(res, 200, { data: [] });
+                return;
+            }
             const activeMeetings = await store.listActiveMeetings();
             const visibleMeetings = [];
             for (const activeMeeting of activeMeetings) {

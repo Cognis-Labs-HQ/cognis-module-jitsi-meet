@@ -166,6 +166,10 @@ Seluruh kanonisasi handle di sisi server kini menggunakan kapabilitas publik `so
 
 Normalisasi identitas Profile yang kanonis juga diterapkan saat membandingkan pengenal peserta berbasis direktori, sehingga akses rapat tetap ada setelah handle profil berubah tanpa memperkenalkan kembali normalisasi milik modul.
 
+## Polling rapat aktif tanpa konflik profil
+
+Penemuan rapat aktif pasif kini mengembalikan daftar kosong yang berhasil ketika akun terautentikasi belum dapat diselesaikan menjadi handle profil yang dapat digunakan. Kegagalan penyelesaian dicatat dengan konteks terstruktur sementara operasi rapat yang bergantung pada profil tetap memerlukan profil, sehingga penyegaran berkala tidak lagi menghasilkan konflik 409 berulang.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -226,3 +230,4 @@ Normalisasi identitas Profile yang kanonis juga diterapkan saat membandingkan pe
 - [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
+- [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)

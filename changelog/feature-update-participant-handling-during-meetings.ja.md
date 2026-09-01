@@ -166,6 +166,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 ディレクトリ由来の参加者識別子を比較するときも正規の Profile identity 正規化を適用し、モジュール独自の正規化を再導入せずに、プロフィールハンドル変更後のミーティングアクセスを維持します。
 
+## プロファイル競合なしで進行中ミーティングをポーリング
+
+認証済みアカウントから使用可能なプロファイルハンドルをまだ解決できない場合、進行中ミーティングの受動的な検索は成功した空の一覧を返すようになりました。解決エラーは構造化されたコンテキストとともに記録し、プロファイル依存のミーティング操作では引き続きプロファイルを必須とすることで、定期更新による 409 競合の繰り返しを防ぎます。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -226,3 +230,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
 - [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
 - [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
+- [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
