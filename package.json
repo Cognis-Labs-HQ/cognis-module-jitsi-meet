@@ -1,6 +1,6 @@
 {
     "name": "@cognis/module-jitsi-meet",
-    "version": "1.5.129",
+    "version": "1.5.130",
     "private": false,
     "type": "module",
     "scripts": {

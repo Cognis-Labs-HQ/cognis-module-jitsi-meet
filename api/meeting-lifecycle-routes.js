@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { restoreMeetingChatMembership } from "./reuse/chat-membership.js";
+import { requestParticipantAdditionDecision } from "./reuse/participant-approval.js";
 import { requireMeetingWhiteboardMembershipUpdate } from "./reuse/whiteboard-membership.js";
 
 export { deleteDisposableMeeting } from "./disposable-meeting.js";
@@ -152,7 +153,6 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: meeting.id,
                 organizerUsername: meeting.createdBy,
             });
-
             sendJson(res, 200, {
                 data: {
                     ...payload,
@@ -263,12 +263,17 @@ export function registerMeetingLifecycleRoutes({
                 });
                 return;
             }
-            const approval = await requestParticipantAdditionApproval?.({
+            const approval = await requestParticipantAdditionDecision({
+                store,
                 meetingId: resolved.meeting.id,
-                meetingName: resolved.meeting.meetingName,
-                participantUsername: username,
-                requesterAccountId: claims.sub,
-                requesterDisplayName: resolved.requesterUsername,
+                requestApproval: requestParticipantAdditionApproval,
+                approvalInput: {
+                    meetingId: resolved.meeting.id,
+                    meetingName: resolved.meeting.meetingName,
+                    participantUsername: username,
+                    requesterAccountId: claims.sub,
+                    requesterDisplayName: resolved.requesterUsername,
+                },
             });
             if (approval?.approved === false) {
                 sendError(
@@ -604,7 +609,6 @@ export function registerMeetingLifecycleRoutes({
                 });
                 return;
             }
-
             const resolved = await resolveMeetingPayload({
                 body,
                 profileStore,
@@ -616,13 +620,11 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
-
             const sessionId = String(body.sessionId ?? "").trim();
             if (!sessionId) {
                 sendError(res, 400, "bad_request", "sessionId is required.");
                 return;
             }
-
             try {
                 await restoreMeetingChatMembership({
                     meeting: resolved.meeting,
@@ -639,7 +641,6 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-
             const conflictingSessions = await store.getActiveSessionsForUser(
                 resolved.meeting.id,
                 resolved.requesterUsername,
@@ -647,7 +648,6 @@ export function registerMeetingLifecycleRoutes({
             );
             const requiresReclaim =
                 !resolved.state.endedAt && conflictingSessions.length > 0;
-
             await store.upsertPresence(
                 resolved.meeting.id,
                 resolved.requesterUsername,

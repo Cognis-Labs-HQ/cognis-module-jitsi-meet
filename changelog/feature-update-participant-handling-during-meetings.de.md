@@ -202,6 +202,10 @@ Bei jedem authentifizierten Meeting-Beitritt wird nun vor dem Laden des Chats di
 
 Beim Hinzufügen und Entfernen aktiver Teilnehmer werden dauerhafte Arbeitsflächen nun vor dem Speichern des Meeting-Teilnehmerkreises über `whiteboard:membership` mit kanonischen Konto-IDs für Organisator und Teilnehmer aktualisiert. Die frühere browserseitige zusammengefasste Zugriffserweiterung wird nicht mehr verwendet.
 
+## Einladungen bei einem einzelnen Teilnehmer automatisch genehmigen
+
+Wenn höchstens ein Teilnehmer aktiv anwesend ist, wird das Hinzufügen eines weiteren Teilnehmers nun sofort genehmigt, statt auf die Zustimmung bereits abwesender Personen zu warten. Bei Meetings mit mehreren aktiven Teilnehmern wird weiterhin die Share-Genehmigungsentscheidung verwendet.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -257,3 +261,4 @@ Beim Hinzufügen und Entfernen aktiver Teilnehmer werden dauerhafte Arbeitsfläc
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
+- [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)

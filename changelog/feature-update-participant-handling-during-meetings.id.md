@@ -150,6 +150,10 @@ Setiap peserta terautentikasi yang bergabung ke rapat kini menjalankan kembali o
 
 Penambahan dan penghapusan peserta aktif kini memperbarui kanvas persisten melalui `whiteboard:membership` dengan ID akun penyelenggara dan peserta yang kanonis sebelum daftar peserta rapat disimpan. Perluasan akses agregat lama di sisi browser tidak lagi digunakan.
 
+## Setujui undangan secara otomatis untuk satu peserta
+
+Jika paling banyak satu peserta yang aktif hadir, penambahan peserta lain kini langsung disetujui tanpa menunggu konsensus dari pengguna yang sudah keluar. Rapat dengan beberapa peserta aktif tetap menggunakan keputusan persetujuan Share.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -205,3 +209,4 @@ Penambahan dan penghapusan peserta aktif kini memperbarui kanvas persisten melal
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
+- [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)

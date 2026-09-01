@@ -203,6 +203,12 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             async listReservedParticipantUsernames() {
                 return [];
             },
+            async listPresence() {
+                return [{ username: "alice" }, { username: "bob" }];
+            },
+            filterCurrentPresenceEntries(presence) {
+                return presence;
+            },
         },
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
         readJson: async (req) => req.body,

@@ -150,6 +150,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 進行中の参加者を追加または削除するときは、ミーティング参加者一覧を保存する前に、正規の主催者および参加者アカウント ID を指定して `whiteboard:membership` で永続キャンバスを更新します。従来のブラウザー側の一括アクセス拡張は使用しません。
 
+## 参加者が 1 人の場合は招待を自動承認
+
+実際に参加中のユーザーが 1 人以下の場合、退出済みユーザーの合意を待たずに新しい参加者の追加を直ちに承認します。複数の参加者が実際に参加中のミーティングでは、引き続き Share の承認結果を使用します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -205,3 +209,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
+- [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
