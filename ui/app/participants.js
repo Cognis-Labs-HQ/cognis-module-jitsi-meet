@@ -94,7 +94,8 @@ export function createPreflightHandlers({
         const findButton = root.querySelector("#jitsi-find-participants-btn");
         if (
             !(availablePool instanceof HTMLElement) ||
-            !(stagedArea instanceof HTMLElement)
+            !(stagedArea instanceof HTMLElement) ||
+            !(findButton instanceof HTMLButtonElement)
         ) {
             return;
         }
@@ -106,9 +107,10 @@ export function createPreflightHandlers({
             emptyMessage.textContent = i18n.t(
                 "module.jitsi_meet.participants.available_none",
             );
-            availablePool.replaceChildren(emptyMessage);
+            availablePool.replaceChildren(findButton, emptyMessage);
         } else {
             availablePool.replaceChildren(
+                findButton,
                 ...state.availableParticipants.map((entry) =>
                     createParticipantAvatarEl(entry),
                 ),

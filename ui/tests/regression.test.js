@@ -75,6 +75,7 @@ test("previous meeting cards restore the stage and support confirmed long-press 
     assert.match(source, /id: "remove"[\s\S]*variant: "cancel"/);
     assert.match(source, /id: "cancel"[\s\S]*variant: "neutral"/);
     assert.match(source, /response\.ok \? "info" : "error"/);
+    assert.match(styles, /hue-rotate\(218deg\) saturate\(1\.2\)/);
     assert.match(
         styles,
         /\.jitsi-persisted-meeting-card \{[\s\S]*?height: max-content;/,
@@ -650,11 +651,15 @@ test("reclaim session button uses success outline styling", () => {
     );
 });
 
-test("find participants button uses confirm styling", () => {
+test("find participants is the first available-participant avatar", () => {
     const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     assert.match(
         source,
-        /id="jitsi-find-participants-btn" class="btn-confirm"/,
+        /id="jitsi-available-participants"[\s\S]*id="jitsi-find-participants-btn" class="jitsi-find-participants-avatar"[\s\S]*<svg[\s\S]*<path/,
+    );
+    assert.match(
+        source,
+        /jitsi-available-participants-column[\s\S]*jitsi-participants-header[\s\S]*jitsi-persisted-meetings-column/,
     );
 });
 

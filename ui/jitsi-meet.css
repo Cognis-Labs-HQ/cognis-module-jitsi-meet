@@ -440,7 +440,45 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.15rem;
+}
+
+.jitsi-route-root .jitsi-find-participants-avatar {
+    display: grid;
+    flex: 0 0 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.55rem;
+    border: 1px dashed color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 999px;
+    background: color-mix(
+        in srgb,
+        var(--color-success, #22c55e) 12%,
+        transparent
+    );
+    color: var(--color-success, #22c55e);
+    cursor: pointer;
+    place-items: center;
+}
+
+.jitsi-route-root .jitsi-find-participants-avatar:hover,
+.jitsi-route-root .jitsi-find-participants-avatar:focus-visible {
+    background: color-mix(
+        in srgb,
+        var(--color-success, #22c55e) 22%,
+        transparent
+    );
+    border-style: solid;
+}
+
+.jitsi-route-root .jitsi-find-participants-avatar svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
 }
 
 .jitsi-route-root .jitsi-participants-pool-label {
@@ -488,7 +526,7 @@
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    padding: 0.2rem 0 0.55rem;
+    padding: 0.1rem 0 0.25rem;
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-inline: contain;
@@ -527,28 +565,41 @@
 }
 
 .jitsi-route-root .jitsi-persisted-meeting-card-holding {
-    background-image: linear-gradient(
-        135deg,
-        color-mix(
-            in srgb,
-            var(--module-jitsi-meet-card-hold-color) 24%,
-            transparent
-        ),
-        color-mix(
-            in srgb,
-            var(--module-jitsi-meet-card-hold-color) 16%,
-            transparent
-        )
+    border-color: color-mix(
+        in srgb,
+        var(--color-success, #22c55e) 72%,
+        transparent
     );
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-holding::after,
+.jitsi-route-root .jitsi-persisted-meeting-card-held::after {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        rgba(34, 197, 94, 0.24),
+        rgba(34, 197, 94, 0.16)
+    );
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-holding::after {
     animation: module-jitsi-meet-card-removal-hold 3s linear forwards;
 }
 
 .jitsi-route-root .jitsi-persisted-meeting-card-held {
     border-color: var(--color-danger, #dc2626);
-    background-image: linear-gradient(
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-held::after {
+    background: linear-gradient(
         135deg,
-        color-mix(in srgb, var(--color-danger, #dc2626) 24%, transparent),
-        color-mix(in srgb, var(--color-danger, #dc2626) 16%, transparent)
+        rgba(220, 38, 38, 0.24),
+        rgba(220, 38, 38, 0.16)
     );
 }
 
@@ -616,12 +667,6 @@
     initial-value: 0deg;
 }
 
-@property --module-jitsi-meet-card-hold-color {
-    syntax: "<color>";
-    inherits: false;
-    initial-value: #22c55e;
-}
-
 @keyframes module-jitsi-meet-active-card-border {
     to {
         --module-jitsi-meet-card-border-angle: 360deg;
@@ -629,11 +674,8 @@
 }
 
 @keyframes module-jitsi-meet-card-removal-hold {
-    0% {
-        --module-jitsi-meet-card-hold-color: var(--color-success, #22c55e);
-    }
-    100% {
-        --module-jitsi-meet-card-hold-color: var(--color-danger, #dc2626);
+    to {
+        filter: hue-rotate(218deg) saturate(1.2);
     }
 }
 

@@ -206,6 +206,10 @@ Panel Peserta kini menyebut kartu ringkas ini “Rapat Sebelumnya”. Mengklik k
 
 Kartu Rapat Sebelumnya kini membungkus avatar sesuai tinggi konten sebenarnya dan merapat ke bagian atas galeri horizontal sehingga luapan vertikal yang tidak perlu hilang. Rapat aktif memakai segmen hijau aplikasi bertopeng yang hanya bergerak mengelilingi batas. Penahanan untuk menghapus langsung memulai gradien hijau-ke-merah yang halus dengan opasitas tetap; popup memakai perlakuan batal untuk Hapus dan netral untuk Batal, sedangkan penghapusan berhasil memakai toast informasi.
 
+## Ringkas penemuan peserta dan riwayat rapat
+
+Cari Peserta kini berupa avatar profil bertanda tanya di awal Peserta Tersedia. Memindahkan judul Peserta ke kolom kiri membuat Rapat Sebelumnya dimulai di ruang kanan atas yang dibebaskan, sementara pengurangan jarak galeri menghapus sisa luapan vertikal. Penahanan penghapusan tiga detik kini memakai lapisan terlihat khusus; gradien hijau beropasitas tetap dimulai saat penunjuk ditekan dan terus dianimasikan menjadi merah.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -275,3 +279,4 @@ Kartu Rapat Sebelumnya kini membungkus avatar sesuai tinggi konten sebenarnya da
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
 - [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
 - [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
+- [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
