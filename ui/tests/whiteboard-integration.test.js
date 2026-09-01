@@ -77,13 +77,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.match(buttonSource, /whiteboard\/availability/);
-    assert.match(buttonSource, /expandCanvasAccess/);
-    assert.match(buttonSource, /result\?\.whiteboardId/);
-    assert.match(buttonSource, /result\?\.participants/);
-    assert.match(
-        buttonSource,
-        /whiteboard_participant_access_invalid_response/,
-    );
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);

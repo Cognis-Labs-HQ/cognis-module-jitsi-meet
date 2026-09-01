@@ -146,6 +146,10 @@ Undangan rapat aktif dan penghapusan peserta kini menggunakan kapabilitas terpad
 
 Setiap peserta terautentikasi yang bergabung ke rapat kini menjalankan kembali operasi keanggotaan Messages yang idempoten sebelum chat dimuat. Peserta yang sebelumnya meninggalkan atau mengarsipkan chat rapat dapat melihatnya kembali setelah bergabung kembali ke rapat.
 
+## Gunakan operasi keanggotaan Whiteboard yang kanonis
+
+Penambahan dan penghapusan peserta aktif kini memperbarui kanvas persisten melalui `whiteboard:membership` dengan ID akun penyelenggara dan peserta yang kanonis sebelum daftar peserta rapat disimpan. Perluasan akses agregat lama di sisi browser tidak lagi digunakan.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -200,3 +204,4 @@ Setiap peserta terautentikasi yang bergabung ke rapat kini menjalankan kembali o
 - [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
+- [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)

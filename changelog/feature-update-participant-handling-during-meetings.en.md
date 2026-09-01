@@ -198,6 +198,10 @@ Active meeting invitations and participant removals now use the unified `social:
 
 Every authenticated meeting join now re-applies the idempotent Messages membership operation before loading chat. A participant who previously left or archived the meeting chat can therefore see it again after rejoining the meeting.
 
+## Use canonical Whiteboard membership operations
+
+Active participant additions and removals now update persistent canvases through `whiteboard:membership` with canonical organizer and participant account IDs before committing the meeting roster. The former browser-side aggregate access expansion is no longer used.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -252,3 +256,4 @@ Every authenticated meeting join now re-applies the idempotent Messages membersh
 - [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
+- [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)

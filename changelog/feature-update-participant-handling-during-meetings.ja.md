@@ -146,6 +146,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 認証済みユーザーがミーティングへ参加するたびに、チャットを読み込む前に冪等な Messages メンバーシップ操作を再適用します。以前ミーティングチャットを退出またはアーカイブした参加者も、ミーティングへ再参加するとチャットを再び表示できます。
 
+## 正規の Whiteboard メンバーシップ操作を使用
+
+進行中の参加者を追加または削除するときは、ミーティング参加者一覧を保存する前に、正規の主催者および参加者アカウント ID を指定して `whiteboard:membership` で永続キャンバスを更新します。従来のブラウザー側の一括アクセス拡張は使用しません。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -200,3 +204,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
 
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
+- [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)

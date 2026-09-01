@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { restoreMeetingChatMembership } from "./reuse/chat-membership.js";
+import { requireMeetingWhiteboardMembershipUpdate } from "./reuse/whiteboard-membership.js";
 
 export { deleteDisposableMeeting } from "./disposable-meeting.js";
 import { deleteDisposableMeeting } from "./disposable-meeting.js";
@@ -21,6 +23,7 @@ export function registerMeetingLifecycleRoutes({
     canAccessMeeting,
     resolveGroupChat,
     groupChatMembership,
+    resolveWhiteboardMembership,
     buildMeetingChatTitle,
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
@@ -30,13 +33,20 @@ export function registerMeetingLifecycleRoutes({
     requestParticipantAdditionApproval,
     log,
 }) {
+    const updateWhiteboardMember = (input) =>
+        requireMeetingWhiteboardMembershipUpdate({
+            ...input,
+            profileStore,
+            resolveWhiteboardMembership,
+            sendError,
+            log,
+        });
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
         async (req, res) => {
             await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-
             const body = await readJson(req);
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
@@ -46,7 +56,6 @@ export function registerMeetingLifecycleRoutes({
                 return null;
             });
             if (!requesterUsername) return;
-
             const requestedParticipants = await resolveRequestedParticipants(
                 profileStore,
                 body.participants,
@@ -57,7 +66,6 @@ export function registerMeetingLifecycleRoutes({
                 classroomId: body.classroomId,
                 creatorUsername: requesterUsername,
             });
-
             if (normalizedInput.participantUsernames.length < 1) {
                 sendError(
                     res,
@@ -67,7 +75,6 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-
             const config = await store.getConfig();
             if (!config.instanceUrl) {
                 sendError(
@@ -78,7 +85,6 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-
             let meeting = await store.createMeeting({
                 instanceUrl: config.instanceUrl,
                 usernames: normalizedInput.participantUsernames,
@@ -132,7 +138,6 @@ export function registerMeetingLifecycleRoutes({
                         : null),
                 requiresReclaim: false,
             });
-
             const addedParticipantUsernames = participants.filter(
                 (username) => username !== requesterUsername,
             );
@@ -355,6 +360,17 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
+            if (
+                !(await updateWhiteboardMember({
+                    operation: "add",
+                    meeting: resolved.meeting,
+                    state: resolved.state,
+                    userAccountId: participantProfile.accountId,
+                    response: res,
+                    logOperation: "add_active_meeting_participant_whiteboard",
+                }))
+            )
+                return;
             const meeting = await store.addMeetingParticipant(
                 resolved.meeting.id,
                 username,
@@ -497,6 +513,18 @@ export function registerMeetingLifecycleRoutes({
                     return;
                 }
             }
+            if (
+                !(await updateWhiteboardMember({
+                    operation: "remove",
+                    meeting: resolved.meeting,
+                    state: resolved.state,
+                    userAccountId: claims.sub,
+                    response: res,
+                    logOperation:
+                        "remove_kicked_meeting_participant_whiteboard",
+                }))
+            )
+                return;
             await store.removeMeetingParticipant(
                 resolved.meeting.id,
                 resolved.requesterUsername,
@@ -595,33 +623,21 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
 
-            if (resolved.meeting.chatRoomId) {
-                try {
-                    await groupChatMembership.add({
-                        roomId: resolved.meeting.chatRoomId,
-                        actorAccountId: claims.sub,
-                        userAccountId: claims.sub,
-                    });
-                } catch (error) {
-                    log?.("error", "Meeting chat membership restore failed.", {
-                        component: "jitsi-meet-module",
-                        operation: "restore_joining_participant_chat",
-                        meetingId: resolved.meeting.id,
-                        chatRoomId: resolved.meeting.chatRoomId,
-                        userAccountId: claims.sub,
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    });
-                    sendError(
-                        res,
-                        503,
-                        "chat_membership_unavailable",
-                        "Meeting chat access could not be restored.",
-                    );
-                    return;
-                }
+            try {
+                await restoreMeetingChatMembership({
+                    meeting: resolved.meeting,
+                    userAccountId: claims.sub,
+                    groupChatMembership,
+                    log,
+                });
+            } catch {
+                sendError(
+                    res,
+                    503,
+                    "chat_membership_unavailable",
+                    "Meeting chat access could not be restored.",
+                );
+                return;
             }
 
             const conflictingSessions = await store.getActiveSessionsForUser(
@@ -720,7 +736,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/chat-room-summary",
         async (req, res) => {
@@ -804,7 +819,6 @@ export function registerMeetingLifecycleRoutes({
         },
         { access: { minRole: "user" } },
     );
-
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/presence",
         async (req, res) => {

@@ -690,6 +690,9 @@ export function registerApiRoutes(router, ctx) {
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
         groupChatMembership,
+        resolveWhiteboardMembership: () =>
+            systemCtx?.getCapability?.("whiteboard:membership") ??
+            ctx.getCapability("whiteboard:membership"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
