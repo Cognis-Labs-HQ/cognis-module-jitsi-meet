@@ -57,8 +57,14 @@
   <string name="module.jitsi_meet.participants.search">Teilnehmer Suchen</string>
   <string name="module.jitsi_meet.participants.available">Verfügbare Teilnehmer</string>
   <string name="module.jitsi_meet.participants.active_meetings">Aktive Meetings</string>
-  <string name="module.jitsi_meet.participants.persisted_meetings">Dauerhafte Besprechungen</string>
-  <string name="module.jitsi_meet.participants.persisted_none">Keine dauerhaften Besprechungen.</string>
+  <string name="module.jitsi_meet.participants.persisted_meetings">Frühere Besprechungen</string>
+  <string name="module.jitsi_meet.participants.persisted_none">Keine früheren Besprechungen.</string>
+  <string name="module.jitsi_meet.participants.previous_select">Diese Besprechung auswählen</string>
+  <string name="module.jitsi_meet.participants.previous_remove_title">Besprechung entfernen</string>
+  <string name="module.jitsi_meet.participants.previous_remove_body">Diese Besprechung entfernen?</string>
+  <string name="module.jitsi_meet.participants.previous_remove_confirm">Entfernen</string>
+  <string name="module.jitsi_meet.participants.previous_remove_success">Du bist nicht mehr Mitglied dieser Besprechung.</string>
+  <string name="module.jitsi_meet.participants.previous_remove_failed">Die Besprechung konnte nicht entfernt werden.</string>
   <string name="module.jitsi_meet.participants.active_loading">Aktive Meetings werden geladen...</string>
   <string name="module.jitsi_meet.participants.active_none">Keine aktiven Meetings.</string>
   <string name="module.jitsi_meet.participants.selected">Meeting-Teilnehmer</string>

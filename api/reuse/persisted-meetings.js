@@ -14,7 +14,6 @@ export async function listPersistedMeetings({
         const id = String(row.id ?? "").trim();
         if (!id) continue;
         const participants = await listParticipants(id);
-        if (participants.length <= 1) continue;
         const meeting = await getMeetingById(id);
         if (meeting?.meetingUrl && meeting.meetingName) {
             meetings.push({ ...meeting, participants });

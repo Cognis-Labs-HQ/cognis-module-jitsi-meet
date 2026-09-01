@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { listPersistedMeetings } from "../reuse/persisted-meetings.js";
 
-test("persisted meeting discovery excludes disposable records", async () => {
+test("persisted meeting discovery retains the final member's meeting", async () => {
     const participantsByMeeting = new Map([
         ["persistent", ["alice", "bob"]],
         ["disposable", ["alice"]],
@@ -29,6 +29,12 @@ test("persisted meeting discovery excludes disposable records", async () => {
             meetingName: "Meeting persistent",
             meetingUrl: "https://meet.example/persistent",
             participants: ["alice", "bob"],
+        },
+        {
+            id: "disposable",
+            meetingName: "Meeting disposable",
+            meetingUrl: "https://meet.example/disposable",
+            participants: ["alice"],
         },
     ]);
 });

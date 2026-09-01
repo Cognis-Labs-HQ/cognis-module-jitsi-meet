@@ -27,6 +27,7 @@ import {
     resolveShareGuestPresenceUsername,
 } from "./reuse/meeting-access.js";
 import { listPersistedMeetings } from "./reuse/persisted-meetings.js";
+import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
@@ -739,6 +740,9 @@ export function registerApiRoutes(router, ctx) {
             systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),
         fetchBoardData,
+        resolveWhiteboardDeletion: () =>
+            systemCtx?.getCapability?.("whiteboard:deleteCanvas") ??
+            ctx.getCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
@@ -828,6 +832,7 @@ export function registerApiRoutes(router, ctx) {
     registerMeetingConfigRoutes(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
+    registerPersistedMeetingRoutes(routeContext);
     registerMeetingWhiteboardRoutes({
         ...routeContext,
         ctx,

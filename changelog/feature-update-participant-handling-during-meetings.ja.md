@@ -198,6 +198,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者ワークスペースの左側約30%を、縦スクロール可能な既知ユーザー選択に使用し、右側約70%を、現在のアカウントが参加する永続ミーティングの横スクロールギャラリーに使用するようになりました。各ショートカードは安定したミーティング名を上部中央に置き、標準プロファイルアバターを最大10人まで軽く重なるように配置します。Cognis が進行中と判断したミーティングではアプリグリーンの光が縁を周回し、参加者のいない破棄可能ミーティングはギャラリーから除外します。
 
+## 以前のミーティングを再利用または退出
+
+参加者ペインでは、コンパクトなカードを「以前のミーティング」と表示します。カードをクリックするとメンバーをステージへ復元して「ミーティングを開始」までスクロールします。3秒間長押しするとハイライトが緑から赤へ変わり、退出の確認を表示します。最後のメンバーが退出すると、保存済みミーティング、Messages チャット、関連付けられた Whiteboard を削除します。残り1人のミーティングも、そのメンバーがクリーンアップを完了できるよう一覧に残ります。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -265,3 +269,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
+- [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)

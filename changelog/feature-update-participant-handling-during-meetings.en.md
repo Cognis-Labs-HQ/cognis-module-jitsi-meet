@@ -250,6 +250,10 @@ Find Participants now passes Cognis core’s supported `user` result filter so o
 
 The Participants workspace now uses roughly 30% on the left for vertically scrollable known-user selection and roughly 70% on the right for a horizontally scrollable gallery of persistent meetings containing the current account. Each short card centers its stable meeting name at the top and distributes up to ten standard profile avatars with slight overlap. Meetings Cognis considers active receive an orbiting app-green edge light, while participant-free disposable meetings are excluded from the gallery.
 
+## Reuse or leave previous meetings
+
+The Participants pane now calls these compact cards “Previous Meetings.” Clicking a card restores its members to the stage and scrolls to Start Meeting. Holding it for three seconds transitions the highlight from green to red before asking for confirmation to leave. The final departure deletes the stored meeting and its Messages chat and mapped Whiteboard; meetings with one remaining member stay discoverable so that member can complete cleanup.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -317,3 +321,4 @@ The Participants workspace now uses roughly 30% on the left for vertically scrol
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
+- [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)

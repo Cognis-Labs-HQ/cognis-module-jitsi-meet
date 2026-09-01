@@ -56,6 +56,24 @@ test("meeting chat polling respects cancelled keyring access", () => {
     );
 });
 
+test("previous meeting cards restore the stage and support confirmed long-press removal", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(source, /function selectPersistedMeeting\(meeting\)/);
+    assert.match(source, /scrollIntoView\(\{[\s\S]*behavior: "smooth"/);
+    assert.match(source, /persisted\/leave/);
+    assert.match(source, /setTimeout\([\s\S]*3000\)/);
+    assert.match(styles, /module-jitsi-meet-card-removal-hold 3s linear/);
+    assert.match(
+        styles,
+        /\.jitsi-persisted-meeting-card \{[\s\S]*?height: max-content;/,
+    );
+});
+
 test("meeting share joins use the scoped guest access token", () => {
     const source = readFileSync(
         resolve(ROOT, "ui/app/meeting-room.js"),

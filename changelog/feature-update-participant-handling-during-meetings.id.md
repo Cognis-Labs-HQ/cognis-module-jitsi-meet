@@ -198,6 +198,10 @@ Cari Peserta kini meneruskan filter hasil `user` yang didukung Cognis core sehin
 
 Ruang kerja Peserta kini menggunakan sekitar 30% di kiri untuk pemilihan pengguna dikenal yang dapat digulir vertikal dan sekitar 70% di kanan untuk galeri rapat persisten yang memuat akun saat ini dan dapat digulir horizontal. Setiap kartu pendek memusatkan nama rapat stabil di atas dan menyebarkan hingga sepuluh avatar profil standar dengan sedikit tumpang tindih. Rapat yang dianggap aktif oleh Cognis memperoleh cahaya tepi hijau aplikasi yang mengorbit, sedangkan rapat sekali pakai tanpa peserta tidak dimasukkan ke galeri.
 
+## Gunakan kembali atau tinggalkan rapat sebelumnya
+
+Panel Peserta kini menyebut kartu ringkas ini “Rapat Sebelumnya”. Mengklik kartu memulihkan anggotanya ke panggung dan menggulir ke Mulai Rapat. Menahannya selama tiga detik mengubah sorotan dari hijau menjadi merah sebelum meminta konfirmasi untuk keluar. Kepergian terakhir menghapus rapat tersimpan beserta chat Messages dan Whiteboard terkait; rapat dengan satu anggota tersisa tetap dapat ditemukan agar anggota tersebut dapat menyelesaikan pembersihan.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -265,3 +269,4 @@ Ruang kerja Peserta kini menggunakan sekitar 30% di kiri untuk pemilihan penggun
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
+- [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)

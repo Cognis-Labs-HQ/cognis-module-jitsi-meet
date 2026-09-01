@@ -57,8 +57,14 @@
   <string name="module.jitsi_meet.participants.search">参加者を検索</string>
   <string name="module.jitsi_meet.participants.available">利用可能な参加者</string>
   <string name="module.jitsi_meet.participants.active_meetings">アクティブなミーティング</string>
-  <string name="module.jitsi_meet.participants.persisted_meetings">永続ミーティング</string>
-  <string name="module.jitsi_meet.participants.persisted_none">永続ミーティングはありません。</string>
+  <string name="module.jitsi_meet.participants.persisted_meetings">以前のミーティング</string>
+  <string name="module.jitsi_meet.participants.persisted_none">以前のミーティングはありません。</string>
+  <string name="module.jitsi_meet.participants.previous_select">このミーティングを選択</string>
+  <string name="module.jitsi_meet.participants.previous_remove_title">ミーティングを削除</string>
+  <string name="module.jitsi_meet.participants.previous_remove_body">このミーティングを削除しますか？</string>
+  <string name="module.jitsi_meet.participants.previous_remove_confirm">削除</string>
+  <string name="module.jitsi_meet.participants.previous_remove_success">このミーティングのメンバーではなくなりました。</string>
+  <string name="module.jitsi_meet.participants.previous_remove_failed">ミーティングを削除できませんでした。</string>
   <string name="module.jitsi_meet.participants.active_loading">アクティブなミーティングを読み込み中...</string>
   <string name="module.jitsi_meet.participants.active_none">アクティブなミーティングはありません。</string>
   <string name="module.jitsi_meet.participants.selected">ミーティング参加者</string>

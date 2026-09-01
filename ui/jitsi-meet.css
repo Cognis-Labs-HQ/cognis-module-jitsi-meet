@@ -487,7 +487,6 @@
 .jitsi-route-root .jitsi-persisted-meetings {
     display: flex;
     gap: 0.75rem;
-    min-height: 10rem;
     padding: 0.2rem 0 0.55rem;
     overflow-x: auto;
     overflow-y: hidden;
@@ -499,13 +498,41 @@
     position: relative;
     isolation: isolate;
     flex: 0 0 15rem;
-    min-height: 8.5rem;
+    height: max-content;
     padding: 0.7rem;
     overflow: hidden;
     border: 1px solid var(--color-border, var(--border));
     border-radius: 0.85rem;
     background: var(--color-surface-elevated);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    text-align: initial;
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease;
     scroll-snap-align: start;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card:hover,
+.jitsi-route-root .jitsi-persisted-meeting-card:focus-visible {
+    border-color: color-mix(
+        in srgb,
+        var(--color-success, #22c55e) 72%,
+        transparent
+    );
+    box-shadow: inset 0 0 0 100vmax
+        color-mix(in srgb, var(--color-success, #22c55e) 10%, transparent);
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-holding {
+    animation: module-jitsi-meet-card-removal-hold 3s linear forwards;
+}
+
+.jitsi-route-root .jitsi-persisted-meeting-card-held {
+    border-color: var(--color-danger, #dc2626);
+    box-shadow: inset 0 0 0 100vmax
+        color-mix(in srgb, var(--color-danger, #dc2626) 42%, transparent);
 }
 
 .jitsi-route-root .jitsi-persisted-meeting-card-active::before {
@@ -607,6 +634,25 @@
 @keyframes module-jitsi-meet-active-card-orbit {
     to {
         transform: rotate(1turn);
+    }
+}
+
+@keyframes module-jitsi-meet-card-removal-hold {
+    0% {
+        box-shadow: inset 0 0 0 100vmax
+            color-mix(in srgb, var(--color-success, #22c55e) 8%, transparent);
+    }
+    66% {
+        box-shadow: inset 0 0 0 100vmax
+            color-mix(in srgb, var(--color-success, #22c55e) 24%, transparent);
+    }
+    67% {
+        box-shadow: inset 0 0 0 100vmax
+            color-mix(in srgb, var(--color-danger, #dc2626) 24%, transparent);
+    }
+    100% {
+        box-shadow: inset 0 0 0 100vmax
+            color-mix(in srgb, var(--color-danger, #dc2626) 42%, transparent);
     }
 }
 

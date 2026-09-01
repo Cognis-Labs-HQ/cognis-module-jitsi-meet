@@ -250,6 +250,10 @@ Beim Erstellen einer Besprechung sucht Meetings nun zusätzlich anhand des volls
 
 Der Teilnehmerbereich verwendet nun links etwa 30 Prozent für die vertikal scrollbare Auswahl bekannter Benutzer und rechts etwa 70 Prozent für eine horizontal scrollbare Galerie dauerhafter Besprechungen, an denen das aktuelle Konto teilnimmt. Jede kurze Karte zeigt den stabilen Besprechungsnamen oben zentriert und verteilt bis zu zehn Standard-Profilbilder mit leichter Überlappung. Von Cognis als aktiv erkannte Besprechungen erhalten ein umlaufendes app-grünes Kantenlicht; teilnehmerlose verwerfbare Besprechungen erscheinen nicht in der Galerie.
 
+## Frühere Besprechungen wiederverwenden oder verlassen
+
+Der Teilnehmerbereich nennt diese kompakten Karten jetzt „Frühere Besprechungen“. Ein Klick stellt ihre Mitglieder auf der Bühne wieder her und scrollt zu „Besprechung starten“. Drei Sekunden langes Halten wechselt die Hervorhebung von Grün zu Rot, bevor das Verlassen bestätigt wird. Beim letzten Austritt werden die gespeicherte Besprechung sowie ihr Messages-Chat und das zugeordnete Whiteboard gelöscht; Besprechungen mit einem verbleibenden Mitglied bleiben auffindbar, damit dieses Mitglied die Bereinigung abschließen kann.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -317,3 +321,4 @@ Der Teilnehmerbereich verwendet nun links etwa 30 Prozent für die vertikal scro
 - [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
 - [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
 - [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
+- [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
