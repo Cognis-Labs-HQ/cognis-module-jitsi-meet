@@ -286,6 +286,18 @@ Die Meeting-Löschung behandelt referenzierte Whiteboards und Chaträume, die ei
 
 Jitsi deklariert die von der aktuellen Cognis-Messages-Änderung eingeführte Flow-gestützte öffentliche Capability `social:messages:deleteChatroom` jetzt als erforderlichen Laufzeitvertrag. Die API-Registrierung prüft ihre Aufrufbarkeit; die Bereinigung übergibt weiterhin kanonische Werte für `roomId` und `actorAccountId` und behält die idempotente Behandlung fehlender Ressourcen bei.
 
+## Fehler des Genehmigungsdienstes ablehnen
+
+Teilnehmereinladungen werden jetzt bei Fehlern des Share-Genehmigungsdienstes sicher abgelehnt, sodass ohne den erforderlichen Konsens kein Zugriff gewährt wird.
+
+## Identität des Anfragenden korrekt auflösen
+
+Die Teilnehmersuche übergibt beim Auflösen des Anfragenden jetzt den Profile-Identitätsvertrag. Dadurch können autorisierte Besprechungen von der Anwesenheitsfilterung ausgenommen werden, ohne berechtigte Einzuladende auszublenden.
+
+## Parität der lokalisierten Versionshinweise wiederherstellen
+
+Die indonesischen und japanischen Versionshinweise enthalten jetzt übersetzte Entsprechungen für jeden Änderungspunkt der deutschen und englischen Varianten.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -362,3 +374,4 @@ Jitsi deklariert die von der aktuellen Cognis-Messages-Änderung eingeführte Fl
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
+- [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)

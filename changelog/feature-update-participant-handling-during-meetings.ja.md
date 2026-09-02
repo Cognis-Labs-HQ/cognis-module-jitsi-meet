@@ -286,6 +286,18 @@ Whiteboard 後のオーバーレイ復元は、新しいモジュール間ユー
 
 Jitsi は、最新の Cognis Messages 変更で導入された Flow 対応の公開 Capability `social:messages:deleteChatroom` を必須のランタイム契約として宣言します。API 登録時に呼び出し可能であることを検証し、クリーンアップでは正規の `roomId` と `actorAccountId` を引き続き渡し、未検出の冪等な処理も維持します。
 
+## 承認サービスの失敗時に拒否
+
+Share 承認サービスでエラーが発生した場合、参加者招待を安全に拒否し、必要な合意なしにアクセスが付与されないようにしました。
+
+## リクエスト元の識別情報を正しく解決
+
+参加者検索でリクエスト元を解決するときに Profile identity 契約を渡すようにしました。これにより、招待可能な利用者を隠すことなく、認可済みミーティングを在席フィルターから除外できます。
+
+## ローカライズされたリリースノートの同等性を復元
+
+インドネシア語版と日本語版のリリースノートに、ドイツ語版と英語版に存在するすべての変更点の翻訳を追加しました。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -362,3 +374,4 @@ Jitsi は、最新の Cognis Messages 変更で導入された Flow 対応の公
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
+- [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)

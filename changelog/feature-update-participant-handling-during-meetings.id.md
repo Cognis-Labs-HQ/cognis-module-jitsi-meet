@@ -286,6 +286,18 @@ Penghapusan rapat kini menganggap Whiteboard dan ruang chat terkait yang mengemb
 
 Jitsi kini mendeklarasikan kapabilitas publik berbasis flow `social:messages:deleteChatroom` yang diperkenalkan oleh perubahan Cognis Messages terbaru sebagai kontrak runtime wajib. Pendaftaran API memvalidasi bahwa kapabilitas dapat dipanggil, sementara pembersihan tetap memasok nilai `roomId` dan `actorAccountId` kanonis serta mempertahankan penanganan tidak-ditemukan yang idempoten.
 
+## Tolak kegagalan layanan persetujuan
+
+Undangan peserta kini ditolak secara aman ketika layanan persetujuan Share mengalami kegagalan, sehingga akses tidak diberikan tanpa konsensus yang diwajibkan.
+
+## Selesaikan identitas pemohon dengan benar
+
+Pencarian peserta kini meneruskan kontrak identitas Profile saat menyelesaikan pemohon, sehingga rapat yang diizinkan dapat dikecualikan dari pemfilteran kehadiran tanpa menyembunyikan calon undangan yang memenuhi syarat.
+
+## Pulihkan kesetaraan catatan rilis terlokalisasi
+
+Catatan rilis bahasa Indonesia dan Jepang kini memuat padanan terjemahan untuk setiap poin perubahan yang ada pada varian bahasa Jerman dan Inggris.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -362,3 +374,4 @@ Jitsi kini mendeklarasikan kapabilitas publik berbasis flow `social:messages:del
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
+- [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)

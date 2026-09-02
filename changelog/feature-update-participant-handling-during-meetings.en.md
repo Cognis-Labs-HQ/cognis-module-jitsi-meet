@@ -286,6 +286,18 @@ Meeting deletion now treats referenced Whiteboards and chatrooms that return a s
 
 Jitsi now declares the flow-backed public `social:messages:deleteChatroom` capability introduced by the latest Cognis Messages change as a required runtime contract. API registration validates that the capability is callable, while cleanup continues to supply canonical `roomId` and `actorAccountId` values and retains idempotent not-found handling.
 
+## Reject approval-service failures
+
+Participant invitations now fail closed when the Share approval service errors, preventing access from being granted without the required consensus.
+
+## Resolve requester identity correctly
+
+Participant search now supplies the Profile identity contract when resolving the requester, so authorized meetings can be excluded from presence filtering without hiding eligible invitees.
+
+## Restore localized release-note parity
+
+The Indonesian and Japanese release notes now include translated counterparts for every change point present in the German and English variants.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -362,3 +374,4 @@ Jitsi now declares the flow-backed public `social:messages:deleteChatroom` capab
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
+- [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
