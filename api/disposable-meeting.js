@@ -1,3 +1,5 @@
+import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
+
 export async function deleteDisposableMeeting({
     meeting,
     ownerAccountId,
@@ -18,9 +20,16 @@ export async function deleteDisposableMeeting({
                     "The Messages chat deletion capability is unavailable.",
                 );
             }
-            await deleteChatroom({
-                roomId: meeting.chatRoomId,
-                actorAccountId: ownerAccountId,
+            await deleteReferencedMeetingResource({
+                deleteResource: () =>
+                    deleteChatroom({
+                        roomId: meeting.chatRoomId,
+                        actorAccountId: ownerAccountId,
+                    }),
+                resourceType: "chatroom",
+                resourceId: meeting.chatRoomId,
+                meetingId: meeting.id,
+                log,
             });
         } catch (error) {
             log?.("error", "Failed to delete disposable meeting chat.", {

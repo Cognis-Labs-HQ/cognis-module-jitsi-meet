@@ -278,6 +278,10 @@ Die Teilnehmerüberschrift verwendet wieder ihre natürlich geerbte Texthöhe st
 
 Die Meeting-Bereinigung löst jetzt die Cognis-Capability `social:messages:deleteChatroom` auf und übergibt den kanonischen Vertrag aus `roomId` und `actorAccountId`. Bei verwerfbaren Meetings handelt der Meeting-Eigentümer, beim letzten Austritt aus einem dauerhaften Meeting das kanonische Eigentümerkonto; dadurch kann Messages den Ersteller oder einzigen verbleibenden Teilnehmer autorisieren und abhängige Chatdaten transaktional löschen.
 
+## Bereinigung bei fehlenden Ressourcen fortsetzen
+
+Die Meeting-Löschung behandelt referenzierte Whiteboards und Chaträume, die einen standardmäßigen Nicht-gefunden-Status, -Code oder eine entsprechende Meldung zurückgeben, jetzt als bereits gelöscht. Der Zustand wird mit strukturierten Ressourcenmetadaten protokolliert; anschließend werden verbleibender Chat, Freigaben und Meeting-Datensatz weiter bereinigt. Andere Löschfehler stoppen die Bereinigung weiterhin sicher.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -352,3 +356,4 @@ Die Meeting-Bereinigung löst jetzt die Cognis-Capability `social:messages:delet
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
+- [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)

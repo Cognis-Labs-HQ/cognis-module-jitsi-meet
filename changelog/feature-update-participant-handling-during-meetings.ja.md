@@ -226,6 +226,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 ミーティングのクリーンアップは Cognis の Capability `social:messages:deleteChatroom` を解決し、正規の `roomId` と `actorAccountId` 契約を渡します。破棄可能ミーティングではミーティング所有者を実行者とし、永続ミーティングの最後の退出では正規の所有者アカウントを使用するため、Messages は作成者または唯一残った参加者を認可して依存チャットデータをトランザクションで削除できます。
 
+## 見つからないリソースを越えてクリーンアップを続行
+
+ミーティング削除では、標準の未検出ステータス、コード、メッセージを返す参照先 Whiteboard とチャットルームを、すでに削除済みとして扱います。この状態を構造化されたリソースメタデータとともに記録し、残りのチャット、共有、ミーティングレコードのクリーンアップを続行します。その他の削除失敗では引き続き安全に処理を停止します。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -300,3 +304,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
+- [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)

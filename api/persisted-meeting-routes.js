@@ -1,3 +1,5 @@
+import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
+
 export function registerPersistedMeetingRoutes({
     router,
     store,
@@ -74,15 +76,29 @@ export function registerPersistedMeetingRoutes({
                                 "Whiteboard deletion capability is unavailable.",
                             );
                         }
-                        await deletion({
-                            whiteboardId,
-                            actorAccountId: ownerProfile.accountId,
+                        await deleteReferencedMeetingResource({
+                            deleteResource: () =>
+                                deletion({
+                                    whiteboardId,
+                                    actorAccountId: ownerProfile.accountId,
+                                }),
+                            resourceType: "whiteboard",
+                            resourceId: whiteboardId,
+                            meetingId: resolved.meeting.id,
+                            log,
                         });
                     }
                     if (resolved.meeting.chatRoomId) {
-                        await deleteChatroom({
-                            roomId: resolved.meeting.chatRoomId,
-                            actorAccountId: ownerProfile.accountId,
+                        await deleteReferencedMeetingResource({
+                            deleteResource: () =>
+                                deleteChatroom({
+                                    roomId: resolved.meeting.chatRoomId,
+                                    actorAccountId: ownerProfile.accountId,
+                                }),
+                            resourceType: "chatroom",
+                            resourceId: resolved.meeting.chatRoomId,
+                            meetingId: resolved.meeting.id,
+                            log,
                         });
                     }
                     await deleteResourceShares?.({

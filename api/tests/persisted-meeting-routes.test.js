@@ -9,6 +9,8 @@ function createHarness({
     requesterAccountId = `account-${requesterUsername}`,
     state = {},
     meeting = {},
+    whiteboardDeletion = null,
+    logs = [],
 }) {
     const handlers = new Map();
     const operations = [];
@@ -59,20 +61,24 @@ function createHarness({
                 operations.push(["board-member-remove", input]);
             },
         }),
-        resolveWhiteboardDeletion: () => async (input) => {
-            operations.push(["board-delete", input]);
-        },
+        resolveWhiteboardDeletion: () =>
+            whiteboardDeletion ??
+            (async (input) => {
+                operations.push(["board-delete", input]);
+            }),
         fetchBoardData: async () => ({ createdBy: "alice" }),
         deleteChatroom: async (input) =>
             operations.push(["chat-delete", input]),
         deleteResourceShares: async (input) =>
             operations.push(["shares-delete", input]),
+        log: (...entry) => logs.push(entry),
     });
     return {
         handler: handlers.get(
             "/api/v1/modules/jitsi-meet/meetings/persisted/leave",
         ),
         operations,
+        logs,
     };
 }
 
@@ -121,4 +127,26 @@ test("the final departure deletes every persisted meeting resource", async () =>
         "chat-delete",
         { roomId: "room-1", actorAccountId: "account-alice" },
     ]);
+});
+
+test("final departure continues when its Whiteboard is already absent", async () => {
+    const logs = [];
+    const { handler, operations } = createHarness({
+        participants: ["alice"],
+        state: { whiteboardId: "board-1", whiteboardDisposable: false },
+        whiteboardDeletion: async () => {
+            throw new Error("Whiteboard not found.");
+        },
+        logs,
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["chat-delete", "shares-delete", "store-delete"],
+    );
+    assert.equal(logs[0][0], "error");
+    assert.equal(logs[0][2].resourceType, "whiteboard");
 });

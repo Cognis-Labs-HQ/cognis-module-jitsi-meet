@@ -156,7 +156,8 @@ test("participant-free meetings delete their identity, shares, and chat when clo
     );
     assert.match(source, /deleteResourceShares\?\.\(/);
     assert.match(source, /social:messages:deleteChatroom/);
-    assert.match(source, /await deleteChatroom\(\{/);
+    assert.match(source, /deleteReferencedMeetingResource\(\{/);
+    assert.match(source, /deleteChatroom\(\{/);
     assert.match(source, /roomId: meeting\.chatRoomId/);
     assert.match(source, /actorAccountId: ownerAccountId/);
     assert.match(source, /await store\.deleteMeeting\(meeting\.id\)/);

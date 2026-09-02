@@ -96,6 +96,29 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
     assert.equal(logs[0][2].chatRoomId, "chat-1");
 });
 
+test("a missing disposable chat is treated as already deleted", async () => {
+    const deletedMeetingIds = [];
+    const logs = [];
+
+    await deleteDisposableMeeting({
+        meeting: { id: "meeting-1", chatRoomId: "chat-1" },
+        ownerAccountId: "account-1",
+        deleteChatroom: async () => {
+            throw new Error("Chatroom not found.");
+        },
+        store: {
+            deleteMeeting: async (meetingId) => {
+                deletedMeetingIds.push(meetingId);
+            },
+        },
+        log: (...entry) => logs.push(entry),
+    });
+
+    assert.deepEqual(deletedMeetingIds, ["meeting-1"]);
+    assert.equal(logs[0][0], "error");
+    assert.equal(logs[0][2].operation, "delete_missing_meeting_resource");
+});
+
 test("meeting creation provisions a share-ready participant-free chat", async () => {
     const handlers = new Map();
     const chatRequests = [];

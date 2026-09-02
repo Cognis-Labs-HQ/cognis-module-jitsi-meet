@@ -226,6 +226,10 @@ Judul Peserta kembali memakai tinggi teks alami yang diwarisi, bukan ukuran font
 
 Pembersihan rapat kini menyelesaikan kapabilitas Cognis `social:messages:deleteChatroom` dan memasok kontrak kanonis `roomId` serta `actorAccountId`. Pembersihan rapat sekali pakai memakai pemilik rapat sebagai pelaku, sedangkan kepergian terakhir dari rapat persisten memakai akun pemilik kanonis sehingga Messages dapat mengotorisasi pembuat atau satu-satunya peserta tersisa dan menghapus data chat terkait secara transaksional.
 
+## Lanjutkan pembersihan melewati sumber daya yang hilang
+
+Penghapusan rapat kini menganggap Whiteboard dan ruang chat terkait yang mengembalikan status, kode, atau pesan tidak ditemukan standar sebagai sudah dihapus. Kondisi dicatat dengan metadata sumber daya terstruktur, lalu pembersihan berlanjut melalui chat, berbagi, dan rekaman rapat yang tersisa; kegagalan penghapusan lain tetap menghentikan pembersihan dengan aman.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -300,3 +304,4 @@ Pembersihan rapat kini menyelesaikan kapabilitas Cognis `social:messages:deleteC
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
+- [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
