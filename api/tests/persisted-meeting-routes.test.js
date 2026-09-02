@@ -63,7 +63,7 @@ function createHarness({
             operations.push(["board-delete", input]);
         },
         fetchBoardData: async () => ({ createdBy: "alice" }),
-        deleteChatRoom: async (input) =>
+        deleteChatroom: async (input) =>
             operations.push(["chat-delete", input]),
         deleteResourceShares: async (input) =>
             operations.push(["shares-delete", input]),
@@ -117,4 +117,8 @@ test("the final departure deletes every persisted meeting resource", async () =>
         operations.map(([operation]) => operation),
         ["board-delete", "chat-delete", "shares-delete", "store-delete"],
     );
+    assert.deepEqual(operations[1], [
+        "chat-delete",
+        { roomId: "room-1", actorAccountId: "account-alice" },
+    ]);
 });

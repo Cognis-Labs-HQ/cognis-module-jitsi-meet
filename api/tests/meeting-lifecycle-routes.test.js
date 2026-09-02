@@ -29,7 +29,7 @@ test("disposable meeting deletion erases its creator's associated chat", async (
         deleteResourceShares: async (input) => {
             operations.push(["delete_shares", input]);
         },
-        deleteChatRoom: async (input) => {
+        deleteChatroom: async (input) => {
             operations.push(["delete_chat", input]);
         },
         store: {
@@ -51,7 +51,7 @@ test("disposable meeting deletion erases its creator's associated chat", async (
                 resourceId: "meeting-1",
             },
         ],
-        ["delete_chat", { roomId: "chat-1", ownerAccountId: "account-1" }],
+        ["delete_chat", { roomId: "chat-1", actorAccountId: "account-1" }],
         ["delete_meeting", "meeting-1"],
         [
             "log",
@@ -76,7 +76,7 @@ test("a chat deletion failure preserves the disposable meeting record", async ()
         deleteDisposableMeeting({
             meeting: { id: "meeting-1", chatRoomId: "chat-1" },
             ownerAccountId: "account-1",
-            deleteChatRoom: async () => {
+            deleteChatroom: async () => {
                 throw new Error("messages unavailable");
             },
             store: {

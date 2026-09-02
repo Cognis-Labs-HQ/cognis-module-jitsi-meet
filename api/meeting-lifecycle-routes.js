@@ -29,7 +29,7 @@ export function registerMeetingLifecycleRoutes({
     dispatchMeetingNotifications,
     resolveModeratorUsernames,
     deleteResourceShares,
-    deleteChatRoom,
+    deleteChatroom,
     revokeKickedGuestShare,
     requestParticipantAdditionApproval,
     normalizeHandleKey,
@@ -969,7 +969,7 @@ export function registerMeetingLifecycleRoutes({
                             ownerAccountId: claims.sub,
                             store,
                             deleteResourceShares,
-                            deleteChatRoom,
+                            deleteChatroom,
                             log,
                         });
                         disposableMeetingDeleted = true;

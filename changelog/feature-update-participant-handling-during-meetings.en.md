@@ -274,6 +274,10 @@ The Participants header now removes the default heading margin and uses a compac
 
 The Participants heading once again uses its inherited natural text height rather than a forced compact font size and line height. The pane now allocates the heading and participant table as separate flex rows, allowing the layout to grow or shrink into the remaining parent space without the heading compressing it.
 
+## Use authorized chatroom deletion
+
+Meeting cleanup now resolves Cognis’s `social:messages:deleteChatroom` capability and supplies the canonical `roomId` and `actorAccountId` contract. Disposable meeting cleanup uses the meeting owner as actor, while final persisted-meeting departure uses the canonical owner account, allowing Messages to authorize the creator or sole remaining participant and delete dependent chat data transactionally.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -347,3 +351,4 @@ The Participants heading once again uses its inherited natural text height rathe
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
+- [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)

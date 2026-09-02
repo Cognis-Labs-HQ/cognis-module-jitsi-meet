@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.147",
+    "version": "1.5.148",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -140,15 +140,15 @@
         },
         {
             "path": "api/disposable-meeting.js",
-            "sha256": "0824bb053f6150ec7637778f891231ac135dd7019312cad2fa10079c6ef71033"
+            "sha256": "45f2b5bc1ed29b004cff052895f80ab413232eb5e4b7e7dec347e768d1e78793"
         },
         {
             "path": "api/index.js",
-            "sha256": "9a8f65383df0b4cb1b73b2085cda9be397edbfd4bc90fd1934b412a756ff8af1"
+            "sha256": "d50552fd5a55c44a058e17d8739eb35fc23ce56ae655e3165ffdfba737489423"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "66a3f54c2aa07c109c508d3d6ba34904df51ee5026987362a9e2200b06f14dd8"
+            "sha256": "d1d7552d2edc8d3bfbc251dc572f2dcd8322fb72ffb59a1ad21a0ff9f3fe5f78"
         },
         {
             "path": "api/meeting-name.js",
@@ -168,7 +168,7 @@
         },
         {
             "path": "api/persisted-meeting-routes.js",
-            "sha256": "b6974bc48866d66b1cd10512ecab279134004e37ef2ad8703526dcc149841150"
+            "sha256": "972e232a8183ca7af9908c06f21eba322e188b7da40f7c2d8ad99bdfcc01839b"
         },
         {
             "path": "api/reuse/chat-membership.js",
@@ -256,7 +256,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "2665d4acf0353e451a52e09679d4e73784a56e933357f8a5b0de177cbc1e1bd2"
+            "sha256": "81851733d905d6241d238edf894522b33e5d9cc5fd1e9cff69d588294fcc799d"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -268,7 +268,7 @@
         },
         {
             "path": "api/tests/meeting-lifecycle-routes.test.js",
-            "sha256": "1d4064da5f91bc1a1da065cb4ff3da85c4748cfc5a429112ef7ea7903019aef5"
+            "sha256": "37239efcea3edc0c4943eb7751c444f0614dd071a43aecdb8f09e812647a12e4"
         },
         {
             "path": "api/tests/participant-approval.test.js",
@@ -280,7 +280,7 @@
         },
         {
             "path": "api/tests/persisted-meeting-routes.test.js",
-            "sha256": "761a7c1e14d56fec0a1520e1a01a4bbf33e614e70bbe2eea5a5c518cbcbfde8b"
+            "sha256": "222c0c98319ac3d724087f808cbf12b9dbe7cb2ea18394343b3f493ed8801771"
         },
         {
             "path": "api/tests/persisted-meetings.test.js",
@@ -348,27 +348,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "26aa2bb57681630dfb792eea1c0bb66e62e8198079646279c16a5116fb473e3a"
+            "sha256": "79c3c54b1b8f004597d64300b097e81f46e23a5a94d56a10f31590aa798ba7c1"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "2a8d9eead9d5d0fa65d888884620566ef7af8fad3785036286c5c4e5c1f62fcb"
+            "sha256": "bbc111c0bb085691754ba9364f73d991987aed7d7301a0872de8d2f6d0eb7e6e"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "8124a5c3c2eb21f9bc9c41ef9d1c3c04643e8adbfdd0dbe8df40428efd807a3c"
+            "sha256": "52c56fcda9212f4c96feb49ddbc8759b875b882645da84c46a40472b00288040"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "cae7a44e990fb621a0372483168211bfe0ab0f4849a0c1bcf1386be17401c43a"
+            "sha256": "464ac1d618353bac207200b685002a122e93cded14b9264bae07d84740fbce0e"
         },
         {
             "path": "package-lock.json",
-            "sha256": "80e1f2b05f00eb68b668aa1ad919f938a41c613e2e14d2786393788d4da59207"
+            "sha256": "5b7cc88801ca2ba2c5850203465c89ba7271c91c853fccb01a65440abd51e013"
         },
         {
             "path": "package.json",
-            "sha256": "9f900a635d879a8af6ebcc4a92b763e34a75b9b1b254bae25050cd9f26bf577c"
+            "sha256": "4f382b86deaa8579e5f360683fbc1f1d6536de42da1101d2c72ea2383c521236"
         },
         {
             "path": "routes.json",

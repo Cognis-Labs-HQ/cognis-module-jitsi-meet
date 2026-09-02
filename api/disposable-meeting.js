@@ -3,7 +3,7 @@ export async function deleteDisposableMeeting({
     ownerAccountId,
     store,
     deleteResourceShares,
-    deleteChatRoom,
+    deleteChatroom,
     log,
 }) {
     await deleteResourceShares?.({
@@ -13,14 +13,14 @@ export async function deleteDisposableMeeting({
     });
     if (meeting.chatRoomId) {
         try {
-            if (typeof deleteChatRoom !== "function") {
+            if (typeof deleteChatroom !== "function") {
                 throw new Error(
                     "The Messages chat deletion capability is unavailable.",
                 );
             }
-            await deleteChatRoom({
+            await deleteChatroom({
                 roomId: meeting.chatRoomId,
-                ownerAccountId,
+                actorAccountId: ownerAccountId,
             });
         } catch (error) {
             log?.("error", "Failed to delete disposable meeting chat.", {

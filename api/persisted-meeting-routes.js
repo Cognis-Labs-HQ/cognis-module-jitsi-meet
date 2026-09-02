@@ -12,7 +12,7 @@ export function registerPersistedMeetingRoutes({
     resolveWhiteboardMembership,
     resolveWhiteboardDeletion,
     fetchBoardData,
-    deleteChatRoom,
+    deleteChatroom,
     deleteResourceShares,
     log,
 }) {
@@ -80,9 +80,9 @@ export function registerPersistedMeetingRoutes({
                         });
                     }
                     if (resolved.meeting.chatRoomId) {
-                        await deleteChatRoom({
+                        await deleteChatroom({
                             roomId: resolved.meeting.chatRoomId,
-                            ownerAccountId: ownerProfile.accountId,
+                            actorAccountId: ownerProfile.accountId,
                         });
                     }
                     await deleteResourceShares?.({

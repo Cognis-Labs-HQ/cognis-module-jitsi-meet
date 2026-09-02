@@ -249,7 +249,7 @@ export function registerApiRoutes(router, ctx) {
     const deleteResourceShares = ctx.getCapability(
         "share:deleteResourceShares",
     );
-    const deleteChatRoom = ctx.getCapability("social:messages:deleteRoom");
+    const deleteChatroom = ctx.getCapability("social:messages:deleteChatroom");
     const resolveMeetingPayload = (input) =>
         resolveMeetingPayloadOrReject({
             ...input,
@@ -747,7 +747,7 @@ export function registerApiRoutes(router, ctx) {
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
         deleteResourceShares,
-        deleteChatRoom,
+        deleteChatroom,
         requestParticipantAdditionApproval: async ({
             meetingId,
             meetingName,

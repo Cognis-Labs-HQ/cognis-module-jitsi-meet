@@ -222,6 +222,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者見出しは、強制されたコンパクトなフォントサイズと行高ではなく、継承された自然な文字高を再び使用します。ペインは見出しと参加者テーブルを別々の Flex 行として割り当て、見出しがレイアウトを圧迫することなく、親要素の残り領域へ伸縮できるようにしました。
 
+## 認可されたチャットルーム削除を使用
+
+ミーティングのクリーンアップは Cognis の Capability `social:messages:deleteChatroom` を解決し、正規の `roomId` と `actorAccountId` 契約を渡します。破棄可能ミーティングではミーティング所有者を実行者とし、永続ミーティングの最後の退出では正規の所有者アカウントを使用するため、Messages は作成者または唯一残った参加者を認可して依存チャットデータをトランザクションで削除できます。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -295,3 +299,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
+- [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
