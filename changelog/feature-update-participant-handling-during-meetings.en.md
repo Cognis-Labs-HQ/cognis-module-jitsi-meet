@@ -338,6 +338,10 @@ The extracted interactive handler now directly imports meeting ID normalization 
 
 The extracted interaction binder now receives the meeting reset operation explicitly, allowing participants who leave an otherwise empty meeting to complete teardown without an unhandled scope error.
 
+## Preserve chat history across participant changes
+
+Meetings now retain an immutable original participant roster alongside live membership. Previous Meetings uses that roster and creation matches either roster, so adding or removing attendees no longer causes rapid replacement rooms or disconnects a stable card from its encrypted chat history. Whiteboard consensus requests continue to show an informational request-sent toast.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -437,3 +441,5 @@ The extracted interaction binder now receives the meeting reset operation explic
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
 
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
+
+- [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)

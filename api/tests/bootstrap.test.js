@@ -226,6 +226,7 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
         [
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
+            "jitsi_meeting_original_participants",
             "jitsi_meeting_participants",
             "jitsi_meetings",
             "jitsi_module_config",

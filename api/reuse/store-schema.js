@@ -80,6 +80,21 @@ export async function ensureJitsiStoreSchema({ db }) {
     });
 
     await db.ensureTable({
+        name: "jitsi_meeting_original_participants",
+        columns: [
+            { name: "meeting_id", type: "text", notNull: true },
+            { name: "username", type: "text", notNull: true },
+            {
+                name: "recorded_at",
+                type: "timestamp",
+                notNull: true,
+                default: "now",
+            },
+        ],
+        primaryKey: ["meeting_id", "username"],
+    });
+
+    await db.ensureTable({
         name: "jitsi_meeting_state",
         columns: [
             { name: "meeting_id", type: "text", primaryKey: true },
@@ -174,4 +189,19 @@ export async function ensureJitsiStoreSchema({ db }) {
             where: [{ column: "id", value: meeting.id }],
         });
     }
+}
+
+const schemaInitializationByExecutor = new WeakMap();
+
+export async function ensureJitsiStoreSchemaOnce(db) {
+    const existing = schemaInitializationByExecutor.get(db);
+    if (existing) return existing;
+    const initialization = ensureJitsiStoreSchema({ db }).catch((error) => {
+        if (schemaInitializationByExecutor.get(db) === initialization) {
+            schemaInitializationByExecutor.delete(db);
+        }
+        throw error;
+    });
+    schemaInitializationByExecutor.set(db, initialization);
+    return initialization;
 }

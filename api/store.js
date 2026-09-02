@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import {
     extractUrlOrigin,
     extractUrlPathSlug,
@@ -13,25 +13,11 @@ import {
     encryptPayload,
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
-import { ensureJitsiStoreSchema } from "./reuse/store-schema.js";
+import { ensureJitsiStoreSchemaOnce } from "./reuse/store-schema.js";
+import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
+import * as originals from "./reuse/original-participants.js";
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
-const schemaInitializationByExecutor = new WeakMap();
-function buildParticipantKey(
-    normalizeHandleKeys,
-    usernames,
-    classroomId = null,
-    mutableMeetingId = null,
-) {
-    const payload = JSON.stringify({
-        classroomId: classroomId ? String(classroomId) : null,
-        ...(mutableMeetingId
-            ? { mutableMeetingId: String(mutableMeetingId) }
-            : {}),
-        participants: normalizeHandleKeys(usernames),
-    });
-    return createHash("sha256").update(payload).digest("hex");
-}
 export class JitsiMeetStore {
     constructor({ db, log, generatePassphrase, profileIdentity }) {
         this.db = db;
@@ -44,26 +30,7 @@ export class JitsiMeetStore {
     }
 
     async ensureSchema() {
-        const existingInitialization = schemaInitializationByExecutor.get(
-            this.db,
-        );
-        if (existingInitialization) return existingInitialization;
-        const initialization = this.ensureSchemaTables().catch((error) => {
-            if (
-                schemaInitializationByExecutor.get(this.db) === initialization
-            ) {
-                schemaInitializationByExecutor.delete(this.db);
-            }
-            throw error;
-        });
-        schemaInitializationByExecutor.set(this.db, initialization);
-        return initialization;
-    }
-
-    async ensureSchemaTables() {
-        await ensureJitsiStoreSchema({
-            db: this.db,
-        });
+        return ensureJitsiStoreSchemaOnce(this.db);
     }
 
     async getConfig() {
@@ -137,6 +104,7 @@ export class JitsiMeetStore {
         for (const table of [
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
+            "jitsi_meeting_original_participants",
             "jitsi_meeting_participants",
             "jitsi_meetings",
             "jitsi_module_config",
@@ -241,7 +209,16 @@ export class JitsiMeetStore {
         return (result.rows ?? []).map((row) => String(row.username));
     }
 
+    async listOriginalParticipants(meetingId) {
+        return originals.listMeetingOriginalParticipants(this.db, meetingId);
+    }
+
     async addMeetingParticipant(meetingId, username, { chatRoomId } = {}) {
+        await originals.ensureMeetingOriginalParticipants({
+            db: this.db,
+            meetingId,
+            listParticipants: (id) => this.listParticipants(id),
+        });
         const normalizedUsername = this.normalizeHandleKey(username);
         if (!normalizedUsername) return this.getMeetingById(meetingId);
         const participants = this.normalizeHandleKeys([
@@ -282,6 +259,11 @@ export class JitsiMeetStore {
     }
 
     async removeMeetingParticipant(meetingId, username) {
+        await originals.ensureMeetingOriginalParticipants({
+            db: this.db,
+            meetingId,
+            listParticipants: (id) => this.listParticipants(id),
+        });
         const normalizedUsername = this.normalizeHandleKey(username);
         const meeting = await this.getMeetingById(meetingId);
         if (!meeting || !normalizedUsername) return meeting;
@@ -345,16 +327,17 @@ export class JitsiMeetStore {
                     ? String(candidate.classroom_id)
                     : null;
                 if (candidateClassroomId !== normalizedClassroomId) continue;
-                const candidateUsernames = this.normalizeHandleKeys(
-                    await this.listParticipants(String(candidate.id)),
-                );
-                if (
-                    candidateUsernames.length === normalizedUsernames.length &&
-                    candidateUsernames.every(
-                        (username, index) =>
-                            username === normalizedUsernames[index],
-                    )
-                ) {
+                const candidateMatches =
+                    await originals.meetingMatchesParticipantSet({
+                        meetingId: String(candidate.id),
+                        expectedUsernames: normalizedUsernames,
+                        listParticipants: (id) => this.listParticipants(id),
+                        listOriginalParticipants: (id) =>
+                            this.listOriginalParticipants(id),
+                        normalizeHandleKeys: (handles) =>
+                            this.normalizeHandleKeys(handles),
+                    });
+                if (candidateMatches) {
                     row = candidate;
                     break;
                 }
@@ -486,6 +469,16 @@ export class JitsiMeetStore {
                         meeting_id: meetingId,
                         username,
                         added_at: createdAt,
+                    },
+                    conflict: { action: "ignore" },
+                });
+                await executor.executeCommand({
+                    option: "INSERT",
+                    table: "jitsi_meeting_original_participants",
+                    values: {
+                        meeting_id: meetingId,
+                        username,
+                        recorded_at: createdAt,
                     },
                     conflict: { action: "ignore" },
                 });

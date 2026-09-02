@@ -338,6 +338,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 分割したインタラクションバインダーが会議リセット操作を明示的に受け取るようになり、ほかに参加者がいない会議から退出するときも未処理のスコープエラーなしで後処理を完了できます。
 
+## 参加者変更後もチャット履歴を維持
+
+会議は現在のメンバーシップとは別に、変更されない元の参加者構成を保持するようになりました。「以前の会議」はその構成を使用し、会議作成時には両方の構成を照合するため、参加者の追加や削除によって代替ルームが連続作成されたり、安定したカードが暗号化チャット履歴から切り離されたりしません。ホワイトボードの合意リクエストでは、送信済みの情報トーストも引き続き表示されます。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -437,3 +441,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
 
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
+
+- [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)

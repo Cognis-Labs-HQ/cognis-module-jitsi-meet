@@ -890,6 +890,8 @@ export function registerApiRoutes(router, ctx) {
                 db: dbExecutor,
                 getMeetingById: (id) => store.getMeetingById(id),
                 listParticipants: (id) => store.listParticipants(id),
+                listOriginalParticipants: (id) =>
+                    store.listOriginalParticipants(id),
             }),
         selectDistinctParticipantMeetings: (meetings, activeMeetingIds) =>
             selectDistinctParticipantMeetings(meetings, {

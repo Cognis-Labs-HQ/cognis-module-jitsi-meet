@@ -40,11 +40,13 @@ test("reserved participants include only active presence in other meetings", asy
 function createMockJitsiDb({
     meetingRows = [],
     participantRows = [],
+    originalParticipantRows = [],
     presenceRows = [],
     stateRows = [],
 } = {}) {
     const storedMeetingRows = [...meetingRows];
     const storedParticipantRows = [...participantRows];
+    const storedOriginalParticipantRows = [...originalParticipantRows];
     const storedPresenceRows = [...presenceRows];
     const storedStateRows = [...stateRows];
     const insertedMeetingRows = [];
@@ -132,6 +134,20 @@ function createMockJitsiDb({
 
             if (
                 command.option === "SELECT" &&
+                command.table === "jitsi_meeting_original_participants"
+            ) {
+                const meetingId = command.where?.find(
+                    (whereEntry) => whereEntry.column === "meeting_id",
+                )?.value;
+                return {
+                    rows: storedOriginalParticipantRows.filter(
+                        (row) => row.meeting_id === meetingId,
+                    ),
+                };
+            }
+
+            if (
+                command.option === "SELECT" &&
                 command.table === "jitsi_meeting_participants"
             ) {
                 const meetingId = command.where?.find(
@@ -200,6 +216,14 @@ function createMockJitsiDb({
                 command.table === "jitsi_meeting_participants"
             ) {
                 storedParticipantRows.push(command.values);
+                return { rows: [] };
+            }
+
+            if (
+                command.option === "INSERT" &&
+                command.table === "jitsi_meeting_original_participants"
+            ) {
+                storedOriginalParticipantRows.push(command.values);
                 return { rows: [] };
             }
 
@@ -282,6 +306,7 @@ test("schema initialization is shared across concurrent store instances", async 
         "jitsi_module_config",
         "jitsi_meetings",
         "jitsi_meeting_participants",
+        "jitsi_meeting_original_participants",
         "jitsi_meeting_state",
         "jitsi_meeting_presence",
     ]);
@@ -306,7 +331,7 @@ test("schema initialization can retry after a failed create", async () => {
     await assert.rejects(store.ensureSchema(), /create raced/);
     await store.ensureSchema();
 
-    assert.equal(ensureAttempts, 6);
+    assert.equal(ensureAttempts, 7);
 });
 
 test("jitsi store meeting creation uses the modern column set", async () => {
@@ -729,4 +754,35 @@ test("active membership changes use a meeting-scoped participant key", async () 
         updatedMeeting.meetingUrl,
         "https://meet.example.test/Bright-Otters-Meet-Safely",
     );
+});
+
+test("morphed meetings reuse their original participant-set chat history", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+        generatePassphrase: () =>
+            ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
+                generatedNames++
+            ],
+    });
+    const originalInput = {
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: "history-room",
+    };
+
+    const originalMeeting = await store.createMeeting(originalInput);
+    await store.addMeetingParticipant(originalMeeting.id, "carol", {
+        chatRoomId: "history-room",
+    });
+    const reusedMeeting = await store.createMeeting(originalInput);
+
+    assert.equal(reusedMeeting.id, originalMeeting.id);
+    assert.equal(reusedMeeting.chatRoomId, "history-room");
+    assert.equal(reusedMeeting.reused, true);
+    assert.equal(mockDb.insertedMeetingRows.length, 1);
 });

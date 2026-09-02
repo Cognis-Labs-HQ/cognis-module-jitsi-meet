@@ -2,6 +2,7 @@ export async function listPersistedMeetings({
     db,
     getMeetingById,
     listParticipants,
+    listOriginalParticipants,
 }) {
     const result = await db.executeCommand({
         option: "SELECT",
@@ -13,7 +14,11 @@ export async function listPersistedMeetings({
     for (const row of result.rows ?? []) {
         const id = String(row.id ?? "").trim();
         if (!id) continue;
-        const participants = await listParticipants(id);
+        const currentParticipants = await listParticipants(id);
+        const originalParticipants = await listOriginalParticipants(id);
+        const participants = originalParticipants.length
+            ? originalParticipants
+            : currentParticipants;
         const meeting = await getMeetingById(id);
         if (meeting?.meetingUrl && meeting.meetingName) {
             meetings.push({ ...meeting, participants });

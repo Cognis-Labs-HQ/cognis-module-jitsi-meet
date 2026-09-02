@@ -20,6 +20,8 @@ test("persisted meeting discovery retains the final member's meeting", async () 
             },
         },
         listParticipants: async (id) => participantsByMeeting.get(id),
+        listOriginalParticipants: async (id) =>
+            id === "persistent" ? ["alice", "carol"] : [],
         getMeetingById: async (id) => ({
             id,
             meetingName: `Meeting ${id}`,
@@ -32,7 +34,7 @@ test("persisted meeting discovery retains the final member's meeting", async () 
             id: "persistent",
             meetingName: "Meeting persistent",
             meetingUrl: "https://meet.example/persistent",
-            participants: ["alice", "bob"],
+            participants: ["alice", "carol"],
         },
         {
             id: "disposable",

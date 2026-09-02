@@ -338,6 +338,10 @@ Der ausgelagerte interaktive Handler importiert jetzt die Normalisierung der Mee
 
 Der ausgelagerte Interaktions-Binder erhält die Operation zum Zurücksetzen des Meetings jetzt ausdrücklich. Dadurch können Teilnehmer, die ein ansonsten leeres Meeting verlassen, den Abbau ohne unbehandelten Gültigkeitsbereichsfehler abschließen.
 
+## Chatverlauf bei Teilnehmeränderungen bewahren
+
+Besprechungen behalten jetzt neben der aktuellen Mitgliedschaft einen unveränderlichen ursprünglichen Teilnehmerkreis. Frühere Besprechungen verwendet diesen Kreis, und die Erstellung gleicht beide Kreise ab, sodass hinzugefügte oder entfernte Teilnehmer nicht mehr rasch Ersatzräume erzeugen oder eine stabile Karte von ihrem verschlüsselten Chatverlauf trennen. Whiteboard-Konsensanfragen zeigen weiterhin eine informative Versandbestätigung als Toast.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -437,3 +441,5 @@ Der ausgelagerte Interaktions-Binder erhält die Operation zum Zurücksetzen des
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
 
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
+
+- [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)

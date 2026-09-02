@@ -338,6 +338,10 @@ Pengendali interaktif yang diekstrak kini mengimpor normalisasi ID rapat dan kli
 
 Pengikat interaksi yang diekstrak kini menerima operasi reset rapat secara eksplisit, sehingga peserta yang meninggalkan rapat kosong dapat menyelesaikan pembongkaran tanpa galat cakupan yang tidak tertangani.
 
+## Pertahankan riwayat chat saat peserta berubah
+
+Rapat kini menyimpan susunan peserta awal yang tetap di samping keanggotaan langsung. Rapat Sebelumnya memakai susunan tersebut dan pembuatan mencocokkan keduanya, sehingga penambahan atau penghapusan peserta tidak lagi membuat ruang pengganti dengan cepat atau memisahkan kartu stabil dari riwayat chat terenkripsinya. Permintaan konsensus papan tulis tetap menampilkan toast informasi bahwa permintaan telah dikirim.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -437,3 +441,5 @@ Pengikat interaksi yang diekstrak kini menerima operasi reset rapat secara ekspl
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
 
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
+
+- [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
