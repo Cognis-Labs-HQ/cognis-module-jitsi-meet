@@ -358,6 +358,10 @@ Previous Meetings now excludes single-account disposable meetings and continues 
 
 The interaction binder now invokes the established Cognis Messages chat update operation after a successful send instead of accepting a separate refresh callback. Internal chat functions use Cognis terminology rather than implying that Jitsi owns the chat implementation.
 
+## Keep SPA mounting independent from chat refresh
+
+Composer renders no longer call the chat updater while binding page events. Successful sends use a guaranteed refresh wrapper that validates the Cognis Messages operation and logs safe meeting and room metadata when it is unavailable, preventing a missing method from rejecting route mount.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -467,3 +471,5 @@ The interaction binder now invokes the established Cognis Messages chat update o
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
 
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
+
+- [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)

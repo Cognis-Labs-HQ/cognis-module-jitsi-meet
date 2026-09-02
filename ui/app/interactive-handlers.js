@@ -24,7 +24,7 @@ export function createInteractiveHandlersBinder({
     messageReactions,
     toggleReaction,
     openEmojiPickerPopup,
-    updateCognisChat,
+    refreshChatAfterSend,
     encryptChatMessage,
     getChatRoomKey,
     stopCognisChatPolling,
@@ -663,12 +663,11 @@ export function createInteractiveHandlersBinder({
                         return;
                     }
                     chatInput.value = "";
-                    await updateCognisChat();
+                    await refreshChatAfterSend();
                 },
                 { signal: bindSignal },
             );
         }
         renderParticipants();
-        void updateCognisChat();
     };
 }

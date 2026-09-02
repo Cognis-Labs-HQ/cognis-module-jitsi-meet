@@ -358,6 +358,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 送信成功後、インタラクションバインダーは個別の更新コールバックを受け取るのではなく、既存の Cognis Messages チャット更新操作を呼び出すようになりました。内部のチャット関数も、Jitsi がチャット実装を所有しているように見える表現ではなく Cognis の用語を使用します。
 
+## SPA マウントをチャット更新から分離
+
+コンポーザーのレンダー処理は、ページイベントのバインド中にチャット更新を呼び出さなくなりました。送信成功後は、Cognis Messages 操作を検証する必ず関数である更新ラッパーを使用し、利用できない場合は安全な会議とルームのメタデータを記録するため、メソッドがなくてもルートのマウントは失敗しません。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -467,3 +471,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
 
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
+
+- [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)

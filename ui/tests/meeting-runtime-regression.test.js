@@ -77,8 +77,19 @@ test("interactive handlers import their extracted meeting embed dependencies", (
     assert.match(source, /normalizeMeetingId\(/);
     assert.match(source, /messagesClient\(\)\.sendRoomMessage\(/);
     assert.match(source, /loadActiveMeetings,\s*resetMeetingState,\s*\}\) \{/);
-    assert.match(source, /await updateCognisChat\(\)/);
+    assert.match(source, /await refreshChatAfterSend\(\)/);
+    assert.doesNotMatch(source, /void updateCognisChat\(\)/);
     assert.doesNotMatch(source, /refreshCognisChat/);
+});
+
+test("SPA interaction binding does not require the chat updater during mount", () => {
+    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+
+    assert.match(
+        source,
+        /const refreshChatAfterSend = async \(\) =>[\s\S]*typeof chatHandlers\.updateCognisChat !== "function"[\s\S]*operation: "refresh_chat_after_send"/,
+    );
+    assert.match(source, /refreshChatAfterSend,/);
 });
 
 test("window focus changes do not dismiss an idle meeting overlay", () => {

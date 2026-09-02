@@ -212,6 +212,22 @@ export async function mount(
         loadChatRoomKey: chatLoadingModule?.loadChatRoomKey,
     });
     refreshCognisChat = chatHandlers.refreshCognisChat;
+    const refreshChatAfterSend = async () => {
+        if (typeof chatHandlers.updateCognisChat !== "function") {
+            await logUi(
+                "error",
+                "Cognis Messages chat update operation is unavailable.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "refresh_chat_after_send",
+                    meetingId: state.meeting?.id ?? null,
+                    chatRoomId: state.chatRoomId || null,
+                },
+            );
+            return;
+        }
+        await chatHandlers.updateCognisChat();
+    };
     const meetingHandlers = createMeetingHandlers({
         root,
         state,
@@ -307,7 +323,7 @@ export async function mount(
         messageReactions,
         toggleReaction,
         openEmojiPickerPopup,
-        updateCognisChat,
+        refreshChatAfterSend,
         encryptChatMessage,
         getChatRoomKey,
         stopCognisChatPolling,

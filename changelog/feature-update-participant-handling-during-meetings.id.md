@@ -358,6 +358,10 @@ Rapat Sebelumnya kini mengecualikan rapat sekali pakai dengan satu akun dan hany
 
 Pengikat interaksi kini memanggil operasi pembaruan chat Cognis Messages yang sudah ada setelah pengiriman berhasil, alih-alih menerima callback penyegaran terpisah. Fungsi chat internal memakai istilah Cognis dan tidak lagi menyiratkan bahwa Jitsi memiliki implementasi chat.
 
+## Pisahkan pemasangan SPA dari penyegaran chat
+
+Render composer tidak lagi memanggil pembaru chat saat mengikat peristiwa halaman. Pengiriman yang berhasil memakai pembungkus penyegaran yang terjamin, memvalidasi operasi Cognis Messages, dan mencatat metadata rapat serta ruang yang aman jika tidak tersedia, sehingga metode yang hilang tidak menggagalkan pemasangan rute.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -467,3 +471,5 @@ Pengikat interaksi kini memanggil operasi pembaruan chat Cognis Messages yang su
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
 
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
+
+- [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)

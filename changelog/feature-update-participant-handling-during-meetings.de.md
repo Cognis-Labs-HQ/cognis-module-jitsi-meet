@@ -358,6 +358,10 @@ Der ausgelagerte Interaktions-Binder erhält jetzt ausdrücklich den eingebunden
 
 Der Interaktions-Binder ruft nach erfolgreichem Senden jetzt die bestehende Aktualisierungsoperation des Cognis-Messages-Chats auf, statt einen separaten Rückruf zu übernehmen. Interne Chatfunktionen verwenden die Cognis-Terminologie und erwecken nicht länger den Eindruck, Jitsi besitze die Chatimplementierung.
 
+## SPA-Einbindung von der Chataktualisierung entkoppeln
+
+Composer-Renderdurchläufe rufen die Chataktualisierung beim Binden der Seitenereignisse nicht mehr auf. Erfolgreiche Sendevorgänge verwenden einen garantierten Aktualisierungs-Wrapper, der die Cognis-Messages-Operation prüft und bei Nichtverfügbarkeit sichere Besprechungs- und Raumdaten protokolliert, sodass eine fehlende Methode die Routeneinbindung nicht mehr ablehnt.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -467,3 +471,5 @@ Der Interaktions-Binder ruft nach erfolgreichem Senden jetzt die bestehende Aktu
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
 
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
+
+- [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
