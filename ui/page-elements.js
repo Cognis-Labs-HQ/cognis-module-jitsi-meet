@@ -27,6 +27,7 @@ export function createMeetingPageElements(i18n, inShareView) {
             gridSize: {
                 default: [7, 5],
                 min: [6, 4],
+                max: "full",
             },
             render: () => buildStageMarkup(i18n),
         },
@@ -37,6 +38,7 @@ export function createMeetingPageElements(i18n, inShareView) {
             gridSize: {
                 default: [3, 5],
                 min: [3, 4],
+                max: "full",
             },
             render: () => buildChatMarkup(i18n),
         },

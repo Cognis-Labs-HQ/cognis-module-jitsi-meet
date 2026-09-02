@@ -362,6 +362,10 @@ Der Interaktions-Binder ruft nach erfolgreichem Senden jetzt die bestehende Aktu
 
 Composer-Renderdurchläufe rufen die Chataktualisierung beim Binden der Seitenereignisse nicht mehr auf. Erfolgreiche Sendevorgänge verwenden einen garantierten Aktualisierungs-Wrapper, der die Cognis-Messages-Operation prüft und bei Nichtverfügbarkeit sichere Besprechungs- und Raumdaten protokolliert, sodass eine fehlende Methode die Routeneinbindung nicht mehr ablehnt.
 
+## Besprechungsauswahl und Layout aktiver Sitzungen neu abgestimmt
+
+Aus früheren oder aktiven Besprechungen gefüllte Bühnen lösen die Freigabeaufforderung für Einzelbesprechungen nicht mehr aus. Verbundene Konferenzen deaktivieren Interaktionen und Profilvorschauen früherer Besprechungen mit einem Verbotscursor, behalten jedoch die Aktivitätsanimation bei. Bühnen- und Messages-Elemente behalten ausgerichtete Standardhöhen von fünf Zeilen, erlauben nun aber die uneingeschränkte volle Composer-Größe.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -473,3 +477,5 @@ Composer-Renderdurchläufe rufen die Chataktualisierung beim Binden der Seitener
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
 
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
+
+- [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)

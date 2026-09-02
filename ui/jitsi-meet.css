@@ -546,6 +546,17 @@
     scrollbar-width: none;
 }
 
+.jitsi-route-root .jitsi-persisted-meetings-disabled {
+    cursor: not-allowed;
+}
+
+.jitsi-route-root
+    .jitsi-persisted-meetings-disabled
+    .jitsi-persisted-meeting-card {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
 .jitsi-route-root .jitsi-persisted-meetings::-webkit-scrollbar {
     display: none;
 }

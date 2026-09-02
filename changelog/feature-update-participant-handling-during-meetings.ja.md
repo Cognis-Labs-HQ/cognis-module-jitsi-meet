@@ -362,6 +362,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 コンポーザーのレンダー処理は、ページイベントのバインド中にチャット更新を呼び出さなくなりました。送信成功後は、Cognis Messages 操作を検証する必ず関数である更新ラッパーを使用し、利用できない場合は安全な会議とルームのメタデータを記録するため、メソッドがなくてもルートのマウントは失敗しません。
 
+## 会議選択と進行中セッションのレイアウトを再調整
+
+「以前の会議」または「進行中の会議」から入力されたステージでは、単独会議向けの共有ポップアップが表示されなくなりました。会議への参加中は、禁止カーソルとともに「以前の会議」の操作とプロフィールプレビューを無効にし、進行中のアニメーションは維持します。ステージと Messages 要素は揃った 5 行の既定値を保ちながら、制限なしの最大コンポーザーサイズを許可します。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -473,3 +477,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
 
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
+
+- [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)

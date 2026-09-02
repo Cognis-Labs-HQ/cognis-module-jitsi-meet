@@ -517,7 +517,9 @@ export function createEmbedHandlers({
                 .catch(() => ({ data: null }));
             state.meeting = createPayload?.data;
             state.promptShareOnJoin =
-                Boolean(state.meeting?.id) && selected.length === 0;
+                Boolean(state.meeting?.id) &&
+                selected.length === 0 &&
+                !Array.isArray(state.persistedMeetingSelectionUsernames);
             state.chatMode = "meeting";
             state.privateChatUsername = "";
             await callbacks.updateCognisChat();

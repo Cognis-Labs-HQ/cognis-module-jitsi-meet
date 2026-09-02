@@ -362,6 +362,10 @@ The interaction binder now invokes the established Cognis Messages chat update o
 
 Composer renders no longer call the chat updater while binding page events. Successful sends use a guaranteed refresh wrapper that validates the Cognis Messages operation and logs safe meeting and room metadata when it is unavailable, preventing a missing method from rejecting route mount.
 
+## Retune meeting selection and active-session layout
+
+Stages populated from Previous or Active Meetings no longer trigger the solo-meeting share popup. Joined conferences disable Previous Meetings interactions and profile previews with a prohibited cursor while retaining active animation. Stage and Messages elements keep aligned five-row defaults but now allow unrestricted full composer sizing.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -473,3 +477,5 @@ Composer renders no longer call the chat updater while binding page events. Succ
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
 
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
+
+- [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)

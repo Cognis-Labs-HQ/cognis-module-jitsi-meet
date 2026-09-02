@@ -156,7 +156,7 @@ test("new meetings can start with an empty participant stage and prompt for a li
     assert.doesNotMatch(embedSource, /canStart:[^,]*selected\.length/);
     assert.match(
         embedSource,
-        /state\.promptShareOnJoin =\s*Boolean\(state\.meeting\?\.id\) && selected\.length === 0/,
+        /state\.promptShareOnJoin =\s*Boolean\(state\.meeting\?\.id\) &&\s*selected\.length === 0 &&\s*!Array\.isArray\(state\.persistedMeetingSelectionUsernames\)/,
     );
     assert.match(
         embedSource,
@@ -223,6 +223,35 @@ test("meetings search popup adds confirmed users directly to meeting participant
     assert.match(
         source,
         /avatarKey:\s*typeof result\?\.avatarKey === "string"/,
+    );
+});
+
+test("active meetings lock previous meeting interaction and profile hydration", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(
+        source,
+        /const persistedMeetingsLocked = utils\.isMeetingActive\(\)/,
+    );
+    assert.match(
+        source,
+        /persistedMeetingsEl\.inert = persistedMeetingsLocked/,
+    );
+    assert.match(
+        source,
+        /if \(persistedMeetingsLocked\) return;\s*void hydrateProfileAvatars/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*cursor: not-allowed/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*pointer-events: none/,
     );
 });
 
@@ -673,13 +702,13 @@ test("meetings page defaults meeting and chat panels to a 70-30 split while keep
         source,
         /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[3,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
     );
-    assert.doesNotMatch(
+    assert.match(
         source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
+        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[7,\s*5\][\s\S]*max:\s*"full"/,
     );
-    assert.doesNotMatch(
+    assert.match(
         source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
+        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[3,\s*5\][\s\S]*max:\s*"full"/,
     );
 });
 

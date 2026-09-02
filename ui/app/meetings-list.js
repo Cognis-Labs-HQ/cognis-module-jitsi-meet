@@ -119,6 +119,16 @@ export function createMeetingHandlers({
             "#jitsi-persisted-meetings",
         );
         if (!(persistedMeetingsEl instanceof HTMLElement)) return;
+        const persistedMeetingsLocked = utils.isMeetingActive();
+        persistedMeetingsEl.classList.toggle(
+            "jitsi-persisted-meetings-disabled",
+            persistedMeetingsLocked,
+        );
+        persistedMeetingsEl.setAttribute(
+            "aria-disabled",
+            String(persistedMeetingsLocked),
+        );
+        persistedMeetingsEl.inert = persistedMeetingsLocked;
         if (!state.persistedMeetings.length) {
             persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_none"))}</p>`;
             return;
@@ -137,7 +147,11 @@ export function createMeetingHandlers({
                     card.classList.add("jitsi-persisted-meeting-card-selected");
                 }
                 card.setAttribute("role", "listitem");
-                card.tabIndex = 0;
+                card.tabIndex = persistedMeetingsLocked ? -1 : 0;
+                card.setAttribute(
+                    "aria-disabled",
+                    String(persistedMeetingsLocked),
+                );
                 card.setAttribute(
                     "aria-label",
                     `${meeting.meetingName}. ${i18n.t("module.jitsi_meet.participants.previous_select")}`,
@@ -177,6 +191,7 @@ export function createMeetingHandlers({
                     );
                 };
                 card.addEventListener("pointerdown", (event) => {
+                    if (persistedMeetingsLocked) return;
                     if (event.target.closest("a")) return;
                     if (event.button !== 0) return;
                     suppressPersistedMeetingClick = false;
@@ -195,6 +210,7 @@ export function createMeetingHandlers({
                 card.addEventListener("pointercancel", cancelHold);
                 card.addEventListener("pointerleave", cancelHold);
                 card.addEventListener("click", (event) => {
+                    if (persistedMeetingsLocked) return;
                     if (event.target.closest("a")) return;
                     if (suppressPersistedMeetingClick) {
                         suppressPersistedMeetingClick = false;
@@ -203,6 +219,7 @@ export function createMeetingHandlers({
                     selectPersistedMeeting(meeting);
                 });
                 card.addEventListener("keydown", (event) => {
+                    if (persistedMeetingsLocked) return;
                     if (event.key !== "Enter" && event.key !== " ") return;
                     event.preventDefault();
                     selectPersistedMeeting(meeting);
@@ -210,6 +227,7 @@ export function createMeetingHandlers({
                 return card;
             }),
         );
+        if (persistedMeetingsLocked) return;
         void hydrateProfileAvatars(persistedMeetingsEl).catch((error) =>
             logUi("error", "Persisted meeting avatar hydration failed.", {
                 component: "module:jitsi-meet",
@@ -460,6 +478,9 @@ export function createMeetingHandlers({
                         participant.username === candidate.username,
                 ),
         );
+        state.persistedMeetingSelectionUsernames = state.selectedParticipants
+            .map((participant) => participant.username)
+            .sort();
         if (!autoStart) {
             state.meeting = null;
             callbacks.renderParticipants();
