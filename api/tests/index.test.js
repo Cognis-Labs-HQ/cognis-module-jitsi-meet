@@ -17,6 +17,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "social:profileUiClient",
         "social:profile:identity",
         "social:messagesUiClient",
+        "social:messages:deleteChatroom",
         "social:messages:membership",
         "share:uiClient",
         "share:uiGateway",
@@ -156,6 +157,10 @@ test("participant-free meetings delete their identity, shares, and chat when clo
     );
     assert.match(source, /deleteResourceShares\?\.\(/);
     assert.match(source, /social:messages:deleteChatroom/);
+    assert.match(
+        source,
+        /typeof deleteChatroom !== "function"[\s\S]*authorized Messages chatroom deletion capability/,
+    );
     assert.match(source, /deleteReferencedMeetingResource\(\{/);
     assert.match(source, /deleteChatroom\(\{/);
     assert.match(source, /roomId: meeting\.chatRoomId/);

@@ -282,6 +282,10 @@ Die Meeting-Bereinigung löst jetzt die Cognis-Capability `social:messages:delet
 
 Die Meeting-Löschung behandelt referenzierte Whiteboards und Chaträume, die einen standardmäßigen Nicht-gefunden-Status, -Code oder eine entsprechende Meldung zurückgeben, jetzt als bereits gelöscht. Der Zustand wird mit strukturierten Ressourcenmetadaten protokolliert; anschließend werden verbleibender Chat, Freigaben und Meeting-Datensatz weiter bereinigt. Andere Löschfehler stoppen die Bereinigung weiterhin sicher.
 
+## Aktuellen Vertrag zur Chatraum-Löschung voraussetzen
+
+Jitsi deklariert die von der aktuellen Cognis-Messages-Änderung eingeführte Flow-gestützte öffentliche Capability `social:messages:deleteChatroom` jetzt als erforderlichen Laufzeitvertrag. Die API-Registrierung prüft ihre Aufrufbarkeit; die Bereinigung übergibt weiterhin kanonische Werte für `roomId` und `actorAccountId` und behält die idempotente Behandlung fehlender Ressourcen bei.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -357,3 +361,4 @@ Die Meeting-Löschung behandelt referenzierte Whiteboards und Chaträume, die ei
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
+- [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)

@@ -13,6 +13,7 @@ function createScopedRuntime() {
             "social:messages:membership",
             { add: async () => {}, remove: async () => {} },
         ],
+        ["social:messages:deleteChatroom", async () => {}],
     ]);
     const flows = new Set([
         "bootstrap-platform",

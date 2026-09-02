@@ -282,6 +282,10 @@ Meeting cleanup now resolves Cognis’s `social:messages:deleteChatroom` capabil
 
 Meeting deletion now treats referenced Whiteboards and chatrooms that return a standard not-found status, code, or message as already deleted. The condition is logged with structured resource metadata, then cleanup continues through the remaining chat, shares, and meeting record; other deletion failures still stop cleanup safely.
 
+## Require the latest chatroom deletion contract
+
+Jitsi now declares the flow-backed public `social:messages:deleteChatroom` capability introduced by the latest Cognis Messages change as a required runtime contract. API registration validates that the capability is callable, while cleanup continues to supply canonical `roomId` and `actorAccountId` values and retains idempotent not-found handling.
+
 ## Commits
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -357,3 +361,4 @@ Meeting deletion now treats referenced Whiteboards and chatrooms that return a s
 - [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
 - [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
+- [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)

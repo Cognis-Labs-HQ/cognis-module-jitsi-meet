@@ -250,6 +250,11 @@ export function registerApiRoutes(router, ctx) {
         "share:deleteResourceShares",
     );
     const deleteChatroom = ctx.getCapability("social:messages:deleteChatroom");
+    if (typeof deleteChatroom !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the authorized Messages chatroom deletion capability.",
+        );
+    }
     const resolveMeetingPayload = (input) =>
         resolveMeetingPayloadOrReject({
             ...input,
