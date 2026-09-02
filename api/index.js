@@ -844,6 +844,35 @@ export function registerApiRoutes(router, ctx) {
         listClassroomParticipantHandles,
         fetchBoardData,
         isWhiteboardProviderAvailable,
+        requestWhiteboardOpenApproval: async ({
+            meetingId,
+            meetingName,
+            requesterAccountId,
+            requesterDisplayName,
+        }) => {
+            try {
+                const result = await requestShareApproval({
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    requesterAccountId,
+                    requesterDisplayName,
+                    action: "open the meeting Whiteboard",
+                    target: meetingName,
+                });
+                return {
+                    approved: result === true || result?.approved === true,
+                };
+            } catch (error) {
+                log?.("error", "Whiteboard consensus request failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "request_whiteboard_open_approval",
+                    meetingId,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return { approved: false };
+            }
+        },
     });
 
     registerMeetingRoutes({

@@ -32,9 +32,11 @@ function createRoutes({
     },
     whiteboardAvailable = true,
     beforeStateRead = () => {},
+    whiteboardApproval = { approved: true },
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
+    const approvalRequests = [];
     registerMeetingWhiteboardRoutes({
         router: {
             get(path, handler) {
@@ -105,8 +107,12 @@ function createRoutes({
         listClassroomParticipantHandles: async () => [],
         fetchBoardData: async () => board,
         isWhiteboardProviderAvailable: () => whiteboardAvailable,
+        requestWhiteboardOpenApproval: async (request) => {
+            approvalRequests.push(request);
+            return whiteboardApproval;
+        },
     });
-    return { handlers, stateUpdates };
+    return { approvalRequests, handlers, stateUpdates };
 }
 
 test("backend publishes consistent Whiteboard availability", async () => {
@@ -328,7 +334,7 @@ test("meeting participants can synchronize a provider-created whiteboard", async
     ]);
 });
 
-test("concurrent Whiteboard votes are serialized without losing either vote", async () => {
+test("concurrent approved Whiteboard requests remain serialized", async () => {
     const state = {
         whiteboardId: "board-1",
         whiteboardDisposable: true,
@@ -364,9 +370,7 @@ test("concurrent Whiteboard votes are serialized without losing either vote", as
     assert.equal(bobResponse.status, 200);
     assert.equal(carolResponse.status, 200);
     assert.equal(state.whiteboardActive, true);
-    assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, [
-        "bob",
-    ]);
+    assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, []);
     assert.deepEqual(routes.stateUpdates[1].update.whiteboardOpenVotes, []);
 });
 
@@ -493,10 +497,11 @@ test("closing a meeting whiteboard synchronizes the default view", async () => {
     ]);
 });
 
-test("meeting participants reach consensus before opening a whiteboard", async () => {
+test("meeting participants request consensus before opening a whiteboard", async () => {
     const state = { whiteboardOpenVotes: [] };
     const presence = [{ username: "bob" }, { username: "carol" }];
     const firstVote = createRoutes({
+        claims: { sub: "account-bob" },
         requesterUsername: "bob",
         organizerUsername: "alice",
         presence,
@@ -516,32 +521,16 @@ test("meeting participants reach consensus before opening a whiteboard", async (
         },
         firstResponse,
     );
-    assert.equal(firstResponse.body.data.pendingConsensus, true);
-    assert.equal(firstResponse.body.data.votesRequired, 2);
-    state.whiteboardOpenVotes = ["bob"];
-
-    const secondVote = createRoutes({
-        requesterUsername: "carol",
-        organizerUsername: "alice",
-        presence,
-        state,
-    });
-    const secondResponse = createRecorder();
-    await secondVote.handlers.get(
-        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
-    )(
+    assert.equal(firstResponse.body.data.whiteboardOpen, true);
+    assert.equal(firstResponse.body.data.pendingConsensus, false);
+    assert.deepEqual(firstVote.approvalRequests, [
         {
-            body: {
-                meetingId: "meeting-1",
-                whiteboardId: "board-1",
-                disposable: false,
-                active: true,
-            },
+            meetingId: "meeting-1",
+            meetingName: "Planning",
+            requesterAccountId: "account-bob",
+            requesterDisplayName: "bob",
         },
-        secondResponse,
-    );
-    assert.equal(secondResponse.body.data.whiteboardOpen, true);
-    assert.equal(secondResponse.body.data.voteCount, 2);
+    ]);
 });
 
 test("a proposed canvas cannot bypass pending consensus", async () => {
@@ -556,6 +545,7 @@ test("a proposed canvas cannot bypass pending consensus", async () => {
         participants: ["alice", "bob", "carol"],
         presence: [{ username: "bob" }, { username: "carol" }],
         state,
+        whiteboardApproval: { approved: false },
     });
     const response = createRecorder();
 

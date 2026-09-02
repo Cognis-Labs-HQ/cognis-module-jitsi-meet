@@ -49,6 +49,54 @@ export function resolveMeetingPipMinimumSize(meeting) {
     };
 }
 
+export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
+    const whiteboardId = String(
+        state.meeting?.state?.whiteboardId ??
+            trigger.preparedWhiteboardId ??
+            "",
+    ).trim();
+    if (
+        !whiteboardId ||
+        state.shareAccessToken ||
+        trigger.disposableCanvas ||
+        !currentUserOwnsMeetingWhiteboard(state)
+    ) {
+        return null;
+    }
+    if (typeof trigger.whiteboardGateway?.expandCanvasAccess !== "function") {
+        return false;
+    }
+    const participantHandles = getParticipantHandles(state.meeting).sort();
+    const signature = `${whiteboardId}:${participantHandles.join(",")}`;
+    if (
+        trigger.participantAccessSignature === signature ||
+        trigger.participantAccessAttemptSignature === signature
+    ) {
+        return true;
+    }
+    trigger.participantAccessAttemptSignature = signature;
+    const result = await trigger.whiteboardGateway.expandCanvasAccess({
+        whiteboardId,
+        participantHandles,
+    });
+    const expandedParticipants = new Set(
+        (Array.isArray(result?.participants) ? result.participants : []).map(
+            (participant) => String(participant).trim().toLowerCase(),
+        ),
+    );
+    if (
+        String(result?.whiteboardId ?? "").trim() !== whiteboardId ||
+        participantHandles.some(
+            (participant) =>
+                !expandedParticipants.has(participant.toLowerCase()),
+        )
+    ) {
+        throw new Error("whiteboard_participant_access_invalid_response");
+    }
+    trigger.participantAccessSignature = signature;
+    return true;
+}
+
 export function meetingHasInvitedParticipants(meeting) {
     if (typeof meeting?.hasInvitedParticipants === "boolean") {
         return meeting.hasInvitedParticipants;

@@ -306,7 +306,13 @@ Whiteboard-Abstimmungen werden nun in Besprechungsreihenfolge angewendet und die
 
 Bereitgestellte Teilnehmer können jetzt durch einen einzelnen Klick außerhalb des Profillinks oder durch Zurückziehen zu Verfügbare Teilnehmer zurückkehren. Wenn eine aus Vorherige Besprechungen wiederhergestellte Teilnehmergruppe geändert wird, entsteht jetzt eine neue Besprechung, statt den stabilen Namen eines anderen passenden Raums wiederzuverwenden.
 
+## Live-Whiteboard-Zusammenarbeit wiederherstellen
+
+Organisator-Clients synchronisieren den Zugriff auf dauerhafte Arbeitsflächen nach dem Hinzufügen aktiver Teilnehmer erneut. Whiteboard-Anfragen von Nicht-Organisatoren rufen jetzt die Share-Genehmigung auf, sodass die anderen aktiven Teilnehmer die Konsensabfrage erhalten.
+
 ## Commits
+
+- [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 
 - [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 

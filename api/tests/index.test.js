@@ -69,6 +69,13 @@ test("active participant additions require a final Share approval decision", () 
     assert.match(source, /target: meetingName/);
 });
 
+test("participant Whiteboard opens request approval from active meeting peers", () => {
+    const source = readJitsiApiBundle();
+    assert.match(source, /requestWhiteboardOpenApproval/);
+    assert.match(source, /action: "open the meeting Whiteboard"/);
+    assert.match(source, /operation: "request_whiteboard_open_approval"/);
+});
+
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 

@@ -306,7 +306,13 @@ Whiteboard の投票を会議ごとの順序で適用し、有効化の直前に
 
 ステージ上の参加者を、プロフィールリンク以外の場所で1回クリックするかドラッグして「参加可能なユーザー」へ戻せるようにしました。「以前の会議」から復元した参加者構成を変更すると、別の一致する会議室の固定名を再利用せず、新しい会議を作成します。
 
+## ライブ Whiteboard 共同作業を復元
+
+進行中の会議へ参加者を追加した後、主催者のクライアントから永続キャンバスへのアクセスを再同期します。主催者以外からの Whiteboard 要求では Share の承認を呼び出し、ほかのアクティブな参加者へ合意確認を表示します。
+
 ## コミット
+
+- [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 
 - [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 

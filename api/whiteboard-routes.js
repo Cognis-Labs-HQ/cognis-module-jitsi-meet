@@ -80,6 +80,7 @@ async function resolveAuthorizedMeeting({
     }
     return {
         meeting,
+        requesterAccountId: claims.sub,
         requesterUsername,
         shareGuest: shareGuestAccess.isGuest,
     };
@@ -101,6 +102,7 @@ export function registerMeetingWhiteboardRoutes({
     listClassroomParticipantHandles,
     fetchBoardData,
     isWhiteboardProviderAvailable,
+    requestWhiteboardOpenApproval,
 }) {
     const serializeMeetingStateUpdate = createMeetingStateSerializer();
     router.get(
@@ -276,6 +278,30 @@ export function registerMeetingWhiteboardRoutes({
                     return;
                 }
             }
+            let consensusApproved = null;
+            if (
+                active &&
+                !resolved.shareGuest &&
+                resolved.requesterUsername !== resolved.meeting.createdBy
+            ) {
+                const activeUsernames = new Set(
+                    store
+                        .filterCurrentPresenceEntries(
+                            await store.listPresence(resolved.meeting.id),
+                        )
+                        .map((entry) => entry.username),
+                );
+                activeUsernames.add(resolved.requesterUsername);
+                if (activeUsernames.size > 1) {
+                    const approval = await requestWhiteboardOpenApproval?.({
+                        meetingId: resolved.meeting.id,
+                        meetingName: resolved.meeting.meetingName,
+                        requesterAccountId: resolved.requesterAccountId,
+                        requesterDisplayName: resolved.requesterUsername,
+                    });
+                    consensusApproved = approval?.approved === true;
+                }
+            }
             const result = await serializeMeetingStateUpdate(
                 resolved.meeting.id,
                 async () => {
@@ -306,6 +332,8 @@ export function registerMeetingWhiteboardRoutes({
                     ) {
                         whiteboardOpen = true;
                     } else if (mappedParticipantCanvas) {
+                        whiteboardOpen = true;
+                    } else if (active && consensusApproved === true) {
                         whiteboardOpen = true;
                     } else if (active) {
                         const currentParticipants = Array.from(

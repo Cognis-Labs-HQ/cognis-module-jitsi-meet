@@ -306,7 +306,13 @@ Whiteboard votes are now applied in meeting order and screen sharing is checked 
 
 Staged participants can now return to Available Participants with a single click outside the profile link or by dragging them back. Changing a participant set restored from Previous Meetings now creates a fresh meeting instead of reusing the stable name of another matching room.
 
+## Restore live Whiteboard collaboration
+
+Organizer clients now re-synchronize persistent canvas access after active participant additions. Whiteboard requests from non-organizers now invoke Share approval so the other active participants receive the consensus prompt.
+
 ## Commits
+
+- [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 
 - [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 

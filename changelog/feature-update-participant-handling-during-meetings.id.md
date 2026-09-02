@@ -306,7 +306,13 @@ Suara Whiteboard kini diterapkan sesuai urutan rapat dan berbagi layar diperiksa
 
 Peserta di panggung kini dapat kembali ke Peserta Tersedia dengan sekali klik di luar tautan profil atau dengan menyeretnya kembali. Perubahan pada susunan peserta yang dipulihkan dari Rapat Sebelumnya kini membuat rapat baru, bukan memakai kembali nama stabil ruang lain yang cocok.
 
+## Pulihkan kolaborasi Whiteboard langsung
+
+Klien penyelenggara kini menyinkronkan ulang akses kanvas persisten setelah penambahan peserta aktif. Permintaan Whiteboard dari non-penyelenggara kini memanggil persetujuan Share agar peserta aktif lainnya menerima permintaan konsensus.
+
 ## Commit
+
+- [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 
 - [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 
