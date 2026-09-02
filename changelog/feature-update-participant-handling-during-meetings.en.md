@@ -368,11 +368,15 @@ Stages populated from Previous or Active Meetings no longer trigger the solo-mee
 
 ## Restore the established page layout
 
-Removed the full-size maximum overrides from the meeting stage and Messages composer manifests. The original 70–30 layout, matching five-row height, minimum sizes, and normal page-composer resizing behavior are restored.
+Removed the full-size maximum overrides from the meeting stage and Messages composer manifests. The matching five-row height, minimum sizes, and normal page-composer resizing behavior are retained.
 
 ## Clarify disabled history and stabilize Whiteboard discovery
 
 Previous Meeting cards are now visibly greyed out with a prohibited cursor while disabled. Whiteboard UI discovery no longer requires per-user canvas-creation methods after backend provider confirmation, allowing participants in the same meeting to mount an already mapped open canvas consistently.
+
+## Restore the full-width composer payload
+
+The meeting stage and Messages defaults now span all twelve composer columns with an eight-to-four split at the same five-row height. The layout preference key was advanced so clients discard the malformed saved payload instead of restoring the narrow stage, narrow chat, and empty columns.
 
 ## Commits
 
@@ -491,3 +495,5 @@ Previous Meeting cards are now visibly greyed out with a prohibited cursor while
 - [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
 
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
+
+- [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)

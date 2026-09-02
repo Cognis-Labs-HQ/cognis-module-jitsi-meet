@@ -423,7 +423,7 @@ test("meeting styles remain scoped to the Meetings route root", () => {
 
 test("meetings page composer uses a dedicated layout preference key", () => {
     const source = readJitsiUiBundle();
-    assert.match(source, /preferenceKey:\s*"meetings-layout-v3"/);
+    assert.match(source, /preferenceKey:\s*"meetings-layout-v4"/);
     assert.match(source, /requireAccountSession:\s*!limitedShareView/);
 });
 
@@ -696,15 +696,15 @@ test("jitsi meetings reset participant state and disable mini chat until ready",
     assert.match(cssSource, /pointer-events: none;/);
 });
 
-test("meetings page defaults meeting and chat panels to a 70-30 split while keeping them resizable", () => {
+test("meetings page defaults stage and chat across the full composer row", () => {
     const source = readJitsiUiBundle();
     assert.match(
         source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[7,\s*5\][\s\S]*min:\s*\[6,\s*4\]/,
+        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[8,\s*5\][\s\S]*min:\s*\[6,\s*4\]/,
     );
     assert.match(
         source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[3,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
+        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[4,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
     );
     assert.doesNotMatch(
         source,

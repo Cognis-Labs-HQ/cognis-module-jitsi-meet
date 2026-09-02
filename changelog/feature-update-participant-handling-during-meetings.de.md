@@ -368,11 +368,15 @@ Aus früheren oder aktiven Besprechungen gefüllte Bühnen lösen die Freigabeau
 
 ## Etabliertes Seitenlayout wiederhergestellt
 
-Die Maximalgrößen-Überschreibungen für die volle Größe wurden aus den Composer-Manifesten von Besprechungsbühne und Messages entfernt. Das ursprüngliche 70–30-Layout, die übereinstimmende Höhe von fünf Zeilen, die Mindestgrößen und das normale Größenänderungsverhalten des Page Composers sind wiederhergestellt.
+Die Maximalgrößen-Überschreibungen für die volle Größe wurden aus den Composer-Manifesten von Besprechungsbühne und Messages entfernt. Die übereinstimmende Höhe von fünf Zeilen, die Mindestgrößen und das normale Größenänderungsverhalten des Page Composers bleiben erhalten.
 
 ## Deaktivierten Verlauf verdeutlichen und Whiteboard-Erkennung stabilisieren
 
 Deaktivierte Karten früherer Besprechungen sind jetzt sichtbar ausgegraut und zeigen einen Verbotscursor. Die Whiteboard-UI-Erkennung verlangt nach der Backend-Bestätigung des Anbieters keine benutzerspezifischen Canvas-Erstellungsmethoden mehr, sodass Teilnehmer derselben Besprechung eine bereits zugeordnete offene Canvas einheitlich einbinden können.
+
+## Composer-Payload in voller Breite wiederhergestellt
+
+Die Standardgrößen von Besprechungsbühne und Messages belegen jetzt mit einer Aufteilung von acht zu vier alle zwölf Composer-Spalten bei gleicher Höhe von fünf Zeilen. Der Schlüssel der Layout-Einstellung wurde weitergesetzt, damit Clients den fehlerhaften gespeicherten Payload verwerfen, statt die schmale Bühne, den schmalen Chat und leere Spalten wiederherzustellen.
 
 ## Commits
 
@@ -491,3 +495,5 @@ Deaktivierte Karten früherer Besprechungen sind jetzt sichtbar ausgegraut und z
 - [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
 
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
+
+- [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)

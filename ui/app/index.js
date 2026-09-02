@@ -365,7 +365,7 @@ export async function mount(
         allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,
         elements,
-        preferenceKey: "meetings-layout-v3",
+        preferenceKey: "meetings-layout-v4",
         i18n,
         pageContext: {
             title: i18n.t("ui.reuse.meetings"),

@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.170",
+    "version": "1.5.171",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -369,27 +369,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "97a5197d789835b3f04bb57b853c08eaa8910de3ca82bcc836cfe68b73d846c1"
+            "sha256": "9be51bca125fcb88585c37bf7da5209633ecbc479dbbf3a1a0f161474dc6b57e"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "e2a76035eef18cc5d8f5c8022d4d4da34996b44dba0dccbc5eefaf66703b6f0d"
+            "sha256": "2e62c24dc0ba6bbd0324ca0db01998bc1eacc755ff4ae1bafd23e42e77955cc6"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "a091f5eaf39b018d4782509133e0bdf58355545c65cf9984f335fd63a5f08b9f"
+            "sha256": "3768d17ef75d3c283f8b229f351ce6f85bc4f49781ec96e8de8bb434908db168"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "2861cca204d75a144c290d666f73a96ef744c0068659eb29a466808b1cedecbf"
+            "sha256": "dfa7e9b972e7289850a409050f753c2ef6da89a817517fbd12ce49477298a4ec"
         },
         {
             "path": "package-lock.json",
-            "sha256": "0551ace3fe8bb0e173697a12e0d32ff97f7f31f92f4118cb3346d7df1551d85f"
+            "sha256": "737f49df4213137e91069205b5088de6d72721e34c96deef5f82cf653208f9bc"
         },
         {
             "path": "package.json",
-            "sha256": "0f3ee65a860ad6c786042de562784a9ec442f805746133941bf266ae9086c820"
+            "sha256": "34898c7230202ad40d470c2236f6244a8187e35f1aaf772ec87c8f00730531b7"
         },
         {
             "path": "routes.json",
@@ -417,7 +417,7 @@
         },
         {
             "path": "ui/app/index.js",
-            "sha256": "4a72723e3d0fe76b268b2661e5bb378713c9db826d24f7b332fd8002be31cac7"
+            "sha256": "1ee6a9768bd2dd5a18783cd6d89f8630ecc0312333b160f4f540dd6354614d28"
         },
         {
             "path": "ui/app/interactive-handlers.js",
@@ -497,7 +497,7 @@
         },
         {
             "path": "ui/page-elements.js",
-            "sha256": "85843fc174cfc48fe1f93658457add3c715b750dfb27bc21cb43b5ede7d2ab55"
+            "sha256": "28c21d4d769d9dbd0969363de2f4a216aece8259ffdd79613637e753d986c507"
         },
         {
             "path": "ui/reuse/feedback.js",
@@ -533,7 +533,7 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "0cefb3617fb6be07c49835487620f40c60865666cd8c1c47cdbb3e3e41ed8d9c"
+            "sha256": "e0af31cf5950753d13c36b9090f4c5672a66a6a022d05325c7fc1602642ea158"
         },
         {
             "path": "ui/tests/route-root-lifecycle.test.js",

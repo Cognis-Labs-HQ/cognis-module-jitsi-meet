@@ -368,11 +368,15 @@ Panggung yang diisi dari Rapat Sebelumnya atau Rapat Aktif tidak lagi memicu pop
 
 ## Pulihkan tata letak halaman yang sudah ada
 
-Override ukuran maksimum penuh dihapus dari manifest composer panggung rapat dan Messages. Tata letak 70–30 asli, tinggi lima baris yang selaras, ukuran minimum, dan perilaku pengubahan ukuran page composer yang normal telah dipulihkan.
+Override ukuran maksimum penuh dihapus dari manifest composer panggung rapat dan Messages. Tinggi lima baris yang selaras, ukuran minimum, dan perilaku pengubahan ukuran page composer yang normal tetap dipertahankan.
 
 ## Perjelas riwayat nonaktif dan stabilkan penemuan Whiteboard
 
 Kartu Rapat Sebelumnya yang dinonaktifkan kini tampak abu-abu dengan kursor terlarang. Penemuan UI Whiteboard tidak lagi memerlukan metode pembuatan kanvas per pengguna setelah konfirmasi penyedia oleh backend, sehingga peserta dalam rapat yang sama dapat memasang kanvas terbuka yang telah dipetakan secara konsisten.
+
+## Pulihkan payload composer selebar penuh
+
+Default panggung rapat dan Messages kini mencakup seluruh dua belas kolom composer dengan pembagian delapan banding empat pada tinggi lima baris yang sama. Kunci preferensi tata letak dinaikkan agar klien membuang payload tersimpan yang rusak alih-alih memulihkan panggung sempit, chat sempit, dan kolom kosong.
 
 ## Commit
 
@@ -491,3 +495,5 @@ Kartu Rapat Sebelumnya yang dinonaktifkan kini tampak abu-abu dengan kursor terl
 - [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
 
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
+
+- [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
