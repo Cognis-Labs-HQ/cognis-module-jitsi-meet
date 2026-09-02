@@ -364,7 +364,11 @@ Composer renders no longer call the chat updater while binding page events. Succ
 
 ## Retune meeting selection and active-session layout
 
-Stages populated from Previous or Active Meetings no longer trigger the solo-meeting share popup. Joined conferences disable Previous Meetings interactions and profile previews with a prohibited cursor while retaining active animation. Stage and Messages elements keep aligned five-row defaults but now allow unrestricted full composer sizing.
+Stages populated from Previous or Active Meetings no longer trigger the solo-meeting share popup. Joined conferences disable Previous Meetings interactions and profile previews with a prohibited cursor while retaining active animation. Stage and Messages elements keep aligned five-row defaults and their established composer layout bounds.
+
+## Restore the established page layout
+
+Removed the full-size maximum overrides from the meeting stage and Messages composer manifests. The original 70–30 layout, matching five-row height, minimum sizes, and normal page-composer resizing behavior are restored.
 
 ## Commits
 
@@ -479,3 +483,5 @@ Stages populated from Previous or Active Meetings no longer trigger the solo-mee
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
 
 - [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
+
+- [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)

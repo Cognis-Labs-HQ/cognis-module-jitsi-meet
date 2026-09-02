@@ -364,7 +364,11 @@ Composer-Renderdurchläufe rufen die Chataktualisierung beim Binden der Seitener
 
 ## Besprechungsauswahl und Layout aktiver Sitzungen neu abgestimmt
 
-Aus früheren oder aktiven Besprechungen gefüllte Bühnen lösen die Freigabeaufforderung für Einzelbesprechungen nicht mehr aus. Verbundene Konferenzen deaktivieren Interaktionen und Profilvorschauen früherer Besprechungen mit einem Verbotscursor, behalten jedoch die Aktivitätsanimation bei. Bühnen- und Messages-Elemente behalten ausgerichtete Standardhöhen von fünf Zeilen, erlauben nun aber die uneingeschränkte volle Composer-Größe.
+Aus früheren oder aktiven Besprechungen gefüllte Bühnen lösen die Freigabeaufforderung für Einzelbesprechungen nicht mehr aus. Verbundene Konferenzen deaktivieren Interaktionen und Profilvorschauen früherer Besprechungen mit einem Verbotscursor, behalten jedoch die Aktivitätsanimation bei. Bühnen- und Messages-Elemente behalten ausgerichtete Standardhöhen von fünf Zeilen und ihre etablierten Composer-Layoutgrenzen.
+
+## Etabliertes Seitenlayout wiederhergestellt
+
+Die Maximalgrößen-Überschreibungen für die volle Größe wurden aus den Composer-Manifesten von Besprechungsbühne und Messages entfernt. Das ursprüngliche 70–30-Layout, die übereinstimmende Höhe von fünf Zeilen, die Mindestgrößen und das normale Größenänderungsverhalten des Page Composers sind wiederhergestellt.
 
 ## Commits
 
@@ -479,3 +483,5 @@ Aus früheren oder aktiven Besprechungen gefüllte Bühnen lösen die Freigabeau
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
 
 - [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
+
+- [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)

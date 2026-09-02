@@ -364,7 +364,11 @@ Render composer tidak lagi memanggil pembaru chat saat mengikat peristiwa halama
 
 ## Selaraskan ulang pilihan rapat dan tata letak sesi aktif
 
-Panggung yang diisi dari Rapat Sebelumnya atau Rapat Aktif tidak lagi memicu popup berbagi rapat solo. Konferensi yang sedang diikuti menonaktifkan interaksi dan pratinjau profil Rapat Sebelumnya dengan kursor terlarang sambil mempertahankan animasi aktif. Elemen panggung dan Messages tetap memiliki default lima baris yang sejajar, tetapi kini mengizinkan ukuran composer penuh tanpa batas.
+Panggung yang diisi dari Rapat Sebelumnya atau Rapat Aktif tidak lagi memicu popup berbagi rapat solo. Konferensi yang sedang diikuti menonaktifkan interaksi dan pratinjau profil Rapat Sebelumnya dengan kursor terlarang sambil mempertahankan animasi aktif. Elemen panggung dan Messages tetap memiliki default lima baris yang sejajar serta batas tata letak composer yang sudah ada.
+
+## Pulihkan tata letak halaman yang sudah ada
+
+Override ukuran maksimum penuh dihapus dari manifest composer panggung rapat dan Messages. Tata letak 70–30 asli, tinggi lima baris yang selaras, ukuran minimum, dan perilaku pengubahan ukuran page composer yang normal telah dipulihkan.
 
 ## Commit
 
@@ -479,3 +483,5 @@ Panggung yang diisi dari Rapat Sebelumnya atau Rapat Aktif tidak lagi memicu pop
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
 
 - [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
+
+- [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
