@@ -350,6 +350,10 @@ Any authorized participant who starts or reuses a meeting now resolves its assoc
 
 The extracted interaction binder now receives the mounted native-chat refresh callback explicitly, preventing sent meeting and private messages from raising an unhandled scope error before the chat redraw.
 
+## Hide disposable meetings from history
+
+Previous Meetings now excludes single-account disposable meetings and continues to show only persistent meetings backed by a multi-account original or current participant roster.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -455,3 +459,5 @@ The extracted interaction binder now receives the mounted native-chat refresh ca
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
 
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
+
+- [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)

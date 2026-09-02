@@ -350,6 +350,10 @@ Setiap peserta berwenang yang memulai atau memakai kembali rapat kini menyelesai
 
 Pengikat interaksi yang diekstrak kini menerima callback penyegaran chat native yang terpasang secara eksplisit, sehingga pesan rapat dan pribadi yang dikirim tidak lagi menimbulkan galat cakupan yang tidak tertangani sebelum chat digambar ulang.
 
+## Sembunyikan rapat sekali pakai dari riwayat
+
+Rapat Sebelumnya kini mengecualikan rapat sekali pakai dengan satu akun dan hanya menampilkan rapat persisten yang didukung susunan peserta awal atau saat ini dengan beberapa akun.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -455,3 +459,5 @@ Pengikat interaksi yang diekstrak kini menerima callback penyegaran chat native 
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
 
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
+
+- [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)

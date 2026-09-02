@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.164",
+    "version": "1.5.165",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -217,7 +217,7 @@
         },
         {
             "path": "api/reuse/persisted-meetings.js",
-            "sha256": "8d275a8a7ae379581a8de7926b8f9b23b626f352951ed39ca182c3fa4413b8aa"
+            "sha256": "5769daf13c0dfc6993b84a34821b0706be607996b9920265557d91c6eec7df3f"
         },
         {
             "path": "api/reuse/requester.js",
@@ -305,7 +305,7 @@
         },
         {
             "path": "api/tests/persisted-meetings.test.js",
-            "sha256": "2386fd2fe15706d0b5713c98bf24b24bacc01848baac107ec3be6b7fbb5058f9"
+            "sha256": "7867e82b66412e6b7c97946f6c580e2958fb238be7a184d5d875d9884d2e64be"
         },
         {
             "path": "api/tests/profile-identity-fake.js",
@@ -369,27 +369,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "00e170da36c7c37f031c2a5e22744ddee4478c1b55a037f69a6ab3a9f3bd4823"
+            "sha256": "79025d207220a27d85601a8a3404533131d3ccb6f022497728791941e890c525"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "1d5b36be4cf2afa44d257ed504d2ede43418bdd4da68d2dd5167f7de84880fc4"
+            "sha256": "c0dc025e721aa70cc1f0488fb9dd26478e728ffe5c8b1bc84effc64dde6f0dd5"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "047c29d7cdb0af62461509d0a3eb60b6dc03e25acf1e82f7ae00d8f6c4702fd3"
+            "sha256": "d1aa58d2ddd3aafa3a4b2dbf0e702c852073916cdb943b51eaa98a7a3fa38dfa"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "bb33ec52a4aed63a7e18c2e4f5f7d493c996c58aae32d51094d35d2f569bec4e"
+            "sha256": "2774c94016ef0b5d12dc487f8834429ef76dadd99cfd9bceb5a6bf32b7a3bab7"
         },
         {
             "path": "package-lock.json",
-            "sha256": "8e4bd4507d95b230536477aa4d4c86f63be8e9d89dbe2a3e0831fd4e7f21bb8b"
+            "sha256": "1d526a80bfcc4c8f7e4c011f3dd53757f43a83e4614bf36942f02aa826ded57d"
         },
         {
             "path": "package.json",
-            "sha256": "0ad6fa1b6cd6f745eaf1c670a7e25516e1772dda0a0603a95d152245f321efe5"
+            "sha256": "6f0cbb343739a1ef473332ae4521b068e6f32e88a19d4ceab6c400d9de7358fa"
         },
         {
             "path": "routes.json",

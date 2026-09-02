@@ -6,7 +6,7 @@ import {
 } from "../reuse/persisted-meetings.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
-test("persisted meeting discovery retains the final member's meeting", async () => {
+test("persisted meeting discovery excludes disposable meetings", async () => {
     const participantsByMeeting = new Map([
         ["persistent", ["alice", "bob"]],
         ["disposable", ["alice"]],
@@ -35,12 +35,6 @@ test("persisted meeting discovery retains the final member's meeting", async () 
             meetingName: "Meeting persistent",
             meetingUrl: "https://meet.example/persistent",
             participants: ["alice", "carol"],
-        },
-        {
-            id: "disposable",
-            meetingName: "Meeting disposable",
-            meetingUrl: "https://meet.example/disposable",
-            participants: ["alice"],
         },
     ]);
 });

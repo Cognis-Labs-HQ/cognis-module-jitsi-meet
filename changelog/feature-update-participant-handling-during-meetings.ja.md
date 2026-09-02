@@ -350,6 +350,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 分割したインタラクションバインダーが、マウント済みのネイティブチャット更新コールバックを明示的に受け取るようになり、会議またはプライベートメッセージの送信後、チャット再描画前に未処理のスコープエラーが発生しなくなりました。
 
+## 使い捨て会議を履歴から除外
+
+「以前の会議」は単一アカウントの使い捨て会議を除外し、元または現在の参加者構成が複数アカウントである永続的な会議だけを引き続き表示します。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -455,3 +459,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
 
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
+
+- [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
