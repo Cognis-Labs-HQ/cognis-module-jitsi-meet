@@ -21,3 +21,24 @@ export async function listPersistedMeetings({
     }
     return meetings;
 }
+
+export function selectDistinctParticipantMeetings(
+    meetings,
+    { activeMeetingIds, normalizeHandleKeys },
+) {
+    const selectedByParticipants = new Map();
+    for (const meeting of meetings) {
+        const participantSignature = normalizeHandleKeys(
+            meeting.participants,
+        ).join("\u0000");
+        const selected = selectedByParticipants.get(participantSignature);
+        if (
+            !selected ||
+            (!activeMeetingIds.has(selected.id) &&
+                activeMeetingIds.has(meeting.id))
+        ) {
+            selectedByParticipants.set(participantSignature, meeting);
+        }
+    }
+    return Array.from(selectedByParticipants.values());
+}

@@ -318,7 +318,13 @@ Pengiriman persetujuan Whiteboard kini menampilkan toast informasi, dan Cari Pes
 
 Kartu aktif di Rapat Sebelumnya kini memakai segmen batas hijau yang lebih tebal dan panjang, cahaya yang lebih kuat, serta putaran lebih cepat agar rapat yang sedang berlangsung terlihat jelas.
 
+## Tutup peletakan terbengkalai dan satukan riwayat
+
+Peristiwa pelepasan penunjuk dan tetikus kini menutup target peletakan peserta rapat aktif yang belum selesai. Rapat Sebelumnya menyatukan ruang dengan susunan peserta kanonis yang sama menjadi satu kartu dan mengutamakan ruang aktif, sehingga perluasan berulang dari dua menjadi tiga peserta tidak memenuhi riwayat dengan kartu tiga peserta duplikat.
+
 ## Commit
+
+- [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
 
 - [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 

@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { listPersistedMeetings } from "../reuse/persisted-meetings.js";
+import {
+    listPersistedMeetings,
+    selectDistinctParticipantMeetings,
+} from "../reuse/persisted-meetings.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 test("persisted meeting discovery retains the final member's meeting", async () => {
     const participantsByMeeting = new Map([
@@ -37,4 +41,20 @@ test("persisted meeting discovery retains the final member's meeting", async () 
             participants: ["alice"],
         },
     ]);
+});
+
+test("persisted meeting discovery shows one card for each participant set", () => {
+    const meetings = [
+        { id: "older", participants: ["Alice", "bob"] },
+        { id: "newer", participants: ["bob", "alice"] },
+        { id: "different", participants: ["alice", "carol"] },
+    ];
+    assert.deepEqual(
+        selectDistinctParticipantMeetings(meetings, {
+            activeMeetingIds: new Set(["older"]),
+            normalizeHandleKeys: (handles) =>
+                profileIdentityFake.normalizeHandleKeys(handles),
+        }).map((meeting) => meeting.id),
+        ["older", "different"],
+    );
 });

@@ -318,7 +318,13 @@ Gesendete Whiteboard-Genehmigungen zeigen jetzt einen Informationstoast, und Tei
 
 Aktive Karten unter Vorherige Besprechungen verwenden jetzt ein dickeres und längeres grünes Randsegment, ein stärkeres Leuchten und einen schnelleren Umlauf, damit laufende Besprechungen deutlicher hervorstechen.
 
+## Abgebrochene Ablagen schließen und Verlauf zusammenführen
+
+Zeiger- und Mausfreigabeereignisse schließen jetzt eine unvollständige Teilnehmer-Ablagezone der aktiven Besprechung. Vorherige Besprechungen führt Räume mit demselben kanonischen Teilnehmerkreis zu einer Karte zusammen und bevorzugt den aktiven Raum, damit wiederholte Erweiterungen von zwei auf drei Teilnehmer den Verlauf nicht mit doppelten Drei-Teilnehmer-Karten füllen.
+
 ## Commits
+
+- [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
 
 - [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 

@@ -318,7 +318,13 @@ Whiteboard approval submissions now show an informational toast, and Find Partic
 
 Active cards in Previous Meetings now use a thicker and longer green border segment, a stronger glow, and a faster circuit so ongoing meetings stand out clearly.
 
+## Close abandoned drops and consolidate history
+
+Pointer and mouse release events now close an unfinished active-meeting participant dropzone. Previous Meetings consolidates rooms with the same canonical participant set into one card and prefers the active room, preventing repeated two-to-three participant expansions from filling history with duplicate three-participant cards.
+
 ## Commits
+
+- [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
 
 - [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 

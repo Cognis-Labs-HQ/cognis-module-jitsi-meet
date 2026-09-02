@@ -14,6 +14,8 @@ import { hydrateProfileAvatars } from "./profile-avatars.js";
 export function bindDragCleanup({ signal, cancel }) {
     document.addEventListener("dragend", cancel, { capture: true, signal });
     document.addEventListener("drop", cancel, { capture: true, signal });
+    document.addEventListener("mouseup", cancel, { capture: true, signal });
+    document.addEventListener("pointerup", cancel, { capture: true, signal });
     window.addEventListener("blur", cancel, { signal });
     document.addEventListener(
         "keydown",

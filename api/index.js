@@ -26,7 +26,10 @@ import {
     resolveRequestedParticipants,
     resolveShareGuestPresenceUsername,
 } from "./reuse/meeting-access.js";
-import { listPersistedMeetings } from "./reuse/persisted-meetings.js";
+import {
+    listPersistedMeetings,
+    selectDistinctParticipantMeetings,
+} from "./reuse/persisted-meetings.js";
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
@@ -887,6 +890,12 @@ export function registerApiRoutes(router, ctx) {
                 db: dbExecutor,
                 getMeetingById: (id) => store.getMeetingById(id),
                 listParticipants: (id) => store.listParticipants(id),
+            }),
+        selectDistinctParticipantMeetings: (meetings, activeMeetingIds) =>
+            selectDistinctParticipantMeetings(meetings, {
+                activeMeetingIds,
+                normalizeHandleKeys: (handles) =>
+                    profileIdentity.normalizeHandleKeys(handles),
             }),
         listClassroomParticipantHandles,
         resolveMeetingPayloadOrReject: resolveMeetingPayload,

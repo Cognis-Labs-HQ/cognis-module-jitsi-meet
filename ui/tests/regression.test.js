@@ -548,6 +548,8 @@ test("dragging an available participant reveals the active meeting dropzone", ()
         /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,
     );
     assert.match(source, /document\.addEventListener\("dragend", cancel/);
+    assert.match(source, /document\.addEventListener\("mouseup", cancel/);
+    assert.match(source, /document\.addEventListener\("pointerup", cancel/);
     assert.match(source, /document\.addEventListener\("drop", cancel/);
     assert.match(source, /window\.addEventListener\("blur", cancel/);
     assert.match(source, /event\.key === "Escape"[\s\S]*cancel\(\)/);

@@ -6,6 +6,7 @@ export function registerMeetingRoutes({
     listCalendarsByOwner,
     listCalendarEvents,
     listPersistedMeetings,
+    selectDistinctParticipantMeetings,
     listClassroomParticipantHandles,
     resolveMeetingPayloadOrReject,
     createMeetingPayload,
@@ -274,7 +275,7 @@ export function registerMeetingRoutes({
             const activeMeetingIds = new Set(
                 activeMeetings.map((meeting) => meeting.id),
             );
-            const visibleMeetings = [];
+            const authorizedMeetings = [];
             for (const meeting of meetings) {
                 if (
                     !(await canAccessMeeting({
@@ -287,6 +288,13 @@ export function registerMeetingRoutes({
                     }))
                 )
                     continue;
+                authorizedMeetings.push(meeting);
+            }
+            const visibleMeetings = [];
+            for (const meeting of selectDistinctParticipantMeetings(
+                authorizedMeetings,
+                activeMeetingIds,
+            )) {
                 const participantProfiles = [];
                 for (const username of meeting.participants.slice(0, 10)) {
                     const profile = await profileStore
