@@ -342,6 +342,10 @@ Pengikat interaksi yang diekstrak kini menerima operasi reset rapat secara ekspl
 
 Rapat kini menyimpan susunan peserta awal yang tetap di samping keanggotaan langsung. Rapat Sebelumnya memakai susunan tersebut dan pembuatan mencocokkan keduanya, sehingga penambahan atau penghapusan peserta tidak lagi membuat ruang pengganti dengan cepat atau memisahkan kartu stabil dari riwayat chat terenkripsinya. Permintaan konsensus papan tulis tetap menampilkan toast informasi bahwa permintaan telah dikirim.
 
+## Perbaiki sumber daya kolaborasi dan pilihan rapat
+
+Setiap peserta berwenang yang memulai atau memakai kembali rapat kini menyelesaikan ruang Messages terkait meskipun terdapat ID ruang lama, sehingga ruang yang hilang dapat dibuat ulang dan disimpan. Keanggotaan papan tulis persisten disinkronkan dengan peserta akun yang terdaftar dan hadir sebelum dibuka, dan kartu Rapat Aktif serta Rapat Sebelumnya yang cocok berbagi status terpilih.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -443,3 +447,5 @@ Rapat kini menyimpan susunan peserta awal yang tetap di samping keanggotaan lang
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
 
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
+
+- [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)

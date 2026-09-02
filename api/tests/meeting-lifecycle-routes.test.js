@@ -206,6 +206,16 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     assert.equal(createResponse.body.data.chatRoomId, "chat-1");
     assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
     assert.equal(meetingCreationRequests[0].forceNew, true);
+
+    meeting.chatRoomId = "missing-chat";
+    const recreateResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
+        { body: { participants: [], forceNew: false } },
+        recreateResponse,
+    );
+    assert.equal(recreateResponse.status, 200);
+    assert.equal(chatRequests.length, 2);
+    assert.equal(recreateResponse.body.data.chatRoomId, "chat-1");
 });
 
 test("active non-disposable meetings invite a newly dropped participant", async () => {

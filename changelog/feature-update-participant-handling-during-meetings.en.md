@@ -342,6 +342,10 @@ The extracted interaction binder now receives the meeting reset operation explic
 
 Meetings now retain an immutable original participant roster alongside live membership. Previous Meetings uses that roster and creation matches either roster, so adding or removing attendees no longer causes rapid replacement rooms or disconnects a stable card from its encrypted chat history. Whiteboard consensus requests continue to show an informational request-sent toast.
 
+## Repair meeting collaboration resources and selection
+
+Any authorized participant who starts or reuses a meeting now resolves its associated Messages room even when a stale room ID exists, allowing a missing room to be recreated and persisted. Persistent Whiteboard membership is synchronized with listed and present account participants before opening, and matching Active Meetings and Previous Meetings cards share their selected state.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -443,3 +447,5 @@ Meetings now retain an immutable original participant roster alongside live memb
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
 
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
+
+- [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)

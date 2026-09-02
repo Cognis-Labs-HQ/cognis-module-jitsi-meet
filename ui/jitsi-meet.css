@@ -954,3 +954,8 @@ body[data-theme="light"]
 .jitsi-route-root .jitsi-stage-header h3 {
     margin: 0;
 }
+
+#module-jitsi-meet-page .jitsi-persisted-meeting-card-selected {
+    outline: 2px solid var(--color-primary, #22c55e);
+    outline-offset: 2px;
+}

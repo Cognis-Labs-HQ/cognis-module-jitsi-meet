@@ -342,6 +342,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 会議は現在のメンバーシップとは別に、変更されない元の参加者構成を保持するようになりました。「以前の会議」はその構成を使用し、会議作成時には両方の構成を照合するため、参加者の追加や削除によって代替ルームが連続作成されたり、安定したカードが暗号化チャット履歴から切り離されたりしません。ホワイトボードの合意リクエストでは、送信済みの情報トーストも引き続き表示されます。
 
+## 会議コラボレーションリソースと選択状態を修復
+
+権限を持つ参加者が会議を開始または再利用すると、古いルーム ID が残っていても関連する Messages ルームを解決し直し、存在しないルームを再作成して保存できるようになりました。永続的なホワイトボードは、開く前に登録済みおよび参加中のアカウント参加者とメンバーシップを同期し、対応する「進行中の会議」と「以前の会議」のカードは選択状態を共有します。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -443,3 +447,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
 
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
+
+- [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)

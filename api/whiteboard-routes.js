@@ -1,5 +1,6 @@
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
+import { synchronizeMeetingWhiteboardMembers } from "./reuse/whiteboard-membership.js";
 
 function createMeetingStateSerializer() {
     const pendingUpdates = new Map();
@@ -103,6 +104,7 @@ export function registerMeetingWhiteboardRoutes({
     fetchBoardData,
     isWhiteboardProviderAvailable,
     requestWhiteboardOpenApproval,
+    resolveWhiteboardMembership,
 }) {
     const serializeMeetingStateUpdate = createMeetingStateSerializer();
     router.get(
@@ -274,6 +276,52 @@ export function registerMeetingWhiteboardRoutes({
                         403,
                         "forbidden",
                         "Whiteboard does not belong to this meeting.",
+                    );
+                    return;
+                }
+            }
+            if (active && whiteboardDisposable === false) {
+                try {
+                    const presentUsernames = store
+                        .filterCurrentPresenceEntries(
+                            await store.listPresence(resolved.meeting.id),
+                        )
+                        .map((entry) => entry.username);
+                    await synchronizeMeetingWhiteboardMembers({
+                        state: {
+                            whiteboardId,
+                            whiteboardDisposable: false,
+                        },
+                        usernames: [
+                            ...(await store.listParticipants(
+                                resolved.meeting.id,
+                            )),
+                            ...presentUsernames,
+                        ],
+                        profileStore,
+                        resolveWhiteboardMembership,
+                        fetchBoardData,
+                    });
+                } catch (error) {
+                    ctx.log?.(
+                        "error",
+                        "Meeting Whiteboard membership synchronization failed.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation: "synchronize_meeting_whiteboard_members",
+                            meetingId: resolved.meeting.id,
+                            whiteboardId,
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : String(error),
+                        },
+                    );
+                    sendError(
+                        res,
+                        503,
+                        "whiteboard_membership_unavailable",
+                        "Whiteboard access could not be synchronized.",
                     );
                     return;
                 }

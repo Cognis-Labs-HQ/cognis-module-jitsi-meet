@@ -31,6 +31,7 @@ export function createMeetingHandlers({
     let suppressPersistedMeetingClick = false;
 
     function selectPersistedMeeting(meeting) {
+        state.requestedMeetingId = normalizeMeetingId(meeting.id);
         const currentUsername = normalizeUsername(
             state.currentProfile?.handle ?? state.currentProfile?.username,
         );
@@ -60,6 +61,8 @@ export function createMeetingHandlers({
             .map((participant) => participant.username)
             .sort();
         callbacks.renderParticipants();
+        renderPersistedMeetings();
+        renderActiveMeetings();
         root.querySelector(".jitsi-meeting-stage")?.scrollIntoView({
             behavior: "smooth",
             block: "start",
@@ -126,6 +129,12 @@ export function createMeetingHandlers({
                 card.className = "jitsi-persisted-meeting-card";
                 if (meeting.active) {
                     card.classList.add("jitsi-persisted-meeting-card-active");
+                }
+                if (
+                    (state.meeting?.id || state.requestedMeetingId) ===
+                    normalizeMeetingId(meeting.id)
+                ) {
+                    card.classList.add("jitsi-persisted-meeting-card-selected");
                 }
                 card.setAttribute("role", "listitem");
                 card.tabIndex = 0;
@@ -261,8 +270,8 @@ export function createMeetingHandlers({
                 button.disabled = activeMeetingsLocked;
                 button.className = "jitsi-active-meeting-item";
                 if (
-                    state.requestedMeetingId &&
-                    state.requestedMeetingId === meetingId
+                    (state.meeting?.id || state.requestedMeetingId) ===
+                    meetingId
                 ) {
                     button.classList.add("jitsi-active-meeting-item-selected");
                 }

@@ -226,6 +226,24 @@ test("meetings search popup adds confirmed users directly to meeting participant
     );
 });
 
+test("active and previous meeting cards share selected meeting state", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(
+        source,
+        /state\.meeting\?\.id \|\| state\.requestedMeetingId[\s\S]*jitsi-persisted-meeting-card-selected/,
+    );
+    assert.match(
+        source,
+        /state\.meeting\?\.id \|\| state\.requestedMeetingId[\s\S]*jitsi-active-meeting-item-selected/,
+    );
+    assert.match(styles, /\.jitsi-persisted-meeting-card-selected/);
+});
+
 test("active meetings render inside the initial overlay above its start action", () => {
     const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     const meetingsSource = readFileSync(

@@ -37,6 +37,7 @@ function createRoutes({
     const handlers = new Map();
     const stateUpdates = [];
     const approvalRequests = [];
+    const membershipAdds = [];
     registerMeetingWhiteboardRoutes({
         router: {
             get(path, handler) {
@@ -75,6 +76,9 @@ function createRoutes({
             },
         },
         profileStore: {
+            async getProfileByHandle(handle) {
+                return { accountId: `account-${handle}` };
+            },
             async getProfile(accountId) {
                 return {
                     handle:
@@ -111,8 +115,13 @@ function createRoutes({
             approvalRequests.push(request);
             return whiteboardApproval;
         },
+        resolveWhiteboardMembership: () => ({
+            async add(request) {
+                membershipAdds.push(request);
+            },
+        }),
     });
-    return { approvalRequests, handlers, stateUpdates };
+    return { approvalRequests, handlers, membershipAdds, stateUpdates };
 }
 
 test("backend publishes consistent Whiteboard availability", async () => {
@@ -524,6 +533,10 @@ test("meeting participants request consensus before opening a whiteboard", async
     );
     assert.equal(firstResponse.body.data.whiteboardOpen, true);
     assert.equal(firstResponse.body.data.pendingConsensus, false);
+    assert.deepEqual(
+        firstVote.membershipAdds.map((request) => request.userAccountId).sort(),
+        ["account-alice", "account-bob", "account-carol"],
+    );
     assert.deepEqual(firstVote.approvalRequests, [
         {
             meetingId: "meeting-1",

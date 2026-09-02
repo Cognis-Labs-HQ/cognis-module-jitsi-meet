@@ -104,7 +104,7 @@ export function registerMeetingLifecycleRoutes({
             });
             const participants = await store.listParticipants(meeting.id);
             let chatRoom = null;
-            if (!meeting.chatRoomId && typeof resolveGroupChat === "function") {
+            if (typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
                     usernames: participants,
                     title: buildMeetingChatTitle(meeting.meetingName),

@@ -342,6 +342,10 @@ Der ausgelagerte Interaktions-Binder erhält die Operation zum Zurücksetzen des
 
 Besprechungen behalten jetzt neben der aktuellen Mitgliedschaft einen unveränderlichen ursprünglichen Teilnehmerkreis. Frühere Besprechungen verwendet diesen Kreis, und die Erstellung gleicht beide Kreise ab, sodass hinzugefügte oder entfernte Teilnehmer nicht mehr rasch Ersatzräume erzeugen oder eine stabile Karte von ihrem verschlüsselten Chatverlauf trennen. Whiteboard-Konsensanfragen zeigen weiterhin eine informative Versandbestätigung als Toast.
 
+## Besprechungsressourcen und Auswahl repariert
+
+Jeder berechtigte Teilnehmer, der eine Besprechung startet oder wiederverwendet, löst jetzt den zugehörigen Messages-Raum auch bei einer veralteten Raum-ID neu auf, sodass ein fehlender Raum erstellt und gespeichert werden kann. Die Mitgliedschaft dauerhafter Whiteboards wird vor dem Öffnen mit aufgeführten und anwesenden Kontoteilnehmern synchronisiert; außerdem teilen passende Karten unter „Aktive Besprechungen“ und „Frühere Besprechungen“ ihren Auswahlstatus.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -443,3 +447,5 @@ Besprechungen behalten jetzt neben der aktuellen Mitgliedschaft einen unverände
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
 
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
+
+- [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)

@@ -70,3 +70,24 @@ export function createMeetingWhiteboardMembershipUpdater(dependencies) {
             ...dependencies,
         });
 }
+
+export async function synchronizeMeetingWhiteboardMembers({
+    state,
+    usernames,
+    profileStore,
+    resolveWhiteboardMembership,
+    fetchBoardData,
+}) {
+    for (const username of new Set(usernames)) {
+        const profile = await profileStore.getProfileByHandle(username);
+        if (!profile?.accountId) continue;
+        await updateMeetingWhiteboardMembership({
+            operation: "add",
+            state,
+            userAccountId: profile.accountId,
+            profileStore,
+            resolveWhiteboardMembership,
+            fetchBoardData,
+        });
+    }
+}
