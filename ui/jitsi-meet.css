@@ -555,6 +555,8 @@
     .jitsi-persisted-meeting-card {
     pointer-events: none;
     cursor: not-allowed;
+    opacity: 0.5;
+    filter: grayscale(0.75);
 }
 
 .jitsi-route-root .jitsi-persisted-meetings::-webkit-scrollbar {

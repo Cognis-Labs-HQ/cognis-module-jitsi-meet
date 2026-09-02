@@ -370,6 +370,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 会議ステージと Messages のコンポーザーマニフェストから、最大サイズを full にする上書きを削除しました。元の 70 対 30 のレイアウト、揃った 5 行の高さ、最小サイズ、および通常のページコンポーザーのサイズ変更動作を復元しています。
 
+## 無効な履歴を明確化しホワイトボード検出を安定化
+
+無効な「以前の会議」カードをグレー表示し、禁止カーソルを表示するようにしました。バックエンドによるプロバイダー確認後は、ホワイトボード UI の検出でユーザーごとのキャンバス作成メソッドを要求しないため、同じ会議の参加者が割り当て済みの開いているキャンバスを一貫してマウントできます。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -485,3 +489,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
 
 - [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
+
+- [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)

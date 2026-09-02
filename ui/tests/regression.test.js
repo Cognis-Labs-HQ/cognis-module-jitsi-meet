@@ -253,6 +253,10 @@ test("active meetings lock previous meeting interaction and profile hydration", 
         styles,
         /jitsi-persisted-meetings-disabled[\s\S]*pointer-events: none/,
     );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*opacity: 0\.5[\s\S]*filter: grayscale\(0\.75\)/,
+    );
 });
 
 test("active and previous meeting cards share selected meeting state", () => {

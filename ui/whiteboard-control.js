@@ -383,7 +383,7 @@ export async function bindWhiteboardButton({
     let capabilities;
     try {
         capabilities = await resolveWhiteboardCapabilities(signal, {
-            requireCanvasFactory: !state.shareAccessToken,
+            requireCanvasFactory: false,
         });
     } catch (error) {
         await logUi("error", "Whiteboard UI providers could not load.", {
