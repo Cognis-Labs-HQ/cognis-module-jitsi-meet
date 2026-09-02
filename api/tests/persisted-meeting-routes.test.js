@@ -107,7 +107,41 @@ test("an owner can leave while retaining resources needed by remaining members",
     await handler({ body: { meetingId: "meeting-1" } }, response);
 
     assert.equal(response.status, 200);
-    assert.deepEqual(operations, [["store-remove", "meeting-1", "alice"]]);
+    assert.deepEqual(operations[0], [
+        "chat-member-remove",
+        {
+            roomId: "room-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-alice",
+        },
+    ]);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["chat-member-remove", "store-remove"],
+    );
+});
+
+test("the final remaining participant deletes the chatroom as its sole member", async () => {
+    const { handler, operations } = createHarness({
+        participants: ["bob"],
+        requesterUsername: "bob",
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations[0], [
+        "chat-member-remove",
+        {
+            roomId: "room-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-alice",
+        },
+    ]);
+    assert.deepEqual(
+        operations.find(([operation]) => operation === "chat-delete"),
+        ["chat-delete", { roomId: "room-1", actorAccountId: "account-bob" }],
+    );
 });
 
 test("the final departure deletes every persisted meeting resource", async () => {

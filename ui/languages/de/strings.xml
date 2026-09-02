@@ -141,6 +141,7 @@
   <string name="module.jitsi_meet.whiteboard.stage.mount">der Komponenteneinbindung</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Das Whiteboard der Besprechung konnte nicht geschlossen werden.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Warten auf die Zustimmung der Teilnehmer zum Öffnen des Whiteboards.</string>
+  <string name="module.jitsi_meet.whiteboard.request_sent">Whiteboard-Anfrage an die aktiven Teilnehmer gesendet.</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.keyring_action">auf das Whiteboard zuzugreifen</string>
   <string name="module.jitsi_meet.whiteboard.keyring_process">das Whiteboard für die Besprechung {{meeting}}</string>

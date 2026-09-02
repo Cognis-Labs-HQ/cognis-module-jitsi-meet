@@ -520,6 +520,10 @@ test("participant rendering preserves an active meeting overlay state and shows 
         source,
         /state\.availableParticipants\.length === 0[\s\S]*module\.jitsi_meet\.participants\.available_none/,
     );
+    assert.match(
+        source,
+        /state\.availableParticipants\.length === 0[\s\S]*availablePool\.replaceChildren\(emptyMessage\)/,
+    );
 });
 
 test("dragging an available participant reveals the active meeting dropzone", () => {

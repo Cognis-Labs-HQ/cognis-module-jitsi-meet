@@ -310,7 +310,13 @@ Peserta di panggung kini dapat kembali ke Peserta Tersedia dengan sekali klik di
 
 Klien penyelenggara kini menyinkronkan ulang akses kanvas persisten setelah penambahan peserta aktif. Permintaan Whiteboard dari non-penyelenggara kini memanggil persetujuan Share agar peserta aktif lainnya menerima permintaan konsensus.
 
+## Lengkapi umpan balik dan pembersihan kolaborasi
+
+Pengiriman persetujuan Whiteboard kini menampilkan toast informasi, dan Cari Peserta disembunyikan saat kumpulan peserta tersedia kosong. Pemilik yang keluar dihapus dari keanggotaan chat agar peserta terakhir dapat menghapus ruang chat dengan otorisasi satu-satunya peserta yang valid.
+
 ## Commit
+
+- [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 
 - [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 

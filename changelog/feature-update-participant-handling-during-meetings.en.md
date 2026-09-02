@@ -310,7 +310,13 @@ Staged participants can now return to Available Participants with a single click
 
 Organizer clients now re-synchronize persistent canvas access after active participant additions. Whiteboard requests from non-organizers now invoke Share approval so the other active participants receive the consensus prompt.
 
+## Complete collaboration feedback and cleanup
+
+Whiteboard approval submissions now show an informational toast, and Find Participants is hidden when the available pool is empty. Departing owners are removed from chat membership so the final remaining participant can delete the chatroom with valid sole-participant authorization.
+
 ## Commits
+
+- [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 
 - [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 

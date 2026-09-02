@@ -229,6 +229,7 @@ test("meeting share guests synchronize the mapped state with their stable presen
 
     assert.equal(response.status, 200);
     assert.equal(response.body.data.pendingConsensus, true);
+    assert.equal(response.body.data.approvalRequested, false);
     assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, [
         "guest:share-17",
     ]);
@@ -565,6 +566,7 @@ test("a proposed canvas cannot bypass pending consensus", async () => {
 
     assert.equal(response.body.data.whiteboardOpen, false);
     assert.equal(response.body.data.pendingConsensus, true);
+    assert.equal(response.body.data.approvalRequested, true);
     assert.equal(response.body.data.voteCount, 1);
     assert.equal(response.body.data.votesRequired, 2);
 });

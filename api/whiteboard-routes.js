@@ -412,6 +412,9 @@ export function registerMeetingWhiteboardRoutes({
                             : currentState.whiteboardDisposable,
                     whiteboardOpen: active && whiteboardOpen,
                     pendingConsensus: active && !whiteboardOpen,
+                    ...(active && !whiteboardOpen
+                        ? { approvalRequested: consensusApproved !== null }
+                        : {}),
                     voteCount: whiteboardOpenVotes.length,
                     votesRequired,
                 },

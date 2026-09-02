@@ -141,6 +141,7 @@
   <string name="module.jitsi_meet.whiteboard.stage.mount">component mounting</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">The meeting whiteboard could not be closed.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Waiting for participant consensus to open the whiteboard.</string>
+  <string name="module.jitsi_meet.whiteboard.request_sent">Whiteboard request sent to the active participants.</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.keyring_action">access</string>
   <string name="module.jitsi_meet.whiteboard.keyring_process">the whiteboard for meeting {{meeting}}</string>

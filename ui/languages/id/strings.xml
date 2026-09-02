@@ -141,6 +141,7 @@
   <string name="module.jitsi_meet.whiteboard.stage.mount">pemasangan komponen</string>
   <string name="module.jitsi_meet.whiteboard.close_failed">Papan tulis rapat tidak dapat ditutup.</string>
   <string name="module.jitsi_meet.whiteboard.consensus_pending">Menunggu konsensus peserta untuk membuka papan tulis.</string>
+  <string name="module.jitsi_meet.whiteboard.request_sent">Permintaan Whiteboard dikirim kepada peserta aktif.</string>
   <string name="module.jitsi_meet.whiteboard.keyring_component">Papan Tulis</string>
   <string name="module.jitsi_meet.whiteboard.keyring_action">mengakses papan tulis</string>
   <string name="module.jitsi_meet.whiteboard.keyring_process">papan tulis untuk rapat {{meeting}}</string>

@@ -590,8 +590,11 @@ export async function bindWhiteboardButton({
                         state.meeting.state.whiteboardOpen = false;
                         showToast(
                             i18n.t(
-                                "module.jitsi_meet.whiteboard.consensus_pending",
+                                responseData?.approvalRequested === true
+                                    ? "module.jitsi_meet.whiteboard.request_sent"
+                                    : "module.jitsi_meet.whiteboard.consensus_pending",
                             ),
+                            { variant: "info" },
                         );
                         return;
                     }

@@ -89,11 +89,18 @@ export function registerPersistedMeetingRoutes({
                         });
                     }
                     if (resolved.meeting.chatRoomId) {
+                        if (claims.sub !== ownerProfile.accountId) {
+                            await groupChatMembership.remove({
+                                roomId: resolved.meeting.chatRoomId,
+                                actorAccountId: ownerProfile.accountId,
+                                userAccountId: ownerProfile.accountId,
+                            });
+                        }
                         await deleteReferencedMeetingResource({
                             deleteResource: () =>
                                 deleteChatroom({
                                     roomId: resolved.meeting.chatRoomId,
-                                    actorAccountId: ownerProfile.accountId,
+                                    actorAccountId: claims.sub,
                                 }),
                             resourceType: "chatroom",
                             resourceId: resolved.meeting.chatRoomId,
@@ -110,10 +117,7 @@ export function registerPersistedMeetingRoutes({
                 } else {
                     const requesterOwnsResources =
                         claims.sub === ownerProfile.accountId;
-                    if (
-                        resolved.meeting.chatRoomId &&
-                        !requesterOwnsResources
-                    ) {
+                    if (resolved.meeting.chatRoomId) {
                         await groupChatMembership.remove({
                             roomId: resolved.meeting.chatRoomId,
                             actorAccountId: ownerProfile.accountId,

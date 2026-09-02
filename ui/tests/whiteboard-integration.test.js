@@ -107,6 +107,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /currentUserOwnsMeetingWhiteboard\(state\)/);
     assert.match(
         buttonSource,
+        /approvalRequested === true[\s\S]*module\.jitsi_meet\.whiteboard\.request_sent[\s\S]*variant: "info"/,
+    );
+    assert.match(
+        buttonSource,
         /!state\.shareAccessToken[\s\S]*meetingCanvasNeedsPreparation\(trigger, state\)/,
     );
     assert.doesNotMatch(buttonSource, /shouldAutoOpenMappedCanvas/);

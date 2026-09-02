@@ -310,7 +310,13 @@ Bereitgestellte Teilnehmer können jetzt durch einen einzelnen Klick außerhalb 
 
 Organisator-Clients synchronisieren den Zugriff auf dauerhafte Arbeitsflächen nach dem Hinzufügen aktiver Teilnehmer erneut. Whiteboard-Anfragen von Nicht-Organisatoren rufen jetzt die Share-Genehmigung auf, sodass die anderen aktiven Teilnehmer die Konsensabfrage erhalten.
 
+## Kollaborationsfeedback und Bereinigung vervollständigen
+
+Gesendete Whiteboard-Genehmigungen zeigen jetzt einen Informationstoast, und Teilnehmer suchen wird bei leerem verfügbaren Pool ausgeblendet. Ausscheidende Eigentümer werden aus der Chatmitgliedschaft entfernt, damit der letzte verbleibende Teilnehmer den Chatraum mit gültiger Autorisierung als alleiniger Teilnehmer löschen kann.
+
 ## Commits
+
+- [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 
 - [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
 
