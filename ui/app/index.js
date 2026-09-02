@@ -323,6 +323,7 @@ export async function mount(
         ensureMeetingTracking,
         loadActiveMeetings,
         resetMeetingState,
+        refreshNativeChat,
     });
     const elements = createMeetingPageElements(i18n, limitedShareView);
     const [allParticipants, currentProfile] = await Promise.all([

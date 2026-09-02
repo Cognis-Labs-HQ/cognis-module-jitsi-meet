@@ -346,6 +346,10 @@ Meetings now retain an immutable original participant roster alongside live memb
 
 Any authorized participant who starts or reuses a meeting now resolves its associated Messages room even when a stale room ID exists, allowing a missing room to be recreated and persisted. Persistent Whiteboard membership is synchronized with listed and present account participants before opening, and matching Active Meetings and Previous Meetings cards share their selected state.
 
+## Restore chat refresh after sending
+
+The extracted interaction binder now receives the mounted native-chat refresh callback explicitly, preventing sent meeting and private messages from raising an unhandled scope error before the chat redraw.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -449,3 +453,5 @@ Any authorized participant who starts or reuses a meeting now resolves its assoc
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
 
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
+
+- [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)

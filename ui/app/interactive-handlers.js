@@ -40,6 +40,7 @@ export function createInteractiveHandlersBinder({
     ensureMeetingTracking,
     loadActiveMeetings,
     resetMeetingState,
+    refreshNativeChat,
 }) {
     let bindController = null;
     return function bindInteractiveHandlers() {

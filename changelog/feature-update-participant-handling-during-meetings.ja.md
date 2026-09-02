@@ -346,6 +346,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 権限を持つ参加者が会議を開始または再利用すると、古いルーム ID が残っていても関連する Messages ルームを解決し直し、存在しないルームを再作成して保存できるようになりました。永続的なホワイトボードは、開く前に登録済みおよび参加中のアカウント参加者とメンバーシップを同期し、対応する「進行中の会議」と「以前の会議」のカードは選択状態を共有します。
 
+## 送信後のチャット更新を復元
+
+分割したインタラクションバインダーが、マウント済みのネイティブチャット更新コールバックを明示的に受け取るようになり、会議またはプライベートメッセージの送信後、チャット再描画前に未処理のスコープエラーが発生しなくなりました。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -449,3 +453,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
 
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
+
+- [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)

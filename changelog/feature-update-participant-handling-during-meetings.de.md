@@ -346,6 +346,10 @@ Besprechungen behalten jetzt neben der aktuellen Mitgliedschaft einen unverände
 
 Jeder berechtigte Teilnehmer, der eine Besprechung startet oder wiederverwendet, löst jetzt den zugehörigen Messages-Raum auch bei einer veralteten Raum-ID neu auf, sodass ein fehlender Raum erstellt und gespeichert werden kann. Die Mitgliedschaft dauerhafter Whiteboards wird vor dem Öffnen mit aufgeführten und anwesenden Kontoteilnehmern synchronisiert; außerdem teilen passende Karten unter „Aktive Besprechungen“ und „Frühere Besprechungen“ ihren Auswahlstatus.
 
+## Chat-Aktualisierung nach dem Senden wiederhergestellt
+
+Der ausgelagerte Interaktions-Binder erhält jetzt ausdrücklich den eingebundenen Rückruf zur Aktualisierung des nativen Chats. Dadurch lösen gesendete Besprechungs- und Privatnachrichten vor dem Neuzeichnen des Chats keinen unbehandelten Gültigkeitsbereichsfehler mehr aus.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -449,3 +453,5 @@ Jeder berechtigte Teilnehmer, der eine Besprechung startet oder wiederverwendet,
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
 
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
+
+- [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)

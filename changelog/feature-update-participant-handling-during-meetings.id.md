@@ -346,6 +346,10 @@ Rapat kini menyimpan susunan peserta awal yang tetap di samping keanggotaan lang
 
 Setiap peserta berwenang yang memulai atau memakai kembali rapat kini menyelesaikan ruang Messages terkait meskipun terdapat ID ruang lama, sehingga ruang yang hilang dapat dibuat ulang dan disimpan. Keanggotaan papan tulis persisten disinkronkan dengan peserta akun yang terdaftar dan hadir sebelum dibuka, dan kartu Rapat Aktif serta Rapat Sebelumnya yang cocok berbagi status terpilih.
 
+## Pulihkan penyegaran chat setelah pengiriman
+
+Pengikat interaksi yang diekstrak kini menerima callback penyegaran chat native yang terpasang secara eksplisit, sehingga pesan rapat dan pribadi yang dikirim tidak lagi menimbulkan galat cakupan yang tidak tertangani sebelum chat digambar ulang.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -449,3 +453,5 @@ Setiap peserta berwenang yang memulai atau memakai kembali rapat kini menyelesai
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
 
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
+
+- [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
