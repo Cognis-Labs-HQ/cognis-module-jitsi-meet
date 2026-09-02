@@ -2,9 +2,19 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createScopedRuntime() {
-    const capabilities = new Map([["auth:requireAuth", () => null]]);
+    const capabilities = new Map([
+        ["auth:requireAuth", () => null],
+        ["share:requestApproval", async () => ({ approved: true })],
+        ["social:profile:identity", profileIdentityFake],
+        [
+            "social:messages:membership",
+            { add: async () => {}, remove: async () => {} },
+        ],
+        ["social:messages:deleteChatroom", async () => {}],
+    ]);
     const flows = new Set([
         "bootstrap-platform",
         "mint-share-token",
@@ -158,6 +168,7 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         labelKey: "module.jitsi_meet.page_title",
         descriptionKey: "module.jitsi_meet.description",
         modes: ["overlay", "fullscreen", "pip"],
+        minSize: { width: 400, height: 225 },
     });
     assert.deepEqual(
         firstEnabledSnapshot.uiContributions.find(
@@ -180,6 +191,9 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
     const commands = [];
     const ctx = {
         getCapability(capabilityId) {
+            if (capabilityId === "social:profile:identity") {
+                return profileIdentityFake;
+            }
             assert.equal(capabilityId, "db:executor");
             return {
                 async ensureTable() {},
@@ -212,6 +226,7 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
         [
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
+            "jitsi_meeting_original_participants",
             "jitsi_meeting_participants",
             "jitsi_meetings",
             "jitsi_module_config",

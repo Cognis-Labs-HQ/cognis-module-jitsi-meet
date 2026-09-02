@@ -1,0 +1,186 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { registerPersistedMeetingRoutes } from "../persisted-meeting-routes.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
+
+function createHarness({
+    participants,
+    requesterUsername = "alice",
+    requesterAccountId = `account-${requesterUsername}`,
+    state = {},
+    meeting = {},
+    whiteboardDeletion = null,
+    logs = [],
+}) {
+    const handlers = new Map();
+    const operations = [];
+    registerPersistedMeetingRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            async ensureSchema() {},
+            async listActiveMeetings() {
+                return [];
+            },
+            async removeMeetingParticipant(id, username) {
+                operations.push(["store-remove", id, username]);
+            },
+            async deleteMeeting(id) {
+                operations.push(["store-delete", id]);
+            },
+        },
+        profileStore: {
+            async getProfileByHandle(handle) {
+                return { accountId: `account-${handle}` };
+            },
+        },
+        profileIdentity: profileIdentityFake,
+        requireAuth: () => ({ sub: requesterAccountId, role: "user" }),
+        readJson: async (request) => request.body,
+        sendJson: (response, status, body) =>
+            Object.assign(response, { status, body }),
+        sendError: (response, status, code) =>
+            Object.assign(response, { status, body: { error: { code } } }),
+        resolveMeetingPayload: async () => ({
+            meeting: {
+                id: "meeting-1",
+                createdBy: "alice",
+                chatRoomId: "room-1",
+                ...meeting,
+            },
+            requesterUsername,
+            participants,
+            state,
+        }),
+        groupChatMembership: {
+            async remove(input) {
+                operations.push(["chat-member-remove", input]);
+            },
+        },
+        resolveWhiteboardMembership: () => ({
+            async remove(input) {
+                operations.push(["board-member-remove", input]);
+            },
+        }),
+        resolveWhiteboardDeletion: () =>
+            whiteboardDeletion ??
+            (async (input) => {
+                operations.push(["board-delete", input]);
+            }),
+        fetchBoardData: async () => ({ createdBy: "alice" }),
+        deleteChatroom: async (input) =>
+            operations.push(["chat-delete", input]),
+        deleteResourceShares: async (input) =>
+            operations.push(["shares-delete", input]),
+        log: (...entry) => logs.push(entry),
+    });
+    return {
+        handler: handlers.get(
+            "/api/v1/modules/jitsi-meet/meetings/persisted/leave",
+        ),
+        operations,
+        logs,
+    };
+}
+
+test("leaving a previous meeting removes only the requesting member", async () => {
+    const { handler, operations } = createHarness({
+        participants: ["alice", "bob"],
+        requesterUsername: "bob",
+        state: { whiteboardId: "board-1", whiteboardDisposable: false },
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["chat-member-remove", "board-member-remove", "store-remove"],
+    );
+});
+
+test("an owner can leave while retaining resources needed by remaining members", async () => {
+    const { handler, operations } = createHarness({
+        participants: ["alice", "bob"],
+        state: { whiteboardId: "board-1", whiteboardDisposable: false },
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations[0], [
+        "chat-member-remove",
+        {
+            roomId: "room-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-alice",
+        },
+    ]);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["chat-member-remove", "store-remove"],
+    );
+});
+
+test("the final remaining participant deletes the chatroom as its sole member", async () => {
+    const { handler, operations } = createHarness({
+        participants: ["bob"],
+        requesterUsername: "bob",
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations[0], [
+        "chat-member-remove",
+        {
+            roomId: "room-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-alice",
+        },
+    ]);
+    assert.deepEqual(
+        operations.find(([operation]) => operation === "chat-delete"),
+        ["chat-delete", { roomId: "room-1", actorAccountId: "account-bob" }],
+    );
+});
+
+test("the final departure deletes every persisted meeting resource", async () => {
+    const { handler, operations } = createHarness({
+        participants: ["alice"],
+        state: { whiteboardId: "board-1", whiteboardDisposable: false },
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["board-delete", "chat-delete", "shares-delete", "store-delete"],
+    );
+    assert.deepEqual(operations[1], [
+        "chat-delete",
+        { roomId: "room-1", actorAccountId: "account-alice" },
+    ]);
+});
+
+test("final departure continues when its Whiteboard is already absent", async () => {
+    const logs = [];
+    const { handler, operations } = createHarness({
+        participants: ["alice"],
+        state: { whiteboardId: "board-1", whiteboardDisposable: false },
+        whiteboardDeletion: async () => {
+            throw new Error("Whiteboard not found.");
+        },
+        logs,
+    });
+    const response = {};
+    await handler({ body: { meetingId: "meeting-1" } }, response);
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(
+        operations.map(([operation]) => operation),
+        ["chat-delete", "shares-delete", "store-delete"],
+    );
+    assert.equal(logs[0][0], "error");
+    assert.equal(logs[0][2].resourceType, "whiteboard");
+});

@@ -6,22 +6,209 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 
 - Bergabung atau mengambil alih rapat dari `/meetings` dan `/meeting` tanpa navigasi halaman penuh.
 - Memilih peserta, membagikan akses rapat, dan menggunakan chat Messages milik rapat.
+
+Pengguna yang sedang aktif dalam rapat lain tidak ditampilkan dalam pencarian peserta dan tidak dapat diseret ke rapat aktif; undangan terjadwal saja tidak membuat pengguna menjadi tidak tersedia.
+
+Peserta tersedia dan rapat aktif diperbarui setiap lima detik, termasuk indikator ketersediaan setelah navigasi SPA.
+
+Pencari peserta meneruskan filter hasil `user` milik Cognis core, dan daftar rapat aktif hanya muncul di overlay awal tepat di atas Mulai Rapat.
+
+Parameter rapat dari notifikasi dihapus dari URL segera setelah digunakan.
+
+Perubahan fokus jendela tanpa penyeretan peserta aktif mempertahankan tampilan overlay saat ini sehingga lobi yang diam tetap dapat memulai rapat.
+
+Bagian rapat aktif selalu dikunci saat rapat dipilih atau dimasuki, termasuk saat bergabung melalui notifikasi; notifikasi rapat berakhir tidak memiliki tindakan maupun tautan email.
+
+Panel Peserta mempertahankan pengguna dikenal yang tersedia dalam kolom 30% yang dapat digulir vertikal dan menampilkan kartu rapat persisten yang dapat digulir horizontal pada 70% sisanya; setiap kartu memusatkan nama stabilnya, menyusun hingga sepuluh avatar profil standar di sekelilingnya, dan memakai segmen hijau aplikasi yang bergerak di sepanjang batas saat rapat tersebut aktif.
+
+Kartu ringkas tersebut dapat diklik: memilihnya memulihkan daftar peserta ke panggung dan menggulir ke sana agar Mulai Rapat memakai kembali rapat stabil; menahan kartu selama tiga detik mengubah warna hijau menjadi merah dan membuka konfirmasi yang menghapus pengguna saat ini, lalu menghapus rapat, ruang chat, dan Whiteboard terkait secara permanen setelah anggota terakhir keluar.
+
+Kartu Rapat Sebelumnya menyesuaikan tinggi dengan judul dan baris avatar terbungkus tanpa membuat luapan vertikal.
+
+Status aktif hanya digambar sebagai segmen warna yang bergerak di sepanjang batas kartu, sedangkan penahanan untuk menghapus langsung memulai perpaduan gradien hijau-ke-merah dengan opasitas tetap.
+
+Konfirmasi memakai perlakuan tombol destruktif dan netral, dan keberhasilan keluar dilaporkan sebagai informasi.
+
+Cari Peserta ditampilkan sebagai avatar profil bertanda tanya di awal Peserta Tersedia.
+
+Judul Peserta bersama tetap berada di atas kedua kolom agar judul Peserta Tersedia dan Rapat Sebelumnya sejajar.
+
+Galeri setinggi konten mencegah luapan vertikal, dan penahanan untuk menghapus secara andal menganimasikan gradien beropasitas tetap sejak bingkai penekanan pertama.
+
+Judul Peserta mempertahankan tinggi teks alami yang diwarisi dengan margin luar judul nol; panel mengalokasikan ruangnya secara mandiri sementara tata letak peserta melentur ke ruang induk yang tersisa tanpa dipadatkan oleh ukuran judul yang dipaksakan.
+
+Rapat Sebelumnya tetap dapat digulir horizontal dengan penunjuk, sentuhan, roda, dan papan ketik sementara jalur bilah gulir disembunyikan secara visual.
+
+Peserta yang ditempatkan di panggung dapat dikembalikan ke Peserta Tersedia dengan mengeklik di luar tautan profilnya atau menyeretnya kembali.
+
+Jika pilihan Rapat Sebelumnya diubah, Mulai Rapat membuat ruang baru alih-alih memuat nama rapat stabil untuk susunan peserta yang telah berubah.
+
+Avatar Cari Peserta disembunyikan bersama kumpulan kosong saat tidak ada peserta yang tersedia.
+
+Indikator Rapat Sebelumnya yang aktif memakai segmen hijau yang lebih tebal, panjang, dan terang dengan cahaya lebih kuat serta putaran lebih cepat mengelilingi kartu.
+
+Melepaskan penunjuk di mana pun mengakhiri penyeretan peserta yang belum selesai dan menutup target panggungnya.
+
+Rapat Sebelumnya hanya menampilkan satu kartu untuk setiap susunan peserta kanonis dan mengutamakan ruang aktif, sehingga perluasan susunan yang sama berulang kali tidak menumpuk kartu riwayat duplikat.
+
+Susunan peserta awal disimpan terpisah dari keanggotaan langsung: Rapat Sebelumnya tetap mewakili susunan stabil tersebut, dan memulainya memakai kembali ID rapat serta riwayat chat terenkripsi yang sama meskipun peserta telah ditambahkan atau dihapus dari rapat langsung.
+
+Memilih rapat di Rapat Sebelumnya atau Rapat Aktif menerapkan tampilan terpilih pada kartu yang cocok di kedua bagian.
+
+Setiap peserta rapat yang berwenang dapat membuat ulang ruang Messages terkait yang hilang, dan ID ruang pengganti disimpan sebelum pemuatan chat dilanjutkan.
+
+Rapat sekali pakai dengan satu akun tidak ditampilkan di Rapat Sebelumnya; hanya rapat persisten dengan susunan awal atau saat ini yang memiliki beberapa akun yang ditampilkan di sana.
+
+Prompt berbagi otomatis dibatasi pada panggung kosong yang baru dibuat; panggung yang diisi dari Rapat Sebelumnya atau Rapat Aktif dianggap terisi meskipun tidak memiliki peserta selain akun saat ini.
+
+Saat konferensi diikuti, Rapat Sebelumnya menjadi inert dan berwarna abu-abu, memakai kursor terlarang, dan tidak menghidrasi pratinjau profil, sementara animasi kartu aktif tetap berjalan.
+
+Rapat Sebelumnya memakai perlakuan terblokir berbasis opasitas yang sama seperti Rapat Aktif tanpa filter skala abu-abu; pelindung interaksi transparan memiliki kursor terlarang agar tetap terlihat di seluruh area kartu.
+
+- Selama rapat aktif yang tidak sekali pakai, seret pengguna lain yang tersedia ke jendela rapat untuk menambahkannya secara permanen ke daftar peserta.
+
+Cognis menyediakan akses chat Messages terenkripsi melalui kapabilitas `social:messages:membership` dengan ID akun pelaku dan pengguna yang kanonis, mengirim undangan, dan mengizinkan pengguna tersebut mengambil kata sandi rapat saat bergabung.
+
+Setiap pengguna terautentikasi yang bergabung kembali menjalankan operasi keanggotaan idempoten sebelum chat dimuat, sehingga akses dipulihkan bila peserta sebelumnya meninggalkan atau mengarsipkan chat rapat tersebut.
+
+Penyegaran peserta tidak pernah menutupi rapat aktif dengan overlay lobi, dan kumpulan peserta tersedia yang kosong ditandai secara jelas.
+
+Saat pengguna yang tersedia diseret selama rapat aktif, target peletakan terlokalisasi muncul dengan batas yang sama persis dengan jendela tersemat.
+
+Target berada di atas sematan selama penyeretan dan kembali ke bawahnya setelah peletakan atau penyeretan berakhir.
+
+Garis tepi dalam hijau dan target putus-putus tetap terlihat selama seluruh proses penyeretan peserta.
+
+Jika hanya satu peserta yang aktif hadir, undangan peserta baru langsung disetujui tanpa meminta konsensus dari peserta yang tidak hadir.
+
+Undangan aktif yang berhasil menampilkan toast, memperbarui keanggotaan ruang chat terenkripsi yang sama melalui API Messages dan menggambar ulang chat tersebut selama polling status, dan memperbarui Whiteboard persisten yang sudah ada melalui `whiteboard:membership` dengan ID akun pelaku dan pengguna yang kanonis.
+
+API rapat menyelesaikan pembaruan keanggotaan ruang yang sama sebelum menyimpan perubahan peserta rapat sehingga klien tidak pernah berpindah ID ruang.
+
+Saat Jitsi melaporkan peserta lokal telah dikeluarkan, pengguna terautentikasi dihapus dari daftar peserta tersimpan dan tersedia untuk undangan baru; tautan Share tertentu milik tamu yang dikeluarkan dicabut.
+
+Seluruh kanonisasi nama pengguna dan handle di sisi server didelegasikan kepada kapabilitas publik `social:profile:identity`, dengan kapabilitas tersebut diteruskan secara eksplisit ke setiap panggilan normalisasi; modul tidak menyimpan aturan normalisasinya sendiri.
+
+Pembersihan ruang chat memakai kapabilitas publik `social:messages:deleteChatroom` dengan `roomId` dan `actorAccountId` kanonis; Messages mengotorisasi pembuat ruang atau satu-satunya peserta yang tersisa lalu menghapus rekaman chat terkait secara transaksional.
+
+Selama pembongkaran rapat, Whiteboard atau ruang chat terkait yang melaporkan status, kode, atau pesan tidak ditemukan standar dianggap sudah dihapus; fallback dicatat dengan metadata sumber daya terstruktur dan pembersihan berlanjut ke sumber daya tersisa serta rekaman rapat.
+
+Integrasi Messages terbaru mengekspos penghapusan sebagai kapabilitas publik yang didukung flow; Jitsi mendeklarasikan `social:messages:deleteChatroom` sebagai wajib dan memvalidasi bahwa kapabilitas tersebut diselesaikan menjadi fungsi yang dapat dipanggil saat pendaftaran API sehingga kegagalan terjadi lebih awal, bukan sebagai galat pembersihan terlambat.
+
+Saat penyelenggara memperluas rapat aktif, klien pemilik juga menyinkronkan ulang seluruh daftar peserta melalui gateway UI Whiteboard.
+
+Permintaan membuka dari non-penyelenggara memakai persetujuan Share agar setiap peserta akun aktif lainnya menerima keputusan konsensus, bukan hanya mengandalkan suara status pasif.
+
+Permintaan persetujuan Whiteboard yang dikirim menampilkan toast informasi.
+
+Jika pemilik rapat keluar sebelum anggota lain, keanggotaan chat miliknya dihapus sementara metadata kepemilikan dipertahankan; dengan demikian anggota terakhir dapat menghapus chat sebagai satu-satunya peserta yang berwenang.
+
+Saat papan tulis rapat persisten dibuka, keanggotaannya disinkronkan dengan peserta akun yang terdaftar dan yang sedang hadir sebelum kanvas ditampilkan.
+
+Setelah mengirim pesan rapat atau pribadi, pengikat interaksi yang diekstrak memanggil callback penyegaran chat yang terpasang agar pesan baru muncul tanpa galat cakupan.
+
+Render page composer hanya mengikat listener interaksi dan tidak memanggil pembaru chat saat rute dipasang; penyegaran setelah pengiriman memakai pembungkus yang terjamin dan mencatat operasi chat yang tidak tersedia alih-alih menggagalkan pemasangan SPA.
+
+Elemen composer panggung dan Messages mempertahankan default lima baris serta ukuran minimum yang selaras, mengisi seluruh baris composer dua belas kolom dengan pembagian delapan banding empat, dan memakai preferensi tata letak baru agar tata letak tersimpan yang rusak tidak dipulihkan.
+
+Penemuan kontrol Whiteboard tidak mengharuskan setiap peserta menyediakan metode pembuatan kanvas; setelah backend mengonfirmasi penyedia, kanvas yang dipetakan dapat dipasang secara konsisten untuk semua anggota rapat.
+
+Pemasangan Whiteboard tidak lagi menerapkan gerbang canvas factory kedua untuk pengguna masuk setelah penemuan kemampuan, sehingga koneksi satu pengguna tidak membuat kontrol menghilang bagi peserta lain.
+
+- Tindakan Papan Tulis memakai tampilan konfirmasi saat dapat dibuka dan beralih ke tampilan batal selama berlabel “Tutup Papan Tulis.” Saat Jitsi melaporkan peserta lokal atau jarak jauh yang berbagi layar, Papan Tulis bersama ditutup untuk semua orang dan tetap dinonaktifkan hingga berbagi layar berhenti.
+
+Saat rapat berpindah ke gambar-dalam-gambar untuk Papan Tulis, overlay rapat—termasuk target peletakan peserta aktif—berpindah ke permukaan mengambang itu dan kembali ke panggung ketika ditutup.
+
+Setiap penyeretan peserta memastikan kembali host overlay saat ini sebelum menampilkan target; target yang dipindahkan ke bingkai Jitsi mengambang menggunakan batas inset absolut sehingga tetap menutupi seluruh jendela PiP.
+
 - Memantau rapat aktif dan mendatang dari Administration → Meetings.
 - Menyematkan rute Meetings sebagai halaman komponen overlay, layar penuh, atau gambar-dalam-gambar.
 
+Ukuran minimum gambar-dalam-gambar yang diumumkan adalah 400 × 225 piksel, 25% lebih besar daripada permukaan seluler terkecil Jitsi Meet sebesar 320 × 180. Saat rapat mengambang, peserta aktif ketiga meningkatkan kedua dimensi minimum satu kali sebesar 25% menjadi 500 × 282 piksel; peserta tambahan tidak memperbesarnya lagi, dan modul menerapkan perubahan tunggal itu melalui fungsi pelepas jendela mengambang milik host.
+
 ## Spesifikasi Teknis
 
-- Panggilan API memerlukan token akses Cognis yang valid; detail rapat hanya dikembalikan kepada peserta berwenang atau tamu berbagi yang terbatas. Mount berbagi terbatas hanya menyelesaikan identitas melalui profil tamu Share dan tidak pernah meminta profil akun atau endpoint pencarian peserta. Proses bergabung tamu mempertahankan resolusi keyring untuk kata sandi rapat dan chat terenkripsi. Tamu tanpa pemetaan Papan Tulis yang sudah ada menunggu status rapat tersinkronisasi tanpa menjadwalkan persiapan kanvas tanpa hasil secara berulang.
-- Kata sandi dibuat per rekaman rapat. Nama rapat berupa frasa sandi empat kata dengan kapitalisasi judul yang dibuat melalui kapabilitas host `reuse:generatePassphrase`. Nama yang sama, dipisahkan tanda hubung, disimpan sebagai nama tampilan dan slug ruang Jitsi, disertakan dalam URL rapat, serta selalu diteruskan secara eksplisit ke `JitsiMeetExternalAPI`; modul tidak pernah meminta Jitsi membuat atau melaporkan nama ruang. Nama itu juga diteruskan ke daftar rapat, chat Messages, berbagi, dan Papan Tulis. Rapat tanpa peserta menerima chat Messages beranggota tunggal saat dibuat agar tamu tautan berbagi dapat bergabung kemudian; chat tersebut dihapus permanen saat rapat sekali pakai berakhir. Endpoint konfigurasi `DELETE` terautentikasi tetap tersedia ketika modul dinonaktifkan agar administrator dapat menghapus URL Jitsi yang tidak valid.
+- Panggilan API memerlukan token akses Cognis yang valid; detail rapat hanya dikembalikan kepada peserta berwenang atau tamu berbagi yang terbatas.
+
+Penemuan rapat aktif mengotorisasi keanggotaan peserta melalui identitas akun terautentikasi meskipun akun tersebut saat ini tidak memiliki handle profil yang dapat diselesaikan, sehingga setiap rapat aktif menurut Cognis yang memuat peserta tersebut tetap terlihat sementara operasi rapat yang bergantung pada profil tetap tidak tersedia.
+
+Mount berbagi terbatas hanya menyelesaikan identitas melalui profil tamu Share dan tidak pernah meminta profil akun atau endpoint pencarian peserta.
+
+Proses bergabung tamu mempertahankan resolusi keyring untuk kata sandi rapat dan chat terenkripsi.
+
+Tamu tanpa pemetaan Papan Tulis yang sudah ada menunggu status rapat tersinkronisasi tanpa menjadwalkan persiapan kanvas tanpa hasil secara berulang.
+
+- Kata sandi dibuat per rekaman rapat.
+
+Nama rapat berupa frasa sandi empat kata dengan kapitalisasi judul yang dibuat melalui kapabilitas host `reuse:generatePassphrase`.
+
+Nama yang sama, dipisahkan tanda hubung, disimpan sebagai nama tampilan dan slug ruang Jitsi, disertakan dalam URL rapat, serta selalu diteruskan secara eksplisit ke `JitsiMeetExternalAPI`; modul tidak pernah meminta Jitsi membuat atau melaporkan nama ruang.
+
+Inisialisasi skema tidak pernah membuat ulang atau menimpa nama, URL, maupun slug ruang rapat yang sudah ada.
+
+Nama itu juga diteruskan ke daftar rapat, chat Messages, berbagi, dan Papan Tulis.
+
+Rapat persisten diselesaikan berdasarkan seluruh kumpulan peserta yang dinormalisasi dan menggunakan kembali ID, nama, URL, slug ruang, kata sandi, serta ruang Messages tersimpan yang sama setelah proses dimulai ulang, termasuk setelah perubahan keanggotaan aktif.
+
+Rapat tanpa peserta bersifat sekali pakai, selalu memperoleh identitas baru dan chat Messages beranggota tunggal baru, lalu menghapus chat dan catatan rapat secara permanen saat berakhir.
+
+Endpoint konfigurasi `DELETE` terautentikasi tetap tersedia ketika modul dinonaktifkan agar administrator dapat menghapus URL Jitsi yang tidak valid.
+
 - Persistensi milik modul menyimpan konfigurasi, peserta, kehadiran, status siklus hidup, status Papan Tulis, dan suara konsensus. Inisialisasi skema pada pemasangan baru diserialkan per eksekutor basis data agar permintaan siklus hidup dan konfigurasi yang bersamaan tidak berlomba saat membuat tabel PostgreSQL. Pembuatan skema dan pengisian ulang kredensial berada dalam modul skema-store yang terfokus, sedangkan store utama mempertahankan operasi rapat, status, dan kehadiran.
 - Pengambilalihan sesi memutus sesi rapat aktif pengguna sebelumnya.
 
 ### Kontrak Integrasi
 
 - `bootstrap.js` adalah satu-satunya entrypoint platform; kapabilitas dan flow ctx merupakan satu-satunya permukaan integrasi lintas komponen.
+- Setiap mount Meetings yang dirutekan, dibagikan, dan disematkan hanya memakai `.jitsi-route-root` selama sinyal siklus hidupnya aktif. Mount yang sudah dibatalkan tidak pernah mengambil root aplikasi Cognis yang persisten; pembatalan mount aktif menghapus kelas serta observer, penangan peristiwa, timer, dan pekerjaan rapat tersemat milik modul.
 - SPA Meetings menggunakan router dan page composer Cognis. Pemanggil tertanam meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tanpa bingkai dan tidak menduplikasi navigasi host.
-- Utilitas browser dan seluruh katalog stylesheet umum dimuat melalui kapabilitas wajib `ui:reuse` sebelum permukaan Meetings dirender. Cognis core menyediakan tampilan kontrol standar, sedangkan modul tidak memuat stylesheet milik penyedia dan membatasi setiap selektor CSS modul di bawah `.jitsi-route-root`. Gaya rapat lama yang tidak digunakan tidak dikirimkan.
-- Nextcloud Whiteboard dideklarasikan sebagai dependensi modul lunak agar administrator dapat memilihnya saat pemasangan tanpa menjadikannya wajib. Integrasi opsional muncul ketika pabrik kanvas dasar `whiteboard:uiGateway`, halaman komponen, dan jendela mengambang tersedia; metode `createCanvas` dalam kontrak penyedia membuat kanvas normal dengan handle peserta undangan, sedangkan hanya rapat tanpa peserta yang memakai `createDisposableCanvas`. Meetings tidak pernah beralih dari pembuatan persisten ke sekali pakai; sebelum menerima atau mendelegasikan pemetaan, Meetings menyelesaikan penyedia saat permintaan melalui permukaan kapabilitas ctx tercakup atau sistem dan memverifikasi identitas, judul rapat, serta (untuk pemetaan baru) pembuatnya, menyimpan jenis pemetaan, mengganti pemetaan lama yang tidak diketahui atau tidak cocok, dan memakai kembali kanvas persisten yang telah diverifikasi hanya ketika pengguna sengaja membukanya. Tamu tautan berbagi menerima orkestrasi Papan Tulis noninteraktif tanpa kontrol yang terlihat atau kapabilitas pembuatan kanvas, mengikuti status buka dan tutup tersinkronisasi milik penyelenggara, serta hanya memakai kembali pemetaan rapat yang tepat dan sudah ada, serta tidak pernah memulai pembuatan kanvas atau mengganti pemetaan tersebut; identitas Share yang tercakup pada rapat mengotorisasi status tersinkronisasi serta menyediakan identitas stabil untuk kehadiran dan pemungutan suara konsensus. Modul memperluas flow generik `resolve-share-delegated-access` agar Share dapat memverifikasi hubungan rapat-ke-papan yang tepat dan sedang terbuka. Jitsi mendeklarasikan operasi baca dan tulis Papan Tulis terdelegasi serta kapabilitas sumber `meeting:join` yang diperlukan; Share memvalidasi token tamu asli secara mandiri.
+- Utilitas browser dan seluruh katalog stylesheet umum dimuat melalui kapabilitas wajib `ui:reuse` sebelum permukaan Meetings dirender. Elemen bingkai rapat dan overlay diselesaikan dari DOM modul dan tidak pernah dibaca dari payload kapabilitas penyedia Papan Tulis. Cognis core menyediakan tampilan kontrol standar, sedangkan modul tidak memuat stylesheet milik penyedia dan membatasi setiap selektor CSS modul di bawah `.jitsi-route-root`. Gaya rapat lama yang tidak digunakan tidak dikirimkan.
+- Nextcloud Whiteboard dideklarasikan sebagai dependensi modul lunak agar administrator dapat memilihnya saat pemasangan tanpa menjadikannya wajib.
+
+Endpoint ketersediaan backend milik modul menjadi satu-satunya keputusan visibilitas untuk semua klien akun; penemuan kapabilitas browser hanya menginisialisasi kontrol yang sudah disetujui.
+
+Integrasi opsional muncul ketika pabrik kanvas dasar `whiteboard:uiGateway`, halaman komponen, dan jendela mengambang tersedia; API rapat menyelesaikan pemilik sebenarnya dari kanvas yang dipetakan dan memanggil fungsi `add` dan `remove` milik `whiteboard:membership` yang diotorisasi pemilik dengan ID akun kanonis sebelum menyimpan perubahan peserta; metode `createCanvas` dalam kontrak penyedia membuat kanvas normal dengan handle peserta undangan, sedangkan hanya rapat tanpa peserta yang memakai `createDisposableCanvas`.
+
+Meetings tidak pernah beralih dari pembuatan persisten ke sekali pakai; sebelum menerima atau mendelegasikan pemetaan, Meetings menyelesaikan penyedia saat permintaan melalui permukaan kapabilitas ctx tercakup atau sistem dan memverifikasi identitas, judul rapat, serta (untuk pemetaan baru) pembuatnya, menyimpan jenis pemetaan, mengganti pemetaan lama yang tidak diketahui atau tidak cocok, dan memakai kembali kanvas persisten yang telah diverifikasi hanya ketika pengguna sengaja membukanya.
+
+Tamu tautan berbagi menerima orkestrasi Papan Tulis noninteraktif tanpa kontrol yang terlihat atau kapabilitas pembuatan kanvas, mengikuti status buka dan tutup tersinkronisasi milik penyelenggara, serta hanya memakai kembali pemetaan rapat yang tepat dan sudah ada, serta tidak pernah memulai pembuatan kanvas atau mengganti pemetaan tersebut; identitas Share yang tercakup pada rapat mengotorisasi status tersinkronisasi serta menyediakan identitas stabil untuk kehadiran dan pemungutan suara konsensus.
+
+Modul memperluas flow generik `resolve-share-delegated-access` agar Share dapat memverifikasi hubungan rapat-ke-papan yang tepat dan sedang terbuka.
+
+Jitsi mendeklarasikan operasi baca dan tulis Papan Tulis terdelegasi serta kapabilitas sumber `meeting:join` yang diperlukan; Share memvalidasi token tamu asli secara mandiri.
+
 - Penyelenggara dapat langsung membuka Papan Tulis. Peserta lain memerlukan mayoritas mutlak peserta non-penyelenggara yang sedang hadir. Status buka disinkronkan hanya untuk sesi rapat saat ini agar peserta yang hadir membuka kanvas yang sama dan memindahkan rapat ke gambar-dalam-gambar. Mengakhiri rapat menghapus status tersebut; pemetaan kanvas persisten tidak akan terbuka hanya karena sesi rapat baru dimulai.
 - Sebelum komponen Papan Tulis dibuka, Meetings meminta akses gantungan kunci di halaman induk agar tantangan buka kunci memiliki host popup. Papan Tulis kemudian dibuka melalui broker halaman komponen sebagai komponen overlay tertanam dengan pengguliran milik dokumen. Meetings mengandalkan kelas halaman komponen dan tombol yang diimpor, bukan menambahkan kelas presentasi atau menimpa shell halaman bersama.
-- Kontrol Papan Tulis adalah `<button>` standar yang sama seperti kontrol Bagikan di sebelahnya. Kontrol memakai tampilan core `btn-neutral` secara bawaan serta status `active` dan `btn-confirm` yang diimpor saat aktif, dan labelnya berubah menjadi “Tutup Papan Tulis”. Memilih kontrol aktif akan menutupnya untuk rapat. Kapabilitas penyedia dimuat satu kali melalui host sebelum persiapan Papan Tulis. Kegagalan sementara saat memasang jendela komponen dicoba kembali dengan backoff eksponensial terbatas tanpa mendaftarkan ulang atau mengganti halaman komponen. Selama permintaan buka kunci atau pemasangan komponen masih berlangsung, kontrol tetap dinonaktifkan dengan label normal “Papan tulis”; label berubah menjadi “Tutup Papan Tulis” hanya setelah jendela komponen berhasil dipasang. Pekerjaan lama yang dibatalkan akibat perubahan status rapat atau navigasi dibuang tanpa toast kesalahan. Jika persiapan atau pemasangan yang masih berlaku gagal, Meetings mencatat kegagalan dan menampilkan “Terjadi kesalahan saat memuat papan tulis”; kontrol akun tetap tersedia untuk percobaan lain, sedangkan pembukaan otomatis tersinkronisasi mengikuti jeda percobaan ulang singkat.
+- Kontrol Papan Tulis adalah `<button>` standar yang sama seperti kontrol Bagikan di sebelahnya.
+
+Kontrol memakai tampilan core `btn-confirm` secara bawaan serta status `active` dan `btn-cancel` yang diimpor saat aktif, dan labelnya berubah menjadi “Tutup Papan Tulis”.
+
+Memilih kontrol aktif akan menutupnya untuk rapat.
+
+Kapabilitas penyedia dimuat satu kali melalui host sebelum persiapan Papan Tulis.
+
+Kegagalan sementara saat memasang jendela komponen dicoba kembali dengan backoff eksponensial terbatas tanpa mendaftarkan ulang atau mengganti halaman komponen.
+
+Selama permintaan buka kunci atau pemasangan komponen masih berlangsung, kontrol tetap dinonaktifkan dengan label normal “Papan tulis”; label berubah menjadi “Tutup Papan Tulis” hanya setelah jendela komponen berhasil dipasang.
+
+Pekerjaan lama yang dibatalkan akibat perubahan status rapat atau navigasi dibuang tanpa toast kesalahan.
+
+Pembukaan otomatis tersinkron berjalan selama aktivasi browser saat ini; jika tidak, listener input terikat sinyal melanjutkannya pada aktivasi berikutnya agar permintaan keyring dan pemunculan komponen tetap diotorisasi browser.
+
+Percobaan otomatis yang gagal tidak diulangi untuk papan yang sama.
+
+Setiap kegagalan nyata menulis tahap, ID rapat dan papan, pesan kesalahan, serta objek Error lengkap ke logger host dan konsol browser; toast terlokalisasi menyebutkan tahap yang gagal.
+
+- Perenderan lobi rapat aktif tidak pernah membuka kembali lapisan pra-pemeriksaan setelah rekaman rapat dipilih. Saat bingkai rapat memiliki status `floating-window` milik host untuk gambar-dalam-gambar Whiteboard, lapisan rapat dan zona pelepasan undangan peserta diselesaikan dari DOM aktif dan dipindahkan ke bingkai mengambang tersebut, lalu kembali ke panggung normal saat gambar-dalam-gambar ditutup. Pembatalan melalui akhir seret, pelepasan di luar target, Escape, atau hilangnya fokus jendela selalu menghapus zona pelepasan.
+- Penyeretan undangan peserta aktif menggunakan kembali struktur lapisan rapat normal dan garis luar target aktif hijau alih-alih merender popup terpisah. Memulai rapat baru memperoleh token `beginPageLoading()` Cognis core dari sumber daya entri halaman `ui:reuse` yang disediakan modul sebelum pekerjaan pra-pemeriksaan atau pembuatan, lalu melepaskannya hanya setelah upaya bergabung ke Jitsi selesai. Karena pemunculan halaman komponen Cognis memerlukan aktivasi pengguna browser saat ini, Whiteboard akun tersinkron menunda pemasangan otomatis hingga aktivasi browser berikutnya, alih-alih menghabiskan percobaan ulang dengan `whiteboard_component_window_unavailable`.
+- Saat berbagi layar Jitsi mengunci akses Whiteboard, kontrol Whiteboard yang dinonaktifkan dan slotnya menampilkan judul hover terlokalisasi yang menjelaskan penguncian.
+
+Whiteboard akun tersinkron yang tidak memiliki aktivasi browser saat ini memasang listener penunjuk dan papan ketik yang terikat sinyal lalu secara otomatis melanjutkan pemasangan pada aktivasi pengguna berikutnya; menutup papan atau membatalkan mount menghapus listener tersebut.
+
+Penambahan peserta ke rapat aktif mewajibkan kapabilitas Share `share:requestApproval` dan hanya dilanjutkan setelah persetujuan akhir yang eksplisit.
+
+Penolakan dan keputusan yang belum lengkap membatalkan penambahan, sedangkan kegagalan persetujuan saat runtime membatalkan penambahan dan dicatat secara terstruktur.
+
+- Menjatuhkan pengguna yang tersedia ke rapat aktif secara optimistis menghapus pengguna tersebut dari ketersediaan dan segera memulai permintaan konsensus Share di server. Penolakan eksplisit mengembalikan pengguna ke kumpulan tersedia yang diurutkan dan menampilkan toast penolakan terlokalisasi kepada pengundang; kegagalan permintaan lainnya menjalankan rollback yang sama dengan toast kegagalan umum. Selama pengguna lokal bergabung ke rapat mana pun, seluruh kisi Rapat Aktif ditandai nonaktif, setiap tombol rapat dinonaktifkan, dan penangan klik menolak perpindahan rapat hingga rapat saat ini berakhir.
+- PiP Whiteboard mendelegasikan pergerakan ke bilah alat jendela mengambang milik host Cognis. Modul tidak lagi memasok `.jitsi-stage-header` sebagai pegangan seret kedua saat memanggil `ui:makeFloatingWindow`.
+- Peristiwa keluar konferensi digabungkan menjadi satu proses pembongkaran. Bingkai rapat dan Whiteboard segera ditutup, timer polling dan identitas ruang chat rapat dibersihkan sebelum penggambaran ulang, overlay normal dipulihkan, pilihan peserta dikosongkan, serta rapat aktif dan peserta tersedia selesai dimuat ulang sebelum pembongkaran berakhir. Perluasan akses Whiteboard persisten mengonfirmasi seluruh keanggotaan terkini kepada penyedia pada sinkronisasi pertama dan mengulangi perluasan setiap kali keanggotaan berubah.

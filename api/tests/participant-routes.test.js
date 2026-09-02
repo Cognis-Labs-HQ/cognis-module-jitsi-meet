@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { registerMeetingParticipantRoutes } from "../participant-routes.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
 
 test("meeting participant search preserves follow filtering and omits the current user", async () => {
     const routes = [];
@@ -12,7 +13,10 @@ test("meeting participant search preserves follow filtering and omits the curren
     };
     registerMeetingParticipantRoutes({
         router,
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
         requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileIdentity: profileIdentityFake,
         profileStore: {
             async searchProfiles(query, limit, options) {
                 searchCalls.push({ query, limit, options });
@@ -32,6 +36,12 @@ test("meeting participant search preserves follow filtering and omits the curren
                         visibility: "community",
                     },
                 ];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async listReservedParticipantUsernames() {
+                return [];
             },
         },
         sendJson: (_res, status, payload) => {
@@ -65,4 +75,137 @@ test("meeting participant search preserves follow filtering and omits the curren
             },
         },
     ]);
+});
+
+test("participant search hides users active in another meeting", async () => {
+    const routes = [];
+    registerMeetingParticipantRoutes({
+        router: { get: (path, handler) => routes.push({ path, handler }) },
+        normalizeHandleKey: (handle) =>
+            profileIdentityFake.normalizeHandleKey(handle),
+        requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileStore: {
+            async searchProfiles() {
+                return [
+                    { accountId: "alice-account", handle: "alice" },
+                    { accountId: "carol-account", handle: "carol" },
+                ];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async listReservedParticipantUsernames() {
+                return ["alice"];
+            },
+        },
+        sendJson: (_res, status, payload) => {
+            assert.equal(status, 200);
+            assert.deepEqual(payload.data, [
+                {
+                    handle: "carol",
+                    displayName: "carol",
+                    avatarKey: null,
+                },
+            ]);
+        },
+        sendError: () => assert.fail("participant search should not fail"),
+        hasMinRole: () => false,
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+    });
+
+    await routes[0].handler(
+        { url: "/api/v1/modules/jitsi-meet/participants?q=" },
+        {},
+    );
+});
+
+test("participant search does not exclude an unauthorized meeting", async () => {
+    const routes = [];
+    const exclusions = [];
+    registerMeetingParticipantRoutes({
+        router: { get: (path, handler) => routes.push({ path, handler }) },
+        requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileIdentity: profileIdentityFake,
+        profileStore: {
+            async getProfile() {
+                return { handle: "bob" };
+            },
+            async searchProfiles() {
+                return [];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async getMeetingById(id) {
+                return { id, createdBy: "alice" };
+            },
+            async listReservedParticipantUsernames(excludedMeetingId) {
+                exclusions.push(excludedMeetingId);
+                return [];
+            },
+        },
+        sendJson: (_res, status) => assert.equal(status, 200),
+        sendError: () => assert.fail("participant search should not fail"),
+        hasMinRole: () => false,
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+        canAccessMeeting: async () => false,
+        listClassroomParticipantHandles: async () => [],
+    });
+
+    await routes[0].handler(
+        {
+            url: "/api/v1/modules/jitsi-meet/participants?q=&meetingId=private-meeting",
+        },
+        {},
+    );
+
+    assert.deepEqual(exclusions, [""]);
+});
+
+test("participant search excludes an authorized meeting using the requester Profile identity", async () => {
+    const routes = [];
+    const exclusions = [];
+    registerMeetingParticipantRoutes({
+        router: { get: (path, handler) => routes.push({ path, handler }) },
+        requireAuth: () => ({ sub: "bob-account", role: "user" }),
+        profileIdentity: profileIdentityFake,
+        profileStore: {
+            async getProfile(accountId) {
+                assert.equal(accountId, "bob-account");
+                return { handle: "@Bob" };
+            },
+            async searchProfiles() {
+                return [];
+            },
+        },
+        store: {
+            async ensureSchema() {},
+            async getMeetingById(id) {
+                return { id, createdBy: "alice" };
+            },
+            async listReservedParticipantUsernames(excludedMeetingId) {
+                exclusions.push(excludedMeetingId);
+                return [];
+            },
+        },
+        sendJson: (_res, status) => assert.equal(status, 200),
+        sendError: () => assert.fail("participant search should not fail"),
+        hasMinRole: () => false,
+        resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+        canAccessMeeting: async ({ username, requesterAccountId }) => {
+            assert.equal(username, "bob");
+            assert.equal(requesterAccountId, "bob-account");
+            return true;
+        },
+        listClassroomParticipantHandles: async () => [],
+    });
+
+    await routes[0].handler(
+        {
+            url: "/api/v1/modules/jitsi-meet/participants?q=&meetingId=authorized-meeting",
+        },
+        {},
+    );
+
+    assert.deepEqual(exclusions, ["authorized-meeting"]);
 });

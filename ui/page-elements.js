@@ -25,7 +25,7 @@ export function createMeetingPageElements(i18n, inShareView) {
             label: i18n.t("module.jitsi_meet.overlay.title"),
             pinned: true,
             gridSize: {
-                default: [7, 5],
+                default: [8, 5],
                 min: [6, 4],
             },
             render: () => buildStageMarkup(i18n),
@@ -35,7 +35,7 @@ export function createMeetingPageElements(i18n, inShareView) {
             label: i18n.t("module.jitsi_meet.chat.heading"),
             pinned: true,
             gridSize: {
-                default: [3, 5],
+                default: [4, 5],
                 min: [3, 4],
             },
             render: () => buildChatMarkup(i18n),

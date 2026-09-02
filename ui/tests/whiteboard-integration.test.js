@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +12,12 @@ function readJitsiUiBundle() {
 }
 
 test("meeting whiteboards use ctx discovery and synchronized component windows", () => {
+    assert.doesNotThrow(() =>
+        execFileSync(process.execPath, [
+            "--check",
+            resolve(ROOT, "ui/whiteboard-control.js"),
+        ]),
+    );
     const apiSource = readFileSync(
         resolve(ROOT, "api/whiteboard-routes.js"),
         "utf8",
@@ -41,6 +48,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const appSource = readJitsiUiBundle();
+    const meetingsListSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
     const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
     assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
@@ -65,6 +76,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
+    assert.match(buttonSource, /whiteboard\/availability/);
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);
@@ -87,6 +99,16 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingName/,
     );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
+    assert.match(buttonSource, /synchronizeWhiteboardParticipantAccess/);
+    assert.match(
+        buttonSource,
+        /expandCanvasAccess\(\{[\s\S]*whiteboardId,[\s\S]*participantHandles/,
+    );
+    assert.match(buttonSource, /currentUserOwnsMeetingWhiteboard\(state\)/);
+    assert.match(
+        buttonSource,
+        /approvalRequested === true[\s\S]*module\.jitsi_meet\.whiteboard\.request_sent[\s\S]*variant: "info"/,
+    );
     assert.match(
         buttonSource,
         /!state\.shareAccessToken[\s\S]*meetingCanvasNeedsPreparation\(trigger, state\)/,
@@ -147,17 +169,43 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /apiFetch\([\s\S]*?active:\s*true[\s\S]*?makeFloatingWindow\([\s\S]*?await spawnComponentWindowWithRetry/,
+        /apiFetch\([\s\S]*?active:\s*true[\s\S]*?makeFloatingWindow\(\s*meetingFrame,\s*\{[\s\S]*?await spawnComponentWindowWithRetry/,
     );
+    assert.doesNotMatch(buttonSource, /handle:\s*pipHandle/);
+    assert.doesNotMatch(buttonSource, /jitsi-stage-header/);
     assert.match(
         buttonSource,
         /for \(let attempt = 0; attempt < 6; attempt \+= 1\)[\s\S]*?Math\.min\(250 \* 2 \*\* attempt, 2_000\)/,
     );
-    assert.match(
+    assert.doesNotMatch(
         buttonSource,
         /Failed to fetch dynamically imported module[\s\S]*?break;/,
     );
+    assert.match(
+        buttonSource,
+        /placeMeetingOverlay\(trigger, \{ floating: true \}\)/,
+    );
+    assert.match(
+        buttonSource,
+        /placeMeetingOverlayForActiveWindow[\s\S]*?classList\.contains\("floating-window"\)[\s\S]*?Boolean\(trigger\?\.releaseFloatingWindow\)[\s\S]*?meetingFrameIsFloating/,
+    );
+    assert.match(
+        buttonSource,
+        /function closeComponentWindow[\s\S]*?placeMeetingOverlay\(trigger\)/,
+    );
     assert.match(buttonSource, /loadRetryAfter:\s*0/);
+    assert.match(buttonSource, /automaticOpenFailureWhiteboardId/);
+    assert.match(
+        buttonSource,
+        /navigator\?\.userActivation\?\.isActive !== true[\s\S]*?addEventListener\("pointerdown", activate[\s\S]*?trigger\.button\.click\(\)/,
+    );
+    assert.match(
+        buttonSource,
+        /screen_sharing_locked_tooltip[\s\S]*?trigger\.button\.title = screenSharingTooltip[\s\S]*?trigger\.slot\.title = screenSharingTooltip/,
+    );
+    assert.match(buttonSource, /globalThis\.console\?\.error/);
+    assert.match(buttonSource, /load_failed_detailed/);
+    assert.match(buttonSource, /stage: stageKey/);
     assert.match(
         buttonSource,
         /Date\.now\(\) >= trigger\.loadRetryAfter[\s\S]*?trigger\.button\.click\(\)/,
@@ -173,7 +221,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /document\.createElement\("button"\)/);
     assert.match(
         buttonSource,
-        /getAttribute\("aria-pressed"\) === "true"[\s\S]*?classList\.toggle\("btn-confirm", confirmed\)[\s\S]*?classList\.toggle\("btn-neutral", !confirmed\)/,
+        /getAttribute\("aria-pressed"\) === "true"[\s\S]*?classList\.toggle\("btn-cancel", confirmed\)[\s\S]*?classList\.toggle\("btn-confirm", !confirmed\)/,
     );
     assert.match(
         buttonSource,
@@ -183,9 +231,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         apiIndexSource,
         /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
     );
-    assert.doesNotMatch(buttonSource, /pointer(?:down|move|up)/i);
+    assert.doesNotMatch(buttonSource, /pointer(?:move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
-    assert.match(buttonSource, /elementId:\s*trigger\.frameWrap\.id/);
+    assert.match(buttonSource, /elementId:\s*trigger\.componentHost\.id/);
     assert.match(buttonSource, /whiteboardId/);
     assert.match(
         buttonSource,
@@ -209,6 +257,37 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /component-pages:discard/);
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);
+    assert.match(
+        buttonSource,
+        /trigger\?\.releaseFloatingWindow\?\.\(\);\s*placeMeetingOverlay\(trigger\);[\s\S]*?trigger\.componentShell\.hidden = true;[\s\S]*?const discardPromise = discardComponentWindow\(trigger\);/,
+    );
+    assert.match(stylesheet, /\.jitsi-overlay\s*\{[\s\S]*?grid-area: 1 \/ 1;/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-stage-frame > \.jitsi-overlay\.jitsi-drop-active\s*\{[\s\S]*?position:\s*absolute;[\s\S]*?inset:\s*0;/,
+    );
+    assert.match(
+        stylesheet,
+        /\.jitsi-whiteboard-component-shell\s*\{[\s\S]*?grid-area: 1 \/ 1;/,
+    );
+    assert.match(
+        meetingsListSource,
+        /const whiteboardCleanup = closeMeetingWhiteboard\(root\);[\s\S]*?closeMeetingEmbed\(\);[\s\S]*?whiteboardCleanup\?\.then\(\(\) => \{[\s\S]*?utils\.updateOverlay\(state\.overlayPresentation\)/,
+    );
+    assert.equal(
+        meetingsListSource.match(
+            /const whiteboardCleanup = closeMeetingWhiteboard\(root\);\s*state\.meeting = null;\s*closeMeetingEmbed\(\);/g,
+        )?.length,
+        2,
+    );
+    assert.match(
+        appSource,
+        /state\.meetingOverlay instanceof HTMLElement[\s\S]*?frameWrap\.append\(state\.meetingOverlay\)/,
+    );
+    assert.match(
+        appSource,
+        /state\.meetingFrameWrap instanceof HTMLElement[\s\S]*?meetingStage\.append\(state\.meetingFrameWrap\)[\s\S]*?state\.meetingFrameWrap = frameWrap/,
+    );
     assert.match(appSource, /syncMeetingWhiteboardComponent/);
     assert.match(
         stylesheet,
@@ -219,7 +298,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(stylesheet, /\.component-page-window/);
     assert.match(
         buttonSource,
-        /button\.className = "btn-neutral btn-animated";/,
+        /button\.className = "btn-confirm btn-animated";/,
     );
     assert.match(appIndexSource, /await loadCommonStyles\(\)/);
     assert.doesNotMatch(appIndexSource, /ensureStylesheetLoaded/);

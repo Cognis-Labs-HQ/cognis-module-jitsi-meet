@@ -52,7 +52,63 @@ test("meeting chat polling respects cancelled keyring access", () => {
     assert.match(source, /keyring:isAccessSuppressed/);
     assert.match(
         source,
-        /function startNativeChatPolling\(\)[\s\S]*keyring:isAccessSuppressed/,
+        /function startCognisChatPolling\(\)[\s\S]*keyring:isAccessSuppressed/,
+    );
+});
+
+test("previous meeting cards restore the stage and support confirmed long-press removal", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(source, /function selectPersistedMeeting\(meeting\)/);
+    assert.match(source, /scrollIntoView\(\{[\s\S]*behavior: "smooth"/);
+    assert.match(source, /persisted\/leave/);
+    assert.match(source, /setTimeout\([\s\S]*3000\)/);
+    assert.match(styles, /module-jitsi-meet-card-removal-hold 3s linear/);
+    assert.match(
+        styles,
+        /module-jitsi-meet-card-removal-hold[\s\S]*linear-gradient/,
+    );
+    assert.match(source, /id: "remove"[\s\S]*variant: "cancel"/);
+    assert.match(source, /id: "cancel"[\s\S]*variant: "neutral"/);
+    assert.match(source, /response\.ok \? "info" : "error"/);
+    assert.match(source, /persistedMeetingSelectionUsernames/);
+    assert.match(styles, /hue-rotate\(218deg\) saturate\(1\.2\)/);
+    assert.match(
+        styles,
+        /\.jitsi-persisted-meeting-card \{[\s\S]*?height: max-content;/,
+    );
+});
+
+test("staged participants return to availability by click or drag without reusing a changed previous meeting", () => {
+    const participantsSource = readFileSync(
+        resolve(ROOT, "ui/app/participants.js"),
+        "utf8",
+    );
+    const indexSource = readJitsiUiBundle();
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+
+    assert.match(
+        participantsSource,
+        /function returnSelectedParticipant[\s\S]*event\.target\.closest\("a"\)[\s\S]*applyDrop\(avatar\.dataset\.username, "available"\)/,
+    );
+    assert.match(
+        participantsSource,
+        /stagedArea\.addEventListener\("click", returnSelectedParticipant/,
+    );
+    assert.match(
+        indexSource,
+        /availablePool\.addEventListener\([\s\S]*"drop"[\s\S]*applyDrop\(username, "available"\)/,
+    );
+    assert.match(
+        roomSource,
+        /persistedMeetingSelectionUsernames[\s\S]*forceNewMeeting[\s\S]*forceNew: forceNewMeeting/,
     );
 });
 
@@ -100,7 +156,7 @@ test("new meetings can start with an empty participant stage and prompt for a li
     assert.doesNotMatch(embedSource, /canStart:[^,]*selected\.length/);
     assert.match(
         embedSource,
-        /state\.promptShareOnJoin =\s*Boolean\(state\.meeting\?\.id\) && selected\.length === 0/,
+        /state\.promptShareOnJoin =\s*Boolean\(state\.meeting\?\.id\) &&\s*selected\.length === 0 &&\s*!Array\.isArray\(state\.persistedMeetingSelectionUsernames\)/,
     );
     assert.match(
         embedSource,
@@ -120,7 +176,7 @@ test("new meetings can start with an empty participant stage and prompt for a li
 
 test("meeting link guests derive participants from the scoped meeting payload", () => {
     const chatSource = readFileSync(resolve(ROOT, "ui/app/chat.js"), "utf8");
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     assert.match(
         chatSource,
         /state\.shareAccessToken && state\.chatParticipantEntries\.length > 0/,
@@ -138,7 +194,7 @@ test("meeting link chat uses scoped message APIs without requesting room metadat
 });
 
 test("meeting link guests can join without participant-card data", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const meetingSource = readFileSync(
         resolve(ROOT, "ui/app/meetings-list.js"),
         "utf8",
@@ -151,7 +207,11 @@ test("meeting link guests can join without participant-card data", () => {
 });
 
 test("meetings search popup adds confirmed users directly to meeting participants", () => {
-    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
+    assert.match(source, /category: "user",\s*typeFilter: "user"/);
     assert.match(
         source,
         /onSelectMultiple:\s*\(results\)\s*=>[\s\S]*addParticipant\(participantEntry\)/,
@@ -164,6 +224,118 @@ test("meetings search popup adds confirmed users directly to meeting participant
         source,
         /avatarKey:\s*typeof result\?\.avatarKey === "string"/,
     );
+});
+
+test("active meetings lock previous meeting interaction and profile hydration", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(
+        source,
+        /const persistedMeetingsLocked = utils\.isMeetingActive\(\)/,
+    );
+    assert.match(
+        source,
+        /persistedMeetingsEl\.inert = persistedMeetingsLocked/,
+    );
+    assert.match(
+        source,
+        /if \(persistedMeetingsLocked\) return;\s*void hydrateProfileAvatars/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*cursor: not-allowed/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled \{[\s\S]*opacity: 0\.55/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-disabled::after[\s\S]*inset: 0[\s\S]*cursor: not-allowed/,
+    );
+    assert.doesNotMatch(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*grayscale/,
+    );
+});
+
+test("active and previous meeting cards share selected meeting state", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(
+        source,
+        /state\.meeting\?\.id \|\| state\.requestedMeetingId[\s\S]*jitsi-persisted-meeting-card-selected/,
+    );
+    assert.match(
+        source,
+        /state\.meeting\?\.id \|\| state\.requestedMeetingId[\s\S]*jitsi-active-meeting-item-selected/,
+    );
+    assert.match(styles, /\.jitsi-persisted-meeting-card-selected/);
+});
+
+test("active meetings render inside the initial overlay above its start action", () => {
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const meetingsSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const activeMeetingsIndex = markupSource.indexOf(
+        'id="jitsi-active-meetings"',
+    );
+    const startButtonIndex = markupSource.indexOf('id="jitsi-start-btn"');
+    const participantsMarkupIndex = markupSource.indexOf(
+        "export function buildParticipantsMarkup",
+    );
+
+    assert.ok(activeMeetingsIndex > 0);
+    assert.ok(activeMeetingsIndex < startButtonIndex);
+    assert.ok(activeMeetingsIndex < participantsMarkupIndex);
+    assert.match(
+        meetingsSource,
+        /activeMeetingsSection\.hidden = activeMeetingsLocked/,
+    );
+});
+
+test("persisted meetings fill the scrollable participant workspace", () => {
+    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const meetingsSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+
+    assert.match(markupSource, /jitsi-participants-layout/);
+    assert.match(markupSource, /id="jitsi-persisted-meetings"/);
+    assert.match(meetingsSource, /meetings\/persisted/);
+    assert.match(meetingsSource, /meeting\.participants\.slice\(0, 10\)/);
+    assert.match(
+        cssSource,
+        /grid-template-columns: minmax\(12rem, 3fr\) minmax\(0, 7fr\)/,
+    );
+    assert.match(
+        cssSource,
+        /jitsi-available-participants-column[\s\S]*overflow-y: auto/,
+    );
+    assert.match(cssSource, /jitsi-persisted-meetings[\s\S]*overflow-x: auto/);
+    assert.match(
+        cssSource,
+        /jitsi-persisted-meeting-avatars[\s\S]*flex-wrap: wrap/,
+    );
+    assert.match(cssSource, /module-jitsi-meet-active-card-border/);
+    assert.match(
+        cssSource,
+        /jitsi-persisted-meeting-card-active::before[\s\S]*padding: 3px[\s\S]*drop-shadow\(0 0 0\.35rem[\s\S]*1\.8s linear infinite/,
+    );
+    assert.match(cssSource, /mask-composite: exclude/);
+    assert.doesNotMatch(cssSource, /active-card-orbit/);
 });
 
 test("jitsi participant avatars reuse social avatar hydration and hide staged avatars while active", () => {
@@ -180,7 +352,7 @@ test("jitsi participant avatars reuse social avatar hydration and hide staged av
         source,
         /const stagedEntries = utils\.isMeetingActive\(\)\s*\?\s*\[\]\s*:\s*state\.selectedParticipants;/,
     );
-    assert.match(source, /void hydrateProfileAvatars\(availablePool\);/);
+    assert.match(source, /hydrateProfileAvatars\(availablePool\)\.catch/);
     assert.match(cssSource, /\.jitsi-participant-avatar-img/);
 });
 
@@ -255,7 +427,7 @@ test("meeting styles remain scoped to the Meetings route root", () => {
 
 test("meetings page composer uses a dedicated layout preference key", () => {
     const source = readJitsiUiBundle();
-    assert.match(source, /preferenceKey:\s*"meetings-layout-v3"/);
+    assert.match(source, /preferenceKey:\s*"meetings-layout-v4"/);
     assert.match(source, /requireAccountSession:\s*!limitedShareView/);
 });
 
@@ -345,13 +517,182 @@ test("jitsi meetings lock participants and block navigation while meeting is act
     );
 });
 
+test("active non-disposable meetings accept participant drops without unstaging invitees", () => {
+    const source = readJitsiUiBundle();
+    assert.match(
+        source,
+        /if \(!\(state\.pendingParticipantUsernames instanceof Set\)\) \{\s*state\.pendingParticipantUsernames = new Set\(\)/,
+    );
+    assert.match(source, /meeting\?\.hasInvitedParticipants/);
+    assert.match(source, /meetings\/participants\/add/);
+    assert.match(
+        source,
+        /!utils\.isMeetingActive\(\)[\s\S]*targetZone === "available"/,
+    );
+    assert.match(
+        source,
+        /addParticipant\(fromAvailable\);\s*renderParticipants\(\);[\s\S]*?meetings\/participants\/add/,
+    );
+    assert.match(
+        source,
+        /participant_addition_declined[\s\S]*?participants\.invite_rejected/,
+    );
+    assert.match(
+        source,
+        /removeParticipant\(normalized\)[\s\S]*?state\.availableParticipants\.push\(fromAvailable\)[\s\S]*?renderParticipants\(\)/,
+    );
+    assert.match(
+        source,
+        /pendingParticipantUsernames\.add\(normalized\)[\s\S]*?meetings\/participants\/add/,
+    );
+    assert.match(
+        source,
+        /for \(const username of state\.pendingParticipantUsernames\)[\s\S]*?participantUsernames\.add\(username\)/,
+    );
+});
+
+test("active meetings are locked while the user is joined to a meeting", () => {
+    const source = readJitsiUiBundle();
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        source,
+        /activeMeetingsLocked = Boolean\([\s\S]*?state\.meeting\?\.id[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
+    );
+    assert.match(
+        source,
+        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(state\.meeting\?\.id \|\| isMeetingActive\(\)\) return/,
+    );
+    assert.match(
+        source,
+        /joinMeetingById[\s\S]*?state\.requestedMeetingId = ""[\s\S]*?state\.requestedMeetingStart = false[\s\S]*?clearRequestedMeetingParameters\(\)/,
+    );
+    assert.match(
+        cssSource,
+        /\.jitsi-active-meetings-disabled[\s\S]*?pointer-events: none/,
+    );
+});
+
+test("participant rendering preserves an active meeting overlay state and shows an empty-pool message", () => {
+    const source = readJitsiUiBundle();
+    assert.match(
+        source,
+        /if \(updateStage && !utils\.isMeetingActive\(\) && !state\.meeting\?\.id\) \{\s*utils\.updateOverlay/,
+    );
+    assert.match(
+        source,
+        /state\.availableParticipants\.length === 0[\s\S]*module\.jitsi_meet\.participants\.available_none/,
+    );
+    assert.match(
+        source,
+        /state\.availableParticipants\.length === 0[\s\S]*availablePool\.replaceChildren\(emptyMessage\)/,
+    );
+});
+
+test("dragging an available participant reveals the active meeting dropzone", () => {
+    const source = readJitsiUiBundle();
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(source, /setActiveParticipantDropzoneVisible/);
+    assert.match(source, /placeMeetingOverlayForActiveWindow\(root\)/);
+    assert.match(
+        source,
+        /placeMeetingOverlayForActiveWindow\(root\) \?\?[\s\S]*?root\.querySelector\("#jitsi-overlay"\)/,
+    );
+    assert.match(
+        source,
+        /!utils\.isMeetingActive\(\) && !state\.meeting\?\.id/,
+    );
+    assert.match(
+        source,
+        /event\.dataTransfer\.effectAllowed = "move";[\s\S]*setActiveParticipantDropzoneVisible\(true\)/,
+    );
+    assert.match(source, /document\.addEventListener\("dragend", cancel/);
+    assert.match(source, /document\.addEventListener\("mouseup", cancel/);
+    assert.match(source, /document\.addEventListener\("pointerup", cancel/);
+    assert.match(source, /document\.addEventListener\("drop", cancel/);
+    assert.match(source, /window\.addEventListener\("blur", cancel/);
+    assert.match(source, /event\.key === "Escape"[\s\S]*cancel\(\)/);
+    assert.match(source, /module\.jitsi_meet\.participants\.drop_to_invite/);
+    assert.match(
+        source,
+        /dropPreviousMessage[\s\S]*message\.textContent = overlay\.dataset\.dropLabel/,
+    );
+    assert.doesNotMatch(cssSource, /jitsi-overlay-participant-drop/);
+    assert.doesNotMatch(source, /"dragleave"/);
+    assert.match(
+        cssSource,
+        /\.jitsi-stage-frame[\s\S]*z-index: 2;[\s\S]*\.jitsi-overlay[\s\S]*grid-area: 1 \/ 1;[\s\S]*z-index: 3;[\s\S]*\.jitsi-overlay\.jitsi-drop-active[\s\S]*z-index: 4;/,
+    );
+});
+
+test("starting a meeting uses the Cognis page loading wheel until join completes", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /\{ beginPageLoading, mountWhenDirect \}/);
+    assert.match(
+        source,
+        /prepareMeetingStart[\s\S]*callbacks\.beginPageLoading\(\)[\s\S]*finally[\s\S]*finishPageLoading\(\)/,
+    );
+});
+
+test("local Jitsi kick events remove account participants or invalidate guest links", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /addEventListener\("participantKickedOut"/);
+    assert.match(
+        source,
+        /addEventListener\("errorOccurred"[\s\S]*isLocalParticipantKick\(event\)/,
+    );
+    assert.match(source, /kickedParticipant\?\.local === true/);
+    assert.match(source, /meetings\/participants\/kicked/);
+    assert.match(source, /accessToken: state\.shareAccessToken \|\| undefined/);
+    assert.match(source, /module\.jitsi_meet\.overlay\.kicked/);
+    assert.match(
+        source,
+        /payload\.data\.participants[\s\S]*state\.availableParticipants = state\.allParticipants\.filter/,
+    );
+});
+
+test("meeting participant surfaces and chat refresh membership in real time", () => {
+    const source = readJitsiUiBundle();
+    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
+    assert.match(source, /async function refreshAvailableParticipants\(\)/);
+    assert.match(
+        source,
+        /refreshAvailableParticipants[\s\S]*?renderParticipants\(\{ updateStage: false \}\)/,
+    );
+    assert.match(
+        source,
+        /loadActiveMeetings[\s\S]*callbacks\.refreshAvailableParticipants/,
+    );
+    assert.match(
+        source,
+        /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateCognisChat\(\)/,
+    );
+    assert.match(source, /module\.jitsi_meet\.participants\.invite_success/);
+    assert.match(
+        source,
+        /jitsi-active-meetings-empty jitsi-participants-empty/,
+    );
+    assert.match(
+        cssSource,
+        /\.jitsi-participants-empty\s*{\s*grid-column: auto;/,
+    );
+    assert.doesNotMatch(source, /and must be invited again/);
+});
+
+test("SPA participant avatars force availability-provider refresh", () => {
+    const source = readJitsiUiBundle();
+    assert.match(source, /ui:ensureProvidersLoaded/);
+    assert.match(source, /ui:availabilityRenderer/);
+    assert.match(source, /availabilityRenderer\.refresh\(container\)/);
+});
+
 test("jitsi meetings reset participant state and disable mini chat until ready", () => {
     const source = readJitsiUiBundle();
     const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.match(source, /async function resetMeetingState\(\s*\{/);
     assert.match(source, /resetParticipantSelection\(\);/);
     assert.doesNotMatch(source, /jitsi-chat-hint/);
-    assert.match(source, /function setNativeChatReady\(ready\)/);
+    assert.match(source, /function setCognisChatReady\(ready\)/);
     assert.match(source, /jitsi-chat-disabled/);
     assert.match(source, /chatInput\.disabled = !ready;/);
     assert.match(source, /aria-busy/);
@@ -359,15 +700,15 @@ test("jitsi meetings reset participant state and disable mini chat until ready",
     assert.match(cssSource, /pointer-events: none;/);
 });
 
-test("meetings page defaults meeting and chat panels to a 70-30 split while keeping them resizable", () => {
+test("meetings page defaults stage and chat across the full composer row", () => {
     const source = readJitsiUiBundle();
     assert.match(
         source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[7,\s*5\][\s\S]*min:\s*\[6,\s*4\]/,
+        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[8,\s*5\][\s\S]*min:\s*\[6,\s*4\]/,
     );
     assert.match(
         source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[3,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
+        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[4,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
     );
     assert.doesNotMatch(
         source,
@@ -408,11 +749,37 @@ test("reclaim session button uses success outline styling", () => {
     );
 });
 
-test("find participants button uses confirm styling", () => {
+test("find participants is the first available-participant avatar", () => {
     const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     assert.match(
         source,
-        /id="jitsi-find-participants-btn" class="btn-confirm"/,
+        /id="jitsi-available-participants"[\s\S]*id="jitsi-find-participants-btn" class="jitsi-find-participants-avatar"[\s\S]*<svg[\s\S]*<path/,
+    );
+    assert.match(
+        source,
+        /jitsi-participants-header[\s\S]*jitsi-participants-layout[\s\S]*jitsi-available-participants-column[\s\S]*jitsi-persisted-meetings-column/,
+    );
+    const styles = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings-column \{[\s\S]*overflow-y: hidden/,
+    );
+    assert.match(
+        styles,
+        /jitsi-participants-pane \{[\s\S]*display: flex;[\s\S]*flex-direction: column/,
+    );
+    assert.match(styles, /jitsi-participants-header \{[\s\S]*flex: 0 0 auto/);
+    assert.match(
+        styles,
+        /jitsi-participants-layout \{[\s\S]*flex: 1 1 auto;[\s\S]*min-height: 0/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings \{[\s\S]*overflow-x: auto;[\s\S]*scrollbar-width: none/,
+    );
+    assert.match(
+        styles,
+        /jitsi-persisted-meetings::\-webkit-scrollbar \{[\s\S]*display: none/,
     );
 });
 
@@ -491,9 +858,10 @@ test("meetings session state polling handles closed meetings and distinct leave 
     );
     assert.match(source, /message\.includes\(MEETING_DESTROYED_TEXT\)/);
     assert.match(source, /canStart: state\.preflightPassed/);
+    assert.match(source, /if \(meetingExitPromise\) return meetingExitPromise/);
     assert.match(
         source,
-        /if \(forceClosedOverlay\) \{[\s\S]*resetMeetingState\([\s\S]*meeting_closed[\s\S]*await leaveStatePromise/,
+        /await resetMeetingState\([\s\S]*await leaveStatePromise/,
     );
     assert.match(source, /addEventListener\("notificationTriggered"/);
     assert.match(source, /reportTerminated: true/);

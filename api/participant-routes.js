@@ -1,11 +1,18 @@
+import { resolveRequesterUsername } from "./reuse/requester.js";
+
 export function registerMeetingParticipantRoutes({
     router,
     requireAuth,
     profileStore,
+    profileIdentity,
+    store,
     sendJson,
     sendError,
     hasMinRole,
     resolveShareGuestMeetingAccess,
+    canAccessMeeting,
+    listClassroomParticipantHandles,
+    normalizeHandleKey,
 }) {
     router.get(
         "/api/v1/modules/jitsi-meet/participants",
@@ -39,6 +46,35 @@ export function registerMeetingParticipantRoutes({
                 return;
             }
             const query = (requestUrl.searchParams.get("q") ?? "").trim();
+            await store.ensureSchema();
+            let authorizedMeetingId = "";
+            if (meetingId) {
+                const meeting = await store.getMeetingById(meetingId);
+                const requesterUsername = await resolveRequesterUsername(
+                    profileStore,
+                    profileIdentity,
+                    claims.sub,
+                ).catch(() => "");
+                if (
+                    meeting &&
+                    requesterUsername &&
+                    (await canAccessMeeting({
+                        store,
+                        meeting,
+                        username: requesterUsername,
+                        listClassroomParticipantHandles,
+                        profileStore,
+                        requesterAccountId: claims.sub,
+                    }))
+                ) {
+                    authorizedMeetingId = meeting.id;
+                }
+            }
+            const reservedUsernames = new Set(
+                await store.listReservedParticipantUsernames(
+                    authorizedMeetingId,
+                ),
+            );
             const includeHidden = hasMinRole(claims.role, "admin");
             const candidates = await profileStore.searchProfiles(query, 50, {
                 includeHidden,
@@ -47,6 +83,12 @@ export function registerMeetingParticipantRoutes({
             });
             const results = candidates
                 .filter((profile) => profile.accountId !== claims.sub)
+                .filter(
+                    (profile) =>
+                        !reservedUsernames.has(
+                            normalizeHandleKey(profile.handle),
+                        ),
+                )
                 .map((profile) => ({
                     handle: profile.handle,
                     displayName: profile.displayName ?? profile.handle,

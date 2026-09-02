@@ -41,6 +41,7 @@ async function requireOwnedMeeting({
     meetingId,
     claims,
     profileStore,
+    profileIdentity,
     store,
     res,
 }) {
@@ -51,6 +52,7 @@ async function requireOwnedMeeting({
     }
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
+        profileIdentity,
         claims.sub,
     ).catch(() => "");
     const participantUsernames = requesterUsername
@@ -131,6 +133,7 @@ export function registerMeetingShareRoutes({
         dbExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
+        ctx.getCapability("social:profile:identity"),
     );
 
     router.get(
@@ -151,6 +154,7 @@ export function registerMeetingShareRoutes({
                 meetingId,
                 claims,
                 profileStore,
+                profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
                 res,
             });
@@ -180,6 +184,7 @@ export function registerMeetingShareRoutes({
                 meetingId,
                 claims,
                 profileStore,
+                profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
                 res,
             });
@@ -245,6 +250,7 @@ export function registerMeetingShareRoutes({
                 meetingId,
                 claims,
                 profileStore,
+                profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
                 res,
             });

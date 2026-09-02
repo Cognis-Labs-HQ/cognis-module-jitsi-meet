@@ -24,6 +24,18 @@ export function handleProfileAvatarError(event) {
     return profileAvatarRenderer().handleError(event);
 }
 
-export function hydrateProfileAvatars(container) {
-    return profileAvatarRenderer().hydrate(container);
+export async function hydrateProfileAvatars(container) {
+    const ensureProvidersLoaded = uiCtx.capabilities.get(
+        "ui:ensureProvidersLoaded",
+    );
+    if (typeof ensureProvidersLoaded === "function") {
+        await ensureProvidersLoaded();
+    }
+    await profileAvatarRenderer().hydrate(container);
+    const availabilityRenderer = uiCtx.capabilities.get(
+        "ui:availabilityRenderer",
+    );
+    if (typeof availabilityRenderer?.refresh === "function") {
+        await availabilityRenderer.refresh(container);
+    }
 }

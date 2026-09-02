@@ -7,7 +7,6 @@ import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
 import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
-import { normalizeHandleKey } from "./reuse/normalize-handle.js";
 import { isModeratorRole } from "./meeting-values.js";
 import {
     registerJitsiUiResourcesRoute,
@@ -16,6 +15,7 @@ import {
 import { registerMeetingShareRoutes } from "./share-routes.js";
 import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
+import { resolveShareGuestId } from "./reuse/share-guest.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
 import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
@@ -26,9 +26,15 @@ import {
     resolveRequestedParticipants,
     resolveShareGuestPresenceUsername,
 } from "./reuse/meeting-access.js";
+import {
+    listPersistedMeetings,
+    selectDistinctParticipantMeetings,
+} from "./reuse/persisted-meetings.js";
+import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
+const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
 
 function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
     if (typeof registerScriptOrigins !== "function") {
@@ -115,6 +121,7 @@ export function registerUi(ctx) {
                 labelKey: "module.jitsi_meet.page_title",
                 descriptionKey: "module.jitsi_meet.description",
                 modes: ["overlay", "fullscreen", "pip"],
+                minSize: JITSI_PIP_MINIMUM_SIZE,
             },
         },
         {
@@ -147,11 +154,38 @@ export function registerApiRoutes(router, ctx) {
     const dbExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const systemCtx = ctx.getCapability("system:ctx");
+    const requestShareApproval = ctx.getCapability("share:requestApproval");
+    if (typeof requestShareApproval !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the share:requestApproval capability.",
+        );
+    }
     const profileStore = ctx.getCapability("social:profileStore");
+    const profileIdentity = ctx.getCapability("social:profile:identity");
+    if (
+        typeof profileIdentity?.normalizeHandleKey !== "function" ||
+        typeof profileIdentity?.normalizeHandleKeys !== "function" ||
+        typeof profileIdentity?.resolveAccountHandle !== "function"
+    ) {
+        throw new Error(
+            "Jitsi Meet requires the social:profile:identity capability.",
+        );
+    }
+    const normalizeHandleKey = (handle) =>
+        profileIdentity.normalizeHandleKey(handle);
     const messagesUiResources = resolveMessagesUiResources(ctx);
     const resolveGroupChat = ctx.getCapability(
         "social:messages:resolveGroupChatUrl",
     );
+    const groupChatMembership = ctx.getCapability("social:messages:membership");
+    if (
+        typeof groupChatMembership?.add !== "function" ||
+        typeof groupChatMembership?.remove !== "function"
+    ) {
+        throw new Error(
+            "Jitsi Meet requires the Messages room membership capability.",
+        );
+    }
     const listClassroomParticipantHandles =
         ctx.getCapability("study:classroom:listParticipantHandles") ??
         (async () => []);
@@ -172,6 +206,11 @@ export function registerApiRoutes(router, ctx) {
         }
         return providerFetchBoardData(...args);
     };
+    const isWhiteboardProviderAvailable = () =>
+        typeof (
+            ctx.getCapability("whiteboard:fetchBoardData") ??
+            systemCtx?.getCapability?.("whiteboard:fetchBoardData")
+        ) === "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -213,18 +252,41 @@ export function registerApiRoutes(router, ctx) {
     const deleteResourceShares = ctx.getCapability(
         "share:deleteResourceShares",
     );
-    const deleteChatRoom = ctx.getCapability("social:messages:deleteRoom");
+    const deleteChatroom = ctx.getCapability("social:messages:deleteChatroom");
+    if (typeof deleteChatroom !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the authorized Messages chatroom deletion capability.",
+        );
+    }
     const resolveMeetingPayload = (input) =>
         resolveMeetingPayloadOrReject({
             ...input,
+            profileIdentity,
             sendError,
             resolveShareUserAccess,
         });
     const canAccessMeetingForRequester = (input) =>
-        canAccessMeeting({ ...input, resolveShareUserAccess });
+        canAccessMeeting({
+            ...input,
+            profileIdentity,
+            resolveShareUserAccess,
+        });
+    const resolveRequesterHandle = (profileStoreInput, accountId) =>
+        resolveRequesterUsername(profileStoreInput, profileIdentity, accountId);
+    const resolveParticipantHandles = (
+        profileStoreInput,
+        requestedHandles,
+        options,
+    ) =>
+        resolveRequestedParticipants(
+            profileStoreInput,
+            profileIdentity,
+            requestedHandles,
+            options,
+        );
 
     const store = dbExecutor
-        ? resolveStore(dbExecutor, log, generatePassphrase)
+        ? resolveStore(dbExecutor, log, generatePassphrase, profileIdentity)
         : null;
     if (store) {
         registerMeetingWhiteboardDelegationHook(ctx, { store });
@@ -291,6 +353,12 @@ export function registerApiRoutes(router, ctx) {
                 sendJson(res, 200, { data: [] });
             },
         );
+        router.get(
+            "/api/v1/modules/jitsi-meet/meetings/persisted",
+            async (_req, res) => {
+                sendJson(res, 200, { data: [] });
+            },
+        );
         router.get("/api/v1/modules/jitsi-meet/ping", async (_req, res) => {
             sendJson(res, 200, {
                 data: {
@@ -312,6 +380,8 @@ export function registerApiRoutes(router, ctx) {
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",
             "/api/v1/modules/jitsi-meet/meetings/join",
+            "/api/v1/modules/jitsi-meet/meetings/participants/add",
+            "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
             "/api/v1/modules/jitsi-meet/meetings/reclaim",
             "/api/v1/modules/jitsi-meet/meetings/presence",
             "/api/v1/modules/jitsi-meet/meetings/auth-required",
@@ -499,6 +569,7 @@ export function registerApiRoutes(router, ctx) {
         ctx,
         requireAuth,
         profileStore,
+        profileIdentity,
     });
 
     async function dispatchMeetingNotifications(
@@ -580,10 +651,10 @@ export function registerApiRoutes(router, ctx) {
                     recipientUsername,
             });
         }
-        const bodyWithMeetingLink = appendMeetingLinkToBody(
-            body,
-            notificationMeetingId,
-        );
+        const notificationHasMeetingLink = metadata?.event !== "meeting_ended";
+        const bodyWithMeetingLink = notificationHasMeetingLink
+            ? appendMeetingLinkToBody(body, notificationMeetingId)
+            : body;
         for (const recipient of normalizedRecipients) {
             try {
                 await dispatchNotification({
@@ -592,7 +663,13 @@ export function registerApiRoutes(router, ctx) {
                     subject,
                     body: bodyWithMeetingLink,
                     senderName,
-                    actionUrl: buildMeetingActionUrl(notificationMeetingId),
+                    ...(notificationHasMeetingLink
+                        ? {
+                              actionUrl: buildMeetingActionUrl(
+                                  notificationMeetingId,
+                              ),
+                          }
+                        : {}),
                     metadata,
                 });
             } catch (error) {
@@ -646,17 +723,19 @@ export function registerApiRoutes(router, ctx) {
         router,
         store,
         profileStore,
+        profileIdentity,
         requireAuth,
         readJson,
         sendJson,
         sendError,
         hasMinRole,
         normalizeHttpUrl,
+        normalizeHandleKey,
         registerConfiguredJitsiOrigin,
         registerScriptOrigins,
         log,
-        resolveRequesterUsername,
-        resolveRequestedParticipants,
+        resolveRequesterUsername: resolveRequesterHandle,
+        resolveRequestedParticipants: resolveParticipantHandles,
         createMeetingPayload,
         resolveMeetingPayload,
         resolveShareGuestMeetingAccess,
@@ -664,40 +743,178 @@ export function registerApiRoutes(router, ctx) {
         listClassroomParticipantHandles,
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
+        groupChatMembership,
+        resolveWhiteboardMembership: () =>
+            systemCtx?.getCapability?.("whiteboard:membership") ??
+            ctx.getCapability("whiteboard:membership"),
+        fetchBoardData,
+        resolveWhiteboardDeletion: () =>
+            systemCtx?.getCapability?.("whiteboard:deleteCanvas") ??
+            ctx.getCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
         deleteResourceShares,
-        deleteChatRoom,
+        deleteChatroom,
+        requestParticipantAdditionApproval: async ({
+            meetingId,
+            meetingName,
+            participantUsername,
+            requesterAccountId,
+            requesterDisplayName,
+        }) => {
+            try {
+                const result = await requestShareApproval({
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    requesterAccountId,
+                    requesterDisplayName,
+                    action: `add ${participantUsername} as a meeting participant`,
+                    target: meetingName,
+                });
+                const approved = result === true || result?.approved === true;
+                const declined = result === false || result?.approved === false;
+                if (!approved && !declined) {
+                    log?.(
+                        "error",
+                        "Share approval returned an invalid decision; participant addition is rejected.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation:
+                                "approve_active_meeting_participant_addition",
+                            meetingId,
+                        },
+                    );
+                    return { approved: false, failOpen: false };
+                }
+                return { approved, failOpen: false };
+            } catch (error) {
+                log?.(
+                    "error",
+                    "Share approval failed; participant addition is rejected.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation:
+                            "approve_active_meeting_participant_addition",
+                        meetingId,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return { approved: false, failOpen: false };
+            }
+        },
+        revokeKickedGuestShare: async ({ claims, meetingId }) => {
+            const shareId = resolveShareGuestId(claims);
+            if (!shareId || !systemCtx?.flow?.exists?.("revoke-share-token")) {
+                return false;
+            }
+            try {
+                const result = await systemCtx.flow.run("revoke-share-token", {
+                    claims,
+                    shareId,
+                    ownerAccountId: claims.sub,
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    selfRevocation: true,
+                });
+                return (
+                    result.stageResults["delete-token"]?.[0]?.revoked === true
+                );
+            } catch (error) {
+                log?.("error", "Kicked guest link invalidation failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "invalidate_kicked_guest_share",
+                    meetingId,
+                    shareId,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return false;
+            }
+        },
     };
 
     registerMeetingConfigRoutes(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
+    registerPersistedMeetingRoutes(routeContext);
     registerMeetingWhiteboardRoutes({
         ...routeContext,
         ctx,
         listClassroomParticipantHandles,
         fetchBoardData,
+        isWhiteboardProviderAvailable,
+        requestWhiteboardOpenApproval: async ({
+            meetingId,
+            meetingName,
+            requesterAccountId,
+            requesterDisplayName,
+        }) => {
+            try {
+                const result = await requestShareApproval({
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    requesterAccountId,
+                    requesterDisplayName,
+                    action: "open the meeting Whiteboard",
+                    target: meetingName,
+                });
+                return {
+                    approved: result === true || result?.approved === true,
+                };
+            } catch (error) {
+                log?.("error", "Whiteboard consensus request failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "request_whiteboard_open_approval",
+                    meetingId,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return { approved: false };
+            }
+        },
     });
 
     registerMeetingRoutes({
         router,
         store,
         profileStore,
+        profileIdentity,
         listCalendarsByOwner,
         listCalendarEvents,
+        listPersistedMeetings: () =>
+            listPersistedMeetings({
+                db: dbExecutor,
+                getMeetingById: (id) => store.getMeetingById(id),
+                listParticipants: (id) => store.listParticipants(id),
+                listOriginalParticipants: (id) =>
+                    store.listOriginalParticipants(id),
+            }),
+        selectDistinctParticipantMeetings: (meetings, activeMeetingIds) =>
+            selectDistinctParticipantMeetings(meetings, {
+                activeMeetingIds,
+                normalizeHandleKeys: (handles) =>
+                    profileIdentity.normalizeHandleKeys(handles),
+            }),
         listClassroomParticipantHandles,
         resolveMeetingPayloadOrReject: resolveMeetingPayload,
         createMeetingPayload,
         resolveRequesterUsername,
         canAccessMeeting: canAccessMeetingForRequester,
         filterUsernamesForGuestVisibility: (usernames) =>
-            filterUsernamesForGuestVisibility(profileStore, usernames),
+            filterUsernamesForGuestVisibility(
+                profileStore,
+                profileIdentity,
+                usernames,
+            ),
         requireAuth,
         readJson,
         sendJson,
         sendError,
+        log,
         checkHttpLiveness,
         LIVELINESS_TIMEOUT_MS,
         resolveShareGuestMeetingAccess,

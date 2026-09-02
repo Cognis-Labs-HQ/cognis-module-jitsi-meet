@@ -1,4 +1,3 @@
-import { normalizeHandleKey } from "./normalize-handle.js";
 import { hasShareCapability, resolveShareGuestId } from "./share-guest.js";
 import { resolveRequesterUsername } from "./requester.js";
 
@@ -52,9 +51,12 @@ export async function resolveShareGuestMeetingAccess({
 
 export async function resolveRequestedParticipants(
     profileStore,
+    profileIdentity,
     requestedHandles,
     { includeHidden = false } = {},
 ) {
+    const normalizeHandleKey =
+        profileIdentity.normalizeHandleKey.bind(profileIdentity);
     const usernames = [];
     for (const candidate of Array.isArray(requestedHandles)
         ? requestedHandles
@@ -81,8 +83,11 @@ export async function resolveRequestedParticipants(
  */
 export async function filterUsernamesForGuestVisibility(
     profileStore,
+    profileIdentity,
     usernames,
 ) {
+    const normalizeHandleKey =
+        profileIdentity.normalizeHandleKey.bind(profileIdentity);
     const visibleUsernames = [];
     for (const candidate of Array.isArray(usernames) ? usernames : []) {
         const normalizedHandle = normalizeHandleKey(candidate);
@@ -98,6 +103,7 @@ export async function filterUsernamesForGuestVisibility(
 }
 
 export async function canAccessMeeting({
+    profileIdentity,
     store,
     meeting,
     username,
@@ -106,6 +112,8 @@ export async function canAccessMeeting({
     requesterAccountId = "",
     resolveShareUserAccess = null,
 }) {
+    const normalizeHandleKey =
+        profileIdentity.normalizeHandleKey.bind(profileIdentity);
     const directParticipants = await store.listParticipants(meeting.id);
     const normalizedRequesterAccountId = normalizeHandleKey(requesterAccountId);
     let requesterMatchesParticipantAccount = directParticipants.includes(
@@ -164,6 +172,7 @@ export async function canAccessMeeting({
 export async function resolveMeetingPayloadOrReject({
     body,
     profileStore,
+    profileIdentity,
     store,
     claims,
     sendError,
@@ -173,6 +182,7 @@ export async function resolveMeetingPayloadOrReject({
 }) {
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
+        profileIdentity,
         claims.sub,
     ).catch((error) => {
         sendError(res, 409, "profile_required", error.message);
@@ -190,6 +200,7 @@ export async function resolveMeetingPayloadOrReject({
         return null;
     }
     const authorized = await canAccessMeeting({
+        profileIdentity,
         store,
         meeting,
         username: requesterUsername,

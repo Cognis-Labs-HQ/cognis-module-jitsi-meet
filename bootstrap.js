@@ -19,6 +19,7 @@ export async function uninstallModule(ctx, { deleteContent }) {
     const store = new JitsiMeetStore({
         db: ctx.getCapability("db:executor"),
         log: ctx.log,
+        profileIdentity: ctx.getCapability("social:profile:identity"),
     });
     await store.ensureSchema();
     if (deleteContent) {

@@ -18,6 +18,7 @@ export function createMountUtilities({ root, state }) {
 
     function resetParticipantSelection() {
         state.selectedParticipants = [];
+        state.persistedMeetingSelectionUsernames = null;
         state.availableParticipants = state.allParticipants.map((entry) => ({
             ...entry,
         }));
@@ -106,7 +107,44 @@ export function createMountUtilities({ root, state }) {
         showAlonePrompt = false,
         visible = true,
     }) {
-        const overlay = root.querySelector("#jitsi-overlay");
+        const overlayPresentation = {
+            message,
+            loading,
+            probed,
+            canStart,
+            showAuth,
+            showReclaim,
+            showAlonePrompt,
+            visible,
+        };
+        state.overlayPresentation = overlayPresentation;
+        let frameWrap = root.querySelector(".jitsi-stage-frame-wrap");
+        if (!(frameWrap instanceof HTMLElement)) {
+            const meetingStage = root.querySelector(".jitsi-meeting-stage");
+            if (
+                meetingStage instanceof HTMLElement &&
+                state.meetingFrameWrap instanceof HTMLElement
+            ) {
+                meetingStage.append(state.meetingFrameWrap);
+                frameWrap = state.meetingFrameWrap;
+            }
+        }
+        if (frameWrap instanceof HTMLElement) {
+            state.meetingFrameWrap = frameWrap;
+        }
+        let overlay = root.querySelector("#jitsi-overlay");
+        if (!(overlay instanceof HTMLElement)) {
+            if (
+                frameWrap instanceof HTMLElement &&
+                state.meetingOverlay instanceof HTMLElement
+            ) {
+                frameWrap.append(state.meetingOverlay);
+                overlay = state.meetingOverlay;
+            }
+        }
+        if (overlay instanceof HTMLElement) {
+            state.meetingOverlay = overlay;
+        }
         const startButton = root.querySelector("#jitsi-start-btn");
         const authButton = root.querySelector("#jitsi-auth-btn");
         const reclaimButton = root.querySelector("#jitsi-reclaim-btn");

@@ -1,11 +1,10 @@
-import { refreshGeneratedMeetingNames } from "../meeting-name-store.js";
 import {
     deriveScopedKey,
     encryptPayload,
     getDataEncryptionKey,
 } from "./crypto.js";
 
-export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
+export async function ensureJitsiStoreSchema({ db }) {
     await db.ensureTable({
         name: "jitsi_module_config",
         columns: [
@@ -81,6 +80,21 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
     });
 
     await db.ensureTable({
+        name: "jitsi_meeting_original_participants",
+        columns: [
+            { name: "meeting_id", type: "text", notNull: true },
+            { name: "username", type: "text", notNull: true },
+            {
+                name: "recorded_at",
+                type: "timestamp",
+                notNull: true,
+                default: "now",
+            },
+        ],
+        primaryKey: ["meeting_id", "username"],
+    });
+
+    await db.ensureTable({
         name: "jitsi_meeting_state",
         columns: [
             { name: "meeting_id", type: "text", primaryKey: true },
@@ -102,6 +116,12 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
             { name: "whiteboard_disposable", type: "integer" },
             {
                 name: "whiteboard_active",
+                type: "integer",
+                notNull: true,
+                default: 0,
+            },
+            {
+                name: "screen_sharing_active",
                 type: "integer",
                 notNull: true,
                 default: 0,
@@ -144,12 +164,6 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
             "meeting_password_iv",
         ],
     });
-    await refreshGeneratedMeetingNames({
-        db: db,
-        meetings: meetings.rows ?? [],
-        generatePassphrase: generatePassphrase,
-        log: log,
-    });
     for (const meeting of meetings.rows ?? []) {
         if (
             !meeting.id ||
@@ -175,4 +189,19 @@ export async function ensureJitsiStoreSchema({ db, generatePassphrase, log }) {
             where: [{ column: "id", value: meeting.id }],
         });
     }
+}
+
+const schemaInitializationByExecutor = new WeakMap();
+
+export async function ensureJitsiStoreSchemaOnce(db) {
+    const existing = schemaInitializationByExecutor.get(db);
+    if (existing) return existing;
+    const initialization = ensureJitsiStoreSchema({ db }).catch((error) => {
+        if (schemaInitializationByExecutor.get(db) === initialization) {
+            schemaInitializationByExecutor.delete(db);
+        }
+        throw error;
+    });
+    schemaInitializationByExecutor.set(db, initialization);
+    return initialization;
 }

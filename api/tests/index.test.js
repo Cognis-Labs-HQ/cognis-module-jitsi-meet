@@ -15,10 +15,14 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:profileAvatarRenderer",
         "files:uiClient",
         "social:profileUiClient",
+        "social:profile:identity",
         "social:messagesUiClient",
+        "social:messages:deleteChatroom",
+        "social:messages:membership",
         "share:uiClient",
         "share:uiGateway",
         "share:openPopup",
+        "share:requestApproval",
         "ui:log",
         "ui:showToast",
         "ui:openErrorPopup",
@@ -45,6 +49,32 @@ function readJitsiApiBundle() {
         .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
         .join("\n");
 }
+
+test("active participant additions require a final Share approval decision", () => {
+    const source = readJitsiApiBundle();
+    assert.match(source, /getCapability\("share:requestApproval"\)/);
+    assert.match(
+        source,
+        /result === true \|\| result\?\.approved === true[\s\S]*?result === false \|\| result\?\.approved === false/,
+    );
+    assert.doesNotMatch(source, /Participant addition consensus/);
+    assert.doesNotMatch(source, /share_approval_mint_failed/);
+    assert.match(source, /participant addition is rejected/);
+    assert.match(source, /return \{ approved: false, failOpen: false \}/);
+    assert.match(source, /participant_addition_declined/);
+    assert.match(
+        source,
+        /action: `add \$\{participantUsername\} as a meeting participant`/,
+    );
+    assert.match(source, /target: meetingName/);
+});
+
+test("participant Whiteboard opens request approval from active meeting peers", () => {
+    const source = readJitsiApiBundle();
+    assert.match(source, /requestWhiteboardOpenApproval/);
+    assert.match(source, /action: "open the meeting Whiteboard"/);
+    assert.match(source, /operation: "request_whiteboard_open_approval"/);
+});
 
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
@@ -83,6 +113,31 @@ test("jitsi resolves guest access through the Share gateway contract", () => {
     assert.match(source, /legacyMeetingAccess\?\.authorized === true/);
 });
 
+test("kicked share guests can revoke only the link represented by their claims", () => {
+    const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const hooksSource = readFileSync(
+        resolve(ROOT, "api/share-hooks.js"),
+        "utf8",
+    );
+    assert.match(apiSource, /resolveShareGuestId\(claims\)/);
+    assert.match(apiSource, /selfRevocation: true/);
+    assert.match(
+        hooksSource,
+        /input\.selfRevocation === true[\s\S]*resolveShareGuestId\(input\.claims\)[\s\S]*input\.shareId/,
+    );
+});
+
+test("meeting state polling publishes current membership for participant refreshes", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
+    assert.match(
+        source,
+        /activeParticipants:[\s\S]*participants: resolved\.participants,[\s\S]*sessionActive:/,
+    );
+});
+
 test("meeting share guests receive the Jitsi meeting password", () => {
     const source = readJitsiApiBundle();
 
@@ -98,6 +153,7 @@ test("jitsi authorizes its scoped guest chat through a neutral Messages contract
     assert.match(source, /social:messages:registerExternalRoomAuthorizer/);
     assert.match(source, /getMeetingByChatRoomId\(roomId\)/);
     assert.match(source, /requiredCapability/);
+    assert.match(source, /social:messages:membership/);
 });
 
 test("participant-free meetings delete their identity, shares, and chat when closed", () => {
@@ -108,10 +164,15 @@ test("participant-free meetings delete their identity, shares, and chat when clo
         /const participantlessMeeting = resolved\.participants\.every/,
     );
     assert.match(source, /deleteResourceShares\?\.\(/);
-    assert.match(source, /social:messages:deleteRoom/);
-    assert.match(source, /await deleteChatRoom\(\{/);
+    assert.match(source, /social:messages:deleteChatroom/);
+    assert.match(
+        source,
+        /typeof deleteChatroom !== "function"[\s\S]*authorized Messages chatroom deletion capability/,
+    );
+    assert.match(source, /deleteReferencedMeetingResource\(\{/);
+    assert.match(source, /deleteChatroom\(\{/);
     assert.match(source, /roomId: meeting\.chatRoomId/);
-    assert.match(source, /ownerAccountId/);
+    assert.match(source, /actorAccountId: ownerAccountId/);
     assert.match(source, /await store\.deleteMeeting\(meeting\.id\)/);
     assert.match(source, /async deleteMeeting\(meetingId\)/);
 });

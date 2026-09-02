@@ -1,0 +1,482 @@
+# 進行中のミーティングに参加者を招待
+
+**機能ブランチ:** feature-update-participant-handling-during-meetings
+
+## 破棄されない進行中のミーティングを拡張
+
+招待者がいる状態で開始した進行中のミーティングへ、参加者をドラッグして追加できるようになりました。ミーティングの参加者情報と暗号化された Messages チャットが更新され、新しい参加者に招待が送られ、参加時にミーティングパスワードを取得できます。ステージに移動した参加者は、ミーティング開始後に利用可能なユーザー一覧へ戻りません。
+
+## 進行中のミーティング画面を利用可能な状態に維持
+
+参加者情報の更新時に、参加済みのミーティング上でロビーオーバーレイが再表示されなくなり、通知や進行中リストから参加した場合も操作を続けられます。利用可能な参加者の列が空の場合は「利用可能な参加者はいません。」と表示されます。
+
+## 進行中の参加者ドロップ先を表示
+
+利用可能な参加者をドラッグすると、対象となる進行中のミーティングウィンドウ上にローカライズされたドロップ先が一時的に表示されます。ドロップすると参加者が招待され、ドラッグを終了すると中断のないミーティング表示に戻ります。
+
+## ドロップ先を Jitsi 埋め込みの前面に配置
+
+有効な参加者のドラッグ時に、アバターのドラッグイベントからドロップ先が直接有効になります。ドロップ先は埋め込み Jitsi ウィンドウと完全に一致し、ドラッグ中は iframe の前面へ移動し、参加者のドロップまたはドラッグ終了後は背面へ戻ります。
+
+## 緑色のドラッグガイドを常に表示
+
+進行中の参加者ドロップ先では、ドラッグ中を通して同じ緑色のアウトラインを維持し、緑色の内側エッジと破線のドロップ先を表示します。ガイドはドラッグ終了時または参加者のドロップ時にのみ解除されます。
+
+## 削除された参加者のアクセスを失効
+
+ミーティングクライアントが、ローカルの Jitsi キックイベントとエラーを認識するようになりました。削除されたアカウントユーザーは保存済みメンバーから外れ、再度招待可能なユーザーとして表示されます。削除されたゲストについては、そのセッションで使用した Share リンクだけが失効し、在席状態も無効になります。
+
+## アンマウント時に永続ルートを解放
+
+ルーティング、共有、埋め込みの Meetings マウントは、すでに中止されたルートを取得せず、ライフサイクルシグナルの中止時に `.jitsi-route-root` を削除するようになりました。非同期初期化は後続の表示処理を作成する前に停止し、既存のクリーンアップは Observer、ハンドラー、タイマー、チャット処理、Whiteboard、Jitsi 埋め込みを引き続き破棄します。
+
+## 参加者キーの衝突を防ぎ、割り当て済みユーザーを非表示
+
+進行中のメンバー変更ではミーティング固有の参加者キーを使用するようになり、変更後の参加者一覧が別のミーティングと一致しても PostgreSQL の一意性エラーが発生しません。参加者検索では別のミーティングに実際に参加中のユーザーを表示せず、進行中の招待 API でも同じ利用可能性ルールを適用しますが、予定済みの招待だけでは非表示にしません。
+
+## ライブ参加者連携を更新
+
+利用可能な参加者と進行中のミーティングを5秒ごとに更新し、SPA ナビゲーション後にアバターの在席プロバイダーを初期化し、拡張された参加者と新着メッセージをミーティングチャットへ再読み込みし、進行中の招待成功をトーストで通知します。既存の永続 Whiteboard は任意のプロバイダー capability を通じて参加者アクセスを拡張します。参加者なしの文言を進行中ミーティングなしの表示に合わせ、退出時の文言を短縮し、ピクチャーインピクチャーの通知最小サイズを 320 × 180 ピクセルにしました。
+
+## Whiteboard 操作を区別
+
+Whiteboard ボタンはボードを開くときに確認スタイルを使用し、「Whiteboard を閉じる」の表示中はキャンセルスタイルへ切り替わります。
+
+## ミーティング PiP の最小サイズを拡大
+
+ミーティング PiP の基本最小サイズを従来より 25% 大きい 400 × 225 ピクセルにしました。進行中の参加者が3人目になると両方の寸法を一度だけ 25% 増やし、Cognis のフローティングウィンドウ更新機能で上限付き最小サイズを直ちに適用します。
+
+## Whiteboard 拡張契約を検証
+
+Meetings は Nextcloud Whiteboard PR 24 が提供する `whiteboard:uiGateway.expandCanvasAccess` の正確な契約を検証するようになりました。更新を同期済みとして記録する前に、成功応答は要求したキャンバスを識別し、要求した全参加者を拡張後のアクセス一覧として返す必要があります。
+
+## 未認可の Whiteboard 拡張再試行を停止
+
+所有者認可のキャンバス拡張 Capability はミーティング主催者だけが呼び出すようになりました。招待参加者は拡張要求を送信せず、所有者の失敗した要求は同じキャンバスと参加者集合について記録されるため、ポーリングや埋め込みライフサイクル更新で同じ禁止要求を繰り返し送信しません。
+
+## PiP 内にオーバーレイを保ち、自動 Whiteboard を復旧
+
+単独参加者への確認を含むミーティングオーバーレイは、Whiteboard PiP の有効中にフローティング Jitsi フレーム内へ移動し、閉じるとステージへ戻るようになりました。Whiteboard の自動オープンは、一時的な動的モジュール読み込み失敗で最初に停止せず、上限付きバックオフ全体を通じて再試行します。
+
+## PiP の拡大を3人で上限設定
+
+ミーティング PiP の最小サイズは、進行中の参加者が2人までは 400 × 225 ピクセル、3人以上は 500 × 282 ピクセルの2段階だけになりました。大規模なミーティングでも最小サイズが増え続けて画面を占有することはありません。
+
+## Whiteboard コントローラーの解析を復旧
+
+ミーティングフレームとオーバーレイの DOM 参照は、Whiteboard Capability ペイロードから再宣言せず Meetings サーフェス内のローカル参照として保持するようになりました。ブラウザがコントローラーを再び解析して読み込めるようになり、直接の JavaScript 構文回帰チェックでエントリポイントを保護します。
+
+## 進行中ミーティングのドロップ先を PiP 内に保持
+
+参加者のドラッグ開始時に、現在アクティブなミーティングウィンドウのオーバーレイ親要素を再確認するようになりました。Whiteboard PiP が開いている場合、緑色の参加者ドロップ先はフローティング Jitsi フレーム上に表示され、それ以外では通常のミーティングステージ上に残ります。
+
+## Jitsi 画面共有を優先し Whiteboard 表示を統一
+
+Jitsi のローカルおよびリモート画面共有参加者のリアルタイムイベントにより、同期 Whiteboard を全員に対して閉じ、共有終了まで再オープンを無効にして、通常領域を会議へ戻すようになりました。バックエンド Capability チェックを共通の Whiteboard 表示判断とし、ブラウザプロバイダー初期化中は全アカウントが同じ無効コントロールを表示し、プロバイダーが利用不可なら非表示にします。
+
+## Whiteboard 自動失敗ループを停止し診断情報を表示
+
+アカウントの自動オープンは、ユーザー操作なしでブラウザに制限されるキーリング解除を試みず、すでに解除済みになるまで待つようになりました。操作が必要な場合は Whiteboard の選択を求める警告を1回表示し、自動マウント失敗を同じボードで再試行しません。実際の失敗ではトーストに失敗段階を表示し、構造化 ID、エラーメッセージ、完全な Error オブジェクトをホストログとブラウザコンソールの両方へ書き込みます。
+
+## アクティブなミーティングのオーバーレイをライブウィンドウに維持
+
+既存のミーティングへ参加した後、参加者の再描画によってロビーまたはプリフライトオーバーレイが復帰しないようにしました。オーバーレイ配置はローカルの解放コールバックだけに依存せず、ミーティングフレームの実際のフローティング親要素を検出します。参加者のドラッグも移動済みオーバーレイを直接使用するため、緑色のドロップゾーンが Whiteboard の PiP に追従します。
+
+## PiP の参加者ドロップゾーンを正しく関連付けて解除
+
+参加者ターゲットは Cognis の実際の `floating-window` クラスを検出し、各遷移の前に現在のオーバーレイと Jitsi フレームをライブ DOM から解決するため、Whiteboard ステージではなく PiP 要素へ関連付けられます。ドキュメント全体のドラッグ終了とドロップのクリーンアップに加え、Escape とウィンドウのフォーカス喪失の処理によって、ドラッグを中止した際にターゲットが消去されます。
+
+## ミーティングターゲットを再利用し、Core の読み込みと Whiteboard のアクティベーションを明確化
+
+アクティブなミーティングへの参加者ドラッグでは、追加の破線ポップアップを使わず、既存のミーティングオーバーレイと緑色のターゲットデザインを再利用します。ミーティング開始時は「ミーティングを開始」のクリックから Jitsi への参加試行が完了するまで、Cognis core の共有ページ読み込みホイールを維持します。報告された Whiteboard エラーは Cognis のコンポーネントページ生成認可が原因でした。現在のブラウザアクティベーションがないアカウントの自動マウントは、認可されない生成を `whiteboard_component_window_unavailable` になるまで再試行せず、一度だけ操作を促して延期します。
+
+## 画面共有ロックを説明し、Whiteboard を再開してアクティブ招待を承認
+
+画面共有がミーティング領域を使用している間、無効な Whiteboard 操作にローカライズ済みのホバー説明を表示します。Cognis のユーザーアクティベーション要件に達した同期済みアカウントボードは、中止に安全な入力リスナーを設定し、Whiteboard 固有のクリックを求めず次のアクティベーションで自動再開します。アクティブな参加者招待は変更前に Share の任意承認 Capability で合意を求め、明示的な拒否を適用し、承認基盤が利用できない場合は構造化ログを残してフェイルオープンします。
+
+## ドロップ時に合意を開始し、拒否を戻してミーティング切り替えをロック
+
+アクティブな参加者のドロップでは参加者プールを一時的に更新し、承認付き API 要求を直ちに送信します。投票で拒否された場合、提案した参加者を利用可能一覧へ戻し、招待者に専用のローカライズ済み拒否トーストを表示します。ローカルユーザーがミーティングへ参加中は、アクティブなミーティングのグリッドと操作を常に無効にします。
+
+## 実際の Share 承認フローを使用し、重複する PiP ハンドルを削除
+
+直接の Share 承認 Capability がない場合、アクティブな参加者追加は既存の Share トークン生成承認ステージを実行して結果を待ち、一時トークンを直ちに失効させます。これにより現在の環境でも合意を省略しません。Whiteboard の PiP は Cognis のフローティングウィンドウツールバーに加えてミーティングステージヘッダーを移動コントローラーとして関連付けません。
+
+## アクティブなミーティングへの招待に Share の最終承認を必須化
+
+アクティブなミーティングへの参加者追加は、宣言済みの `share:requestApproval` Capability を直接必須とします。明示的な最終承認だけが参加者を受け入れ、拒否、保留、または不正な判断では参加者を利用可能リストへ戻します。実行時エラーは引き続きログを残してフェイルオープンとし、作成後に取り消す旧互換経路は使用しません。
+
+## ミーティング破棄を復元し、不要な Whiteboard アクセス拡張を防止
+
+カンファレンスの退出または終了時に 1 回だけ即座に破棄処理を行い、ミーティングオーバーレイを復元して参加者選択を消去し、アクティブなミーティングと利用可能な参加者の更新完了を待ちます。Whiteboard アクセス同期は初期メンバー構成を承認済みとして扱い、参加者が変わった場合だけ拡張プロバイダーを呼ぶため、ポーリング中の所有者専用要求の繰り返しを防ぎます。
+
+## ミーティング状態と参加者検索を保護
+
+参加者検索は、進行中の在席フィルターからミーティングを除外する前にアクセス権を確認するようになりました。画面共有状態は独立した Meetings エンドポイントを使用し、ミーティングインスタンス間でリセットされるため、古いロックが引き継がれません。
+
+## すべての参加者の画面共有を優先
+
+認可されたアカウント参加者または Share ゲストは、Jitsi で検出された画面共有イベントを報告できます。どの参加者が画面共有しても、Jitsi が共有終了を報告するまで、同期された Whiteboard はミーティング全体で閉じられロックされます。
+
+## 進行中の参加者承認リクエストを明確化
+
+進行中ミーティングへの招待承認では、追加する参加者と対象ミーティング名を Share に伝えるようになりました。承認者には一般的な共有リンク文言ではなく、具体的な操作と対象が表示されます。
+
+## 終了オーバーレイ表示前に Whiteboard の破棄を完了
+
+ミーティングの退出または終了時に Whiteboard キャンバスを閉じ、PiP ウィンドウを解放し、会議を破棄する前にオーバーレイを Jitsi ステージへ戻します。これにより「ミーティング終了」と「退出済み」のメッセージが通常のステージに表示されます。
+
+## 更新中も準備済み招待を安定して維持
+
+進行中ミーティングへ先行して移動した参加者は、招待リクエストと定期的なメンバー更新が重なってもステージに維持されます。サーバーがメンバー登録を確認するか招待が失敗すると保留マーカーが解除され、アバターがステージと利用可能一覧の間を行き来しません。
+
+## SPA ナビゲーション後に保留中の招待を初期化
+
+Meetings の参加者コントローラーは、ルートがマウントされるたびに保留中招待セットを初期化します。ホストが以前のモジュールインスタンスの状態を保持していても、SPA ナビゲーションで安全に Meetings をマウントでき、参加者更新が失敗しません。
+
+## PiP 破棄後に終了ミーティングのオーバーレイを復元
+
+Whiteboard の破棄では、コンポーネントキャンバスを先に破棄してからミーティングオーバーレイを通常の Jitsi ステージへ戻します。コンポーネントページのクリーンアップが復元済みオーバーレイを削除できなくなり、PiP を開いた状態でモデレーターが終了しても空のステージではなく終了メッセージが表示されます。
+
+## 終了オーバーレイを現在のステージへ復元
+
+Whiteboard コンポーネントの破棄でステージラッパーが置換され、以前取得した DOM 参照が古くなる場合があります。終了処理は、オーバーレイを復元する前にマウント済みルートから現在のミーティングフレームとステージラッパーを取得するため、モデレーターによる終了後も現在の composer 画面に終了メッセージが残ります。
+
+## 実績のある PiP 終了順序を復元
+
+ミーティング終了処理は、フローティング Jitsi ウィンドウを解放する前にオーバーレイをステージへ戻す実績のある順序に復元されました。Whiteboard コンポーネントの破棄は構造化された失敗ログ付きで非同期に継続します。Jitsi 埋め込みの終了と終了メッセージ表示は、ステージ DOM を回収し得るコンポーネントページの破棄を待ちません。
+
+## Whiteboard コンポーネントをミーティングステージから分離
+
+Whiteboard コンポーネントは、Jitsi とミーティングオーバーレイを含むラッパーを所有せず、専用ホストへマウントされます。コンポーネント破棄で終了 UI が削除されません。PiP の破棄は Whiteboard ホストだけを非表示にして破棄し、Jitsi とオーバーレイを個別に復元します。
+
+## ミーティングオーバーレイをステージレイアウト内に維持
+
+ミーティング前後のオーバーレイは、Jitsi と Whiteboard が非表示になると親要素が縮む絶対配置の子要素ではなく、全面のグリッド要素になりました。保護用 Whiteboard シェルがコンポーネントホストの所有境界を追加し、コンポーネントのクリーンアップが隣接するミーティング UI を削除するのを防ぎます。
+
+## 参加者更新からミーティングステージを除外
+
+利用可能な参加者の定期更新は、参加者と進行中ミーティングの画面だけを更新します。準備済みアバターの再描画やステージメッセージの置換を行わないため、終了・退出メッセージが表示され続けます。ホストのクリーンアップでオーバーレイが外れた場合も、Whiteboard 破棄後に保持した要素と表示状態から最終復元します。
+
+## オーバーレイ復元を SPA モジュールキャッシュと互換に維持
+
+Whiteboard 後のオーバーレイ復元は、新しいモジュール間ユーティリティーを追加せず、既存の `updateOverlay` を直接再利用します。SPA ナビゲーション中に異なるモジュールインスタンスが混在しても、`restoreMeetingOverlay is not a function` でクリーンアップ Promise が失敗せず、現在のマウントは保持された終了・退出表示を再適用します。
+
+## 終了オーバーレイが次のクリックに反応しないようにする
+
+ミーティング終了処理では、Whiteboard コントロールを同期する前にアクティブなミーティングをクリアするようになりました。これにより、遅延中の Whiteboard 自動オープン処理が終了中に再登録され、次のクリックで「ミーティング終了」または「ミーティング退出」オーバーレイを非表示にすることがなくなります。
+
+## クリーンアップ後にミーティングステージ全体を復元
+
+オーバーレイ復元処理は、コンポーネントのクリーンアップによって切り離されたミーティングフレームラッパー全体を保持して復元するようになりました。参加者一覧とアクティブミーティング一覧の再描画後も、ステージとともに「ミーティング終了」または「ミーティング退出」の表示が戻ります。
+
+## 進行中のミーティングリソースを同期
+
+永続 Whiteboard は初回同期時に全参加者のアクセスを確認するようになり、ミーティング開始後に招待された参加者も既存のキャンバスを開けます。Messages の更新では、ユーザーの追加や削除に応じてメンバーを変更しながら既存のミーティングチャットルームを維持し、ミニチャットを同じルームから再描画します。テストでは、生成されたミーティング名と URL がメンバー変更後も保存済みの非破棄ミーティングエンティティに保持されることも保証します。
+
+## PiP 上の参加者ドロップ先を復元
+
+進行中参加者のドロップ先は、フローティング Jitsi フレーム内へ移動すると、通常のステージグリッド配置から絶対配置のインセットへ切り替わります。利用可能な参加者をドラッグすると、招待先が再び PiP ミーティングウィンドウ全体を覆います。
+
+## チャット再利用時の参加者追加エラーを防止
+
+参加者追加 API は、完全一致メンバーの解決処理に既存ルームの返却を求めて新規作成された別ルームを拒否するのではなく、保存済みの Messages ミーティングルームを直接再利用します。ブラウザーはホストの Messages クライアントを通じてメンバーを更新し、既存のミニチャットを再描画します。チャットメンバーを変更できない場合は、構造化された診断情報とローカライズ済みエラーを報告します。
+
+## ミーティング識別情報、チャット、Whiteboard メンバーを整合
+
+ミーティングモジュールは、対応する参加者変更を保存する前に、目的が明確なサーバー側 Messages のメンバー追加または削除操作を呼び出します。保存済みチャットルーム ID は変更されず、クライアントはそのルームだけを再描画し、Whiteboard のアクセス拡張にも同じ保存済み参加者構成を渡します。スキーマ初期化による保存済みミーティング名、スラッグ、URL の再生成を廃止し、Jitsi、Messages、Whiteboard リソース間の識別情報のずれを解消しました。
+
+## 目的を限定した Messages メンバー操作を使用
+
+ミーティング参加者の変更では、保存済みミーティングルームに対して単純な `social:messages:addRoomMember` または `social:messages:removeRoomMember` capability を呼び出します。ルーム作成は独立した一度限りの操作のまま、ミーティングがルーム関連付けを所有し、集約同期 capability は不要です。
+
+## 正規の Messages メンバーシップ capability を使用
+
+進行中のミーティングへの招待と参加者の削除で、正規の実行者アカウント ID とユーザーアカウント ID を指定する統一された `social:messages:membership` capability を使用し、現在の Cognis Messages 統合契約に準拠しました。
+
+## 再参加時にチャットアクセスを復元
+
+認証済みユーザーがミーティングへ参加するたびに、チャットを読み込む前に冪等な Messages メンバーシップ操作を再適用します。以前ミーティングチャットを退出またはアーカイブした参加者も、ミーティングへ再参加するとチャットを再び表示できます。
+
+## 正規の Whiteboard メンバーシップ操作を使用
+
+進行中の参加者を追加または削除するときは、ミーティング参加者一覧を保存する前に、正規の主催者および参加者アカウント ID を指定して `whiteboard:membership` で永続キャンバスを更新します。従来のブラウザー側の一括アクセス拡張は使用しません。
+
+## 参加者が 1 人の場合は招待を自動承認
+
+実際に参加中のユーザーが 1 人以下の場合、退出済みユーザーの合意を待たずに新しい参加者の追加を直ちに承認します。複数の参加者が実際に参加中のミーティングでは、引き続き Share の承認結果を使用します。
+
+## 通知からの参加と進行中ミーティングのロックを安定化
+
+通知から受け取って処理したミーティングパラメーターを参加前に URL から削除し、通知経由を含めてミーティングを選択した時点で進行中ミーティング欄をロックします。ミーティング終了通知には操作 URL もメール内のミーティングリンクも含めません。
+
+## ハンドル正規化を Profile identity に委譲
+
+サーバー側のハンドル正規化はすべて公開 capability `social:profile:identity` を使用します。ミーティングストア、アクセス確認、参加者検索、Share オーケストレーション、Whiteboard ルート、ライフサイクル処理では、モジュール独自の正規化規則を保持または import しません。
+
+## ディレクトリ由来の参加者照合を維持
+
+ディレクトリ由来の参加者識別子を比較するときも正規の Profile identity 正規化を適用し、モジュール独自の正規化を再導入せずに、プロフィールハンドル変更後のミーティングアクセスを維持します。
+
+## プロファイル競合なしで進行中ミーティングをポーリング
+
+認証済みアカウントから使用可能なプロファイルハンドルをまだ解決できない場合、進行中ミーティングの受動的な検索は成功した空の一覧を返すようになりました。解決エラーは構造化されたコンテキストとともに記録し、プロファイル依存のミーティング操作では引き続きプロファイルを必須とすることで、定期更新による 409 競合の繰り返しを防ぎます。
+
+## 参加者の進行中ミーティングを確実に検出
+
+現在のプロファイル解決でハンドルを取得できない場合も、進行中ミーティングの検索は認証済みアカウント ID で認可を続行するようになりました。これにより、以前のプロファイルハンドルが保存されているミーティングを含め、保存済み参加者にそのアカウントが属するすべての Cognis 進行中ミーティングが表示され続けます。
+
+## 進行中ミーティングの検索へ Profile ID を正しく渡す
+
+進行中ミーティングの検索では、正規ハンドル解決へ `social:profile:identity` Capability を明示的に渡すようになりました。これにより、`admin`、`firehawk`、`test` などの通常アカウントを、正規化エラーを繰り返さず再び解決できます。
+
+## 実際の Whiteboard 所有者で招待を完了
+
+合意成立後の参加者招待では、関連付けられた永続キャンバスの実際の所有者を読み取り、その所有者の正規アカウント ID を解決して `whiteboard:membership` に使用するようになりました。別の承認済み参加者が開いたキャンバスも更新でき、503 応答で招待が中断されません。
+
+## 退出後のチャットポーリングを停止
+
+ローカルユーザーがキックされた場合、またはミーティングが別の理由で破棄される場合、Meetings は最初にチャットのポーリングタイマーを停止し、現在および最後に使用したルーム ID とキャッシュ済みルームキーを消去するようになりました。その後の再描画で退出済みミーティングルームが再び有効になったり、認可されていないメッセージ要求が送信されたりすることはありません。
+
+## 永続ミーティング ID を再利用
+
+ミーティング作成時に、保存済み参加者行から正規化済みの全参加者セットも解決するようになりました。これにより、永続ミーティングはサーバー再起動後や進行中のメンバー変更後も、同じ ID、名前、URL、Messages ルームで再利用されます。参加者のいないミーティングは再利用せず毎回新しい ID を受け取り、その新規レコードへチャットを関連付けます。終了時は引き続き、ミーティングレコードを削除する前にチャットを完全に削除します。
+
+## 参加者検索と初期ミーティングオーバーレイを修正
+
+「参加者を検索」では Cognis core が対応する `user` 結果フィルターを渡し、ユーザー結果だけを表示するようになりました。ドラッグ中でないフォーカス変更ではミーティングオーバーレイを変更しません。進行中ミーティングは参加者ペインから初期オーバーレイの「ミーティングを開始」ボタン直上にある調和したカードへ移動し、ミーティングを選択または参加すると非表示になります。進行中ミーティングで追加した参加者は永続参加者レコードに引き続き保持され、再利用するミーティング ID を決定します。
+
+## 参加者ワークスペースに永続ミーティングを表示
+
+参加者ワークスペースの左側約30%を、縦スクロール可能な既知ユーザー選択に使用し、右側約70%を、現在のアカウントが参加する永続ミーティングの横スクロールギャラリーに使用するようになりました。各ショートカードは安定したミーティング名を上部中央に置き、標準プロファイルアバターを最大10人まで軽く重なるように配置します。Cognis が進行中と判断したミーティングではアプリグリーンの光が縁を周回し、参加者のいない破棄可能ミーティングはギャラリーから除外します。
+
+## 以前のミーティングを再利用または退出
+
+参加者ペインでは、コンパクトなカードを「以前のミーティング」と表示します。カードをクリックするとメンバーをステージへ復元して「ミーティングを開始」までスクロールします。3秒間長押しするとハイライトが緑から赤へ変わり、退出の確認を表示します。最後のメンバーが退出すると、保存済みミーティング、Messages チャット、関連付けられた Whiteboard を削除します。残り1人のミーティングも、そのメンバーがクリーンアップを完了できるよう一覧に残ります。
+
+## 以前のミーティングカードのフィードバックを改善
+
+「以前のミーティング」カードはアバターを実際のコンテンツ高で折り返して横方向ギャラリーの上端に揃え、不要な縦方向オーバーフローを解消しました。進行中のミーティングは、境界だけを移動するマスク済みのアプリグリーン区間で示します。削除の長押しでは一定の不透明度を保った滑らかな緑から赤へのグラデーションを直ちに開始します。ポップアップの「削除」はキャンセル表示、「キャンセル」は中立表示となり、削除成功は情報トーストで通知します。
+
+## 参加者検索とミーティング履歴をコンパクト化
+
+「参加者を検索」は利用可能な参加者の先頭にある疑問符付きプロフィールアバターになりました。参加者見出しを左列へ移動することで、「以前のミーティング」は空いた右上の領域から始まり、ギャラリーの余白を縮小して残っていた縦方向のオーバーフローを解消します。3秒間の削除長押しは専用の可視オーバーレイを使い、一定の不透明度の緑色グラデーションがポインター押下時に始まり、赤へ連続的にアニメーションします。
+
+## 参加者ワークスペースの見出しを再整列
+
+共通の参加者見出しを2列テーブルの上へ戻し、利用可能な参加者と「以前のミーティング」が再び同じ行から始まるようにしました。参加者ペインと「以前のミーティング」列の両方で縦方向のオーバーフローを非表示にし、意図した横方向のミーティングカードスクロールと利用可能な参加者の内部スクロールは維持します。
+
+## 参加者見出しの領域を確保
+
+参加者見出しは既定の見出し余白をなくし、コンパクトな行高と間隔を使用します。「以前のミーティング」は横方向のスクロール機能を完全に維持しながら、標準準拠および WebKit ブラウザーの表示でスクロールバーを非表示にします。
+
+## 参加者見出しとレイアウト領域を調整
+
+参加者見出しは、強制されたコンパクトなフォントサイズと行高ではなく、継承された自然な文字高を再び使用します。ペインは見出しと参加者テーブルを別々の Flex 行として割り当て、見出しがレイアウトを圧迫することなく、親要素の残り領域へ伸縮できるようにしました。
+
+## 認可されたチャットルーム削除を使用
+
+ミーティングのクリーンアップは Cognis の Capability `social:messages:deleteChatroom` を解決し、正規の `roomId` と `actorAccountId` 契約を渡します。破棄可能ミーティングではミーティング所有者を実行者とし、永続ミーティングの最後の退出では正規の所有者アカウントを使用するため、Messages は作成者または唯一残った参加者を認可して依存チャットデータをトランザクションで削除できます。
+
+## 見つからないリソースを越えてクリーンアップを続行
+
+ミーティング削除では、標準の未検出ステータス、コード、メッセージを返す参照先 Whiteboard とチャットルームを、すでに削除済みとして扱います。この状態を構造化されたリソースメタデータとともに記録し、残りのチャット、共有、ミーティングレコードのクリーンアップを続行します。その他の削除失敗では引き続き安全に処理を停止します。
+
+## 最新のチャットルーム削除契約を必須化
+
+Jitsi は、最新の Cognis Messages 変更で導入された Flow 対応の公開 Capability `social:messages:deleteChatroom` を必須のランタイム契約として宣言します。API 登録時に呼び出し可能であることを検証し、クリーンアップでは正規の `roomId` と `actorAccountId` を引き続き渡し、未検出の冪等な処理も維持します。
+
+## 承認サービスの失敗時に拒否
+
+Share 承認サービスでエラーが発生した場合、参加者招待を安全に拒否し、必要な合意なしにアクセスが付与されないようにしました。
+
+## リクエスト元の識別情報を正しく解決
+
+参加者検索でリクエスト元を解決するときに Profile identity 契約を渡すようにしました。これにより、招待可能な利用者を隠すことなく、認可済みミーティングを在席フィルターから除外できます。
+
+## ローカライズされたリリースノートの同等性を復元
+
+インドネシア語版と日本語版のリリースノートに、ドイツ語版と英語版に存在するすべての変更点の翻訳を追加しました。
+
+## 共同状態の変更を直列化
+
+Whiteboard の投票を会議ごとの順序で適用し、有効化の直前に画面共有を再確認するようにしました。これにより合意投票の消失と有効状態の競合を防ぎます。Whiteboard アクセスの付与に失敗した場合は、新たに付与した暗号化チャットのメンバー資格を取り消します。
+
+## 復元した参加者構成を編集
+
+ステージ上の参加者を、プロフィールリンク以外の場所で1回クリックするかドラッグして「参加可能なユーザー」へ戻せるようにしました。「以前の会議」から復元した参加者構成を変更すると、別の一致する会議室の固定名を再利用せず、新しい会議を作成します。
+
+## ライブ Whiteboard 共同作業を復元
+
+進行中の会議へ参加者を追加した後、主催者のクライアントから永続キャンバスへのアクセスを再同期します。主催者以外からの Whiteboard 要求では Share の承認を呼び出し、ほかのアクティブな参加者へ合意確認を表示します。
+
+## 共同作業のフィードバックとクリーンアップを完成
+
+Whiteboard の承認リクエスト送信時に情報トーストを表示し、参加可能なユーザーが空の場合は「参加者を検索」を非表示にします。退出する所有者をチャットのメンバーから削除し、最後に残った参加者が唯一の参加者として正しく認可されてチャットルームを削除できるようにしました。
+
+## アクティブな会議表示を強化
+
+「以前の会議」のアクティブなカードで、より太く長い緑の境界セグメント、強い発光、速い巡回を使用し、進行中の会議を明確に目立たせます。
+
+## 放棄されたドロップを閉じて履歴を統合
+
+ポインターまたはマウスを離すと、未完了のアクティブ会議参加者ドロップ領域を閉じます。「以前の会議」では同じ正規化参加者構成の会議室を1枚のカードにまとめ、アクティブな会議室を優先するため、2人から3人への追加を繰り返しても3人会議の重複カードで履歴が埋まりません。
+
+## 大きすぎるルートと UI モジュールを分割
+
+会議チャット概要ルートと対話型ブラウザーイベントのバインドを、それぞれ役割を絞ったモジュールへ移しました。読みやすい整形を保ちながら、主要なライフサイクルおよびマウントファイルを大幅に小さくしています。
+
+## SPA 会議埋め込みの依存関係を復元
+
+分割した対話型ハンドラーが会議 URL とテーマのリゾルバーを直接インポートするようになり、SPA ナビゲーション後にテーマ同期や会議認証操作が失敗しなくなりました。
+
+## 対話型ハンドラーの残りの依存関係を復元
+
+分割した対話型ハンドラーが会議 ID の正規化と Messages ゲートウェイクライアントを直接インポートするようになりました。SPA ナビゲーション後の進行中会議の選択を修正し、チャット送信時にも同じスコープエラーが起きないようにしています。
+
+## 会議リセットのバインドを復元
+
+分割したインタラクションバインダーが会議リセット操作を明示的に受け取るようになり、ほかに参加者がいない会議から退出するときも未処理のスコープエラーなしで後処理を完了できます。
+
+## 参加者変更後もチャット履歴を維持
+
+会議は現在のメンバーシップとは別に、変更されない元の参加者構成を保持するようになりました。「以前の会議」はその構成を使用し、会議作成時には両方の構成を照合するため、参加者の追加や削除によって代替ルームが連続作成されたり、安定したカードが暗号化チャット履歴から切り離されたりしません。ホワイトボードの合意リクエストでは、送信済みの情報トーストも引き続き表示されます。
+
+## 会議コラボレーションリソースと選択状態を修復
+
+権限を持つ参加者が会議を開始または再利用すると、古いルーム ID が残っていても関連する Messages ルームを解決し直し、存在しないルームを再作成して保存できるようになりました。永続的なホワイトボードは、開く前に登録済みおよび参加中のアカウント参加者とメンバーシップを同期し、対応する「進行中の会議」と「以前の会議」のカードは選択状態を共有します。
+
+## 送信後のチャット更新を復元
+
+分割したインタラクションバインダーが、マウント済みの Cognis Messages チャット更新コールバックを明示的に受け取るようになり、会議またはプライベートメッセージの送信後、チャット再描画前に未処理のスコープエラーが発生しなくなりました。
+
+## 使い捨て会議を履歴から除外
+
+「以前の会議」は単一アカウントの使い捨て会議を除外し、元または現在の参加者構成が複数アカウントである永続的な会議だけを引き続き表示します。
+
+## 送信後は Cognis Messages チャット制御を使用
+
+送信成功後、インタラクションバインダーは個別の更新コールバックを受け取るのではなく、既存の Cognis Messages チャット更新操作を呼び出すようになりました。内部のチャット関数も、Jitsi がチャット実装を所有しているように見える表現ではなく Cognis の用語を使用します。
+
+## SPA マウントをチャット更新から分離
+
+コンポーザーのレンダー処理は、ページイベントのバインド中にチャット更新を呼び出さなくなりました。送信成功後は、Cognis Messages 操作を検証する必ず関数である更新ラッパーを使用し、利用できない場合は安全な会議とルームのメタデータを記録するため、メソッドがなくてもルートのマウントは失敗しません。
+
+## 会議選択と進行中セッションのレイアウトを再調整
+
+「以前の会議」または「進行中の会議」から入力されたステージでは、単独会議向けの共有ポップアップが表示されなくなりました。会議への参加中は、禁止カーソルとともに「以前の会議」の操作とプロフィールプレビューを無効にし、進行中のアニメーションは維持します。ステージと Messages 要素は揃った 5 行の既定値と従来のコンポーザーレイアウト境界を維持します。
+
+## 従来のページレイアウトを復元
+
+会議ステージと Messages のコンポーザーマニフェストから、最大サイズを full にする上書きを削除しました。揃った 5 行の高さ、最小サイズ、および通常のページコンポーザーのサイズ変更動作は維持されます。
+
+## 無効な履歴を明確化しホワイトボード検出を安定化
+
+無効な「以前の会議」カードをグレー表示し、禁止カーソルを表示するようにしました。バックエンドによるプロバイダー確認後は、ホワイトボード UI の検出でユーザーごとのキャンバス作成メソッドを要求しないため、同じ会議の参加者が割り当て済みの開いているキャンバスを一貫してマウントできます。
+
+## 全幅のコンポーザーペイロードを復元
+
+会議ステージと Messages の既定値は、同じ 5 行の高さで 8 対 4 に分割し、コンポーザーの 12 列すべてを使用するようになりました。レイアウト設定キーを更新したため、クライアントは狭いステージ、狭いチャット、空き列を含む不正な保存済みペイロードを復元せず破棄します。
+
+## upstream のブロック表示に合わせホワイトボード接続条件を削除
+
+無効な「以前の会議」は、グレースケールなしで upstream の「進行中の会議」と同じ不透明度表示を使い、カード全体の透明シールドで禁止カーソルを確実に表示します。ホワイトボード機能検出後の冗長なサインインユーザー向けキャンバスファクトリー条件を削除し、複数の参加者が同時にコントロールを保持できるようにしました。
+
+## コミット
+
+- [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
+- [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
+- [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
+- [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
+- [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
+- [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
+- [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
+- [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
+- [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
+- [ff60844](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff6084469d7c8c18c631d6c59bac0b65fdf04b44)
+- [0afee2e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0afee2e9720010b6a2b5c8de256310dd77efd947)
+- [3aa0da6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3aa0da6b54b2bf66dd36e760630cf7c50d7a55b3)
+- [a854724](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a8547244e698f6e3ef1c4b93d31531891a8edae2)
+- [12de19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/12de19a4fcf312a67e238efd23c0beb0ffe03d2e)
+- [a47b5b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a47b5b48340e023192dc88a1cbbc6f2c4ecb4587)
+- [790401f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790401f6d0c6714179d977e0d9384c59bc91f30c)
+- [28774f3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/28774f3df4a49adabc7e5470442e4cc087555e87)
+- [4c26402](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4c26402d1005c86a6f28eecc78883e447bb97c11)
+- [206b29f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/206b29f70af70eab3d63d8dae871f182dc97f40a)
+- [5f7683b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5f7683b1c03719763333174cd6802bf4d33d37e9)
+- [33eddd2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33eddd2c63b80998f6d8e9ee44b6152c0080628f)
+- [1386015](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1386015409eeb5bd252208dcdff27b809e4db00e)
+- [eb8aef2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb8aef223aa633bcd302ee27dd934a63e92bcf78)
+- [2d07b3b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d07b3b6d0bd57563c83706f37c5dffcbf01f59f)
+- [b88f6db](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b88f6db738e3bfad4ea1fd84ffecd2afe8bcb91f)
+- [6a1e873](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6a1e873ff9454735dcbbcc0ed3290d7a446ac8b6)
+- [cef74a0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cef74a09b02dfc3f50523dcadaf497488f9822ef)
+- [812a79e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/812a79eb9960118a6addc5d17147e565db413639)
+- [402045d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/402045d752ae3dcfd03497565a0c6bf70328ab66)
+- [3b50f6d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b50f6d1707d136ad222a615771e7a43d0289481)
+- [cc022ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc022ace92fafd44941961ea8282b3f051c94f5e)
+- [e65d307](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e65d3078012ebca12c5a0c5cda15235a8c216c96)
+- [2a9cc59](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2a9cc59e8ad051da54ca7919de34fde15256fde9)
+- [2d72282](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2d722820c4bd77d0c7ef6dd8991ec63c8ed11b52)
+- [f6d7cdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f6d7cdb9645e336a672b7749a7aab616b74b32d9)
+- [b064315](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b0643159333c67f4117d5afc6fdbdcad9ba1b1ec)
+- [c373996](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c37399694fa2c71da5ddda3f26133eebf5e985f2)
+- [b8d6adb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b8d6adbd9c3aec0cf7e34e60233f804445f0baa5)
+- [3c87494](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3c87494d228a96afa177602e3a3c7ae8e40d5c01)
+- [8019153](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8019153c46dd027cc05b849a272327e3114a1c63)
+- [d105cf3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d105cf394e47fefc26c894d8ba0278e97b7f09b2)
+- [0e5340a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0e5340abd33d63446a5d6bf557748040c1e49fc7)
+- [8c26ddf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8c26ddf4ca40c8964c36e15ad43ef055a31c627b)
+- [d18e4d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d18e4d21b84c5f88898873bd83d74f3a74840e10)
+- [6eb02e6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6eb02e68d05d3bb907945a891232023f45908e89)
+- [8454f05](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8454f05f4aab00b90e83f46c039a1a31a0b2ff72)
+- [a243551](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a24355173a41a0c442dc624f54b7e22fd88b1313)
+- [4514fab](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4514fab46af476bda59562f58440bb0f19003ccf)
+- [b778ee7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b778ee7b3dd80dd15582ac7e982a1b435869236a)
+- [3b6bda6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3b6bda658696fdf143e042b6b14d8ff96d36b0dd)
+- [e0e916f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e0e916f59892bc0c812451a359ca2b36e6864cff)
+- [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
+- [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
+- [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
+- [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
+- [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
+- [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
+- [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
+- [a3e1cf2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3e1cf2ccc718579c47d66551fe480a1727981b2)
+- [483e085](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/483e0858f5afc6861ee502a816a770fa7f393290)
+- [6c42f79](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6c42f79e0872703d785ac3b8e1143cd0fd68d077)
+- [05be888](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05be8883b9154da291ebf195c09d5048067ac026)
+- [5288d1d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5288d1d9cb3343ca92529ef66f35e55d6fb77c22)
+- [d6fa13f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6fa13fe33cc5e764127f0d83721ac0a549568cb)
+- [ab6210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ab6210b46afc7d0abb5c7063419744075e21c460)
+- [e555c2b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e555c2bc1f4c262bde5c29e988cd0aea91937ffa)
+- [03f9098](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/03f909850369d744334ef22885a246acc75709a5)
+- [d41ae6e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d41ae6e3d090201a450f9622efc615adb5c0d56f)
+- [c2f39a9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c2f39a9b76a7ae0075d6523f5e6b5cc65cdbd516)
+- [ff2e3ec](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ff2e3ec1b8e3b2fc51e6574b4145319986f30a07)
+- [d4978cd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d4978cd490af8a9f8de9aae965f0d5ffdb1f4c53)
+- [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
+- [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
+- [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
+- [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)
+- [a0ce233](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0ce233c6d5c28729e3e85694cd45acd4cdff975)
+- [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
+- [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
+- [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
+- [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
+- [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
+- [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)
+- [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
+- [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
+- [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
+- [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
+- [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
+- [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
+- [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
+- [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
+- [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
+- [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
+- [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
+- [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
+- [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)
+- [b970e68](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b970e684d8ca22eced759e190594d89682668c5f)

@@ -1,17 +1,21 @@
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-control.js";
 import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {
+    buildProfileAvatarMarkup,
     getProfileInitials as getInitialsText,
     getProfileInitialsColor as pickInitialsColor,
+    hydrateProfileAvatars,
 } from "./profile-avatars.js";
 
-const [{ escapeHtml }, { normalizeUsername }] = await Promise.all([
-    importReuseModule("escape-html.js"),
-    importReuseModule("value-normalizers.js"),
-]);
+const [{ escapeHtml }, { openPopup }, { normalizeUsername }] =
+    await Promise.all([
+        importReuseModule("escape-html.js"),
+        importReuseModule("popup.js"),
+        importReuseModule("value-normalizers.js"),
+    ]);
 
 export function createMeetingHandlers({
     root,
@@ -22,11 +26,239 @@ export function createMeetingHandlers({
     utils,
     allowParticipantlessJoin = false,
 }) {
+    let meetingExitPromise = null;
+    let persistedMeetingHoldTimer = null;
+    let suppressPersistedMeetingClick = false;
+
+    function selectPersistedMeeting(meeting) {
+        state.requestedMeetingId = normalizeMeetingId(meeting.id);
+        const currentUsername = normalizeUsername(
+            state.currentProfile?.handle ?? state.currentProfile?.username,
+        );
+        state.selectedParticipants = meeting.participants
+            .map((participant) => {
+                const username = normalizeUsername(participant.username);
+                if (!username || username === currentUsername) return null;
+                return (
+                    state.allParticipants.find(
+                        (candidate) => candidate.username === username,
+                    ) ?? {
+                        username,
+                        displayName: participant.displayName ?? username,
+                        avatarKey: participant.avatarKey ?? null,
+                    }
+                );
+            })
+            .filter(Boolean);
+        state.availableParticipants = state.allParticipants.filter(
+            (candidate) =>
+                !state.selectedParticipants.some(
+                    (participant) =>
+                        participant.username === candidate.username,
+                ),
+        );
+        state.persistedMeetingSelectionUsernames = state.selectedParticipants
+            .map((participant) => participant.username)
+            .sort();
+        callbacks.renderParticipants();
+        renderPersistedMeetings();
+        renderActiveMeetings();
+        root.querySelector(".jitsi-meeting-stage")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }
+
+    async function confirmPersistedMeetingRemoval(meeting, card) {
+        card.classList.add("jitsi-persisted-meeting-card-held");
+        const action = await openPopup({
+            title: i18n.t(
+                "module.jitsi_meet.participants.previous_remove_title",
+            ),
+            body: `<p>${escapeHtml(i18n.t("module.jitsi_meet.participants.previous_remove_body"))}</p>`,
+            actions: [
+                {
+                    id: "remove",
+                    label: i18n.t(
+                        "module.jitsi_meet.participants.previous_remove_confirm",
+                    ),
+                    variant: "cancel",
+                },
+                {
+                    id: "cancel",
+                    label: i18n.t("ui.reuse.cancel"),
+                    variant: "neutral",
+                },
+            ],
+        });
+        card.classList.remove("jitsi-persisted-meeting-card-held");
+        if (action !== "remove") return;
+        const response = await apiFetch(
+            "/api/v1/modules/jitsi-meet/meetings/persisted/leave",
+            {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ meetingId: meeting.id }),
+            },
+        );
+        showToast(
+            i18n.t(
+                response.ok
+                    ? "module.jitsi_meet.participants.previous_remove_success"
+                    : "module.jitsi_meet.participants.previous_remove_failed",
+            ),
+            { variant: response.ok ? "info" : "error" },
+        );
+        if (response.ok) {
+            await loadActiveMeetings({ resolveRequested: false });
+        }
+    }
+
+    function renderPersistedMeetings() {
+        const persistedMeetingsEl = root.querySelector(
+            "#jitsi-persisted-meetings",
+        );
+        if (!(persistedMeetingsEl instanceof HTMLElement)) return;
+        const persistedMeetingsLocked = utils.isMeetingActive();
+        persistedMeetingsEl.classList.toggle(
+            "jitsi-persisted-meetings-disabled",
+            persistedMeetingsLocked,
+        );
+        persistedMeetingsEl.setAttribute(
+            "aria-disabled",
+            String(persistedMeetingsLocked),
+        );
+        persistedMeetingsEl.inert = persistedMeetingsLocked;
+        if (!state.persistedMeetings.length) {
+            persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_none"))}</p>`;
+            return;
+        }
+        persistedMeetingsEl.replaceChildren(
+            ...state.persistedMeetings.map((meeting) => {
+                const card = document.createElement("article");
+                card.className = "jitsi-persisted-meeting-card";
+                if (meeting.active) {
+                    card.classList.add("jitsi-persisted-meeting-card-active");
+                }
+                if (
+                    (state.meeting?.id || state.requestedMeetingId) ===
+                    normalizeMeetingId(meeting.id)
+                ) {
+                    card.classList.add("jitsi-persisted-meeting-card-selected");
+                }
+                card.setAttribute("role", "listitem");
+                card.tabIndex = persistedMeetingsLocked ? -1 : 0;
+                card.setAttribute(
+                    "aria-disabled",
+                    String(persistedMeetingsLocked),
+                );
+                card.setAttribute(
+                    "aria-label",
+                    `${meeting.meetingName}. ${i18n.t("module.jitsi_meet.participants.previous_select")}`,
+                );
+                const title = document.createElement("h4");
+                title.className = "jitsi-persisted-meeting-title";
+                title.textContent = meeting.meetingName;
+                const avatars = document.createElement("div");
+                avatars.className = "jitsi-persisted-meeting-avatars";
+                avatars.replaceChildren(
+                    ...meeting.participants.slice(0, 10).map((participant) => {
+                        const avatar = document.createElement("span");
+                        avatar.className = "jitsi-persisted-meeting-avatar";
+                        avatar.dataset.username = participant.username;
+                        avatar.innerHTML = buildProfileAvatarMarkup({
+                            avatarKey: participant.avatarKey,
+                            label:
+                                participant.displayName ?? participant.username,
+                            colorSeed: participant.username,
+                            avatarClass: "jitsi-persisted-meeting-avatar-link",
+                            imageClass: "jitsi-persisted-meeting-avatar-image",
+                            fallbackClass:
+                                "jitsi-persisted-meeting-avatar-fallback",
+                            profileHandle: participant.username,
+                        });
+                        return avatar;
+                    }),
+                );
+                card.append(title, avatars);
+                const cancelHold = () => {
+                    if (persistedMeetingHoldTimer !== null) {
+                        clearTimeout(persistedMeetingHoldTimer);
+                        persistedMeetingHoldTimer = null;
+                    }
+                    card.classList.remove(
+                        "jitsi-persisted-meeting-card-holding",
+                    );
+                };
+                card.addEventListener("pointerdown", (event) => {
+                    if (persistedMeetingsLocked) return;
+                    if (event.target.closest("a")) return;
+                    if (event.button !== 0) return;
+                    suppressPersistedMeetingClick = false;
+                    cancelHold();
+                    card.classList.add("jitsi-persisted-meeting-card-holding");
+                    persistedMeetingHoldTimer = setTimeout(() => {
+                        persistedMeetingHoldTimer = null;
+                        suppressPersistedMeetingClick = true;
+                        card.classList.remove(
+                            "jitsi-persisted-meeting-card-holding",
+                        );
+                        void confirmPersistedMeetingRemoval(meeting, card);
+                    }, 3000);
+                });
+                card.addEventListener("pointerup", cancelHold);
+                card.addEventListener("pointercancel", cancelHold);
+                card.addEventListener("pointerleave", cancelHold);
+                card.addEventListener("click", (event) => {
+                    if (persistedMeetingsLocked) return;
+                    if (event.target.closest("a")) return;
+                    if (suppressPersistedMeetingClick) {
+                        suppressPersistedMeetingClick = false;
+                        return;
+                    }
+                    selectPersistedMeeting(meeting);
+                });
+                card.addEventListener("keydown", (event) => {
+                    if (persistedMeetingsLocked) return;
+                    if (event.key !== "Enter" && event.key !== " ") return;
+                    event.preventDefault();
+                    selectPersistedMeeting(meeting);
+                });
+                return card;
+            }),
+        );
+        if (persistedMeetingsLocked) return;
+        void hydrateProfileAvatars(persistedMeetingsEl).catch((error) =>
+            logUi("error", "Persisted meeting avatar hydration failed.", {
+                component: "module:jitsi-meet",
+                operation: "hydrate_persisted_meeting_avatars",
+                error: error instanceof Error ? error.message : String(error),
+            }),
+        );
+    }
+
     function renderActiveMeetings({ loading = false } = {}) {
         const activeMeetingsEl = root.querySelector("#jitsi-active-meetings");
         if (!(activeMeetingsEl instanceof HTMLElement)) {
             return;
         }
+        const activeMeetingsLocked = Boolean(
+            state.meeting?.id || utils.isMeetingActive(),
+        );
+        const activeMeetingsSection = activeMeetingsEl.closest(
+            ".jitsi-overlay-active-meetings",
+        );
+        if (activeMeetingsSection instanceof HTMLElement) {
+            activeMeetingsSection.hidden = activeMeetingsLocked;
+        }
+        activeMeetingsEl.classList.toggle(
+            "jitsi-active-meetings-disabled",
+            activeMeetingsLocked,
+        );
+        activeMeetingsEl.setAttribute(
+            "aria-disabled",
+            String(activeMeetingsLocked),
+        );
         if (
             !Array.isArray(state.activeMeetings) ||
             state.activeMeetings.length === 0
@@ -53,10 +285,11 @@ export function createMeetingHandlers({
                 const badgeInitials = getInitialsText(badgeLabel);
                 const button = document.createElement("button");
                 button.type = "button";
+                button.disabled = activeMeetingsLocked;
                 button.className = "jitsi-active-meeting-item";
                 if (
-                    state.requestedMeetingId &&
-                    state.requestedMeetingId === meetingId
+                    (state.meeting?.id || state.requestedMeetingId) ===
+                    meetingId
                 ) {
                     button.classList.add("jitsi-active-meeting-item-selected");
                 }
@@ -94,17 +327,21 @@ export function createMeetingHandlers({
         if (!utils.isMeetingActive()) return;
         await callbacks.keepPresenceAlive(false).catch(() => undefined);
         utils.clearTimers();
-        closeMeetingWhiteboard(root);
+        const whiteboardCleanup = closeMeetingWhiteboard(root);
+        state.meeting = null;
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
-        state.meeting = null;
-        state.chatMode = "meeting";
-        state.privateChatUsername = "";
-        state.lastMeetingParticipants = [];
-        callbacks.stopNativeChatPolling();
-        await callbacks.updateNativeChat();
+        state.pendingParticipantUsernames.clear();
+        state.kickReportedMeetingId = "";
+        callbacks.deactivateMeetingChat();
+        await callbacks.updateCognisChat();
+        void whiteboardCleanup?.then(() => {
+            if (state.overlayPresentation) {
+                utils.updateOverlay(state.overlayPresentation);
+            }
+        });
     }
 
     function clearRequestedMeetingParameters() {
@@ -117,6 +354,9 @@ export function createMeetingHandlers({
     async function joinMeetingById(meetingId, { autoStart = true } = {}) {
         const normalizedMeetingId = normalizeMeetingId(meetingId);
         if (!normalizedMeetingId) return;
+        state.requestedMeetingId = "";
+        state.requestedMeetingStart = false;
+        clearRequestedMeetingParameters();
         if (
             utils.isMeetingActive() &&
             state.meeting?.id === normalizedMeetingId
@@ -238,6 +478,9 @@ export function createMeetingHandlers({
                         participant.username === candidate.username,
                 ),
         );
+        state.persistedMeetingSelectionUsernames = state.selectedParticipants
+            .map((participant) => participant.username)
+            .sort();
         if (!autoStart) {
             state.meeting = null;
             callbacks.renderParticipants();
@@ -257,7 +500,7 @@ export function createMeetingHandlers({
         }
         state.chatMode = "meeting";
         state.privateChatUsername = "";
-        await callbacks.updateNativeChat();
+        await callbacks.updateCognisChat();
         const joinState = await callbacks.joinMeeting();
         if (joinState?.trackingAllowed) {
             callbacks.ensureMeetingTracking();
@@ -266,9 +509,11 @@ export function createMeetingHandlers({
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
         renderActiveMeetings({ loading: true });
-        const response = await apiFetch(
-            "/api/v1/modules/jitsi-meet/meetings/active",
-        );
+        const [response, persistedResponse] = await Promise.all([
+            apiFetch("/api/v1/modules/jitsi-meet/meetings/active"),
+            apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted"),
+            callbacks.refreshAvailableParticipants?.(),
+        ]);
         if (!response.ok) {
             state.activeMeetings = [];
             renderActiveMeetings();
@@ -276,7 +521,14 @@ export function createMeetingHandlers({
         }
         const payload = await response.json().catch(() => ({ data: [] }));
         state.activeMeetings = Array.isArray(payload?.data) ? payload.data : [];
+        const persistedPayload = persistedResponse.ok
+            ? await persistedResponse.json().catch(() => ({ data: [] }))
+            : { data: [] };
+        state.persistedMeetings = Array.isArray(persistedPayload.data)
+            ? persistedPayload.data
+            : [];
         renderActiveMeetings();
+        renderPersistedMeetings();
         const requestedMeetingId = resolveRequested
             ? normalizeMeetingId(state.requestedMeetingId)
             : "";
@@ -337,16 +589,15 @@ export function createMeetingHandlers({
             await callbacks.keepPresenceAlive(false).catch(() => undefined);
         }
         utils.clearTimers();
-        closeMeetingWhiteboard(root);
+        const whiteboardCleanup = closeMeetingWhiteboard(root);
+        state.meeting = null;
         closeMeetingEmbed();
         state.alonePromptMeetingId = "";
         state.alonePromptDismissedMeetingId = "";
         state.alonePromptBlockedUntil = 0;
-        state.meeting = null;
-        state.chatMode = "meeting";
-        state.privateChatUsername = "";
-        state.lastMeetingParticipants = [];
-        callbacks.stopNativeChatPolling();
+        state.pendingParticipantUsernames.clear();
+        state.kickReportedMeetingId = "";
+        callbacks.deactivateMeetingChat();
         utils.resetParticipantSelection();
         callbacks.renderParticipants();
         if (overlayMessageKey) {
@@ -358,8 +609,13 @@ export function createMeetingHandlers({
                 visible: true,
             });
         }
-        await callbacks.updateNativeChat();
-        void loadActiveMeetings({ resolveRequested: false });
+        await callbacks.updateCognisChat();
+        await loadActiveMeetings({ resolveRequested: false });
+        void whiteboardCleanup?.then(() => {
+            if (state.overlayPresentation) {
+                utils.updateOverlay(state.overlayPresentation);
+            }
+        });
         if (toastMessageKey) {
             showToast(i18n.t(toastMessageKey), {
                 variant: toastVariant,
@@ -373,28 +629,55 @@ export function createMeetingHandlers({
         honorMeetingClosed = true,
         reportTerminated = false,
     }) {
+        if (meetingExitPromise) return meetingExitPromise;
+        const exitPromise = performMeetingExit({
+            fallbackOverlayMessageKey,
+            forceClosedOverlay,
+            honorMeetingClosed,
+            reportTerminated,
+        });
+        meetingExitPromise = exitPromise;
+        try {
+            return await exitPromise;
+        } finally {
+            if (meetingExitPromise === exitPromise) {
+                meetingExitPromise = null;
+            }
+        }
+    }
+
+    async function performMeetingExit({
+        fallbackOverlayMessageKey,
+        forceClosedOverlay,
+        honorMeetingClosed,
+        reportTerminated,
+    }) {
         const leaveStatePromise = callbacks
             .keepPresenceAlive(false, {
                 terminated: reportTerminated,
             })
             .catch(() => null);
-        if (forceClosedOverlay) {
-            await resetMeetingState({
-                overlayMessageKey: "module.jitsi_meet.overlay.meeting_closed",
-                skipPresenceUpdate: true,
-            });
-            await leaveStatePromise;
-            return;
-        }
-        const leaveState = await leaveStatePromise;
-        const overlayMessageKey =
-            honorMeetingClosed && leaveState?.meetingClosed
-                ? "module.jitsi_meet.overlay.meeting_closed"
-                : fallbackOverlayMessageKey;
+        const initialOverlayMessageKey = forceClosedOverlay
+            ? "module.jitsi_meet.overlay.meeting_closed"
+            : fallbackOverlayMessageKey;
         await resetMeetingState({
-            overlayMessageKey,
+            overlayMessageKey: initialOverlayMessageKey,
             skipPresenceUpdate: true,
         });
+        const leaveState = await leaveStatePromise;
+        if (
+            !forceClosedOverlay &&
+            honorMeetingClosed &&
+            leaveState?.meetingClosed
+        ) {
+            utils.updateOverlay({
+                message: i18n.t("module.jitsi_meet.overlay.meeting_closed"),
+                canStart: state.preflightPassed,
+                showAuth: false,
+                showReclaim: false,
+                visible: true,
+            });
+        }
     }
 
     function shouldPromptLocalUserAlone(activeParticipants) {

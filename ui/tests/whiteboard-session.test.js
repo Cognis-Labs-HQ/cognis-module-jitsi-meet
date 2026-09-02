@@ -6,7 +6,41 @@ import {
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
     spawnComponentWindowWithRetry,
+    resolveMeetingPipMinimumSize,
 } from "../whiteboard-session.js";
+
+test("meeting PiP minimum grows once when a third participant joins", () => {
+    assert.deepEqual(resolveMeetingPipMinimumSize({}), {
+        width: 400,
+        height: 225,
+    });
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: ["alice", "bob", "carol"],
+        }),
+        { width: 500, height: 282 },
+    );
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: [
+                { username: "alice" },
+                { username: "bob" },
+                { username: "carol" },
+                { username: "dave" },
+            ],
+        }),
+        { width: 500, height: 282 },
+    );
+    assert.deepEqual(
+        resolveMeetingPipMinimumSize({
+            activeParticipants: Array.from(
+                { length: 12 },
+                (_, index) => `participant-${index}`,
+            ),
+        }),
+        { width: 500, height: 282 },
+    );
+});
 
 test("component page discovery makes one broker request per mount", async () => {
     let requests = 0;
@@ -36,7 +70,7 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     const componentWindow = { discard() {} };
     const trigger = {
         disposableCanvas: false,
-        frameWrap: { id: "meeting-stage" },
+        componentHost: { id: "whiteboard-stage" },
         signal: new AbortController().signal,
         spawnComponentPage(request) {
             spawnRequests.push(request);
@@ -57,8 +91,36 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     assert.equal(result, componentWindow);
     assert.equal(spawnRequests.length, 5);
     assert.deepEqual(retryDelays, [250, 500, 1_000, 2_000]);
-    assert.equal(spawnRequests.at(-1).elementId, "meeting-stage");
+    assert.equal(spawnRequests.at(-1).elementId, "whiteboard-stage");
     assert.equal(spawnRequests.at(-1).context.whiteboardId, "mapped-board");
+});
+
+test("automatic whiteboard opening retries transient module imports", async () => {
+    let requests = 0;
+    const componentWindow = { discard() {} };
+    const trigger = {
+        disposableCanvas: false,
+        componentHost: { id: "whiteboard-stage" },
+        signal: new AbortController().signal,
+        spawnComponentPage() {
+            requests += 1;
+            if (requests < 3) {
+                throw new Error("Failed to fetch dynamically imported module");
+            }
+            return componentWindow;
+        },
+        async waitForComponentWindowRetry() {},
+    };
+
+    assert.equal(
+        await spawnComponentWindowWithRetry(trigger, {
+            meetingId: "meeting-a",
+            meetingName: "Shared Meeting",
+            whiteboardId: "mapped-board",
+        }),
+        componentWindow,
+    );
+    assert.equal(requests, 3);
 });
 
 test("persistent mappings stay closed unless the current meeting opened them", () => {

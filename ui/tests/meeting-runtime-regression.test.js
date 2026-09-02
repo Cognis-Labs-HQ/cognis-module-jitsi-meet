@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deactivateMeetingChatState } from "../app/chat-state.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -53,10 +54,91 @@ test("meeting state polling ignores responses after meeting teardown", () => {
     );
 });
 
+test("interactive handlers import their extracted meeting embed dependencies", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
+
+    assert.match(
+        source,
+        /import \{ normalizeMeetingId \} from "\.\.\/jitsi-helpers\.js";/,
+    );
+    assert.match(
+        source,
+        /import \{ buildMeetingJoinUrl, resolveThemeMode \} from "\.\.\/meeting-embed\.js";/,
+    );
+    assert.match(
+        source,
+        /import \{ messagesClient \} from "\.\.\/reuse\/gateway-clients\.js";/,
+    );
+    assert.match(source, /resolveThemeMode\(event\?\.detail\?\.theme\)/);
+    assert.match(source, /buildMeetingJoinUrl\(/);
+    assert.match(source, /normalizeMeetingId\(/);
+    assert.match(source, /messagesClient\(\)\.sendRoomMessage\(/);
+    assert.match(source, /loadActiveMeetings,\s*resetMeetingState,\s*\}\) \{/);
+    assert.match(source, /await refreshChatAfterSend\(\)/);
+    assert.doesNotMatch(source, /void updateCognisChat\(\)/);
+    assert.doesNotMatch(source, /refreshCognisChat/);
+});
+
+test("SPA interaction binding does not require the chat updater during mount", () => {
+    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+
+    assert.match(
+        source,
+        /const refreshChatAfterSend = async \(\) =>[\s\S]*typeof chatHandlers\.updateCognisChat !== "function"[\s\S]*operation: "refresh_chat_after_send"/,
+    );
+    assert.match(source, /refreshChatAfterSend,/);
+});
+
+test("window focus changes do not dismiss an idle meeting overlay", () => {
+    const appSource = readJitsiUiBundle();
+    const participantsSource = readFileSync(
+        resolve(ROOT, "ui/app/participants.js"),
+        "utf8",
+    );
+
+    assert.match(
+        appSource,
+        /if \(state\.dragUsername === null\) return;[\s\S]*setActiveParticipantDropzoneVisible\(false\)/,
+    );
+    assert.match(
+        participantsSource,
+        /if \(state\.overlayPresentation\) \{\s*utils\.updateOverlay\(state\.overlayPresentation\)/,
+    );
+});
+
+test("meeting chat teardown clears the room and polling state after a kick", () => {
+    let pollingStopped = false;
+    const state = {
+        chatRoomId: "meeting-room",
+        chatRoomKey: "room-key",
+        chatMode: "private",
+        privateChatUsername: "alice",
+        lastMeetingChatRoomId: "meeting-room",
+        lastMeetingParticipants: ["alice"],
+    };
+
+    deactivateMeetingChatState(state, () => {
+        pollingStopped = true;
+    });
+
+    assert.equal(pollingStopped, true);
+    assert.equal(state.chatRoomId, "");
+    assert.equal(state.chatRoomKey, null);
+    assert.equal(state.lastMeetingChatRoomId, "");
+    assert.deepEqual(state.lastMeetingParticipants, []);
+});
+
 test("share guests bind remote whiteboard orchestration without resharing controls", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const controlSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-control.js"),
+        "utf8",
+    );
+    const meetingRoomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
         "utf8",
     );
 
@@ -68,15 +150,12 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource.match(
             /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
         )?.length,
-        2,
+        3,
     );
-    assert.match(
+    assert.match(controlSource, /requireCanvasFactory:\s*false/);
+    assert.doesNotMatch(
         controlSource,
-        /requireCanvasFactory:\s*!state\.shareAccessToken/,
-    );
-    assert.match(
-        controlSource,
-        /\(!state\.shareAccessToken &&[\s\S]*createDisposableCanvas/,
+        /!state\.shareAccessToken &&\s*typeof whiteboardGateway\?\.createDisposableCanvas/,
     );
     assert.match(
         controlSource,
@@ -88,12 +167,19 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
+        /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
+    );
+    assert.match(meetingRoomSource, /contentSharingParticipantsChanged/);
+    assert.match(meetingRoomSource, /jitsi-meet\/screen-sharing/);
+    assert.match(controlSource, /screenSharingActive === true/);
+    assert.match(
+        controlSource,
         /if \(state\.shareAccessToken\) \{\s*button\.hidden = true;[\s\S]*aria-hidden/,
     );
 });
 
 test("limited share mounts never request account profile or participant data", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const helperSource = readFileSync(
         resolve(ROOT, "ui/jitsi-helpers.js"),
         "utf8",
@@ -306,7 +392,12 @@ test("jitsi API dispatches meeting lifecycle and participant notifications", () 
     assert.match(source, /excludeUsernames: \[resolved\.requesterUsername\]/);
     assert.match(source, /excludedRecipients\.has\(normalizedCandidate\)/);
     assert.match(source, /senderName:/);
-    assert.match(source, /actionUrl: buildMeetingActionUrl/);
+    assert.match(source, /notificationHasMeetingLink/);
+    assert.match(source, /metadata\?\.event !== "meeting_ended"/);
+    assert.match(
+        source,
+        /notificationHasMeetingLink[\s\S]*?actionUrl:[\s\S]*?buildMeetingActionUrl/,
+    );
     assert.match(source, /resolveMessagesUiResources/);
     assert.match(
         uiResourcesSource,
@@ -466,12 +557,12 @@ test("jitsi API exposes user active meetings endpoint", () => {
 });
 
 test("jitsi opts into composer DOM parking for its stateful iframe", () => {
-    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const source = readJitsiUiBundle();
     assert.match(source, /enableDomParking: true/);
 });
 
 test("meeting shares use the Cognis route and skip account setup", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const shareButtonSource = readFileSync(
         resolve(ROOT, "ui/share-button.js"),
         "utf8",
@@ -536,7 +627,7 @@ test("active link-shared meetings ignore a stale closed state", () => {
 });
 
 test("direct-account SPA shares mount the full Meetings page", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     assert.match(
         appSource,
         /inShareView =\s*shareContext !== null &&\s*shareContext\?\.directAccess !== true/,
@@ -545,7 +636,7 @@ test("direct-account SPA shares mount the full Meetings page", () => {
 
 test("meeting routes and standalone shell load only module-owned layout styles", () => {
     const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const uiResourcesSource = readFileSync(
         resolve(ROOT, "api/ui-resources.js"),
         "utf8",

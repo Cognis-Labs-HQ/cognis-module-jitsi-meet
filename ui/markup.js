@@ -11,10 +11,15 @@ export function buildStageMarkup(i18n) {
       </header>
       <div class="jitsi-stage-frame-wrap">
         <div id="jitsi-meeting-frame" class="jitsi-stage-frame" title="${escapeHtml(i18n.t("ui.reuse.meeting"))}" hidden></div>
+        <div class="jitsi-whiteboard-component-shell" hidden><div class="jitsi-whiteboard-component-host"></div></div>
         <div id="jitsi-overlay" class="jitsi-overlay">
           <div id="jitsi-staged-participants" class="jitsi-staged-participants" role="list"></div>
           <h3 class="jitsi-overlay-title">${escapeHtml(i18n.t("module.jitsi_meet.overlay.title"))}</h3>
           <p id="jitsi-overlay-message" class="jitsi-overlay-message">${escapeHtml(i18n.t("module.jitsi_meet.overlay.select_participants"))}</p>
+          <section class="jitsi-overlay-active-meetings" aria-label="${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}">
+            <p class="jitsi-overlay-active-meetings-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}</p>
+            <div id="jitsi-active-meetings" class="jitsi-active-meetings" role="grid"></div>
+          </section>
           <div class="jitsi-overlay-actions">
             <button id="jitsi-start-btn" class="btn-confirm btn-animated" type="button" disabled>${escapeHtml(i18n.t("module.jitsi_meet.overlay.start_meeting"))}</button>
             <button id="jitsi-auth-btn" class="btn-cancel" type="button" hidden>${escapeHtml(i18n.t("module.jitsi_meet.overlay.authenticate"))}</button>
@@ -53,18 +58,19 @@ export function buildParticipantsMarkup(i18n) {
     <section class="jitsi-participants-pane card-elevated">
       <header class="jitsi-participants-header">
         <h3>${escapeHtml(i18n.t("module.jitsi_meet.participants.heading"))}</h3>
-        <button id="jitsi-find-participants-btn" class="btn-confirm" type="button">
-          ${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}
-        </button>
       </header>
-      <div class="jitsi-participants-grid">
-        <div class="jitsi-participants-grid-column">
+      <div class="jitsi-participants-layout">
+        <div class="jitsi-participants-grid-column jitsi-available-participants-column">
           <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.available"))}</p>
-          <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list"></div>
+          <div id="jitsi-available-participants" class="jitsi-avatar-pool" role="list">
+            <button id="jitsi-find-participants-btn" class="jitsi-find-participants-avatar" type="button" aria-label="${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}" title="${escapeHtml(i18n.t("module.jitsi_meet.participants.search"))}">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.1 9a3 3 0 1 1 4.83 2.38c-1.07.8-1.93 1.42-1.93 2.62v.4M12 18h.01" /></svg>
+            </button>
+          </div>
         </div>
-        <div class="jitsi-participants-grid-column">
-          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.active_meetings"))}</p>
-          <div id="jitsi-active-meetings" class="jitsi-active-meetings" role="grid"></div>
+        <div class="jitsi-participants-grid-column jitsi-persisted-meetings-column">
+          <p class="jitsi-participants-pool-label">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_meetings"))}</p>
+          <div id="jitsi-persisted-meetings" class="jitsi-persisted-meetings" role="list"></div>
         </div>
       </div>
     </section>

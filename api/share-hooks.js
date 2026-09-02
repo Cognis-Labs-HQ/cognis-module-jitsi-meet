@@ -4,6 +4,7 @@ import {
     getFirstMatchingStageResult,
     getFirstStageResult,
 } from "./reuse/flow-helpers.js";
+import { resolveShareGuestId } from "./reuse/share-guest.js";
 /**
  * Determines whether an already-authenticated requester (identified by
  * their real account claims, not a share-guest token) already has direct
@@ -32,10 +33,12 @@ async function requesterHasDirectMeetingAccess(
         dbExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
+        ctx.getCapability("social:profile:identity"),
     );
     await store.ensureSchema();
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
+        ctx.getCapability("social:profile:identity"),
         String(requesterClaims?.sub ?? ""),
     ).catch(() => "");
     if (!requesterUsername) {
@@ -57,11 +60,13 @@ async function requesterHasDirectMeetingAccess(
 async function resolveMeetingRequesterAccess({
     store,
     profileStore,
+    profileIdentity,
     requesterAccountId,
     meeting,
 }) {
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
+        profileIdentity,
         requesterAccountId,
     ).catch(() => "");
     if (!requesterUsername) {
@@ -105,6 +110,7 @@ export function registerShareFlowHooks(ctx) {
                     dbExecutor,
                     log,
                     ctx.getCapability("reuse:generatePassphrase"),
+                    ctx.getCapability("social:profile:identity"),
                 );
                 await store.ensureSchema();
                 const meeting = await store.getMeetingById(
@@ -173,6 +179,7 @@ export function registerShareFlowHooks(ctx) {
                 dbExecutor,
                 log,
                 ctx.getCapability("reuse:generatePassphrase"),
+                ctx.getCapability("social:profile:identity"),
             );
             await store.ensureSchema();
             const meeting = await store.getMeetingById(
@@ -184,6 +191,7 @@ export function registerShareFlowHooks(ctx) {
             const requesterAccess = await resolveMeetingRequesterAccess({
                 store,
                 profileStore,
+                profileIdentity: ctx.getCapability("social:profile:identity"),
                 requesterAccountId: String(
                     input.claims?.sub ?? input.ownerAccountId ?? "",
                 ),
@@ -257,6 +265,7 @@ export function registerShareFlowHooks(ctx) {
                 dbExecutor,
                 log,
                 ctx.getCapability("reuse:generatePassphrase"),
+                ctx.getCapability("social:profile:identity"),
             );
             await store.ensureSchema();
             const meeting = await store.getMeetingById(
@@ -383,6 +392,7 @@ export function registerShareFlowHooks(ctx) {
                     dbExecutor,
                     log,
                     ctx.getCapability("reuse:generatePassphrase"),
+                    ctx.getCapability("social:profile:identity"),
                 );
                 await store.ensureSchema();
                 const meeting = await store.getMeetingById(
@@ -391,9 +401,24 @@ export function registerShareFlowHooks(ctx) {
                 if (!meeting) {
                     return { authorized: false, reason: "resource_not_found" };
                 }
+                if (
+                    input.selfRevocation === true &&
+                    resolveShareGuestId(input.claims) ===
+                        String(input.shareId ?? "")
+                ) {
+                    return {
+                        authorized: true,
+                        shareId: String(input.shareId),
+                        resourceType: "meeting",
+                        resourceId: meeting.id,
+                    };
+                }
                 const requesterAccess = await resolveMeetingRequesterAccess({
                     store,
                     profileStore,
+                    profileIdentity: ctx.getCapability(
+                        "social:profile:identity",
+                    ),
                     requesterAccountId: String(
                         input.claims?.sub ?? input.ownerAccountId ?? "",
                     ),

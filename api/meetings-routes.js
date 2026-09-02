@@ -2,8 +2,11 @@ export function registerMeetingRoutes({
     router,
     store,
     profileStore,
+    profileIdentity,
     listCalendarsByOwner,
     listCalendarEvents,
+    listPersistedMeetings,
+    selectDistinctParticipantMeetings,
     listClassroomParticipantHandles,
     resolveMeetingPayloadOrReject,
     createMeetingPayload,
@@ -14,6 +17,7 @@ export function registerMeetingRoutes({
     readJson,
     sendJson,
     sendError,
+    log,
     checkHttpLiveness,
     LIVELINESS_TIMEOUT_MS,
     resolveShareGuestMeetingAccess,
@@ -245,6 +249,76 @@ export function registerMeetingRoutes({
     );
 
     router.get(
+        "/api/v1/modules/jitsi-meet/meetings/persisted",
+        async (req, res) => {
+            await store.ensureSchema();
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            const requesterUsername = await resolveRequesterUsername(
+                profileStore,
+                profileIdentity,
+                claims.sub,
+            ).catch((error) => {
+                log?.("error", "Persisted meeting profile resolution failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "list_persisted_meetings",
+                    accountId: claims.sub,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                return "";
+            });
+            const [meetings, activeMeetings] = await Promise.all([
+                listPersistedMeetings(),
+                store.listActiveMeetings(),
+            ]);
+            const activeMeetingIds = new Set(
+                activeMeetings.map((meeting) => meeting.id),
+            );
+            const authorizedMeetings = [];
+            for (const meeting of meetings) {
+                if (
+                    !(await canAccessMeeting({
+                        store,
+                        meeting,
+                        username: requesterUsername,
+                        listClassroomParticipantHandles,
+                        profileStore,
+                        requesterAccountId: claims.sub,
+                    }))
+                )
+                    continue;
+                authorizedMeetings.push(meeting);
+            }
+            const visibleMeetings = [];
+            for (const meeting of selectDistinctParticipantMeetings(
+                authorizedMeetings,
+                activeMeetingIds,
+            )) {
+                const participantProfiles = [];
+                for (const username of meeting.participants.slice(0, 10)) {
+                    const profile = await profileStore
+                        .getProfileByHandle(username)
+                        .catch(() => null);
+                    participantProfiles.push({
+                        username,
+                        displayName: profile?.displayName ?? username,
+                        avatarKey: profile?.avatarKey ?? null,
+                    });
+                }
+                visibleMeetings.push({
+                    id: meeting.id,
+                    meetingName: meeting.meetingName,
+                    active: activeMeetingIds.has(meeting.id),
+                    participants: participantProfiles,
+                });
+            }
+            sendJson(res, 200, { data: visibleMeetings });
+        },
+        { access: { minRole: "user" } },
+    );
+
+    router.get(
         "/api/v1/modules/jitsi-meet/meetings/active",
         async (req, res) => {
             await store.ensureSchema();
@@ -252,12 +326,24 @@ export function registerMeetingRoutes({
             if (!claims) return;
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
+                profileIdentity,
                 claims.sub,
             ).catch((error) => {
-                sendError(res, 409, "profile_required", error.message);
-                return null;
+                log?.(
+                    "error",
+                    "Active meeting discovery is continuing with account identity because the requester profile could not be resolved.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation: "list_active_meetings",
+                        accountId: claims.sub,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return "";
             });
-            if (!requesterUsername) return;
             const activeMeetings = await store.listActiveMeetings();
             const visibleMeetings = [];
             for (const activeMeeting of activeMeetings) {
@@ -728,6 +814,7 @@ export function registerMeetingRoutes({
                                 : activeUsernames;
                         })(),
                         sessionActive: true,
+                        chatRoomId: meeting.chatRoomId,
                     },
                 });
                 return;
@@ -763,6 +850,8 @@ export function registerMeetingRoutes({
                     activeParticipants: store
                         .filterCurrentPresenceEntries(presence)
                         .map((entry) => entry.username),
+                    participants: resolved.participants,
+                    chatRoomId: resolved.meeting.chatRoomId,
                     sessionActive: sessionPresence
                         ? store.isPresenceEntryCurrent(sessionPresence)
                         : true,

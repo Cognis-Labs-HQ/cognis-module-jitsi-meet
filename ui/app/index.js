@@ -1,9 +1,8 @@
-import { logUi, openErrorPopup } from "../reuse/feedback.js";
+import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
-import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
+import { resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
 import {
     fetchCurrentProfile,
@@ -15,22 +14,23 @@ import {
 import { createChatHandlers } from "./chat.js";
 import { createMeetingHandlers } from "./meetings-list.js";
 import { createPreflightHandlers } from "./participants.js";
+import { createInteractiveHandlersBinder } from "./interactive-handlers.js";
 import { createEmbedHandlers } from "./meeting-room.js";
 import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
 import { handleProfileAvatarError } from "./profile-avatars.js";
 import { createMeetingSearchGroups } from "./meeting-search.js";
+import { claimRouteRoot } from "./route-root.js";
 import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
 } from "../whiteboard-control.js";
-
 const [
     { apiFetch },
     { getShareContext, ensureFullAccountSession },
     { applyDocumentTitle, createI18n },
     { createPageComposer },
-    { mountWhenDirect },
+    { beginPageLoading, mountWhenDirect },
     { registerSearchIndex, openSearchPopup },
     { normalizeUsername },
 ] = await Promise.all([
@@ -42,7 +42,6 @@ const [
     importReuseModule("search-util/popup.js"),
     importReuseModule("value-normalizers.js"),
 ]);
-
 const JITSI_MEET_CHAT_REACTIONS_ENABLED = false;
 const NULL_MESSAGE_REACTIONS_CONTROLLER = Object.freeze({
     destroy: () => undefined,
@@ -74,7 +73,7 @@ export async function mount(
     } = {},
 ) {
     await loadCommonStyles();
-    root.classList.add("jitsi-route-root");
+    if (!claimRouteRoot(root, signal)) return;
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
         shareContext !== null && shareContext?.directAccess !== true;
@@ -94,7 +93,7 @@ export async function mount(
     const i18n = await createI18n({
         componentStringBaseUrls: messageUiResources.languageBaseUrls,
     });
-    let refreshNativeChat = async () => undefined;
+    let refreshCognisChat = async () => undefined;
     let messageReactions = NULL_MESSAGE_REACTIONS_CONTROLLER;
     if (JITSI_MEET_CHAT_REACTIONS_ENABLED) {
         messageReactions =
@@ -102,10 +101,11 @@ export async function mount(
                 messageUiResources,
                 i18n,
                 async () => {
-                    await refreshNativeChat();
+                    await refreshCognisChat();
                 },
             )) ?? NULL_MESSAGE_REACTIONS_CONTROLLER;
     }
+    if (signal?.aborted) return messageReactions.destroy();
     applyDocumentTitle(i18n, "module.jitsi_meet.page_title");
     signal?.addEventListener(
         "abort",
@@ -119,6 +119,7 @@ export async function mount(
         allParticipants: [],
         availableParticipants: [],
         selectedParticipants: [],
+        pendingParticipantUsernames: new Set(),
         meeting: null,
         heartbeatTimer: null,
         stateRefreshTimer: null,
@@ -144,6 +145,7 @@ export async function mount(
             new URL(window.location.href).searchParams.get("start") === "1",
         shareAccessToken: String(shareContext?.guestAccessToken ?? ""),
         activeMeetings: [],
+        persistedMeetings: [],
         activeMeetingsRefreshTimer: null,
         dragUsername: null,
         jitsiApi: null,
@@ -155,6 +157,7 @@ export async function mount(
         alonePromptDismissedMeetingId: "",
         alonePromptBlockedUntil: 0,
         recoveringMeetingSession: false,
+        kickReportedMeetingId: "",
         promptShareOnJoin: false,
     };
     registerSearchIndex(
@@ -179,6 +182,7 @@ export async function mount(
         });
     }
     const callbacks = {
+        beginPageLoading,
         syncMeetingWhiteboardComponent: () =>
             syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>
@@ -207,7 +211,23 @@ export async function mount(
         messageReactions,
         loadChatRoomKey: chatLoadingModule?.loadChatRoomKey,
     });
-    refreshNativeChat = chatHandlers.refreshNativeChat;
+    refreshCognisChat = chatHandlers.refreshCognisChat;
+    const refreshChatAfterSend = async () => {
+        if (typeof chatHandlers.updateCognisChat !== "function") {
+            await logUi(
+                "error",
+                "Cognis Messages chat update operation is unavailable.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "refresh_chat_after_send",
+                    meetingId: state.meeting?.id ?? null,
+                    chatRoomId: state.chatRoomId || null,
+                },
+            );
+            return;
+        }
+        await chatHandlers.updateCognisChat();
+    };
     const meetingHandlers = createMeetingHandlers({
         root,
         state,
@@ -247,9 +267,9 @@ export async function mount(
         encryptChatMessage,
         getChatRoomKey,
         openEmojiPickerPopup,
-        stopNativeChatPolling,
+        stopCognisChatPolling,
         toggleReaction,
-        updateNativeChat,
+        updateCognisChat,
     } = chatHandlers;
     const {
         closeMeetingEmbed,
@@ -267,6 +287,7 @@ export async function mount(
         recoverMeetingSessionAfterComposerRender,
         renderParticipants,
         runPreflightCheck,
+        setActiveParticipantDropzoneVisible,
     } = preflightHandlers;
     const { openMeetingEmbed, prepareMeetingStart } = embedHandlers;
     if (signal) {
@@ -281,621 +302,52 @@ export async function mount(
             { once: true },
         );
     }
-    let bindController = null;
-    function bindInteractiveHandlers() {
-        if (bindController) {
-            bindController.abort();
-        }
-        bindController = new AbortController();
-        if (signal) {
-            signal.addEventListener(
-                "abort",
-                () => {
-                    bindController?.abort();
-                    bindController = null;
-                },
-                { once: true },
-            );
-        }
-        const bindSignal = bindController.signal;
-        recoverMeetingSessionAfterComposerRender();
-        const container = root;
-        const findButton = container.querySelector(
-            "#jitsi-find-participants-btn",
-        );
-        const startButton = container.querySelector("#jitsi-start-btn");
-        const authButton = container.querySelector("#jitsi-auth-btn");
-        const reclaimButton = container.querySelector("#jitsi-reclaim-btn");
-        const chatForm = container.querySelector("#jitsi-chat-form");
-        const chatInput = container.querySelector("#jitsi-chat-input");
-        const chatThread = container.querySelector("#jitsi-chat-thread");
-        const chatParticipantStrip = container.querySelector(
-            "#jitsi-chat-participant-strip",
-        );
-        const chatReturnButton = container.querySelector(
-            "#jitsi-chat-return-btn",
-        );
-        const activeMeetingsEl = container.querySelector(
-            "#jitsi-active-meetings",
-        );
-        if (findButton instanceof HTMLButtonElement) {
-            findButton.addEventListener(
-                "click",
-                () => {
-                    if (isMeetingActive()) return;
-                    openSearchPopup({
-                        endpoint: "/api/v1/modules/jitsi-meet/participants",
-                        category: "user",
-                        ariaLabel: i18n.t(
-                            "module.jitsi_meet.participants.search",
-                        ),
-                        noResultsText: i18n.t(
-                            "module.jitsi_meet.participants.none",
-                        ),
-                        confirmLabel: i18n.t(
-                            "module.jitsi_meet.participants.add_selected",
-                        ),
-                        multiSelect: true,
-                        onSelectMultiple: (results) => {
-                            for (const result of results) {
-                                const username = normalizeUsername(
-                                    result?.handle ?? result?.username ?? "",
-                                );
-                                const displayName = String(
-                                    result?.displayName ?? result?.handle ?? "",
-                                );
-                                if (!username) continue;
-                                if (
-                                    state.selectedParticipants.some(
-                                        (entry) => entry.username === username,
-                                    )
-                                ) {
-                                    continue;
-                                }
-                                const participantEntry = {
-                                    username,
-                                    displayName,
-                                    avatarKey:
-                                        typeof result?.avatarKey === "string"
-                                            ? result.avatarKey
-                                            : null,
-                                };
-                                state.availableParticipants =
-                                    state.availableParticipants.filter(
-                                        (entry) => entry.username !== username,
-                                    );
-                                addParticipant(participantEntry);
-                            }
-                            renderParticipants();
-                        },
-                    });
-                },
-                { signal: bindSignal },
-            );
-        }
-        container.addEventListener(
-            "dragstart",
-            (event) => {
-                if (isMeetingActive()) {
-                    event.preventDefault();
-                    return;
-                }
-                const avatar = event.target.closest(
-                    "[draggable][data-username]",
-                );
-                if (!(avatar instanceof HTMLElement)) return;
-                state.dragUsername = avatar.dataset.username ?? null;
-                event.dataTransfer?.setData(
-                    "text/plain",
-                    state.dragUsername ?? "",
-                );
-            },
-            { signal: bindSignal },
-        );
-        const overlay = container.querySelector("#jitsi-overlay");
-        const availablePool = container.querySelector(
-            "#jitsi-available-participants",
-        );
-        if (overlay instanceof HTMLElement) {
-            overlay.addEventListener(
-                "dragover",
-                (event) => {
-                    if (isMeetingActive()) return;
-                    const username =
-                        state.dragUsername ??
-                        event.dataTransfer?.types?.includes("text/plain");
-                    if (!username) return;
-                    event.preventDefault();
-                    overlay.classList.add("jitsi-drop-active");
-                },
-                { signal: bindSignal },
-            );
-            overlay.addEventListener(
-                "dragleave",
-                (event) => {
-                    if (!overlay.contains(event.relatedTarget)) {
-                        overlay.classList.remove("jitsi-drop-active");
-                    }
-                },
-                { signal: bindSignal },
-            );
-            overlay.addEventListener(
-                "drop",
-                (event) => {
-                    if (isMeetingActive()) return;
-                    overlay.classList.remove("jitsi-drop-active");
-                    const username =
-                        state.dragUsername ??
-                        event.dataTransfer?.getData("text/plain");
-                    state.dragUsername = null;
-                    event.preventDefault();
-                    applyDrop(username, "stage");
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (availablePool instanceof HTMLElement) {
-            availablePool.addEventListener(
-                "dragover",
-                (event) => {
-                    if (isMeetingActive()) return;
-                    const username =
-                        state.dragUsername ??
-                        event.dataTransfer?.types?.includes("text/plain");
-                    if (!username) return;
-                    event.preventDefault();
-                },
-                { signal: bindSignal },
-            );
-            availablePool.addEventListener(
-                "drop",
-                (event) => {
-                    if (isMeetingActive()) return;
-                    const username =
-                        state.dragUsername ??
-                        event.dataTransfer?.getData("text/plain");
-                    state.dragUsername = null;
-                    event.preventDefault();
-                    applyDrop(username, "available");
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (activeMeetingsEl instanceof HTMLElement) {
-            activeMeetingsEl.addEventListener(
-                "click",
-                (event) => {
-                    const button = event.target.closest(
-                        ".jitsi-active-meeting-item[data-meeting-id]",
-                    );
-                    if (!(button instanceof HTMLButtonElement)) return;
-                    const meetingId = normalizeMeetingId(
-                        button.dataset.meetingId,
-                    );
-                    if (!meetingId) return;
-                    void joinMeetingById(meetingId);
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (chatParticipantStrip instanceof HTMLElement) {
-            chatParticipantStrip.addEventListener(
-                "click",
-                (event) => {
-                    const button = event.target.closest(
-                        ".jitsi-chat-participant-item[data-username]",
-                    );
-                    if (!(button instanceof HTMLButtonElement)) return;
-                    if (state.shareAccessToken) return;
-                    const username = normalizeUsername(button.dataset.username);
-                    if (!username) return;
-                    void activatePrivateChatForParticipant(username);
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (chatReturnButton instanceof HTMLButtonElement) {
-            chatReturnButton.addEventListener(
-                "click",
-                () => {
-                    if (!state.lastMeetingChatRoomId) return;
-                    void activateMeetingChat();
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (chatThread instanceof HTMLElement) {
-            chatThread.addEventListener(
-                "click",
-                async (clickEvent) => {
-                    messageReactions.hideReactionHoverPopup();
-                    const moreButton = clickEvent.target.closest(
-                        "[data-reaction-more]",
-                    );
-                    if (moreButton instanceof HTMLButtonElement) {
-                        const messageId =
-                            moreButton.getAttribute("data-message-id");
-                        const roomId = state.chatRoomId;
-                        if (messageId && roomId) {
-                            await openEmojiPickerPopup(roomId, messageId);
-                        }
-                        return;
-                    }
-                    const reactionButton = clickEvent.target.closest(
-                        "[data-message-id][data-emoji]",
-                    );
-                    if (!(reactionButton instanceof HTMLButtonElement)) {
-                        return;
-                    }
-                    const roomId = state.chatRoomId;
-                    const messageId =
-                        reactionButton.getAttribute("data-message-id");
-                    const emoji = reactionButton.getAttribute("data-emoji");
-                    if (!roomId || !messageId || !emoji) return;
-                    if (
-                        reactionButton.classList.contains(
-                            "messages-reaction-add-btn",
-                        )
-                    ) {
-                        messageReactions.recordEmojiUsage(emoji);
-                    }
-                    await toggleReaction(roomId, messageId, emoji);
-                },
-                { signal: bindSignal },
-            );
-            chatThread.addEventListener(
-                "mouseover",
-                (mouseEvent) => {
-                    const hoveredElement = mouseEvent.target;
-                    if (!(hoveredElement instanceof Element)) return;
-                    const reactionChipButton = hoveredElement.closest(
-                        ".messages-reaction-chip",
-                    );
-                    if (!(reactionChipButton instanceof HTMLButtonElement))
-                        return;
-                    const relatedElement = mouseEvent.relatedTarget;
-                    if (
-                        relatedElement instanceof Element &&
-                        reactionChipButton.contains(relatedElement)
-                    ) {
-                        return;
-                    }
-                    messageReactions.showReactionHoverPopup(reactionChipButton);
-                },
-                { signal: bindSignal },
-            );
-            chatThread.addEventListener(
-                "mouseout",
-                (mouseEvent) => {
-                    const originElement = mouseEvent.target;
-                    if (!(originElement instanceof Element)) return;
-                    const reactionChipButton = originElement.closest(
-                        ".messages-reaction-chip",
-                    );
-                    if (!(reactionChipButton instanceof HTMLButtonElement))
-                        return;
-                    const relatedElement = mouseEvent.relatedTarget;
-                    if (
-                        relatedElement instanceof Element &&
-                        reactionChipButton.contains(relatedElement)
-                    ) {
-                        return;
-                    }
-                    messageReactions.hideReactionHoverPopup();
-                },
-                { signal: bindSignal },
-            );
-            chatThread.addEventListener(
-                "focusin",
-                (focusEvent) => {
-                    const focusedElement = focusEvent.target;
-                    if (!(focusedElement instanceof Element)) return;
-                    const reactionChipButton = focusedElement.closest(
-                        ".messages-reaction-chip",
-                    );
-                    if (!(reactionChipButton instanceof HTMLButtonElement))
-                        return;
-                    messageReactions.showReactionHoverPopup(reactionChipButton);
-                },
-                { signal: bindSignal },
-            );
-            chatThread.addEventListener(
-                "focusout",
-                (focusEvent) => {
-                    const blurredElement = focusEvent.target;
-                    if (!(blurredElement instanceof Element)) return;
-                    const reactionChipButton = blurredElement.closest(
-                        ".messages-reaction-chip",
-                    );
-                    if (!(reactionChipButton instanceof HTMLButtonElement))
-                        return;
-                    const nextFocusedElement = focusEvent.relatedTarget;
-                    if (
-                        nextFocusedElement instanceof Element &&
-                        reactionChipButton.contains(nextFocusedElement)
-                    ) {
-                        return;
-                    }
-                    messageReactions.hideReactionHoverPopup();
-                },
-                { signal: bindSignal },
-            );
-            window.addEventListener(
-                "resize",
-                () => {
-                    messageReactions.repositionReactionHoverPopup();
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (startButton instanceof HTMLButtonElement) {
-            startButton.addEventListener(
-                "click",
-                () => {
-                    if (isMeetingActive()) return;
-                    void prepareMeetingStart();
-                },
-                { signal: bindSignal },
-            );
-        }
-        const syncJitsiTheme = (event) => {
-            const nextThemeMode = resolveThemeMode(event?.detail?.theme);
-            const themeChanged = nextThemeMode !== state.jitsiThemeMode;
-            if (!themeChanged && !state.jitsiApi) return;
-            state.jitsiThemeMode = nextThemeMode;
-            if (!state.jitsiApi) return;
-            executeJitsiCommandIfSupported(state.jitsiApi, "overwriteConfig", {
-                preferredTheme: nextThemeMode,
-            });
-            // Jitsi only accepts interfaceConfigOverwrite at API creation, so
-            // reload the embed to apply DEFAULT_BACKGROUND to toolbar and
-            // participant surfaces when the Cognis theme changes.
-            if (themeChanged) void openMeetingEmbed();
-        };
-        const themeObserver = new MutationObserver(syncJitsiTheme);
-        themeObserver.observe(document.body, {
-            attributes: true,
-            attributeFilter: ["data-theme", "class"],
-        });
-        themeObserver.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme", "class"],
-        });
-        const appShell = document.querySelector(".app-shell");
-        if (appShell instanceof HTMLElement) {
-            themeObserver.observe(appShell, {
-                attributes: true,
-                attributeFilter: ["data-theme", "class"],
-            });
-        }
-        signal?.addEventListener("abort", () => themeObserver.disconnect(), {
-            once: true,
-        });
-        window.addEventListener("cognis:themechange", syncJitsiTheme, {
-            signal: bindSignal,
-        });
-        window.addEventListener("storage", syncJitsiTheme, {
-            signal: bindSignal,
-        });
-        window.addEventListener(
-            "beforeunload",
-            (event) => {
-                if (!isMeetingActive()) return;
-                event.preventDefault();
-                event.returnValue = "";
-            },
-            { signal: bindSignal },
-        );
-        window.addEventListener(
-            "click",
-            (event) => {
-                if (!isMeetingActive()) return;
-                const target = event.target;
-                if (!(target instanceof Element)) return;
-                const linkEl = target.closest("a[href]");
-                if (!(linkEl instanceof HTMLAnchorElement)) return;
-                const href = String(linkEl.getAttribute("href") ?? "");
-                if (!href || href.startsWith("#")) return;
-                const targetUrl = new URL(linkEl.href, window.location.origin);
-                if (targetUrl.origin !== window.location.origin) return;
-                const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-                const nextPath = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
-                if (currentPath === nextPath) return;
-                event.preventDefault();
-                event.stopPropagation();
-                showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
-                    variant: "warning",
-                });
-            },
-            { capture: true, signal: bindSignal },
-        );
-        window.addEventListener(
-            "popstate",
-            () => {
-                if (!isMeetingActive()) return;
-                history.pushState(history.state, "", window.location.href);
-                showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
-                    variant: "warning",
-                });
-            },
-            { signal: bindSignal },
-        );
-        if (authButton instanceof HTMLButtonElement) {
-            authButton.addEventListener(
-                "click",
-                async () => {
-                    if (!state.meeting?.id) return;
-                    deferAloneParticipantPrompt();
-                    await apiFetch(
-                        "/api/v1/modules/jitsi-meet/meetings/auth-start",
-                        {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                meetingId: state.meeting.id,
-                            }),
-                        },
-                    );
-                    updateOverlay({
-                        message: i18n.t(
-                            "module.jitsi_meet.overlay.auth_in_progress",
-                        ),
-                        showAuth: true,
-                        visible: true,
-                    });
-                    window.open(
-                        buildMeetingJoinUrl(
-                            state.meeting.meetingUrl,
-                            state.currentProfile,
-                        ),
-                        "_blank",
-                        "noopener,noreferrer",
-                    );
-                },
-                { signal: bindSignal },
-            );
-        }
-        const leaveAloneButton = container.querySelector(
-            "#jitsi-leave-alone-btn",
-        );
-        const remainAloneButton = container.querySelector(
-            "#jitsi-remain-alone-btn",
-        );
-        if (leaveAloneButton instanceof HTMLButtonElement) {
-            leaveAloneButton.addEventListener(
-                "click",
-                async () => {
-                    state.alonePromptMeetingId = "";
-                    state.alonePromptDismissedMeetingId = "";
-                    await resetMeetingState({
-                        overlayMessageKey:
-                            "module.jitsi_meet.overlay.meeting_left",
-                    });
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (remainAloneButton instanceof HTMLButtonElement) {
-            remainAloneButton.addEventListener(
-                "click",
-                () => {
-                    state.alonePromptDismissedMeetingId =
-                        state.meeting?.id ?? "";
-                    state.alonePromptMeetingId = "";
-                    updateOverlay({
-                        message: i18n.t("module.jitsi_meet.overlay.in_meeting"),
-                        canStart: false,
-                        showAuth: false,
-                        showReclaim: false,
-                        showAlonePrompt: false,
-                        visible: false,
-                    });
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (reclaimButton instanceof HTMLButtonElement) {
-            reclaimButton.addEventListener(
-                "click",
-                async () => {
-                    if (!state.meeting?.id) return;
-                    await apiFetch(
-                        "/api/v1/modules/jitsi-meet/meetings/reclaim",
-                        {
-                            method: "POST",
-                            headers: {
-                                "content-type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                meetingId: state.meeting.id,
-                                sessionId: state.sessionId,
-                            }),
-                        },
-                    );
-                    updateOverlay({
-                        message: i18n.t(
-                            "module.jitsi_meet.overlay.reclaim_done",
-                        ),
-                        showReclaim: false,
-                        visible: true,
-                    });
-                    await openMeetingEmbed();
-                    ensureMeetingTracking();
-                    void loadActiveMeetings({ resolveRequested: false });
-                },
-                { signal: bindSignal },
-            );
-        }
-        if (
-            chatForm instanceof HTMLFormElement &&
-            chatInput instanceof HTMLTextAreaElement
-        ) {
-            chatInput.addEventListener(
-                "keydown",
-                (event) => {
-                    if (
-                        event.key !== "Enter" ||
-                        event.shiftKey ||
-                        event.isComposing
-                    ) {
-                        return;
-                    }
-                    event.preventDefault();
-                    chatForm.requestSubmit();
-                },
-                { signal: bindSignal },
-            );
-            chatForm.addEventListener(
-                "submit",
-                async (event) => {
-                    event.preventDefault();
-                    const roomId = state.chatRoomId;
-                    if (!roomId) return;
-                    const messageText = chatInput.value.trim();
-                    if (!messageText) return;
-                    const roomKey = await getChatRoomKey(roomId);
-                    if (!roomKey) return;
-                    const encrypted = await encryptChatMessage(
-                        messageText,
-                        roomKey,
-                    );
-                    const response = await messagesClient().sendRoomMessage(
-                        roomId,
-                        {
-                            ...encrypted,
-                            contentType: "text/plain",
-                            accessToken: state.shareAccessToken || undefined,
-                            suppressAccessDeniedEvent: true,
-                        },
-                    );
-                    if (!response.ok) {
-                        showToast(
-                            i18n.t("module.jitsi_meet.chat.send_failed"),
-                            {
-                                variant: "error",
-                            },
-                        );
-                        return;
-                    }
-                    chatInput.value = "";
-                    await refreshNativeChat();
-                },
-                { signal: bindSignal },
-            );
-        }
-        renderParticipants();
-        void updateNativeChat();
-    }
+    const bindInteractiveHandlers = createInteractiveHandlersBinder({
+        root,
+        signal,
+        state,
+        i18n,
+        apiFetch,
+        openSearchPopup,
+        normalizeUsername,
+        showToast,
+        isMeetingActive,
+        recoverMeetingSessionAfterComposerRender,
+        addParticipant,
+        renderParticipants,
+        setActiveParticipantDropzoneVisible,
+        applyDrop,
+        preflightHandlers,
+        joinMeetingById,
+        activatePrivateChatForParticipant,
+        messageReactions,
+        toggleReaction,
+        openEmojiPickerPopup,
+        refreshChatAfterSend,
+        encryptChatMessage,
+        getChatRoomKey,
+        stopCognisChatPolling,
+        activateMeetingChat,
+        bindShareButton,
+        callbacks,
+        runPreflightCheck,
+        prepareMeetingStart,
+        deferAloneParticipantPrompt,
+        executeJitsiCommandIfSupported,
+        updateOverlay,
+        openMeetingEmbed,
+        ensureMeetingTracking,
+        loadActiveMeetings,
+        resetMeetingState,
+    });
     const elements = createMeetingPageElements(i18n, limitedShareView);
-
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
         fetchCurrentProfile({
             shareAccessToken: state.shareAccessToken,
         }),
     ]);
+    if (signal?.aborted) return;
     state.currentProfile = currentProfile;
     state.allParticipants = allParticipants
         .map((entry) => ({
@@ -909,12 +361,11 @@ export async function mount(
     state.availableParticipants = state.allParticipants.map((entry) => ({
         ...entry,
     }));
-
     const composer = createPageComposer(root, {
         allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,
         elements,
-        preferenceKey: "meetings-layout-v3",
+        preferenceKey: "meetings-layout-v4",
         i18n,
         pageContext: {
             title: i18n.t("ui.reuse.meetings"),
@@ -947,8 +398,8 @@ export async function mount(
             });
         },
     });
-
     await composer.init();
+    if (signal?.aborted) return;
     if (state.requestedMeetingId) {
         await joinMeetingById(state.requestedMeetingId, {
             autoStart: inShareView || state.requestedMeetingStart,
@@ -959,7 +410,6 @@ export async function mount(
     }
     await runPreflightCheck();
 }
-
 await mountWhenDirect(async (root) => {
     const mountController = new AbortController();
     await mount(root, { signal: mountController.signal });

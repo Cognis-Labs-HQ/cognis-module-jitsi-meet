@@ -1,16 +1,52 @@
+import { profileIdentityFake } from "./profile-identity-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { JitsiMeetStore } from "../store.js";
 
+test("reserved participants include only active presence in other meetings", async () => {
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: {},
+    });
+    store.listActiveMeetings = async () => [
+        {
+            id: "current-meeting",
+            endedAt: null,
+            activeUsernames: ["alice"],
+        },
+        {
+            id: "other-meeting",
+            endedAt: null,
+            activeUsernames: ["Bob", "bob"],
+            participants: ["bob", "invited-only"],
+        },
+        {
+            id: "ended-meeting",
+            endedAt: "2026-08-30T00:00:00.000Z",
+            activeUsernames: ["carol"],
+        },
+    ];
+    store.listUpcomingMeetings = async () => {
+        throw new Error("scheduled meetings must not reserve participants");
+    };
+
+    assert.deepEqual(
+        await store.listReservedParticipantUsernames("current-meeting"),
+        ["bob"],
+    );
+});
+
 function createMockJitsiDb({
     meetingRows = [],
     participantRows = [],
+    originalParticipantRows = [],
     presenceRows = [],
     stateRows = [],
 } = {}) {
     const storedMeetingRows = [...meetingRows];
     const storedParticipantRows = [...participantRows];
+    const storedOriginalParticipantRows = [...originalParticipantRows];
     const storedPresenceRows = [...presenceRows];
     const storedStateRows = [...stateRows];
     const insertedMeetingRows = [];
@@ -98,6 +134,20 @@ function createMockJitsiDb({
 
             if (
                 command.option === "SELECT" &&
+                command.table === "jitsi_meeting_original_participants"
+            ) {
+                const meetingId = command.where?.find(
+                    (whereEntry) => whereEntry.column === "meeting_id",
+                )?.value;
+                return {
+                    rows: storedOriginalParticipantRows.filter(
+                        (row) => row.meeting_id === meetingId,
+                    ),
+                };
+            }
+
+            if (
+                command.option === "SELECT" &&
                 command.table === "jitsi_meeting_participants"
             ) {
                 const meetingId = command.where?.find(
@@ -171,6 +221,14 @@ function createMockJitsiDb({
 
             if (
                 command.option === "INSERT" &&
+                command.table === "jitsi_meeting_original_participants"
+            ) {
+                storedOriginalParticipantRows.push(command.values);
+                return { rows: [] };
+            }
+
+            if (
+                command.option === "INSERT" &&
                 command.table === "jitsi_meeting_state"
             ) {
                 return { rows: [] };
@@ -196,6 +254,7 @@ test("active whiteboard mappings resolve only to an existing open meeting", asyn
         ended_at: null,
     };
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: createMockJitsiDb({
             meetingRows: [meetingRow],
             stateRows: [activeState],
@@ -228,8 +287,14 @@ test("schema initialization is shared across concurrent store instances", async 
             return { rows: [] };
         },
     };
-    const firstStore = new JitsiMeetStore({ db: databaseExecutor });
-    const secondStore = new JitsiMeetStore({ db: databaseExecutor });
+    const firstStore = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
+    const secondStore = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
 
     const firstInitialization = firstStore.ensureSchema();
     await Promise.resolve();
@@ -241,6 +306,7 @@ test("schema initialization is shared across concurrent store instances", async 
         "jitsi_module_config",
         "jitsi_meetings",
         "jitsi_meeting_participants",
+        "jitsi_meeting_original_participants",
         "jitsi_meeting_state",
         "jitsi_meeting_presence",
     ]);
@@ -257,18 +323,22 @@ test("schema initialization can retry after a failed create", async () => {
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: databaseExecutor });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
 
     await assert.rejects(store.ensureSchema(), /create raced/);
     await store.ensureSchema();
 
-    assert.equal(ensureAttempts, 6);
+    assert.equal(ensureAttempts, 7);
 });
 
 test("jitsi store meeting creation uses the modern column set", async () => {
     const mockDb = createMockJitsiDb();
     const passphraseRequests = [];
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: mockDb,
         generatePassphrase(options) {
             passphraseRequests.push(options);
@@ -338,6 +408,7 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     const mockDb = createMockJitsiDb();
     let passphraseIndex = 0;
     const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
         db: mockDb,
         generatePassphrase: () =>
             ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
@@ -380,67 +451,114 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     );
 });
 
-test("jitsi store refreshes an unsafe reused name before reconnecting its chat", async () => {
-    const participantKey = createHash("sha256")
-        .update(
-            JSON.stringify({
-                classroomId: null,
-                participants: ["alice", "bob"],
-            }),
-        )
-        .digest("hex");
-    const mockDb = createMockJitsiDb({
-        meetingRows: [
-            {
-                id: "meeting-1",
-                participant_key: participantKey,
-                meeting_url: "https://meet.example.com/classroom-existing",
-                meeting_password: "secret",
-                meeting_name: "2026-08-28 16:27 UTC · 98BBC2",
-                room_slug: "classroom-existing",
-                chat_room_id: "deleted-room",
-                classroom_id: null,
-                created_by: "alice",
-                scheduled_at: "2026-08-01T09:30:00.000Z",
-                created_at: "2026-08-01T09:30:00.000Z",
-                updated_at: "2026-08-01T09:30:00.000Z",
-            },
-        ],
-        participantRows: [
-            { meeting_id: "meeting-1", username: "alice" },
-            { meeting_id: "meeting-1", username: "bob" },
-        ],
-    });
-    const logs = [];
-    const store = new JitsiMeetStore({
-        db: mockDb,
-        generatePassphrase: () => "Amber-Cedar-Otter-Willow",
-        log: (...entry) => logs.push(entry),
-    });
-
-    await store.ensureSchema();
-    const meeting = await store.createMeeting({
+test("persistent meetings reuse their stored identity after store reconstruction", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const createStore = () =>
+        new JitsiMeetStore({
+            profileIdentity: profileIdentityFake,
+            db: mockDb,
+            generatePassphrase: () =>
+                generatedNames++ === 0
+                    ? "Amber-Cedar-Otter-Willow"
+                    : "Unexpected-Different-Room-Name",
+        });
+    const firstStore = createStore();
+    const firstMeeting = await firstStore.createMeeting({
         instanceUrl: "https://meet.example.com",
         usernames: ["alice", "bob"],
         classroomId: null,
         createdBy: "alice",
-        chatRoomId: "resolved-room",
+        chatRoomId: null,
+    });
+    await firstStore.addMeetingParticipant(firstMeeting.id, "carol");
+
+    const reconstructedStore = createStore();
+    const reusedMeeting = await reconstructedStore.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob", "carol"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
     });
 
-    assert.equal(meeting?.reused, true);
-    assert.equal(meeting?.chatRoomId, "resolved-room");
-    assert.equal(meeting?.meetingName, "Amber-Cedar-Otter-Willow");
-    assert.equal(meeting?.roomSlug, "Amber-Cedar-Otter-Willow");
+    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(generatedNames, 1);
+    assert.equal(reusedMeeting.id, firstMeeting.id);
+    assert.equal(reusedMeeting.meetingName, firstMeeting.meetingName);
+    assert.equal(reusedMeeting.meetingUrl, firstMeeting.meetingUrl);
+    assert.equal(reusedMeeting.reused, true);
+
+    const freshMeeting = await reconstructedStore.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob", "carol"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+        forceNew: true,
+    });
+    assert.equal(mockDb.insertedMeetingRows.length, 2);
+    assert.notEqual(freshMeeting.id, firstMeeting.id);
+    assert.notEqual(freshMeeting.meetingName, firstMeeting.meetingName);
+    assert.equal(freshMeeting.reused, false);
+});
+
+test("participant-free disposable meetings always receive distinct identities", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+        generatePassphrase: () =>
+            ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
+                generatedNames++
+            ],
+    });
+    const input = {
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+    };
+
+    const firstMeeting = await store.createMeeting(input);
+    const secondMeeting = await store.createMeeting(input);
+
+    assert.equal(mockDb.insertedMeetingRows.length, 2);
+    assert.notEqual(secondMeeting.id, firstMeeting.id);
+    assert.notEqual(secondMeeting.meetingName, firstMeeting.meetingName);
+    assert.notEqual(secondMeeting.meetingUrl, firstMeeting.meetingUrl);
+});
+
+test("schema initialization preserves the persisted meeting identity", async () => {
+    const now = new Date().toISOString();
+    const meetingRow = {
+        id: "meeting-1",
+        participant_key: "participants",
+        meeting_url: "https://meet.example.test/Persisted-Room-Name-Here",
+        meeting_password: "secret",
+        meeting_password_iv: "iv",
+        meeting_name: "Persisted-Room-Name-Here",
+        room_slug: "Persisted-Room-Name-Here",
+        classroom_id: null,
+        created_by: "alice",
+        created_at: now,
+        updated_at: now,
+    };
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: createMockJitsiDb({ meetingRows: [meetingRow] }),
+        generatePassphrase: () => "Unused-Meeting-Name-Here",
+    });
+
+    await store.ensureSchema();
+
+    assert.equal(meetingRow.meeting_name, "Persisted-Room-Name-Here");
+    assert.equal(meetingRow.room_slug, "Persisted-Room-Name-Here");
     assert.equal(
-        meeting?.meetingUrl,
-        "https://meet.example.com/Amber-Cedar-Otter-Willow",
-    );
-    assert.equal(logs[0][0], "info");
-    assert.equal(logs[0][2].operation, "regenerate_meeting_name");
-    assert.equal(mockDb.insertedMeetingRows.length, 0);
-    assert.equal(
-        (await store.getMeetingById("meeting-1"))?.chatRoomId,
-        "resolved-room",
+        meetingRow.meeting_url,
+        "https://meet.example.test/Persisted-Room-Name-Here",
     );
 });
 
@@ -475,7 +593,10 @@ test("jitsi store meeting state backfill writes an ISO timestamp when the driver
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     await store.getMeetingState("meeting-1");
 
@@ -509,7 +630,10 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
             return { rows: [] };
         },
     };
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     const saved = await store.saveConfig({
         instanceUrl: "https://new.example.com",
@@ -523,6 +647,7 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
         [
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
+            "jitsi_meeting_original_participants",
             "jitsi_meeting_participants",
             "jitsi_meetings",
         ],
@@ -573,7 +698,10 @@ test("jitsi active meeting summaries report invited and active participants sepa
         ],
         stateRows: [{ meeting_id: "meeting-1" }],
     });
-    const store = new JitsiMeetStore({ db: mockDb });
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+    });
 
     const meetings = await store.listActiveMeetings();
 
@@ -581,4 +709,81 @@ test("jitsi active meeting summaries report invited and active participants sepa
     assert.equal(meetings[0].invitedParticipantCount, 3);
     assert.equal(meetings[0].activeParticipantCount, 2);
     assert.equal(meetings[0].activeSessionCount, 3);
+});
+
+test("active membership changes use a meeting-scoped participant key", async () => {
+    const now = new Date().toISOString();
+    const meetingRow = {
+        id: "meeting-1",
+        participant_key: "original-key",
+        meeting_url: "https://meet.example.test/Bright-Otters-Meet-Safely",
+        meeting_password: "secret",
+        meeting_name: "Bright-Otters-Meet-Safely",
+        classroom_id: null,
+        created_by: "alice",
+        created_at: now,
+        updated_at: now,
+    };
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: createMockJitsiDb({
+            meetingRows: [meetingRow],
+            participantRows: [
+                { meeting_id: "meeting-1", username: "alice" },
+                { meeting_id: "meeting-1", username: "bob" },
+            ],
+        }),
+    });
+
+    const updatedMeeting = await store.addMeetingParticipant(
+        "meeting-1",
+        "carol",
+    );
+
+    const expectedScopedKey = createHash("sha256")
+        .update(
+            JSON.stringify({
+                classroomId: null,
+                mutableMeetingId: "meeting-1",
+                participants: ["alice", "bob", "carol"],
+            }),
+        )
+        .digest("hex");
+    assert.equal(meetingRow.participant_key, expectedScopedKey);
+    assert.equal(updatedMeeting.meetingName, "Bright-Otters-Meet-Safely");
+    assert.equal(
+        updatedMeeting.meetingUrl,
+        "https://meet.example.test/Bright-Otters-Meet-Safely",
+    );
+});
+
+test("morphed meetings reuse their original participant-set chat history", async () => {
+    const mockDb = createMockJitsiDb();
+    let generatedNames = 0;
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: mockDb,
+        generatePassphrase: () =>
+            ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
+                generatedNames++
+            ],
+    });
+    const originalInput = {
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: "history-room",
+    };
+
+    const originalMeeting = await store.createMeeting(originalInput);
+    await store.addMeetingParticipant(originalMeeting.id, "carol", {
+        chatRoomId: "history-room",
+    });
+    const reusedMeeting = await store.createMeeting(originalInput);
+
+    assert.equal(reusedMeeting.id, originalMeeting.id);
+    assert.equal(reusedMeeting.chatRoomId, "history-room");
+    assert.equal(reusedMeeting.reused, true);
+    assert.equal(mockDb.insertedMeetingRows.length, 1);
 });

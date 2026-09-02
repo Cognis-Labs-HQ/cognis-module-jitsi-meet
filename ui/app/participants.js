@@ -8,7 +8,23 @@ import {
     STATE_REFRESH_INTERVAL_MS,
 } from "../constants.js";
 import { createParticipantAvatarEl } from "../jitsi-helpers.js";
+import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
+
+export function bindDragCleanup({ signal, cancel }) {
+    document.addEventListener("dragend", cancel, { capture: true, signal });
+    document.addEventListener("drop", cancel, { capture: true, signal });
+    document.addEventListener("mouseup", cancel, { capture: true, signal });
+    document.addEventListener("pointerup", cancel, { capture: true, signal });
+    window.addEventListener("blur", cancel, { signal });
+    document.addEventListener(
+        "keydown",
+        (event) => {
+            if (event.key === "Escape") cancel();
+        },
+        { signal },
+    );
+}
 
 const { normalizeUsername } = await importReuseModule("value-normalizers.js");
 
@@ -20,6 +36,10 @@ export function createPreflightHandlers({
     callbacks,
     utils,
 }) {
+    if (!(state.pendingParticipantUsernames instanceof Set)) {
+        state.pendingParticipantUsernames = new Set();
+    }
+
     async function runPreflightCheck({ showErrors = false } = {}) {
         if (state.preflightStatus === "running") {
             return false;
@@ -67,7 +87,7 @@ export function createPreflightHandlers({
         return true;
     }
 
-    function renderParticipants() {
+    function renderParticipants({ updateStage = true } = {}) {
         const availablePool = root.querySelector(
             "#jitsi-available-participants",
         );
@@ -76,27 +96,56 @@ export function createPreflightHandlers({
         const findButton = root.querySelector("#jitsi-find-participants-btn");
         if (
             !(availablePool instanceof HTMLElement) ||
-            !(stagedArea instanceof HTMLElement)
+            !(stagedArea instanceof HTMLElement) ||
+            !(findButton instanceof HTMLButtonElement)
         ) {
             return;
         }
 
-        availablePool.replaceChildren(
-            ...state.availableParticipants.map((entry) =>
-                createParticipantAvatarEl(entry),
+        if (state.availableParticipants.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className =
+                "jitsi-active-meetings-empty jitsi-participants-empty";
+            emptyMessage.textContent = i18n.t(
+                "module.jitsi_meet.participants.available_none",
+            );
+            availablePool.replaceChildren(emptyMessage);
+        } else {
+            availablePool.replaceChildren(
+                findButton,
+                ...state.availableParticipants.map((entry) =>
+                    createParticipantAvatarEl(entry),
+                ),
+            );
+        }
+        void hydrateProfileAvatars(availablePool).catch((error) =>
+            logUi(
+                "error",
+                "[jitsi-meet] participant availability hydration failed:",
+                error,
             ),
         );
-        void hydrateProfileAvatars(availablePool);
 
         const stagedEntries = utils.isMeetingActive()
             ? []
             : state.selectedParticipants;
-        stagedArea.replaceChildren(
-            ...stagedEntries.map((entry) => createParticipantAvatarEl(entry)),
-        );
-        void hydrateProfileAvatars(stagedArea);
+        if (updateStage) {
+            stagedArea.replaceChildren(
+                ...stagedEntries.map((entry) =>
+                    createParticipantAvatarEl(entry),
+                ),
+            );
+            void hydrateProfileAvatars(stagedArea).catch((error) =>
+                logUi(
+                    "error",
+                    "[jitsi-meet] staged participant hydration failed:",
+                    error,
+                ),
+            );
+        }
 
-        const participantSelectionLocked = utils.isMeetingActive();
+        const participantSelectionLocked =
+            utils.isMeetingActive() && !state.meeting?.hasInvitedParticipants;
         if (participantsPane instanceof HTMLElement) {
             participantsPane.classList.toggle(
                 "jitsi-participants-disabled",
@@ -104,17 +153,65 @@ export function createPreflightHandlers({
             );
         }
         if (findButton instanceof HTMLButtonElement) {
-            findButton.disabled = participantSelectionLocked;
+            findButton.disabled = utils.isMeetingActive();
         }
 
         const participantCount = state.selectedParticipants.length;
-        if (!participantSelectionLocked) {
+        if (updateStage && !utils.isMeetingActive() && !state.meeting?.id) {
             utils.updateOverlay({
                 message: i18n.t(callbacks.lobbyMessageKey(participantCount)),
                 canStart: state.preflightPassed && !state.meeting?.id,
             });
         }
         callbacks.renderActiveMeetings();
+    }
+
+    async function refreshAvailableParticipants() {
+        if (state.shareAccessToken) return;
+        const meetingId = String(state.meeting?.id ?? "").trim();
+        const query = meetingId
+            ? `?meetingId=${encodeURIComponent(meetingId)}`
+            : "";
+        const response = await apiFetch(
+            `/api/v1/modules/jitsi-meet/participants${query}`,
+        );
+        if (!response.ok) return;
+        const payload = await response.json().catch(() => ({ data: [] }));
+        const selectedByUsername = new Map(
+            state.selectedParticipants.map((entry) => [entry.username, entry]),
+        );
+        state.allParticipants = (
+            Array.isArray(payload?.data) ? payload.data : []
+        )
+            .map((entry) => ({
+                username: normalizeUsername(entry?.handle ?? entry?.username),
+                displayName: String(entry?.displayName ?? entry?.handle ?? ""),
+                avatarKey:
+                    typeof entry?.avatarKey === "string"
+                        ? entry.avatarKey
+                        : null,
+            }))
+            .filter((entry) => entry.username)
+            .sort((left, right) => left.username.localeCompare(right.username));
+        state.selectedParticipants = state.selectedParticipants.map(
+            (entry) =>
+                state.allParticipants.find(
+                    (candidate) => candidate.username === entry.username,
+                ) ?? selectedByUsername.get(entry.username),
+        );
+        const selectedUsernames = new Set(
+            state.selectedParticipants.map((entry) => entry.username),
+        );
+        for (const username of state.pendingParticipantUsernames) {
+            selectedUsernames.add(username);
+        }
+        for (const username of state.meeting?.participants ?? []) {
+            selectedUsernames.add(normalizeUsername(username));
+        }
+        state.availableParticipants = state.allParticipants.filter(
+            (entry) => !selectedUsernames.has(entry.username),
+        );
+        renderParticipants({ updateStage: false });
     }
 
     function removeParticipant(username) {
@@ -137,8 +234,46 @@ export function createPreflightHandlers({
         );
     }
 
-    function applyDrop(username, targetZone) {
-        if (utils.isMeetingActive()) return;
+    function setActiveParticipantDropzoneVisible(visible) {
+        if (
+            visible &&
+            (!utils.isMeetingActive() || !state.meeting?.hasInvitedParticipants)
+        ) {
+            return;
+        }
+        const overlay =
+            placeMeetingOverlayForActiveWindow(root) ??
+            root.querySelector("#jitsi-overlay");
+        if (!(overlay instanceof HTMLElement)) return;
+        overlay.classList.toggle("jitsi-drop-active", visible);
+        if (visible) overlay.hidden = false;
+        const message = overlay.querySelector("#jitsi-overlay-message");
+        if (visible) {
+            overlay.dataset.dropLabel = i18n.t(
+                "module.jitsi_meet.participants.drop_to_invite",
+            );
+            if (message instanceof HTMLElement) {
+                overlay.dataset.dropPreviousMessage = message.textContent ?? "";
+                message.textContent = overlay.dataset.dropLabel;
+            }
+            overlay.setAttribute("aria-label", overlay.dataset.dropLabel);
+            return;
+        }
+        if (
+            message instanceof HTMLElement &&
+            typeof overlay.dataset.dropPreviousMessage === "string"
+        ) {
+            message.textContent = overlay.dataset.dropPreviousMessage;
+        }
+        delete overlay.dataset.dropPreviousMessage;
+        delete overlay.dataset.dropLabel;
+        overlay.removeAttribute("aria-label");
+        if (state.overlayPresentation) {
+            utils.updateOverlay(state.overlayPresentation);
+        }
+    }
+
+    async function applyDrop(username, targetZone) {
         if (!username) return;
         const normalized = normalizeUsername(username);
         if (!normalized) return;
@@ -151,13 +286,104 @@ export function createPreflightHandlers({
         );
 
         if (targetZone === "stage" && fromAvailable) {
+            if (utils.isMeetingActive()) {
+                if (!state.meeting?.hasInvitedParticipants) return;
+                state.availableParticipants =
+                    state.availableParticipants.filter(
+                        (entry) => entry.username !== normalized,
+                    );
+                state.pendingParticipantUsernames.add(normalized);
+                addParticipant(fromAvailable);
+                renderParticipants();
+                let response = null;
+                try {
+                    response = await apiFetch(
+                        "/api/v1/modules/jitsi-meet/meetings/participants/add",
+                        {
+                            method: "POST",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify({
+                                meetingId: state.meeting.id,
+                                username: normalized,
+                            }),
+                        },
+                    );
+                } catch (error) {
+                    await logUi("error", "Active meeting invitation failed.", {
+                        component: "module:jitsi-meet",
+                        operation: "invite_active_meeting_participant",
+                        meetingId: state.meeting.id,
+                        username: normalized,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    });
+                }
+                if (!response?.ok) {
+                    const errorPayload = response
+                        ? await response.json().catch(() => ({ error: null }))
+                        : { error: null };
+                    removeParticipant(normalized);
+                    state.pendingParticipantUsernames.delete(normalized);
+                    if (
+                        !state.availableParticipants.some(
+                            (entry) => entry.username === normalized,
+                        )
+                    ) {
+                        state.availableParticipants.push(fromAvailable);
+                        state.availableParticipants.sort((left, right) =>
+                            left.username.localeCompare(right.username),
+                        );
+                    }
+                    renderParticipants();
+                    showToast(
+                        i18n.t(
+                            errorPayload?.error?.code ===
+                                "participant_addition_declined"
+                                ? "module.jitsi_meet.participants.invite_rejected"
+                                : "module.jitsi_meet.overlay.invite_failed",
+                        ),
+                        {
+                            variant:
+                                errorPayload?.error?.code ===
+                                "participant_addition_declined"
+                                    ? "warning"
+                                    : "error",
+                        },
+                    );
+                    return;
+                }
+                const payload = await response
+                    .json()
+                    .catch(() => ({ data: null }));
+                if (payload?.data) {
+                    state.meeting = payload.data;
+                    await callbacks.updateCognisChat();
+                    await callbacks.syncMeetingWhiteboardComponent?.();
+                }
+                showToast(
+                    i18n
+                        .t("module.jitsi_meet.participants.invite_success")
+                        .replace(
+                            "{{participant}}",
+                            fromAvailable.displayName || normalized,
+                        ),
+                    { variant: "success" },
+                );
+                return;
+            }
             state.availableParticipants = state.availableParticipants.filter(
                 (entry) => entry.username !== normalized,
             );
             addParticipant(fromAvailable);
         }
 
-        if (targetZone === "available" && fromSelected) {
+        if (
+            !utils.isMeetingActive() &&
+            targetZone === "available" &&
+            fromSelected
+        ) {
             removeParticipant(normalized);
             if (
                 !state.availableParticipants.some(
@@ -172,6 +398,23 @@ export function createPreflightHandlers({
         }
 
         renderParticipants();
+    }
+
+    function returnSelectedParticipant(event) {
+        if (utils.isMeetingActive() || event.target.closest("a")) return;
+        const avatar = event.target.closest(
+            "#jitsi-staged-participants [data-username]",
+        );
+        if (!(avatar instanceof HTMLElement)) return;
+        void applyDrop(avatar.dataset.username, "available");
+    }
+
+    function bindParticipantReturnClick(signal) {
+        const stagedArea = root.querySelector("#jitsi-staged-participants");
+        if (!(stagedArea instanceof HTMLElement)) return;
+        stagedArea.addEventListener("click", returnSelectedParticipant, {
+            signal,
+        });
     }
 
     async function loadMeetingState() {
@@ -214,6 +457,39 @@ export function createPreflightHandlers({
         }
         if (state.meeting?.id !== meetingId) return;
         state.meeting.state = latestState;
+        if (Array.isArray(payload?.data?.activeParticipants)) {
+            state.meeting.activeParticipants = payload.data.activeParticipants;
+        }
+        if (Array.isArray(payload?.data?.participants)) {
+            const currentUsername = normalizeUsername(
+                state.currentProfile?.handle ?? state.currentProfile?.username,
+            );
+            const participantUsernames = new Set(
+                payload.data.participants
+                    .map((participant) => normalizeUsername(participant))
+                    .filter(
+                        (username) => username && username !== currentUsername,
+                    ),
+            );
+            for (const username of participantUsernames) {
+                state.pendingParticipantUsernames.delete(username);
+            }
+            for (const username of state.pendingParticipantUsernames) {
+                participantUsernames.add(username);
+            }
+            state.selectedParticipants = state.allParticipants.filter((entry) =>
+                participantUsernames.has(entry.username),
+            );
+            state.availableParticipants = state.allParticipants.filter(
+                (entry) => !participantUsernames.has(entry.username),
+            );
+            state.meeting.participants = payload.data.participants;
+            if (typeof payload.data.chatRoomId === "string") {
+                state.meeting.chatRoomId = payload.data.chatRoomId;
+            }
+            renderParticipants();
+            await callbacks.updateCognisChat();
+        }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {
             utils.updateOverlay({
@@ -414,6 +690,7 @@ export function createPreflightHandlers({
     return {
         addParticipant,
         applyDrop,
+        bindParticipantReturnClick,
         currentUserIsJitsiModerator,
         ensureMeetingTracking,
         executeJitsiCommandIfSupported,
@@ -426,6 +703,8 @@ export function createPreflightHandlers({
         recoverMeetingSessionAfterComposerRender,
         removeParticipant,
         renderParticipants,
+        refreshAvailableParticipants,
         runPreflightCheck,
+        setActiveParticipantDropzoneVisible,
     };
 }
