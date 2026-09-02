@@ -211,9 +211,11 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     const additions = [];
     const chatResolutions = [];
     const chatMemberAdditions = [];
+    const chatMemberRemovals = [];
     const whiteboardMembershipAdditions = [];
     const approvals = [];
     let approvalApproved = true;
+    let whiteboardMembershipFails = false;
     const meeting = {
         id: "meeting-1",
         meetingName: "Bright-Otters-Meet-Safely",
@@ -276,10 +278,15 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         },
         groupChatMembership: {
             add: async (request) => chatMemberAdditions.push(request),
-            remove: async () => {},
+            remove: async (request) => chatMemberRemovals.push(request),
         },
         resolveWhiteboardMembership: () => ({
-            add: async (request) => whiteboardMembershipAdditions.push(request),
+            add: async (request) => {
+                if (whiteboardMembershipFails) {
+                    throw new Error("Whiteboard unavailable");
+                }
+                whiteboardMembershipAdditions.push(request);
+            },
         }),
         fetchBoardData: async () => ({
             id: "board-1",
@@ -362,6 +369,23 @@ test("active non-disposable meetings invite a newly dropped participant", async 
         "participant_addition_declined",
     );
     assert.equal(additions.length, 1);
+
+    approvalApproved = true;
+    whiteboardMembershipFails = true;
+    const failedWhiteboardResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/participants/add")(
+        { body: { meetingId: meeting.id, username: "erin" } },
+        failedWhiteboardResponse,
+    );
+    assert.equal(failedWhiteboardResponse.status, 503);
+    assert.equal(additions.length, 1);
+    assert.deepEqual(chatMemberRemovals, [
+        {
+            roomId: "chat-old",
+            actorAccountId: "account-alice",
+            userAccountId: "account-carol",
+        },
+    ]);
 });
 
 test("a kicked account participant is removed and made inactive", async () => {

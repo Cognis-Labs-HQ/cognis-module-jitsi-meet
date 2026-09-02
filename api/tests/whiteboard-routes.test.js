@@ -31,6 +31,7 @@ function createRoutes({
         createdBy: requesterUsername,
     },
     whiteboardAvailable = true,
+    beforeStateRead = () => {},
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
@@ -54,6 +55,7 @@ function createRoutes({
                 };
             },
             async getMeetingState() {
+                beforeStateRead();
                 return state;
             },
             async listPresence() {
@@ -67,15 +69,21 @@ function createRoutes({
             },
             async updateMeetingState(meetingId, update) {
                 stateUpdates.push({ meetingId, update });
+                Object.assign(state, update);
             },
         },
         profileStore: {
-            async getProfile() {
-                return { handle: requesterUsername };
+            async getProfile(accountId) {
+                return {
+                    handle:
+                        accountId === claims.sub
+                            ? requesterUsername
+                            : String(accountId).replace(/^account-/, ""),
+                };
             },
         },
         profileIdentity: profileIdentityFake,
-        requireAuth: () => claims,
+        requireAuth: (req) => req.claims ?? claims,
         readJson: async (req) => req.body,
         sendJson(res, status, body) {
             res.writeHead(status);
@@ -318,6 +326,82 @@ test("meeting participants can synchronize a provider-created whiteboard", async
             },
         },
     ]);
+});
+
+test("concurrent Whiteboard votes are serialized without losing either vote", async () => {
+    const state = {
+        whiteboardId: "board-1",
+        whiteboardDisposable: true,
+        screenSharingActive: false,
+        whiteboardOpenVotes: [],
+    };
+    const routes = createRoutes({
+        organizerUsername: "alice",
+        requesterUsername: "bob",
+        presence: [{ username: "bob" }, { username: "carol" }],
+        state,
+    });
+    const bobResponse = createRecorder();
+    const carolResponse = createRecorder();
+    const body = {
+        meetingId: "meeting-1",
+        whiteboardId: "board-1",
+        disposable: true,
+        active: true,
+    };
+
+    await Promise.all([
+        routes.handlers.get("POST /api/v1/modules/jitsi-meet/whiteboard/state")(
+            { body, claims: { sub: "account-bob" } },
+            bobResponse,
+        ),
+        routes.handlers.get("POST /api/v1/modules/jitsi-meet/whiteboard/state")(
+            { body, claims: { sub: "account-carol" } },
+            carolResponse,
+        ),
+    ]);
+
+    assert.equal(bobResponse.status, 200);
+    assert.equal(carolResponse.status, 200);
+    assert.equal(state.whiteboardActive, true);
+    assert.deepEqual(routes.stateUpdates[0].update.whiteboardOpenVotes, [
+        "bob",
+    ]);
+    assert.deepEqual(routes.stateUpdates[1].update.whiteboardOpenVotes, []);
+});
+
+test("Whiteboard activation rechecks screen sharing after verification", async () => {
+    const state = {
+        screenSharingActive: false,
+        whiteboardOpenVotes: [],
+    };
+    let stateReads = 0;
+    const routes = createRoutes({
+        state,
+        beforeStateRead() {
+            stateReads += 1;
+            if (stateReads === 2) state.screenSharingActive = true;
+        },
+    });
+    const response = createRecorder();
+    const handler = routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    );
+    await handler(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "screen_sharing_active");
+    assert.equal(routes.stateUpdates.length, 0);
 });
 
 test("meeting participants cannot map an unrelated provider whiteboard", async () => {

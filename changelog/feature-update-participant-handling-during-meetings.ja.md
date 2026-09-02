@@ -298,7 +298,13 @@ Share 承認サービスでエラーが発生した場合、参加者招待を�
 
 インドネシア語版と日本語版のリリースノートに、ドイツ語版と英語版に存在するすべての変更点の翻訳を追加しました。
 
+## 共同状態の変更を直列化
+
+Whiteboard の投票を会議ごとの順序で適用し、有効化の直前に画面共有を再確認するようにしました。これにより合意投票の消失と有効状態の競合を防ぎます。Whiteboard アクセスの付与に失敗した場合は、新たに付与した暗号化チャットのメンバー資格を取り消します。
+
 ## コミット
+
+- [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)

@@ -23,3 +23,30 @@ export async function restoreMeetingChatMembership({
         throw error;
     }
 }
+
+export async function rollbackMeetingChatMembership({
+    meeting,
+    roomId,
+    actorAccountId,
+    userAccountId,
+    username,
+    groupChatMembership,
+    log,
+}) {
+    try {
+        await groupChatMembership.remove({
+            roomId,
+            actorAccountId,
+            userAccountId,
+        });
+    } catch (error) {
+        log?.("error", "Meeting chat membership rollback failed.", {
+            component: "jitsi-meet-module",
+            operation: "rollback_active_meeting_participant_chat",
+            meetingId: meeting.id,
+            chatRoomId: roomId,
+            username,
+            error: error instanceof Error ? error.message : String(error),
+        });
+    }
+}

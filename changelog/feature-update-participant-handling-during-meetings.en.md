@@ -298,7 +298,13 @@ Participant search now supplies the Profile identity contract when resolving the
 
 The Indonesian and Japanese release notes now include translated counterparts for every change point present in the German and English variants.
 
+## Serialize collaborative state changes
+
+Whiteboard votes are now applied in meeting order and screen sharing is checked again immediately before activation, preventing lost consensus votes and conflicting active states. Failed Whiteboard access provisioning now rolls back the newly granted encrypted chat membership.
+
 ## Commits
+
+- [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)

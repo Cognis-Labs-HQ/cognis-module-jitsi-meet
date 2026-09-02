@@ -298,7 +298,13 @@ Pencarian peserta kini meneruskan kontrak identitas Profile saat menyelesaikan p
 
 Catatan rilis bahasa Indonesia dan Jepang kini memuat padanan terjemahan untuk setiap poin perubahan yang ada pada varian bahasa Jerman dan Inggris.
 
+## Serialisasikan perubahan status kolaboratif
+
+Suara Whiteboard kini diterapkan sesuai urutan rapat dan berbagi layar diperiksa kembali tepat sebelum aktivasi, sehingga suara konsensus tidak hilang dan status aktif tidak saling bertentangan. Kegagalan penyediaan akses Whiteboard kini membatalkan keanggotaan obrolan terenkripsi yang baru diberikan.
+
 ## Commit
+
+- [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)

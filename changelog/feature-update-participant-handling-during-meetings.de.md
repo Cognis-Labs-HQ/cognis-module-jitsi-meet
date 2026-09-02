@@ -298,7 +298,13 @@ Die Teilnehmersuche übergibt beim Auflösen des Anfragenden jetzt den Profile-I
 
 Die indonesischen und japanischen Versionshinweise enthalten jetzt übersetzte Entsprechungen für jeden Änderungspunkt der deutschen und englischen Varianten.
 
+## Gemeinsame Statusänderungen serialisieren
+
+Whiteboard-Abstimmungen werden nun in Besprechungsreihenfolge angewendet und die Bildschirmfreigabe wird unmittelbar vor der Aktivierung erneut geprüft. Dadurch gehen keine Konsensstimmen verloren und widersprüchliche aktive Zustände werden verhindert. Wenn die Bereitstellung des Whiteboard-Zugriffs fehlschlägt, wird die neu gewährte Mitgliedschaft im verschlüsselten Chat zurückgenommen.
+
 ## Commits
+
+- [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)

@@ -1,5 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { restoreMeetingChatMembership } from "./reuse/chat-membership.js";
+import {
+    restoreMeetingChatMembership,
+    rollbackMeetingChatMembership,
+} from "./reuse/chat-membership.js";
 import { requestParticipantAdditionDecision } from "./reuse/participant-approval.js";
 import { requireMeetingWhiteboardMembershipUpdate } from "./reuse/whiteboard-membership.js";
 export { deleteDisposableMeeting } from "./disposable-meeting.js";
@@ -373,8 +376,18 @@ export function registerMeetingLifecycleRoutes({
                     response: res,
                     logOperation: "add_active_meeting_participant_whiteboard",
                 }))
-            )
+            ) {
+                await rollbackMeetingChatMembership({
+                    meeting: resolved.meeting,
+                    roomId: chatRoom.roomId,
+                    actorAccountId: claims.sub,
+                    userAccountId: participantProfile.accountId,
+                    username,
+                    groupChatMembership,
+                    log,
+                });
                 return;
+            }
             const meeting = await store.addMeetingParticipant(
                 resolved.meeting.id,
                 username,
@@ -724,7 +737,6 @@ export function registerMeetingLifecycleRoutes({
                     excludeUsernames: [resolved.requesterUsername],
                 },
             );
-
             sendJson(res, 200, {
                 data: payload,
             });
@@ -743,7 +755,6 @@ export function registerMeetingLifecycleRoutes({
                 sendError(res, 400, "bad_request", "chatRoomId is required.");
                 return;
             }
-
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
                 claims.sub,
@@ -774,7 +785,6 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-
             const [participants, presence] = await Promise.all([
                 store.listParticipants(meeting.id),
                 store.listPresence(meeting.id),
@@ -799,7 +809,6 @@ export function registerMeetingLifecycleRoutes({
                     };
                 }),
             );
-
             sendJson(res, 200, {
                 data: {
                     meetingId: meeting.id,
@@ -856,7 +865,6 @@ export function registerMeetingLifecycleRoutes({
                 });
                 return;
             }
-
             const resolved = await resolveMeetingPayload({
                 body,
                 profileStore,
@@ -868,13 +876,11 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
-
             const sessionId = String(body.sessionId ?? "").trim();
             if (!sessionId) {
                 sendError(res, 400, "bad_request", "sessionId is required.");
                 return;
             }
-
             const previousPresenceEntries = await store.listPresence(
                 resolved.meeting.id,
             );
@@ -886,7 +892,6 @@ export function registerMeetingLifecycleRoutes({
             const nextPresenceActive = body.active !== false;
             const meetingTerminated = body.terminated === true;
             let disposableMeetingDeleted = false;
-
             await store.upsertPresence(
                 resolved.meeting.id,
                 resolved.requesterUsername,
