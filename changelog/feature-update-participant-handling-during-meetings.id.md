@@ -322,6 +322,10 @@ Kartu aktif di Rapat Sebelumnya kini memakai segmen batas hijau yang lebih tebal
 
 Peristiwa pelepasan penunjuk dan tetikus kini menutup target peletakan peserta rapat aktif yang belum selesai. Rapat Sebelumnya menyatukan ruang dengan susunan peserta kanonis yang sama menjadi satu kartu dan mengutamakan ruang aktif, sehingga perluasan berulang dari dua menjadi tiga peserta tidak memenuhi riwayat dengan kartu tiga peserta duplikat.
 
+## Pecah modul rute dan UI yang terlalu besar
+
+Rute ringkasan ruang obrolan rapat dan pengikatan peristiwa browser interaktif kini berada dalam modul yang terfokus, sehingga pemformatan tetap mudah dibaca dan berkas siklus hidup serta pemasangan utama jauh lebih kecil.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -411,3 +415,7 @@ Peristiwa pelepasan penunjuk dan tetikus kini menutup target peletakan peserta r
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
 - [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
+
+- [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
+
+- [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)

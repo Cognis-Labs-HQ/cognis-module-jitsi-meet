@@ -322,6 +322,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 ポインターまたはマウスを離すと、未完了のアクティブ会議参加者ドロップ領域を閉じます。「以前の会議」では同じ正規化参加者構成の会議室を1枚のカードにまとめ、アクティブな会議室を優先するため、2人から3人への追加を繰り返しても3人会議の重複カードで履歴が埋まりません。
 
+## 大きすぎるルートと UI モジュールを分割
+
+会議チャット概要ルートと対話型ブラウザーイベントのバインドを、それぞれ役割を絞ったモジュールへ移しました。読みやすい整形を保ちながら、主要なライフサイクルおよびマウントファイルを大幅に小さくしています。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -411,3 +415,7 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
 - [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
+
+- [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
+
+- [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)

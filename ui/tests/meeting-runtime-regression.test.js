@@ -55,7 +55,7 @@ test("meeting state polling ignores responses after meeting teardown", () => {
 });
 
 test("window focus changes do not dismiss an idle meeting overlay", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const participantsSource = readFileSync(
         resolve(ROOT, "ui/app/participants.js"),
         "utf8",
@@ -94,7 +94,7 @@ test("meeting chat teardown clears the room and polling state after a kick", () 
 });
 
 test("share guests bind remote whiteboard orchestration without resharing controls", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const controlSource = readFileSync(
         resolve(ROOT, "ui/whiteboard-control.js"),
         "utf8",
@@ -144,7 +144,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
 });
 
 test("limited share mounts never request account profile or participant data", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const helperSource = readFileSync(
         resolve(ROOT, "ui/jitsi-helpers.js"),
         "utf8",
@@ -522,12 +522,12 @@ test("jitsi API exposes user active meetings endpoint", () => {
 });
 
 test("jitsi opts into composer DOM parking for its stateful iframe", () => {
-    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const source = readJitsiUiBundle();
     assert.match(source, /enableDomParking: true/);
 });
 
 test("meeting shares use the Cognis route and skip account setup", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const shareButtonSource = readFileSync(
         resolve(ROOT, "ui/share-button.js"),
         "utf8",
@@ -592,7 +592,7 @@ test("active link-shared meetings ignore a stale closed state", () => {
 });
 
 test("direct-account SPA shares mount the full Meetings page", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     assert.match(
         appSource,
         /inShareView =\s*shareContext !== null &&\s*shareContext\?\.directAccess !== true/,
@@ -601,7 +601,7 @@ test("direct-account SPA shares mount the full Meetings page", () => {
 
 test("meeting routes and standalone shell load only module-owned layout styles", () => {
     const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const uiResourcesSource = readFileSync(
         resolve(ROOT, "api/ui-resources.js"),
         "utf8",

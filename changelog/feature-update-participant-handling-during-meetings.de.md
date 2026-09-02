@@ -322,6 +322,10 @@ Aktive Karten unter Vorherige Besprechungen verwenden jetzt ein dickeres und lä
 
 Zeiger- und Mausfreigabeereignisse schließen jetzt eine unvollständige Teilnehmer-Ablagezone der aktiven Besprechung. Vorherige Besprechungen führt Räume mit demselben kanonischen Teilnehmerkreis zu einer Karte zusammen und bevorzugt den aktiven Raum, damit wiederholte Erweiterungen von zwei auf drei Teilnehmer den Verlauf nicht mit doppelten Drei-Teilnehmer-Karten füllen.
 
+## Übergroße Routen- und UI-Module aufgeteilt
+
+Die Route für die Chat-Zusammenfassung und die interaktiven Browser-Ereignisbindungen liegen jetzt in fokussierten Modulen. Dadurch bleibt die lesbare Formatierung erhalten und die zentralen Lebenszyklus- und Einbindungsdateien sind deutlich kleiner.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -411,3 +415,7 @@ Zeiger- und Mausfreigabeereignisse schließen jetzt eine unvollständige Teilneh
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
 - [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
+
+- [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
+
+- [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)

@@ -322,6 +322,10 @@ Active cards in Previous Meetings now use a thicker and longer green border segm
 
 Pointer and mouse release events now close an unfinished active-meeting participant dropzone. Previous Meetings consolidates rooms with the same canonical participant set into one card and prefers the active room, preventing repeated two-to-three participant expansions from filling history with duplicate three-participant cards.
 
+## Split oversized route and UI modules
+
+The meeting chat-summary route and interactive browser event bindings now live in focused modules, restoring readable formatting and keeping the primary lifecycle and mount files substantially smaller.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -411,3 +415,7 @@ Pointer and mouse release events now close an unfinished active-meeting particip
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
 - [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
+
+- [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
+
+- [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)

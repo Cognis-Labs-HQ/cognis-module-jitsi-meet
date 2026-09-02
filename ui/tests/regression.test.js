@@ -88,7 +88,7 @@ test("staged participants return to availability by click or drag without reusin
         resolve(ROOT, "ui/app/participants.js"),
         "utf8",
     );
-    const indexSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const indexSource = readJitsiUiBundle();
     const roomSource = readFileSync(
         resolve(ROOT, "ui/app/meeting-room.js"),
         "utf8",
@@ -176,7 +176,7 @@ test("new meetings can start with an empty participant stage and prompt for a li
 
 test("meeting link guests derive participants from the scoped meeting payload", () => {
     const chatSource = readFileSync(resolve(ROOT, "ui/app/chat.js"), "utf8");
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     assert.match(
         chatSource,
         /state\.shareAccessToken && state\.chatParticipantEntries\.length > 0/,
@@ -194,7 +194,7 @@ test("meeting link chat uses scoped message APIs without requesting room metadat
 });
 
 test("meeting link guests can join without participant-card data", () => {
-    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const appSource = readJitsiUiBundle();
     const meetingSource = readFileSync(
         resolve(ROOT, "ui/app/meetings-list.js"),
         "utf8",
@@ -207,7 +207,10 @@ test("meeting link guests can join without participant-card data", () => {
 });
 
 test("meetings search popup adds confirmed users directly to meeting participants", () => {
-    const source = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
     assert.match(source, /category: "user",\s*typeFilter: "user"/);
     assert.match(
         source,
