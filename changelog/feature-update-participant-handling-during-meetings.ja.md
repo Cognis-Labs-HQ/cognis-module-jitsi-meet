@@ -218,6 +218,10 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 
 参加者見出しは既定の見出し余白をなくし、コンパクトな行高と間隔を使用します。「以前のミーティング」は横方向のスクロール機能を完全に維持しながら、標準準拠および WebKit ブラウザーの表示でスクロールバーを非表示にします。
 
+## 参加者見出しとレイアウト領域を調整
+
+参加者見出しは、強制されたコンパクトなフォントサイズと行高ではなく、継承された自然な文字高を再び使用します。ペインは見出しと参加者テーブルを別々の Flex 行として割り当て、見出しがレイアウトを圧迫することなく、親要素の残り領域へ伸縮できるようにしました。
+
 ## コミット
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -290,3 +294,4 @@ Jitsi のローカルおよびリモート画面共有参加者のリアルタ�
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
+- [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)

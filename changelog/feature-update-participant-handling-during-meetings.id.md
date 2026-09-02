@@ -218,6 +218,10 @@ Judul Peserta bersama dikembalikan ke atas tabel dua kolom sehingga Peserta Ters
 
 Judul Peserta kini menghapus margin judul bawaan serta memakai tinggi baris dan jarak yang ringkas. Rapat Sebelumnya tetap dapat digulir horizontal sepenuhnya sambil menyembunyikan bilah gulir yang terlihat pada perenderan browser berbasis standar dan WebKit.
 
+## Seimbangkan ruang judul dan tata letak peserta
+
+Judul Peserta kembali memakai tinggi teks alami yang diwarisi, bukan ukuran font dan tinggi baris ringkas yang dipaksakan. Panel kini mengalokasikan judul dan tabel peserta sebagai baris flex terpisah sehingga tata letak dapat tumbuh atau menyusut ke ruang induk yang tersisa tanpa ditekan oleh judul.
+
 ## Commit
 
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
@@ -290,3 +294,4 @@ Judul Peserta kini menghapus margin judul bawaan serta memakai tinggi baris dan 
 - [f67f0bd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f67f0bda2db676a577c333632705525d1e042ef8)
 - [1cfdaff](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1cfdaff9320edc04c9b12e9a4eda165a68d06849)
 - [d55bb4e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d55bb4e36920abe4a0d1c57dfba23376b97af96a)
+- [a0548f5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a0548f55eafbb75b9992a48f7d0fe9d65aaa63b1)

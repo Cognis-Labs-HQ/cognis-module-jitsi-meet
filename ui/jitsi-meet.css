@@ -414,8 +414,9 @@
 }
 
 .jitsi-route-root .jitsi-participants-pane {
+    display: flex;
+    flex-direction: column;
     height: auto;
-    overflow-y: hidden;
 }
 
 .jitsi-route-root .jitsi-participants-pane.jitsi-participants-disabled {
@@ -441,14 +442,12 @@
     align-items: center;
     gap: 0.35rem;
     flex-wrap: wrap;
-    min-height: 0;
+    flex: 0 0 auto;
     margin-bottom: 0.1rem;
 }
 
 .jitsi-route-root .jitsi-participants-header h3 {
     margin: 0;
-    font-size: 1rem;
-    line-height: 1.15;
 }
 
 .jitsi-route-root .jitsi-find-participants-avatar {
@@ -512,6 +511,7 @@
 
 .jitsi-route-root .jitsi-participants-layout {
     display: grid;
+    flex: 1 1 auto;
     grid-template-columns: minmax(12rem, 3fr) minmax(0, 7fr);
     gap: 1rem;
     min-height: 0;

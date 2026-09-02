@@ -668,7 +668,12 @@ test("find participants is the first available-participant avatar", () => {
     );
     assert.match(
         styles,
-        /jitsi-participants-header h3 \{[\s\S]*margin: 0;[\s\S]*line-height: 1\.15/,
+        /jitsi-participants-pane \{[\s\S]*display: flex;[\s\S]*flex-direction: column/,
+    );
+    assert.match(styles, /jitsi-participants-header \{[\s\S]*flex: 0 0 auto/);
+    assert.match(
+        styles,
+        /jitsi-participants-layout \{[\s\S]*flex: 1 1 auto;[\s\S]*min-height: 0/,
     );
     assert.match(
         styles,
