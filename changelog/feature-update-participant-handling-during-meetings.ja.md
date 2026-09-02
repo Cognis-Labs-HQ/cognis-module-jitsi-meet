@@ -330,6 +330,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 分割した対話型ハンドラーが会議 URL とテーマのリゾルバーを直接インポートするようになり、SPA ナビゲーション後にテーマ同期や会議認証操作が失敗しなくなりました。
 
+## 対話型ハンドラーの残りの依存関係を復元
+
+分割した対話型ハンドラーが会議 ID の正規化と Messages ゲートウェイクライアントを直接インポートするようになりました。SPA ナビゲーション後の進行中会議の選択を修正し、チャット送信時にも同じスコープエラーが起きないようにしています。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -425,3 +429,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
 
 - [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)
+
+- [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)

@@ -62,10 +62,20 @@ test("interactive handlers import their extracted meeting embed dependencies", (
 
     assert.match(
         source,
+        /import \{ normalizeMeetingId \} from "\.\.\/jitsi-helpers\.js";/,
+    );
+    assert.match(
+        source,
         /import \{ buildMeetingJoinUrl, resolveThemeMode \} from "\.\.\/meeting-embed\.js";/,
+    );
+    assert.match(
+        source,
+        /import \{ messagesClient \} from "\.\.\/reuse\/gateway-clients\.js";/,
     );
     assert.match(source, /resolveThemeMode\(event\?\.detail\?\.theme\)/);
     assert.match(source, /buildMeetingJoinUrl\(/);
+    assert.match(source, /normalizeMeetingId\(/);
+    assert.match(source, /messagesClient\(\)\.sendRoomMessage\(/);
 });
 
 test("window focus changes do not dismiss an idle meeting overlay", () => {

@@ -330,6 +330,10 @@ Rute ringkasan ruang obrolan rapat dan pengikatan peristiwa browser interaktif k
 
 Pengendali interaktif yang diekstrak kini mengimpor penyelesai URL rapat dan tema secara langsung, sehingga sinkronisasi tema serta tindakan autentikasi rapat tidak lagi gagal setelah navigasi SPA.
 
+## Pulihkan dependensi pengendali interaktif yang tersisa
+
+Pengendali interaktif yang diekstrak kini mengimpor normalisasi ID rapat dan klien gateway Messages secara langsung, memperbaiki pemilihan rapat aktif setelah navigasi SPA dan mencegah kegagalan cakupan yang sama saat mengirim pesan obrolan.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -425,3 +429,5 @@ Pengendali interaktif yang diekstrak kini mengimpor penyelesai URL rapat dan tem
 - [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
 
 - [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)
+
+- [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
