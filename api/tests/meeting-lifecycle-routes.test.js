@@ -122,6 +122,7 @@ test("a missing disposable chat is treated as already deleted", async () => {
 test("meeting creation provisions a share-ready participant-free chat", async () => {
     const handlers = new Map();
     const chatRequests = [];
+    const meetingCreationRequests = [];
     const meeting = {
         id: "meeting-1",
         meetingName: "Bright-Otters-Meet-Safely",
@@ -142,7 +143,8 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
                 classroomId: null,
             };
         },
-        async createMeeting() {
+        async createMeeting(request) {
+            meetingCreationRequests.push(request);
             return meeting;
         },
         async setMeetingChatRoomId(meetingId, chatRoomId) {
@@ -189,7 +191,7 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     });
     const createResponse = createRecorder();
     await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
-        { body: { participants: [] } },
+        { body: { participants: [], forceNew: true } },
         createResponse,
     );
     assert.equal(createResponse.status, 200);
@@ -203,6 +205,7 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     );
     assert.equal(createResponse.body.data.chatRoomId, "chat-1");
     assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
+    assert.equal(meetingCreationRequests[0].forceNew, true);
 });
 
 test("active non-disposable meetings invite a newly dropped participant", async () => {

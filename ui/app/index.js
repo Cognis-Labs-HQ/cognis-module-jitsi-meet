@@ -413,6 +413,7 @@ export async function mount(
         const availablePool = container.querySelector(
             "#jitsi-available-participants",
         );
+        preflightHandlers.bindParticipantReturnClick(bindSignal);
         const clearActiveParticipantDrag = () => {
             if (state.dragUsername === null) return;
             state.dragUsername = null;
@@ -984,7 +985,6 @@ export async function mount(
     }
     await runPreflightCheck();
 }
-
 await mountWhenDirect(async (root) => {
     const mountController = new AbortController();
     await mount(root, { signal: mountController.signal });

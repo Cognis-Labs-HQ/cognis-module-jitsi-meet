@@ -302,7 +302,13 @@ Die indonesischen und japanischen Versionshinweise enthalten jetzt übersetzte E
 
 Whiteboard-Abstimmungen werden nun in Besprechungsreihenfolge angewendet und die Bildschirmfreigabe wird unmittelbar vor der Aktivierung erneut geprüft. Dadurch gehen keine Konsensstimmen verloren und widersprüchliche aktive Zustände werden verhindert. Wenn die Bereitstellung des Whiteboard-Zugriffs fehlschlägt, wird die neu gewährte Mitgliedschaft im verschlüsselten Chat zurückgenommen.
 
+## Wiederhergestellte Teilnehmergruppen bearbeiten
+
+Bereitgestellte Teilnehmer können jetzt durch einen einzelnen Klick außerhalb des Profillinks oder durch Zurückziehen zu Verfügbare Teilnehmer zurückkehren. Wenn eine aus Vorherige Besprechungen wiederhergestellte Teilnehmergruppe geändert wird, entsteht jetzt eine neue Besprechung, statt den stabilen Namen eines anderen passenden Raums wiederzuverwenden.
+
 ## Commits
+
+- [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 
 - [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 

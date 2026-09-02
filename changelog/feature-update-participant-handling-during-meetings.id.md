@@ -302,7 +302,13 @@ Catatan rilis bahasa Indonesia dan Jepang kini memuat padanan terjemahan untuk s
 
 Suara Whiteboard kini diterapkan sesuai urutan rapat dan berbagi layar diperiksa kembali tepat sebelum aktivasi, sehingga suara konsensus tidak hilang dan status aktif tidak saling bertentangan. Kegagalan penyediaan akses Whiteboard kini membatalkan keanggotaan obrolan terenkripsi yang baru diberikan.
 
+## Edit susunan peserta yang dipulihkan
+
+Peserta di panggung kini dapat kembali ke Peserta Tersedia dengan sekali klik di luar tautan profil atau dengan menyeretnya kembali. Perubahan pada susunan peserta yang dipulihkan dari Rapat Sebelumnya kini membuat rapat baru, bukan memakai kembali nama stabil ruang lain yang cocok.
+
 ## Commit
+
+- [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 
 - [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 

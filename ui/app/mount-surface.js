@@ -18,6 +18,7 @@ export function createMountUtilities({ root, state }) {
 
     function resetParticipantSelection() {
         state.selectedParticipants = [];
+        state.persistedMeetingSelectionUsernames = null;
         state.availableParticipants = state.allParticipants.map((entry) => ({
             ...entry,
         }));

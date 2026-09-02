@@ -302,7 +302,13 @@ Share 承認サービスでエラーが発生した場合、参加者招待を�
 
 Whiteboard の投票を会議ごとの順序で適用し、有効化の直前に画面共有を再確認するようにしました。これにより合意投票の消失と有効状態の競合を防ぎます。Whiteboard アクセスの付与に失敗した場合は、新たに付与した暗号化チャットのメンバー資格を取り消します。
 
+## 復元した参加者構成を編集
+
+ステージ上の参加者を、プロフィールリンク以外の場所で1回クリックするかドラッグして「参加可能なユーザー」へ戻せるようにしました。「以前の会議」から復元した参加者構成を変更すると、別の一致する会議室の固定名を再利用せず、新しい会議を作成します。
+
 ## コミット
+
+- [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 
 - [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 

@@ -398,6 +398,23 @@ export function createPreflightHandlers({
         renderParticipants();
     }
 
+    function returnSelectedParticipant(event) {
+        if (utils.isMeetingActive() || event.target.closest("a")) return;
+        const avatar = event.target.closest(
+            "#jitsi-staged-participants [data-username]",
+        );
+        if (!(avatar instanceof HTMLElement)) return;
+        void applyDrop(avatar.dataset.username, "available");
+    }
+
+    function bindParticipantReturnClick(signal) {
+        const stagedArea = root.querySelector("#jitsi-staged-participants");
+        if (!(stagedArea instanceof HTMLElement)) return;
+        stagedArea.addEventListener("click", returnSelectedParticipant, {
+            signal,
+        });
+    }
+
     async function loadMeetingState() {
         const meetingId = state.meeting?.id;
         if (!meetingId) return;
@@ -671,6 +688,7 @@ export function createPreflightHandlers({
     return {
         addParticipant,
         applyDrop,
+        bindParticipantReturnClick,
         currentUserIsJitsiModerator,
         ensureMeetingTracking,
         executeJitsiCommandIfSupported,

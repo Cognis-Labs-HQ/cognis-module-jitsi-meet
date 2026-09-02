@@ -56,6 +56,9 @@ export function createMeetingHandlers({
                         participant.username === candidate.username,
                 ),
         );
+        state.persistedMeetingSelectionUsernames = state.selectedParticipants
+            .map((participant) => participant.username)
+            .sort();
         callbacks.renderParticipants();
         root.querySelector(".jitsi-meeting-stage")?.scrollIntoView({
             behavior: "smooth",

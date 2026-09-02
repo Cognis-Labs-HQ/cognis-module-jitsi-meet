@@ -62,3 +62,11 @@ export async function requireMeetingWhiteboardMembershipUpdate({
         return false;
     }
 }
+
+export function createMeetingWhiteboardMembershipUpdater(dependencies) {
+    return (input) =>
+        requireMeetingWhiteboardMembershipUpdate({
+            ...input,
+            ...dependencies,
+        });
+}

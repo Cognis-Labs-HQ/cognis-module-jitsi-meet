@@ -4,7 +4,8 @@ import {
     rollbackMeetingChatMembership,
 } from "./reuse/chat-membership.js";
 import { requestParticipantAdditionDecision } from "./reuse/participant-approval.js";
-import { requireMeetingWhiteboardMembershipUpdate } from "./reuse/whiteboard-membership.js";
+import { readForceNewMeeting } from "./reuse/meeting-creation.js";
+import { createMeetingWhiteboardMembershipUpdater } from "./reuse/whiteboard-membership.js";
 export { deleteDisposableMeeting } from "./disposable-meeting.js";
 import { deleteDisposableMeeting } from "./disposable-meeting.js";
 export function registerMeetingLifecycleRoutes({
@@ -38,15 +39,13 @@ export function registerMeetingLifecycleRoutes({
     normalizeHandleKey,
     log,
 }) {
-    const updateWhiteboardMember = (input) =>
-        requireMeetingWhiteboardMembershipUpdate({
-            ...input,
-            profileStore,
-            resolveWhiteboardMembership,
-            fetchBoardData,
-            sendError,
-            log,
-        });
+    const updateWhiteboardMember = createMeetingWhiteboardMembershipUpdater({
+        profileStore,
+        resolveWhiteboardMembership,
+        fetchBoardData,
+        sendError,
+        log,
+    });
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
         async (req, res) => {
@@ -54,6 +53,8 @@ export function registerMeetingLifecycleRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
+            const forceNew = readForceNewMeeting(body, res, sendError);
+            if (forceNew === null) return;
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
                 claims.sub,
@@ -98,6 +99,7 @@ export function registerMeetingLifecycleRoutes({
                 createdBy: requesterUsername,
                 chatRoomId: null,
                 scheduledAt: body.scheduledAt,
+                forceNew,
             });
             const participants = await store.listParticipants(meeting.id);
             let chatRoom = null;
@@ -898,7 +900,6 @@ export function registerMeetingLifecycleRoutes({
                 sessionId,
                 nextPresenceActive,
             );
-
             if (previousSessionPresence?.active && !nextPresenceActive) {
                 await store.setUserSessionsInactive(
                     resolved.meeting.id,
@@ -924,7 +925,6 @@ export function registerMeetingLifecycleRoutes({
                     organizerUsername: resolved.meeting.createdBy,
                     excludeUsernames: [resolved.requesterUsername],
                 });
-
                 const updatedPresenceEntries = await store.listPresence(
                     resolved.meeting.id,
                 );
@@ -981,7 +981,6 @@ export function registerMeetingLifecycleRoutes({
                     }
                 }
             }
-
             sendJson(res, 200, {
                 data: {
                     ok: true,

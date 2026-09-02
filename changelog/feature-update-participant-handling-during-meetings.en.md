@@ -302,7 +302,13 @@ The Indonesian and Japanese release notes now include translated counterparts fo
 
 Whiteboard votes are now applied in meeting order and screen sharing is checked again immediately before activation, preventing lost consensus votes and conflicting active states. Failed Whiteboard access provisioning now rolls back the newly granted encrypted chat membership.
 
+## Edit restored participant sets
+
+Staged participants can now return to Available Participants with a single click outside the profile link or by dragging them back. Changing a participant set restored from Previous Meetings now creates a fresh meeting instead of reusing the stable name of another matching room.
+
 ## Commits
+
+- [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
 
 - [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
 

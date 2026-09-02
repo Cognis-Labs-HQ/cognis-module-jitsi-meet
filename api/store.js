@@ -14,11 +14,9 @@ import {
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
 import { ensureJitsiStoreSchema } from "./reuse/store-schema.js";
-
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
 const schemaInitializationByExecutor = new WeakMap();
-
 function buildParticipantKey(
     normalizeHandleKeys,
     usernames,
@@ -34,7 +32,6 @@ function buildParticipantKey(
     });
     return createHash("sha256").update(payload).digest("hex");
 }
-
 export class JitsiMeetStore {
     constructor({ db, log, generatePassphrase, profileIdentity }) {
         this.db = db;
@@ -393,6 +390,7 @@ export class JitsiMeetStore {
         createdBy,
         chatRoomId,
         scheduledAt,
+        forceNew = false,
     }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
         if (!normalizedInstanceUrl) {
@@ -405,10 +403,12 @@ export class JitsiMeetStore {
             typeof classroomId === "string" && classroomId.trim().length > 0
                 ? classroomId.trim()
                 : null;
-        const existing = await this.findMeetingByParticipants(
-            participantUsernames,
-            normalizedClassroomId,
-        );
+        const existing = forceNew
+            ? null
+            : await this.findMeetingByParticipants(
+                  participantUsernames,
+                  normalizedClassroomId,
+              );
         if (existing) {
             const normalizedChatRoomId = chatRoomId ?? null;
             if (

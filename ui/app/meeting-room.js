@@ -468,6 +468,14 @@ export function createEmbedHandlers({
             }
 
             const selected = utils.selectedUsernames();
+            const sortedSelected = [...selected].sort();
+            const persistedSelection = state.persistedMeetingSelectionUsernames;
+            const forceNewMeeting =
+                Array.isArray(persistedSelection) &&
+                (persistedSelection.length !== sortedSelected.length ||
+                    persistedSelection.some(
+                        (username, index) => username !== sortedSelected[index],
+                    ));
 
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.creating"),
@@ -484,6 +492,7 @@ export function createEmbedHandlers({
                     },
                     body: JSON.stringify({
                         participants: selected,
+                        forceNew: forceNewMeeting,
                     }),
                 },
             );

@@ -463,6 +463,19 @@ test("persistent meetings reuse their stored identity after store reconstruction
     assert.equal(reusedMeeting.meetingName, firstMeeting.meetingName);
     assert.equal(reusedMeeting.meetingUrl, firstMeeting.meetingUrl);
     assert.equal(reusedMeeting.reused, true);
+
+    const freshMeeting = await reconstructedStore.createMeeting({
+        instanceUrl: "https://meet.example.com",
+        usernames: ["alice", "bob", "carol"],
+        classroomId: null,
+        createdBy: "alice",
+        chatRoomId: null,
+        forceNew: true,
+    });
+    assert.equal(mockDb.insertedMeetingRows.length, 2);
+    assert.notEqual(freshMeeting.id, firstMeeting.id);
+    assert.notEqual(freshMeeting.meetingName, firstMeeting.meetingName);
+    assert.equal(freshMeeting.reused, false);
 });
 
 test("participant-free disposable meetings always receive distinct identities", async () => {

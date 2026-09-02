@@ -75,10 +75,40 @@ test("previous meeting cards restore the stage and support confirmed long-press 
     assert.match(source, /id: "remove"[\s\S]*variant: "cancel"/);
     assert.match(source, /id: "cancel"[\s\S]*variant: "neutral"/);
     assert.match(source, /response\.ok \? "info" : "error"/);
+    assert.match(source, /persistedMeetingSelectionUsernames/);
     assert.match(styles, /hue-rotate\(218deg\) saturate\(1\.2\)/);
     assert.match(
         styles,
         /\.jitsi-persisted-meeting-card \{[\s\S]*?height: max-content;/,
+    );
+});
+
+test("staged participants return to availability by click or drag without reusing a changed previous meeting", () => {
+    const participantsSource = readFileSync(
+        resolve(ROOT, "ui/app/participants.js"),
+        "utf8",
+    );
+    const indexSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+
+    assert.match(
+        participantsSource,
+        /function returnSelectedParticipant[\s\S]*event\.target\.closest\("a"\)[\s\S]*applyDrop\(avatar\.dataset\.username, "available"\)/,
+    );
+    assert.match(
+        participantsSource,
+        /stagedArea\.addEventListener\("click", returnSelectedParticipant/,
+    );
+    assert.match(
+        indexSource,
+        /availablePool\.addEventListener\([\s\S]*"drop"[\s\S]*applyDrop\(username, "available"\)/,
+    );
+    assert.match(
+        roomSource,
+        /persistedMeetingSelectionUsernames[\s\S]*forceNewMeeting[\s\S]*forceNew: forceNewMeeting/,
     );
 });
 
