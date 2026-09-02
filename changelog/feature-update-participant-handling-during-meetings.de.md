@@ -378,6 +378,10 @@ Deaktivierte Karten früherer Besprechungen sind jetzt sichtbar ausgegraut und z
 
 Die Standardgrößen von Besprechungsbühne und Messages belegen jetzt mit einer Aufteilung von acht zu vier alle zwölf Composer-Spalten bei gleicher Höhe von fünf Zeilen. Der Schlüssel der Layout-Einstellung wurde weitergesetzt, damit Clients den fehlerhaften gespeicherten Payload verwerfen, statt die schmale Bühne, den schmalen Chat und leere Spalten wiederherzustellen.
 
+## Upstream-Blockierung übernehmen und Whiteboard-Verbindungssperre entfernen
+
+Deaktivierte frühere Besprechungen verwenden jetzt die upstream eingesetzte Deckkraftdarstellung aktiver Besprechungen ohne Graustufen sowie eine transparente Sperre über die gesamte Karte, die den Verbotscursor zuverlässig anzeigt. Die redundante Canvas-Factory-Sperre für angemeldete Benutzer wurde nach der Whiteboard-Fähigkeitserkennung entfernt, damit gleichzeitige Teilnehmer die Steuerung behalten.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -497,3 +501,5 @@ Die Standardgrößen von Besprechungsbühne und Messages belegen jetzt mit einer
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
 
 - [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
+
+- [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)

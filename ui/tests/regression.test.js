@@ -251,11 +251,15 @@ test("active meetings lock previous meeting interaction and profile hydration", 
     );
     assert.match(
         styles,
-        /jitsi-persisted-meetings-disabled[\s\S]*pointer-events: none/,
+        /jitsi-persisted-meetings-disabled \{[\s\S]*opacity: 0\.55/,
     );
     assert.match(
         styles,
-        /jitsi-persisted-meetings-disabled[\s\S]*opacity: 0\.5[\s\S]*filter: grayscale\(0\.75\)/,
+        /jitsi-persisted-meetings-disabled::after[\s\S]*inset: 0[\s\S]*cursor: not-allowed/,
+    );
+    assert.doesNotMatch(
+        styles,
+        /jitsi-persisted-meetings-disabled[\s\S]*grayscale/,
     );
 });
 

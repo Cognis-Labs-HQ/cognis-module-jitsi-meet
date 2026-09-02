@@ -378,6 +378,10 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 
 会議ステージと Messages の既定値は、同じ 5 行の高さで 8 対 4 に分割し、コンポーザーの 12 列すべてを使用するようになりました。レイアウト設定キーを更新したため、クライアントは狭いステージ、狭いチャット、空き列を含む不正な保存済みペイロードを復元せず破棄します。
 
+## upstream のブロック表示に合わせホワイトボード接続条件を削除
+
+無効な「以前の会議」は、グレースケールなしで upstream の「進行中の会議」と同じ不透明度表示を使い、カード全体の透明シールドで禁止カーソルを確実に表示します。ホワイトボード機能検出後の冗長なサインインユーザー向けキャンバスファクトリー条件を削除し、複数の参加者が同時にコントロールを保持できるようにしました。
+
 ## コミット
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -497,3 +501,5 @@ Whiteboard の承認リクエスト送信時に情報トーストを表示し、
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
 
 - [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
+
+- [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)

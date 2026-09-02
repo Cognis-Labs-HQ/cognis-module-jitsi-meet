@@ -378,6 +378,10 @@ Previous Meeting cards are now visibly greyed out with a prohibited cursor while
 
 The meeting stage and Messages defaults now span all twelve composer columns with an eight-to-four split at the same five-row height. The layout preference key was advanced so clients discard the malformed saved payload instead of restoring the narrow stage, narrow chat, and empty columns.
 
+## Match upstream blocking and remove the Whiteboard connection gate
+
+Disabled Previous Meetings now uses the upstream Active Meetings opacity treatment without grayscale, plus a full-card transparent shield that reliably displays the prohibited cursor. The redundant signed-in canvas-factory gate was removed after Whiteboard capability discovery so concurrent participants can retain the control.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -497,3 +501,5 @@ The meeting stage and Messages defaults now span all twelve composer columns wit
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
 
 - [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
+
+- [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)

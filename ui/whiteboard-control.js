@@ -403,8 +403,6 @@ export async function bindWhiteboardButton({
         whiteboardGateway,
     } = capabilities;
     if (
-        (!state.shareAccessToken &&
-            typeof whiteboardGateway?.createDisposableCanvas !== "function") ||
         typeof spawnComponentPage !== "function" ||
         typeof makeFloatingWindow !== "function"
     )

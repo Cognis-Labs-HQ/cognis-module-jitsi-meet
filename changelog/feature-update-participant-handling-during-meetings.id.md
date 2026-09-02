@@ -378,6 +378,10 @@ Kartu Rapat Sebelumnya yang dinonaktifkan kini tampak abu-abu dengan kursor terl
 
 Default panggung rapat dan Messages kini mencakup seluruh dua belas kolom composer dengan pembagian delapan banding empat pada tinggi lima baris yang sama. Kunci preferensi tata letak dinaikkan agar klien membuang payload tersimpan yang rusak alih-alih memulihkan panggung sempit, chat sempit, dan kolom kosong.
 
+## Samakan pemblokiran upstream dan hapus gerbang koneksi Whiteboard
+
+Rapat Sebelumnya yang dinonaktifkan kini memakai perlakuan opasitas Rapat Aktif upstream tanpa skala abu-abu, ditambah pelindung transparan seluruh kartu yang menampilkan kursor terlarang secara andal. Gerbang canvas factory pengguna masuk yang berlebihan dihapus setelah penemuan kemampuan Whiteboard agar peserta bersamaan tetap memiliki kontrol.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -497,3 +501,5 @@ Default panggung rapat dan Messages kini mencakup seluruh dua belas kolom compos
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
 
 - [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
+
+- [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)
