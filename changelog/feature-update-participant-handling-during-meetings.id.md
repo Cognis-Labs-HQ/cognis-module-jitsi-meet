@@ -314,7 +314,13 @@ Klien penyelenggara kini menyinkronkan ulang akses kanvas persisten setelah pena
 
 Pengiriman persetujuan Whiteboard kini menampilkan toast informasi, dan Cari Peserta disembunyikan saat kumpulan peserta tersedia kosong. Pemilik yang keluar dihapus dari keanggotaan chat agar peserta terakhir dapat menghapus ruang chat dengan otorisasi satu-satunya peserta yang valid.
 
+## Perkuat indikator rapat aktif
+
+Kartu aktif di Rapat Sebelumnya kini memakai segmen batas hijau yang lebih tebal dan panjang, cahaya yang lebih kuat, serta putaran lebih cepat agar rapat yang sedang berlangsung terlihat jelas.
+
 ## Commit
+
+- [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 
 - [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 

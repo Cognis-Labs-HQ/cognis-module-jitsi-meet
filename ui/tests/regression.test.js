@@ -272,6 +272,10 @@ test("persisted meetings fill the scrollable participant workspace", () => {
         /jitsi-persisted-meeting-avatars[\s\S]*flex-wrap: wrap/,
     );
     assert.match(cssSource, /module-jitsi-meet-active-card-border/);
+    assert.match(
+        cssSource,
+        /jitsi-persisted-meeting-card-active::before[\s\S]*padding: 3px[\s\S]*drop-shadow\(0 0 0\.35rem[\s\S]*1\.8s linear infinite/,
+    );
     assert.match(cssSource, /mask-composite: exclude/);
     assert.doesNotMatch(cssSource, /active-card-orbit/);
 });

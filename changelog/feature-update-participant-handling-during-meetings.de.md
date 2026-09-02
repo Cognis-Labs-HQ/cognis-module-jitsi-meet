@@ -314,7 +314,13 @@ Organisator-Clients synchronisieren den Zugriff auf dauerhafte Arbeitsflächen n
 
 Gesendete Whiteboard-Genehmigungen zeigen jetzt einen Informationstoast, und Teilnehmer suchen wird bei leerem verfügbaren Pool ausgeblendet. Ausscheidende Eigentümer werden aus der Chatmitgliedschaft entfernt, damit der letzte verbleibende Teilnehmer den Chatraum mit gültiger Autorisierung als alleiniger Teilnehmer löschen kann.
 
+## Anzeige aktiver Besprechungen verstärken
+
+Aktive Karten unter Vorherige Besprechungen verwenden jetzt ein dickeres und längeres grünes Randsegment, ein stärkeres Leuchten und einen schnelleren Umlauf, damit laufende Besprechungen deutlicher hervorstechen.
+
 ## Commits
+
+- [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 
 - [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 

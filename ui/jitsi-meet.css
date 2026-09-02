@@ -624,21 +624,24 @@
     position: absolute;
     z-index: 2;
     inset: 0;
-    padding: 2px;
+    padding: 3px;
     content: "";
     pointer-events: none;
     border-radius: inherit;
     background: conic-gradient(
         from var(--module-jitsi-meet-card-border-angle),
-        transparent 0deg 265deg,
-        var(--color-success, #22c55e) 300deg 340deg,
+        transparent 0deg 215deg,
+        color-mix(in srgb, var(--color-success, #22c55e) 35%, transparent)
+            235deg,
+        var(--color-success, #22c55e) 275deg 345deg,
         transparent 360deg
     );
+    filter: drop-shadow(0 0 0.35rem var(--color-success, #22c55e));
     mask:
         linear-gradient(#000 0 0) content-box,
         linear-gradient(#000 0 0);
     mask-composite: exclude;
-    animation: module-jitsi-meet-active-card-border 2.8s linear infinite;
+    animation: module-jitsi-meet-active-card-border 1.8s linear infinite;
 }
 
 .jitsi-route-root .jitsi-persisted-meeting-title {

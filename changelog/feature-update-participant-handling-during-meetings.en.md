@@ -314,7 +314,13 @@ Organizer clients now re-synchronize persistent canvas access after active parti
 
 Whiteboard approval submissions now show an informational toast, and Find Participants is hidden when the available pool is empty. Departing owners are removed from chat membership so the final remaining participant can delete the chatroom with valid sole-participant authorization.
 
+## Strengthen the active meeting indicator
+
+Active cards in Previous Meetings now use a thicker and longer green border segment, a stronger glow, and a faster circuit so ongoing meetings stand out clearly.
+
 ## Commits
+
+- [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 
 - [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 

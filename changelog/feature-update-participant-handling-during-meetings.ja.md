@@ -314,7 +314,13 @@ Whiteboard の投票を会議ごとの順序で適用し、有効化の直前に
 
 Whiteboard の承認リクエスト送信時に情報トーストを表示し、参加可能なユーザーが空の場合は「参加者を検索」を非表示にします。退出する所有者をチャットのメンバーから削除し、最後に残った参加者が唯一の参加者として正しく認可されてチャットルームを削除できるようにしました。
 
+## アクティブな会議表示を強化
+
+「以前の会議」のアクティブなカードで、より太く長い緑の境界セグメント、強い発光、速い巡回を使用し、進行中の会議を明確に目立たせます。
+
 ## コミット
+
+- [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
 
 - [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
 
