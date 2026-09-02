@@ -577,11 +577,8 @@ test("a proposed canvas cannot bypass pending consensus", async () => {
         response,
     );
 
-    assert.equal(response.body.data.whiteboardOpen, false);
-    assert.equal(response.body.data.pendingConsensus, true);
-    assert.equal(response.body.data.approvalRequested, true);
-    assert.equal(response.body.data.voteCount, 1);
-    assert.equal(response.body.data.votesRequired, 2);
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "whiteboard_open_declined");
 });
 
 test("a mapped participant canvas reopens without another consensus vote", async () => {

@@ -647,6 +647,7 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
         [
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
+            "jitsi_meeting_original_participants",
             "jitsi_meeting_participants",
             "jitsi_meetings",
         ],

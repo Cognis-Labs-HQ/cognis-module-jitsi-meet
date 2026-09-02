@@ -53,12 +53,14 @@ export async function requireMeetingWhiteboardMembershipUpdate({
             userAccountId: input.userAccountId,
             error: error instanceof Error ? error.message : String(error),
         });
-        sendError(
-            response,
-            503,
-            "whiteboard_membership_unavailable",
-            "Whiteboard access could not be updated.",
-        );
+        if (response) {
+            sendError(
+                response,
+                503,
+                "whiteboard_membership_unavailable",
+                "Whiteboard access could not be updated.",
+            );
+        }
         return false;
     }
 }

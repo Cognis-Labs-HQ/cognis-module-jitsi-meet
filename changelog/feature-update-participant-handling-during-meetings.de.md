@@ -382,20 +382,18 @@ Die Standardgrößen von Besprechungsbühne und Messages belegen jetzt mit einer
 
 Deaktivierte frühere Besprechungen verwenden jetzt die upstream eingesetzte Deckkraftdarstellung aktiver Besprechungen ohne Graustufen sowie eine transparente Sperre über die gesamte Karte, die den Verbotscursor zuverlässig anzeigt. Die redundante Canvas-Factory-Sperre für angemeldete Benutzer wurde nach der Whiteboard-Fähigkeitserkennung entfernt, damit gleichzeitige Teilnehmer die Steuerung behalten.
 
+## Zusammenarbeitszugriff bei abgelehnten Aktualisierungen schließen
+
+Ablehnungen der Whiteboard-Genehmigung sind jetzt endgültig und können nicht auf veraltete Abstimmungen zurückfallen. Schlägt die Speicherung der Besprechungsteilnehmer nach der Zugriffsbereitstellung fehl, werden Whiteboard- und Messages-Mitgliedschaften zurückgenommen. Ursprüngliche Teilnehmerzeilen werden mit ihrer Besprechung gelöscht. Lebenszyklusrouten sind in fokussierte Dateien aufgeteilt, die Dokumentation ist in lesbare Absätze gegliedert und Commit-Links enthalten keine Leerzeilen mehr.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
-
 - [747bdc2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/747bdc20c7b38150a160f575a2be92f138d54bd5)
-
 - [0f3516d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0f3516df8656c4e857c69b16c4c82ce03255345b)
-
 - [4125c7b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4125c7b45a18b651ecac7611c55a6b710ef902b0)
-
 - [591d3da](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/591d3dad10e63dddbad5eeb72cabebb5c1b43b03)
-
 - [d1e2ed3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d1e2ed36be684a2cfff639c89f8ec3264f02e7f0)
-
 - [736ed26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736ed2651843b76e095f075a58b0ee7823128942)
 - [b95fb10](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b95fb1027087f679a699ea807295f7b1286bb8b0)
 - [0523439](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/05234396cd0e1bfc99075aecd9575291df1fab54)
@@ -444,9 +442,7 @@ Deaktivierte frühere Besprechungen verwenden jetzt die upstream eingesetzte Dec
 - [93727a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/93727a180bc1bdede576460b6d3bdf54dcae3604)
 - [f7d14b3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f7d14b3ccaef984bf26b51d4e82a96fe80d3077b)
 - [d6f689a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f689a8d46f17897c4d1abf65f93673e99b4b30)
-
 - [8665186](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86651863fcf6af7736904af8c01f7cc89d5a45de)
-
 - [59c24f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/59c24f423c6f965dc02c97444c955c334cf4c7c5)
 - [5675466](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56754666a4937045764a6ab61dff35010e5c64f1)
 - [3d93676](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3d93676af78496cbcd33ad943e7a62ca11553745)
@@ -471,35 +467,20 @@ Deaktivierte frühere Besprechungen verwenden jetzt die upstream eingesetzte Dec
 - [b1387d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1387d6c27e76ae3516e27e50abbda29987da771)
 - [49c8e46](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/49c8e46c4b8e79b084579705441025663173f600)
 - [a5055d9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a5055d9155f25f28b8ac8bf719cd9e4fbe9620d9)
-
 - [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
-
 - [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
-
 - [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)
-
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
-
 - [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)
-
 - [38218e8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/38218e83cfab4e5ff072f1a179033e23d84fac0a)
-
 - [31556f7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31556f782c79053063024c15d1d504eb7d3b004e)
-
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
-
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
-
 - [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)
-
 - [18ea6be](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18ea6be53014a8b09882db59a542aab938790630)
-
 - [effc2e4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/effc2e40f442f6bda0d9cebbd2a8aabd029cb2a4)
-
 - [31a52a8](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/31a52a87134405f4dd55c6de2379d480f2c94266)
-
 - [e67261c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e67261cf8ac58a4b88b44ac23bee3523558acaea)
-
 - [60033c2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60033c2a7d471576f2cf048c8f95a346056fb7e6)
-
 - [1c39643](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1c396435429f29854ce964d733311e96a19ab741)
+- [b970e68](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b970e684d8ca22eced759e190594d89682668c5f)

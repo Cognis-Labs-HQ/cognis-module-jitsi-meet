@@ -226,9 +226,11 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     const chatMemberAdditions = [];
     const chatMemberRemovals = [];
     const whiteboardMembershipAdditions = [];
+    const whiteboardMembershipRemovals = [];
     const approvals = [];
     let approvalApproved = true;
     let whiteboardMembershipFails = false;
+    let participantPersistenceFails = false;
     const meeting = {
         id: "meeting-1",
         meetingName: "Bright-Otters-Meet-Safely",
@@ -241,6 +243,9 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             async ensureSchema() {},
             async addMeetingParticipant(meetingId, username, options) {
                 additions.push({ meetingId, username, options });
+                if (participantPersistenceFails) {
+                    throw new Error("Database unavailable");
+                }
                 return { ...meeting, chatRoomId: options.chatRoomId };
             },
             async listReservedParticipantUsernames() {
@@ -299,6 +304,9 @@ test("active non-disposable meetings invite a newly dropped participant", async 
                     throw new Error("Whiteboard unavailable");
                 }
                 whiteboardMembershipAdditions.push(request);
+            },
+            remove: async (request) => {
+                whiteboardMembershipRemovals.push(request);
             },
         }),
         fetchBoardData: async () => ({
@@ -399,6 +407,27 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             userAccountId: "account-carol",
         },
     ]);
+
+    whiteboardMembershipFails = false;
+    participantPersistenceFails = true;
+    const failedPersistenceResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/participants/add")(
+        { body: { meetingId: meeting.id, username: "frank" } },
+        failedPersistenceResponse,
+    );
+    assert.equal(failedPersistenceResponse.status, 503);
+    assert.equal(
+        failedPersistenceResponse.body.error.code,
+        "meeting_update_unavailable",
+    );
+    assert.deepEqual(whiteboardMembershipRemovals, [
+        {
+            whiteboardId: "board-1",
+            actorAccountId: "account-canvas-owner",
+            userAccountId: "account-carol",
+        },
+    ]);
+    assert.equal(chatMemberRemovals.length, 2);
 });
 
 test("a kicked account participant is removed and made inactive", async () => {

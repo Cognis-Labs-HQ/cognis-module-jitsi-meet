@@ -61,6 +61,7 @@ export class JitsiMeetStore {
                 for (const table of [
                     "jitsi_meeting_presence",
                     "jitsi_meeting_state",
+                    "jitsi_meeting_original_participants",
                     "jitsi_meeting_participants",
                     "jitsi_meetings",
                 ]) {
@@ -178,6 +179,7 @@ export class JitsiMeetStore {
             for (const table of [
                 "jitsi_meeting_presence",
                 "jitsi_meeting_state",
+                "jitsi_meeting_original_participants",
                 "jitsi_meeting_participants",
                 "jitsi_meetings",
             ]) {

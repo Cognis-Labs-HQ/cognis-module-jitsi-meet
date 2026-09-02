@@ -327,6 +327,7 @@ export function registerMeetingWhiteboardRoutes({
                 }
             }
             let consensusApproved = null;
+            let approvalRequested = false;
             if (
                 active &&
                 !resolved.shareGuest &&
@@ -341,6 +342,7 @@ export function registerMeetingWhiteboardRoutes({
                 );
                 activeUsernames.add(resolved.requesterUsername);
                 if (activeUsernames.size > 1) {
+                    approvalRequested = true;
                     const approval = await requestWhiteboardOpenApproval?.({
                         meetingId: resolved.meeting.id,
                         meetingName: resolved.meeting.meetingName,
@@ -349,6 +351,15 @@ export function registerMeetingWhiteboardRoutes({
                     });
                     consensusApproved = approval?.approved === true;
                 }
+            }
+            if (approvalRequested && !consensusApproved) {
+                sendError(
+                    res,
+                    409,
+                    "whiteboard_open_declined",
+                    "Current meeting participants declined the Whiteboard request.",
+                );
+                return;
             }
             const result = await serializeMeetingStateUpdate(
                 resolved.meeting.id,
@@ -460,9 +471,7 @@ export function registerMeetingWhiteboardRoutes({
                             : currentState.whiteboardDisposable,
                     whiteboardOpen: active && whiteboardOpen,
                     pendingConsensus: active && !whiteboardOpen,
-                    ...(active && !whiteboardOpen
-                        ? { approvalRequested: consensusApproved !== null }
-                        : {}),
+                    ...(active && !whiteboardOpen ? { approvalRequested } : {}),
                     voteCount: whiteboardOpenVotes.length,
                     votesRequired,
                 },
