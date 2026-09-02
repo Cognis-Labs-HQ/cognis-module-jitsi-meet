@@ -104,7 +104,7 @@ When the direct Share approval capability is absent, active participant addition
 
 ## Require final Share approval for active-meeting invitations
 
-Active-meeting participant additions now require the declared `share:requestApproval` capability directly. Only an explicit final approval accepts the participant; declined, pending, or malformed decisions return the participant to the available list. Runtime failures remain fail-open and are logged, without any legacy mint-and-revoke compatibility path.
+Active-meeting participant additions now require the declared `share:requestApproval` capability directly. Only an explicit final approval accepts the participant; declined, pending, or malformed decisions return the participant to the available list. Runtime failures are rejected and logged, without any legacy mint-and-revoke compatibility path.
 
 ## Restore meeting teardown and avoid redundant Whiteboard expansion
 

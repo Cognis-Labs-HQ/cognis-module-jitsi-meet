@@ -59,7 +59,8 @@ test("active participant additions require a final Share approval decision", () 
     );
     assert.doesNotMatch(source, /Participant addition consensus/);
     assert.doesNotMatch(source, /share_approval_mint_failed/);
-    assert.match(source, /participant addition is fail-open/);
+    assert.match(source, /participant addition is rejected/);
+    assert.match(source, /return \{ approved: false, failOpen: false \}/);
     assert.match(source, /participant_addition_declined/);
     assert.match(
         source,

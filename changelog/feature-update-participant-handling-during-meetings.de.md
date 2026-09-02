@@ -104,7 +104,7 @@ Wenn die direkte Share-Genehmigungs-Capability fehlt, führen aktive Teilnehmere
 
 ## Endgültige Share-Genehmigung für Einladungen zu aktiven Besprechungen verlangen
 
-Das Hinzufügen von Teilnehmern zu aktiven Besprechungen erfordert nun direkt die deklarierte Capability `share:requestApproval`. Nur eine ausdrückliche endgültige Zustimmung nimmt den Teilnehmer auf; abgelehnte, ausstehende oder ungültige Entscheidungen setzen ihn zurück in die Liste der verfügbaren Teilnehmer. Laufzeitfehler bleiben fehlertolerant und werden protokolliert, ohne veralteten Kompatibilitätsweg zum Erstellen und Widerrufen.
+Das Hinzufügen von Teilnehmern zu aktiven Besprechungen erfordert nun direkt die deklarierte Capability `share:requestApproval`. Nur eine ausdrückliche endgültige Zustimmung nimmt den Teilnehmer auf; abgelehnte, ausstehende oder ungültige Entscheidungen setzen ihn zurück in die Liste der verfügbaren Teilnehmer. Laufzeitfehler führen zur Ablehnung und werden protokolliert, ohne veralteten Kompatibilitätsweg zum Erstellen und Widerrufen.
 
 ## Besprechungsabbau wiederherstellen und unnötige Whiteboard-Erweiterungen vermeiden
 

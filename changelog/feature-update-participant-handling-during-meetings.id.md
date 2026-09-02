@@ -110,6 +110,58 @@ Penambahan peserta ke rapat aktif kini langsung mewajibkan kapabilitas `share:re
 
 Keluar atau berakhirnya konferensi kini menjalankan satu pembongkaran langsung, memulihkan overlay rapat, mengosongkan pilihan peserta, dan menunggu pemuatan ulang rapat aktif serta peserta tersedia. Sinkronisasi akses Whiteboard kini menganggap keanggotaan awal telah diizinkan dan hanya memanggil penyedia perluasan setelah peserta berubah, sehingga permintaan khusus pemilik tidak berulang saat polling.
 
+## Amankan status rapat dan pencarian peserta
+
+Pencarian peserta kini memverifikasi akses rapat sebelum mengecualikan rapat dari pemfilteran kehadiran aktif. Status berbagi layar menggunakan endpoint Meetings yang independen dan direset di antara instans rapat agar kunci lama tidak terbawa.
+
+## Prioritaskan berbagi layar setiap peserta
+
+Setiap peserta akun atau tamu Share yang berwenang dapat melaporkan peristiwa berbagi layar yang diamati Jitsi. Berbagi layar peserta mana pun akan menutup dan mengunci Whiteboard tersinkronisasi untuk seluruh rapat sampai Jitsi melaporkan bahwa berbagi telah berhenti.
+
+## Jelaskan permintaan persetujuan peserta aktif
+
+Persetujuan undangan rapat aktif kini memberi tahu Share peserta yang ditambahkan dan nama rapat tujuan, sehingga pemberi persetujuan melihat tindakan dan tujuan yang konkret, bukan teks tautan berbagi umum.
+
+## Selesaikan pembongkaran Whiteboard sebelum menampilkan overlay keluar
+
+Saat meninggalkan atau mengakhiri rapat, kanvas Whiteboard kini ditutup, jendela gambar-dalam-gambarnya dilepas, dan overlay dikembalikan ke panggung Jitsi sebelum konferensi dibuang. Pesan Rapat Ditutup dan Rapat Ditinggalkan pun muncul di panggung normal.
+
+## Pertahankan kestabilan undangan yang dipentaskan selama penyegaran
+
+Peserta yang secara optimistis dipindahkan ke rapat aktif kini tetap dipentaskan ketika permintaan undangan dan penyegaran keanggotaan berkala bertumpang tindih. Penanda tertunda dibersihkan setelah server mengonfirmasi keanggotaan atau undangan gagal, sehingga avatar tidak berpindah-pindah antara panggung dan daftar tersedia.
+
+## Inisialisasi undangan tertunda setelah navigasi SPA
+
+Pengendali peserta Meetings kini menginisialisasi kumpulan undangan tertunda setiap kali rute dipasang. Navigasi SPA dapat memasang Meetings dengan aman meskipun host mempertahankan status dari instans modul sebelumnya, tanpa menggagalkan penyegaran peserta.
+
+## Pulihkan overlay rapat tertutup setelah PiP dibuang
+
+Pembongkaran Whiteboard kini membuang kanvas komponen sebelum memindahkan overlay rapat kembali ke panggung Jitsi normal. Pembersihan halaman komponen tidak lagi dapat menghapus overlay yang dipulihkan, sehingga penghentian oleh moderator saat PiP terbuka menampilkan pesan Rapat Ditutup, bukan panggung kosong.
+
+## Pulihkan overlay keluar ke panggung aktif
+
+Pembuangan komponen Whiteboard dapat mengganti pembungkus panggungnya dan membuat referensi DOM yang ditangkap sebelumnya menjadi usang. Pembersihan keluar kini mencari frame rapat dan pembungkus panggung saat ini dari rute terpasang sebelum memulihkan overlay, sehingga Rapat Ditutup tetap terlihat pada permukaan composer aktif setelah moderator mengakhiri rapat.
+
+## Pulihkan urutan keluar PiP yang terbukti
+
+Pembongkaran saat keluar dari rapat kini mengikuti urutan yang telah terbukti: overlay kembali ke panggung sebelum jendela Jitsi mengambang dilepas, sementara pembuangan komponen Whiteboard tetap berlangsung asinkron dengan pencatatan kegagalan terstruktur. Penutupan sematan Jitsi dan perenderan Rapat Ditutup tidak lagi menunggu pembuangan halaman komponen yang dapat mengambil alih DOM panggung.
+
+## Isolasi komponen Whiteboard dari panggung rapat
+
+Komponen Whiteboard kini dipasang pada host khusus alih-alih mengambil alih pembungkus yang juga memuat Jitsi dan overlay rapat. Pembuangan komponen tidak lagi dapat menghapus UI Rapat Ditutup. Pembongkaran PiP hanya menyembunyikan dan membuang host Whiteboard, lalu memulihkan Jitsi dan overlay-nya secara terpisah.
+
+## Pertahankan overlay rapat dalam tata letak panggung
+
+Overlay sebelum dan setelah rapat kini menjadi elemen grid berukuran penuh, bukan anak berposisi absolut yang induknya dapat menyusut ketika Jitsi dan Whiteboard disembunyikan. Shell Whiteboard pelindung menambah batas kepemilikan di sekitar host komponen dan mencegah pembersihan komponen menghapus UI rapat di sebelahnya.
+
+## Kecualikan panggung rapat dari penyegaran peserta
+
+Penyegaran berkala peserta tersedia kini hanya memperbarui permukaan peserta dan rapat aktif. Penyegaran tidak lagi merender ulang avatar yang dipentaskan atau mengganti pesan panggung, sehingga Rapat Ditutup dan Rapat Ditinggalkan tetap terlihat. Pembuangan Whiteboard juga memicu pemulihan akhir dari elemen overlay yang dipertahankan bila pembersihan host melepaskannya.
+
+## Pertahankan kompatibilitas pemulihan overlay dengan cache modul SPA
+
+Pemulihan overlay setelah Whiteboard kini menggunakan kembali utilitas `updateOverlay` yang sudah ada secara langsung, bukan menambahkan metode utilitas lintas modul. Instans modul campuran selama navigasi SPA tidak lagi menolak promise pembersihan dengan `restoreMeetingOverlay is not a function`, sementara pemasangan saat ini tetap menerapkan kembali tampilan Rapat Ditutup atau Rapat Ditinggalkan.
+
 ## Cegah overlay keluar bereaksi terhadap klik berikutnya
 
 Proses penutupan rapat kini menghapus rapat aktif sebelum menyinkronkan kontrol Whiteboard. Dengan demikian, pembuka Whiteboard otomatis yang tertunda tidak dapat diaktifkan kembali selama proses keluar dan memakai klik berikutnya untuk menyembunyikan overlay Rapat Ditutup atau Rapat Ditinggalkan.

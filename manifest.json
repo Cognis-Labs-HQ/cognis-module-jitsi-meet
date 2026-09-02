@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.150",
+    "version": "1.5.151",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": ["meeting:video", "meeting:chat", "meeting:moderation"],
@@ -145,7 +145,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "232047ecc68479d4abee8509f67c139b8d4fd69e45a8d259d72487da18fff1ba"
+            "sha256": "ecbcd2d9f6a26bc9055a56b315f6d1fceee6cbef7ea6cf6bbbd7cad968b74f6b"
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
@@ -165,7 +165,7 @@
         },
         {
             "path": "api/participant-routes.js",
-            "sha256": "76a3f01c1d4c62ed5e3f662bbff314f01bf66b73d502a989ee6be79183f357b3"
+            "sha256": "487615801b8642d781a8a13ebd03e0df26965b525b80704ff76bb1ec365107ad"
         },
         {
             "path": "api/persisted-meeting-routes.js",
@@ -261,7 +261,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "b71e4ab0411710358c913234e193c79d1d2ed8e777e919e5605a01ee94151b23"
+            "sha256": "f8ba1f745e19fa50186c033d1aa7f2ab7d551ddcc611db7693c32eae0ff84983"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -281,7 +281,7 @@
         },
         {
             "path": "api/tests/participant-routes.test.js",
-            "sha256": "b38d10e8e6af22a7593b0e15cec363de9416472fcb56be0111ae2f374175fdc4"
+            "sha256": "ae3de53a564938e8ee3c406dc67fad9625f0cb6c15d937e3169dd6509bf55080"
         },
         {
             "path": "api/tests/persisted-meeting-routes.test.js",
@@ -369,11 +369,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "ba473615d93b5eb9ecde5deed98a46b5d031650f2fe89bd9d1474394a56a4213"
+            "sha256": "39e67888afa6fb99434ff93cbdf1c7b70d1e31f6519236a5830f879d744392b2"
         },
         {
             "path": "package.json",
-            "sha256": "69d3aa097a45de7735aea420878a54f94e9f95b94b0e470bb849bf3918fa07a7"
+            "sha256": "904bb7b33817654ed73d5ff4c0c1d642b7366190a9bcd4723bd0bf9596450330"
         },
         {
             "path": "routes.json",

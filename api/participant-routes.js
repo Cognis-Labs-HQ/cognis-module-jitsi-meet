@@ -4,6 +4,7 @@ export function registerMeetingParticipantRoutes({
     router,
     requireAuth,
     profileStore,
+    profileIdentity,
     store,
     sendJson,
     sendError,
@@ -51,6 +52,7 @@ export function registerMeetingParticipantRoutes({
                 const meeting = await store.getMeetingById(meetingId);
                 const requesterUsername = await resolveRequesterUsername(
                     profileStore,
+                    profileIdentity,
                     claims.sub,
                 ).catch(() => "");
                 if (

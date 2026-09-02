@@ -788,7 +788,7 @@ export function registerApiRoutes(router, ctx) {
             } catch (error) {
                 log?.(
                     "error",
-                    "Share approval failed; participant addition is fail-open.",
+                    "Share approval failed; participant addition is rejected.",
                     {
                         component: "jitsi-meet-module",
                         operation:
@@ -800,7 +800,7 @@ export function registerApiRoutes(router, ctx) {
                                 : String(error),
                     },
                 );
-                return { approved: true, failOpen: true };
+                return { approved: false, failOpen: false };
             }
         },
         revokeKickedGuestShare: async ({ claims, meetingId }) => {
