@@ -348,11 +348,15 @@ Jeder berechtigte Teilnehmer, der eine Besprechung startet oder wiederverwendet,
 
 ## Chat-Aktualisierung nach dem Senden wiederhergestellt
 
-Der ausgelagerte Interaktions-Binder erhält jetzt ausdrücklich den eingebundenen Rückruf zur Aktualisierung des nativen Chats. Dadurch lösen gesendete Besprechungs- und Privatnachrichten vor dem Neuzeichnen des Chats keinen unbehandelten Gültigkeitsbereichsfehler mehr aus.
+Der ausgelagerte Interaktions-Binder erhält jetzt ausdrücklich den eingebundenen Rückruf zur Aktualisierung des Cognis-Messages-Chats. Dadurch lösen gesendete Besprechungs- und Privatnachrichten vor dem Neuzeichnen des Chats keinen unbehandelten Gültigkeitsbereichsfehler mehr aus.
 
 ## Einweg-Besprechungen aus dem Verlauf ausblenden
 
 „Frühere Besprechungen“ schließt Einweg-Besprechungen mit nur einem Konto jetzt aus und zeigt weiterhin ausschließlich dauerhafte Besprechungen mit einem ursprünglichen oder aktuellen Teilnehmerkreis aus mehreren Konten.
+
+## Cognis-Messages-Chatsteuerung nach dem Senden verwenden
+
+Der Interaktions-Binder ruft nach erfolgreichem Senden jetzt die bestehende Aktualisierungsoperation des Cognis-Messages-Chats auf, statt einen separaten Rückruf zu übernehmen. Interne Chatfunktionen verwenden die Cognis-Terminologie und erwecken nicht länger den Eindruck, Jitsi besitze die Chatimplementierung.
 
 ## Commits
 
@@ -461,3 +465,5 @@ Der ausgelagerte Interaktions-Binder erhält jetzt ausdrücklich den eingebunden
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
 
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
+
+- [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)

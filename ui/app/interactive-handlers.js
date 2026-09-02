@@ -24,10 +24,10 @@ export function createInteractiveHandlersBinder({
     messageReactions,
     toggleReaction,
     openEmojiPickerPopup,
-    updateNativeChat,
+    updateCognisChat,
     encryptChatMessage,
     getChatRoomKey,
-    stopNativeChatPolling,
+    stopCognisChatPolling,
     activateMeetingChat,
     bindShareButton,
     callbacks,
@@ -40,7 +40,6 @@ export function createInteractiveHandlersBinder({
     ensureMeetingTracking,
     loadActiveMeetings,
     resetMeetingState,
-    refreshNativeChat,
 }) {
     let bindController = null;
     return function bindInteractiveHandlers() {
@@ -664,12 +663,12 @@ export function createInteractiveHandlersBinder({
                         return;
                     }
                     chatInput.value = "";
-                    await refreshNativeChat();
+                    await updateCognisChat();
                 },
                 { signal: bindSignal },
             );
         }
         renderParticipants();
-        void updateNativeChat();
+        void updateCognisChat();
     };
 }

@@ -52,7 +52,7 @@ test("meeting chat polling respects cancelled keyring access", () => {
     assert.match(source, /keyring:isAccessSuppressed/);
     assert.match(
         source,
-        /function startNativeChatPolling\(\)[\s\S]*keyring:isAccessSuppressed/,
+        /function startCognisChatPolling\(\)[\s\S]*keyring:isAccessSuppressed/,
     );
 });
 
@@ -628,7 +628,7 @@ test("meeting participant surfaces and chat refresh membership in real time", ()
     );
     assert.match(
         source,
-        /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateNativeChat\(\)/,
+        /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateCognisChat\(\)/,
     );
     assert.match(source, /module\.jitsi_meet\.participants\.invite_success/);
     assert.match(
@@ -655,7 +655,7 @@ test("jitsi meetings reset participant state and disable mini chat until ready",
     assert.match(source, /async function resetMeetingState\(\s*\{/);
     assert.match(source, /resetParticipantSelection\(\);/);
     assert.doesNotMatch(source, /jitsi-chat-hint/);
-    assert.match(source, /function setNativeChatReady\(ready\)/);
+    assert.match(source, /function setCognisChatReady\(ready\)/);
     assert.match(source, /jitsi-chat-disabled/);
     assert.match(source, /chatInput\.disabled = !ready;/);
     assert.match(source, /aria-busy/);

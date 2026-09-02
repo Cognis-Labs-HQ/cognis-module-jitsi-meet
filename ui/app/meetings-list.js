@@ -318,7 +318,7 @@ export function createMeetingHandlers({
         state.pendingParticipantUsernames.clear();
         state.kickReportedMeetingId = "";
         callbacks.deactivateMeetingChat();
-        await callbacks.updateNativeChat();
+        await callbacks.updateCognisChat();
         void whiteboardCleanup?.then(() => {
             if (state.overlayPresentation) {
                 utils.updateOverlay(state.overlayPresentation);
@@ -479,7 +479,7 @@ export function createMeetingHandlers({
         }
         state.chatMode = "meeting";
         state.privateChatUsername = "";
-        await callbacks.updateNativeChat();
+        await callbacks.updateCognisChat();
         const joinState = await callbacks.joinMeeting();
         if (joinState?.trackingAllowed) {
             callbacks.ensureMeetingTracking();
@@ -588,7 +588,7 @@ export function createMeetingHandlers({
                 visible: true,
             });
         }
-        await callbacks.updateNativeChat();
+        await callbacks.updateCognisChat();
         await loadActiveMeetings({ resolveRequested: false });
         void whiteboardCleanup?.then(() => {
             if (state.overlayPresentation) {

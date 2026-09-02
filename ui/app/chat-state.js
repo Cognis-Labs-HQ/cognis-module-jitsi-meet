@@ -1,5 +1,5 @@
-export function deactivateMeetingChatState(state, stopNativeChatPolling) {
-    stopNativeChatPolling();
+export function deactivateMeetingChatState(state, stopCognisChatPolling) {
+    stopCognisChatPolling();
     state.chatRoomId = "";
     state.chatRoomKey = null;
     state.chatMode = "meeting";

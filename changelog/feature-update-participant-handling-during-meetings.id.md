@@ -348,11 +348,15 @@ Setiap peserta berwenang yang memulai atau memakai kembali rapat kini menyelesai
 
 ## Pulihkan penyegaran chat setelah pengiriman
 
-Pengikat interaksi yang diekstrak kini menerima callback penyegaran chat native yang terpasang secara eksplisit, sehingga pesan rapat dan pribadi yang dikirim tidak lagi menimbulkan galat cakupan yang tidak tertangani sebelum chat digambar ulang.
+Pengikat interaksi yang diekstrak kini menerima callback penyegaran chat Cognis Messages yang terpasang secara eksplisit, sehingga pesan rapat dan pribadi yang dikirim tidak lagi menimbulkan galat cakupan yang tidak tertangani sebelum chat digambar ulang.
 
 ## Sembunyikan rapat sekali pakai dari riwayat
 
 Rapat Sebelumnya kini mengecualikan rapat sekali pakai dengan satu akun dan hanya menampilkan rapat persisten yang didukung susunan peserta awal atau saat ini dengan beberapa akun.
+
+## Gunakan pengendali chat Cognis Messages setelah pengiriman
+
+Pengikat interaksi kini memanggil operasi pembaruan chat Cognis Messages yang sudah ada setelah pengiriman berhasil, alih-alih menerima callback penyegaran terpisah. Fungsi chat internal memakai istilah Cognis dan tidak lagi menyiratkan bahwa Jitsi memiliki implementasi chat.
 
 ## Commit
 
@@ -461,3 +465,5 @@ Rapat Sebelumnya kini mengecualikan rapat sekali pakai dengan satu akun dan hany
 - [a29b1d2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a29b1d22dd72cf413bf0e2b465b827dc1e5b89de)
 
 - [874a2e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/874a2e9102e1a5015ab3f2950516af56c005edf2)
+
+- [eb3679f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/eb3679fb93c59c9ad02df27e2498656b20d3417a)

@@ -93,7 +93,7 @@ export async function mount(
     const i18n = await createI18n({
         componentStringBaseUrls: messageUiResources.languageBaseUrls,
     });
-    let refreshNativeChat = async () => undefined;
+    let refreshCognisChat = async () => undefined;
     let messageReactions = NULL_MESSAGE_REACTIONS_CONTROLLER;
     if (JITSI_MEET_CHAT_REACTIONS_ENABLED) {
         messageReactions =
@@ -101,7 +101,7 @@ export async function mount(
                 messageUiResources,
                 i18n,
                 async () => {
-                    await refreshNativeChat();
+                    await refreshCognisChat();
                 },
             )) ?? NULL_MESSAGE_REACTIONS_CONTROLLER;
     }
@@ -211,7 +211,7 @@ export async function mount(
         messageReactions,
         loadChatRoomKey: chatLoadingModule?.loadChatRoomKey,
     });
-    refreshNativeChat = chatHandlers.refreshNativeChat;
+    refreshCognisChat = chatHandlers.refreshCognisChat;
     const meetingHandlers = createMeetingHandlers({
         root,
         state,
@@ -251,9 +251,9 @@ export async function mount(
         encryptChatMessage,
         getChatRoomKey,
         openEmojiPickerPopup,
-        stopNativeChatPolling,
+        stopCognisChatPolling,
         toggleReaction,
-        updateNativeChat,
+        updateCognisChat,
     } = chatHandlers;
     const {
         closeMeetingEmbed,
@@ -307,10 +307,10 @@ export async function mount(
         messageReactions,
         toggleReaction,
         openEmojiPickerPopup,
-        updateNativeChat,
+        updateCognisChat,
         encryptChatMessage,
         getChatRoomKey,
-        stopNativeChatPolling,
+        stopCognisChatPolling,
         activateMeetingChat,
         bindShareButton,
         callbacks,
@@ -323,7 +323,6 @@ export async function mount(
         ensureMeetingTracking,
         loadActiveMeetings,
         resetMeetingState,
-        refreshNativeChat,
     });
     const elements = createMeetingPageElements(i18n, limitedShareView);
     const [allParticipants, currentProfile] = await Promise.all([

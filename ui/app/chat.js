@@ -126,14 +126,14 @@ export function createChatHandlers({
         await messageReactions.openEmojiPickerPopup(roomId, messageId);
     }
 
-    function clearNativeChatThread() {
+    function clearCognisChatThread() {
         const chatThread = root.querySelector("#jitsi-chat-thread");
         if (chatThread instanceof HTMLElement) {
             chatThread.replaceChildren();
         }
     }
 
-    function setNativeChatReady(ready) {
+    function setCognisChatReady(ready) {
         const chatPane = root.querySelector(".jitsi-chat-pane");
         const chatThread = root.querySelector("#jitsi-chat-thread");
         const chatForm = root.querySelector("#jitsi-chat-form");
@@ -153,24 +153,24 @@ export function createChatHandlers({
         }
     }
 
-    function stopNativeChatPolling() {
+    function stopCognisChatPolling() {
         if (state.chatRefreshTimer === null) return;
         clearInterval(state.chatRefreshTimer);
         state.chatRefreshTimer = null;
     }
 
     function deactivateMeetingChat() {
-        deactivateMeetingChatState(state, stopNativeChatPolling);
+        deactivateMeetingChatState(state, stopCognisChatPolling);
         renderChatParticipantStrip();
-        setNativeChatReady(false);
-        clearNativeChatThread();
+        setCognisChatReady(false);
+        clearCognisChatThread();
     }
 
     function applyActiveChatRoom(roomId) {
         if (state.chatRoomId === roomId) return;
         state.chatRoomId = roomId;
         state.chatRoomKey = null;
-        stopNativeChatPolling();
+        stopCognisChatPolling();
     }
 
     function resolveParticipantChatEntries() {
@@ -251,19 +251,19 @@ export function createChatHandlers({
         }
     }
 
-    async function refreshNativeChat() {
+    async function refreshCognisChat() {
         if (uiCtx.capabilities.get("keyring:isAccessSuppressed")?.() === true)
             return;
         const roomId = state.chatRoomId;
         if (!roomId) {
-            setNativeChatReady(false);
-            clearNativeChatThread();
+            setCognisChatReady(false);
+            clearCognisChatThread();
             return;
         }
         const roomKey = await getChatRoomKey(roomId);
         if (!roomKey) {
-            setNativeChatReady(false);
-            clearNativeChatThread();
+            setCognisChatReady(false);
+            clearCognisChatThread();
             return;
         }
         const response = await messagesClient().listRoomMessages(roomId, {
@@ -271,8 +271,8 @@ export function createChatHandlers({
             suppressAccessDeniedEvent: true,
         });
         if (!response.ok) {
-            setNativeChatReady(false);
-            clearNativeChatThread();
+            setCognisChatReady(false);
+            clearCognisChatThread();
             return;
         }
         const payload = await response.json().catch(() => ({ data: [] }));
@@ -293,24 +293,24 @@ export function createChatHandlers({
             })),
         );
         renderChatMessages(decoded);
-        setNativeChatReady(true);
+        setCognisChatReady(true);
     }
 
-    function startNativeChatPolling() {
+    function startCognisChatPolling() {
         if (uiCtx.capabilities.get("keyring:isAccessSuppressed")?.() === true)
             return;
         if (!state.chatRoomId || state.chatRefreshTimer !== null) return;
         state.chatRefreshTimer = setInterval(() => {
-            void refreshNativeChat();
+            void refreshCognisChat();
         }, CHAT_REFRESH_INTERVAL_MS);
     }
 
     function handleKeyringAccessState(event) {
         if (event.detail?.suppressed === true) {
-            stopNativeChatPolling();
+            stopCognisChatPolling();
             return;
         }
-        startNativeChatPolling();
+        startCognisChatPolling();
     }
 
     window.addEventListener(
@@ -323,7 +323,7 @@ export function createChatHandlers({
             "cognis:keyring-access-state",
             handleKeyringAccessState,
         );
-        stopNativeChatPolling();
+        stopCognisChatPolling();
     }
 
     async function activateMeetingChat() {
@@ -331,8 +331,8 @@ export function createChatHandlers({
         state.privateChatUsername = "";
         applyActiveChatRoom(state.lastMeetingChatRoomId);
         renderChatParticipantStrip();
-        await refreshNativeChat();
-        startNativeChatPolling();
+        await refreshCognisChat();
+        startCognisChatPolling();
     }
 
     async function activatePrivateChatForParticipant(username) {
@@ -409,11 +409,11 @@ export function createChatHandlers({
         state.privateChatUsername = normalizedUsername;
         applyActiveChatRoom(roomId);
         renderChatParticipantStrip();
-        await refreshNativeChat();
-        startNativeChatPolling();
+        await refreshCognisChat();
+        startCognisChatPolling();
     }
 
-    async function updateNativeChat() {
+    async function updateCognisChat() {
         const meetingChatRoomId = resolveMeetingChatRoomId(state.meeting);
         if (meetingChatRoomId) {
             state.lastMeetingChatRoomId = meetingChatRoomId;
@@ -427,8 +427,8 @@ export function createChatHandlers({
             applyActiveChatRoom(state.lastMeetingChatRoomId);
         }
         renderChatParticipantStrip();
-        await refreshNativeChat();
-        startNativeChatPolling();
+        await refreshCognisChat();
+        startCognisChatPolling();
     }
 
     return {
@@ -439,10 +439,10 @@ export function createChatHandlers({
         encryptChatMessage,
         getChatRoomKey,
         openEmojiPickerPopup,
-        refreshNativeChat,
-        startNativeChatPolling,
-        stopNativeChatPolling,
+        refreshCognisChat,
+        startCognisChatPolling,
+        stopCognisChatPolling,
         toggleReaction,
-        updateNativeChat,
+        updateCognisChat,
     };
 }

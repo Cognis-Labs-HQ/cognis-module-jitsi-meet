@@ -359,7 +359,7 @@ export function createPreflightHandlers({
                     .catch(() => ({ data: null }));
                 if (payload?.data) {
                     state.meeting = payload.data;
-                    await callbacks.updateNativeChat();
+                    await callbacks.updateCognisChat();
                     await callbacks.syncMeetingWhiteboardComponent?.();
                 }
                 showToast(
@@ -488,7 +488,7 @@ export function createPreflightHandlers({
                 state.meeting.chatRoomId = payload.data.chatRoomId;
             }
             renderParticipants();
-            await callbacks.updateNativeChat();
+            await callbacks.updateCognisChat();
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {

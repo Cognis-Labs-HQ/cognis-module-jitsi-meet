@@ -420,7 +420,7 @@ export function createEmbedHandlers({
         const joinPayload = await joinResponse.json();
         state.meeting = joinPayload?.data ?? state.meeting;
         utils.deferAloneParticipantPrompt();
-        await callbacks.updateNativeChat();
+        await callbacks.updateCognisChat();
 
         if (state.meeting.requiresReclaim) {
             utils.updateOverlay({
@@ -520,7 +520,7 @@ export function createEmbedHandlers({
                 Boolean(state.meeting?.id) && selected.length === 0;
             state.chatMode = "meeting";
             state.privateChatUsername = "";
-            await callbacks.updateNativeChat();
+            await callbacks.updateCognisChat();
 
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.joining"),
