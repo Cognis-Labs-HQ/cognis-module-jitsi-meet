@@ -334,6 +334,10 @@ Der ausgelagerte interaktive Handler importiert seine Auflöser für Meeting-URL
 
 Der ausgelagerte interaktive Handler importiert jetzt die Normalisierung der Meeting-ID und den Messages-Gateway-Client direkt. Dadurch funktioniert die Auswahl aktiver Meetings nach der SPA-Navigation wieder und derselbe Gültigkeitsbereichsfehler beim Senden von Chatnachrichten wird verhindert.
 
+## Meeting-Zurücksetzung wieder angebunden
+
+Der ausgelagerte Interaktions-Binder erhält die Operation zum Zurücksetzen des Meetings jetzt ausdrücklich. Dadurch können Teilnehmer, die ein ansonsten leeres Meeting verlassen, den Abbau ohne unbehandelten Gültigkeitsbereichsfehler abschließen.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -431,3 +435,5 @@ Der ausgelagerte interaktive Handler importiert jetzt die Normalisierung der Mee
 - [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)
 
 - [8aa21f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8aa21f2566be6e37eff14ab7c7c4dc699a6db472)
+
+- [db5a961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/db5a961d4b24c74b08b84d0c0c1ad30873795efb)

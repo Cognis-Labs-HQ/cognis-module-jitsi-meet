@@ -76,6 +76,7 @@ test("interactive handlers import their extracted meeting embed dependencies", (
     assert.match(source, /buildMeetingJoinUrl\(/);
     assert.match(source, /normalizeMeetingId\(/);
     assert.match(source, /messagesClient\(\)\.sendRoomMessage\(/);
+    assert.match(source, /loadActiveMeetings,\s*resetMeetingState,\s*\}\) \{/);
 });
 
 test("window focus changes do not dismiss an idle meeting overlay", () => {

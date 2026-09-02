@@ -322,6 +322,7 @@ export async function mount(
         openMeetingEmbed,
         ensureMeetingTracking,
         loadActiveMeetings,
+        resetMeetingState,
     });
     const elements = createMeetingPageElements(i18n, limitedShareView);
     const [allParticipants, currentProfile] = await Promise.all([

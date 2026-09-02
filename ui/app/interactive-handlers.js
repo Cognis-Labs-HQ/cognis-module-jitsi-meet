@@ -39,6 +39,7 @@ export function createInteractiveHandlersBinder({
     openMeetingEmbed,
     ensureMeetingTracking,
     loadActiveMeetings,
+    resetMeetingState,
 }) {
     let bindController = null;
     return function bindInteractiveHandlers() {
