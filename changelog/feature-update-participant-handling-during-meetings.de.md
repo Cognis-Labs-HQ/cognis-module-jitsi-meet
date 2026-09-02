@@ -326,6 +326,10 @@ Zeiger- und Mausfreigabeereignisse schließen jetzt eine unvollständige Teilneh
 
 Die Route für die Chat-Zusammenfassung und die interaktiven Browser-Ereignisbindungen liegen jetzt in fokussierten Modulen. Dadurch bleibt die lesbare Formatierung erhalten und die zentralen Lebenszyklus- und Einbindungsdateien sind deutlich kleiner.
 
+## Abhängigkeiten der SPA-Meeting-Einbettung wiederhergestellt
+
+Der ausgelagerte interaktive Handler importiert seine Auflöser für Meeting-URLs und Designs jetzt direkt. Dadurch schlagen die Design-Synchronisierung und Meeting-Authentifizierungsaktionen nach der SPA-Navigation nicht mehr fehl.
+
 ## Commits
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -419,3 +423,5 @@ Die Route für die Chat-Zusammenfassung und die interaktiven Browser-Ereignisbin
 - [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
 
 - [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
+
+- [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)

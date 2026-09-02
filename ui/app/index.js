@@ -2,7 +2,7 @@ import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
 import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
-import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
+import { resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
 import {
     fetchCurrentProfile,

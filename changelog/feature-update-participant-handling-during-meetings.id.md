@@ -326,6 +326,10 @@ Peristiwa pelepasan penunjuk dan tetikus kini menutup target peletakan peserta r
 
 Rute ringkasan ruang obrolan rapat dan pengikatan peristiwa browser interaktif kini berada dalam modul yang terfokus, sehingga pemformatan tetap mudah dibaca dan berkas siklus hidup serta pemasangan utama jauh lebih kecil.
 
+## Pulihkan dependensi sematan rapat SPA
+
+Pengendali interaktif yang diekstrak kini mengimpor penyelesai URL rapat dan tema secara langsung, sehingga sinkronisasi tema serta tindakan autentikasi rapat tidak lagi gagal setelah navigasi SPA.
+
 ## Commit
 
 - [5d419a6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5d419a6c2ad1a3ca5abd31c553ca427e60aded63)
@@ -419,3 +423,5 @@ Rute ringkasan ruang obrolan rapat dan pengikatan peristiwa browser interaktif k
 - [34559a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34559a7ee8116097d73b16c9b2ed3c284ade690f)
 
 - [a3ea56f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a3ea56f84ab3fa2653aaa7dc36ff0d8136c57e10)
+
+- [885ab5d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/885ab5d0d6c4d90684728d3f286c86f65c3eac47)

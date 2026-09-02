@@ -54,6 +54,20 @@ test("meeting state polling ignores responses after meeting teardown", () => {
     );
 });
 
+test("interactive handlers import their extracted meeting embed dependencies", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
+
+    assert.match(
+        source,
+        /import \{ buildMeetingJoinUrl, resolveThemeMode \} from "\.\.\/meeting-embed\.js";/,
+    );
+    assert.match(source, /resolveThemeMode\(event\?\.detail\?\.theme\)/);
+    assert.match(source, /buildMeetingJoinUrl\(/);
+});
+
 test("window focus changes do not dismiss an idle meeting overlay", () => {
     const appSource = readJitsiUiBundle();
     const participantsSource = readFileSync(

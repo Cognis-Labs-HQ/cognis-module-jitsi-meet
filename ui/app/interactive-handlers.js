@@ -1,3 +1,4 @@
+import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { bindDragCleanup } from "./participants.js";
 
 export function createInteractiveHandlersBinder({
