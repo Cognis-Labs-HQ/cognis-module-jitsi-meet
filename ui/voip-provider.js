@@ -2,36 +2,35 @@ import { uiCtx } from "./reuse/resources.js";
 
 const CAPABILITY = "voip:startCall";
 const COMPONENT_UUID = "f055f2e5-227a-5fb4-b934-5397ec32cf2d";
-const STAGE_ID = "jitsi-messages-call-stage";
+const COMPONENT_ROUTE_ID = "module.jitsi.meet.meetings";
 
-async function startMessagesCall(input = {}) {
-    if (input.source !== "messages" || input.presentation !== "pip") {
-        throw new Error("Unsupported video-call request.");
-    }
+export function resolveMessagesCallAction(input = {}) {
     const roomId = String(input.room?.id ?? "").trim();
+    const roomKind = String(input.room?.kind ?? "").trim();
     const members = Array.isArray(input.users) ? input.users : [];
-    if (!roomId || members.length < 2) {
-        throw new Error("A chatroom with at least two members is required.");
+    const supportsComponent = Array.isArray(input.supportedActions)
+        ? input.supportedActions.includes("component")
+        : false;
+    const currentMembers = members.filter(
+        (member) => member?.isCurrentUser === true,
+    );
+    if (
+        input.source !== "messages" ||
+        !supportsComponent ||
+        !["dm", "group"].includes(roomKind) ||
+        !roomId ||
+        members.length < 2 ||
+        currentMembers.length !== 1
+    ) {
+        return null;
     }
-    document.getElementById(STAGE_ID)?.remove();
-    const stage = document.createElement("section");
-    stage.id = STAGE_ID;
-    stage.className = "jitsi-messages-call-stage";
-    stage.style.minHeight = "28rem";
-    stage.style.width = "100%";
-    const messageView =
-        document.querySelector(".messages-thread") ??
-        document.querySelector(".messages-layout") ??
-        document.querySelector("main");
-    if (!(messageView instanceof HTMLElement)) {
-        throw new Error("Messages call stage is unavailable.");
-    }
-    messageView.append(stage);
-    const spawn = uiCtx.capabilities.get("component-pages:spawn");
-    const handle = await spawn?.({
+
+    return {
+        action: "component",
         componentUuid: COMPONENT_UUID,
-        routeId: "module.jitsi.meet.meetings",
-        elementId: STAGE_ID,
+        routeId: COMPONENT_ROUTE_ID,
+        mode: "overlay",
+        borderless: true,
         context: {
             autoStart: true,
             messagesCall: true,
@@ -40,12 +39,9 @@ async function startMessagesCall(input = {}) {
                 memberAccountIds: members.map((member) => member.accountId),
             },
         },
-        borderless: true,
-    });
-    if (!handle) stage.remove();
-    return Boolean(handle);
+    };
 }
 
 if (typeof uiCtx.capabilities.get(CAPABILITY) !== "function") {
-    uiCtx.capabilities.contribute(CAPABILITY, startMessagesCall);
+    uiCtx.capabilities.contribute(CAPABILITY, resolveMessagesCallAction);
 }

@@ -14,7 +14,11 @@ Messages 通話は共有、参加者の追加、Whiteboard との接続ができ
 
 ナビゲーションバー登録で `voip:startCall` を宣言するようになりました。これにより、Messages がプロバイダーの利用可否を確認する前に Cognis が Jitsi を読み込み、初回のチャット描画からビデオカメラ操作を表示できます。
 
+## ルーム単位のホスト所有通話アクション
+
+Jitsi はステージを自ら作成してマウントする代わりに、各ルーム要求を正規化された `component` アクションへ解決するようになりました。最新のプロバイダー契約に従い、コンポーネントの生成、クリーンアップ、起動結果の通知は Cognis Messages が所有します。
+
 ## コミット
 
-- [39f6fde](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39f6fde4a0a48b73f1ff77259ae47ea15c125049)
-- [4800983](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4800983502abcdd530a34419f6fe8ae6ead042f1)
+- [3bd6d6a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bd6d6a16b4b495f91dbf1f7e55e7aa86d1381fd)
+- [b68432b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b68432b0f3db343ef0db7d706aeaad5000063e96)

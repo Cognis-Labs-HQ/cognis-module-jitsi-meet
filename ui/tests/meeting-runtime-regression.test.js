@@ -693,8 +693,13 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
         "utf8",
     );
     assert.match(providerSource, /voip:startCall/);
-    assert.match(providerSource, /component-pages:spawn/);
+    assert.match(providerSource, /supportedActions/);
+    assert.match(providerSource, /action: "component"/);
+    assert.match(providerSource, /mode: "overlay"/);
+    assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
     assert.match(providerSource, /messagesCallRequest/);
+    assert.doesNotMatch(providerSource, /component-pages:spawn/);
+    assert.doesNotMatch(providerSource, /document\.(?:body|querySelector)/);
     assert.match(lifecycleSource, /meetings\/messages-call/);
     assert.match(lifecycleSource, /disposable: true/);
     assert.match(lifecycleSource, /chatRoomId: null/);

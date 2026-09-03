@@ -2,7 +2,9 @@
 
 The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, reusable meeting rooms, session reclaim, Messages chat integration, and an optional shared Whiteboard.
 
-Messages direct and group chats can start provider-backed video calls. Each call is a disposable component window restricted to the initiating room’s members; it does not create a meeting chat, expose sharing or participant-addition controls, or request a Whiteboard. The Back to messages action preserves the live meeting and changes its window to picture-in-picture.
+Messages resolves Jitsi’s `voip:startCall` provider separately for each direct or group chat. Jitsi returns `null` when the request is unsupported; otherwise it returns a host-owned `component` action for the Meetings route with an overlay mode and a serialized request for a disposable call limited to the initiating room’s members.
+
+Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. After the component mounts, Back to messages preserves the live meeting and changes its window to picture-in-picture. These calls create no meeting chat and cannot be shared, extended with participants, or connected to a Whiteboard.
 
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 
