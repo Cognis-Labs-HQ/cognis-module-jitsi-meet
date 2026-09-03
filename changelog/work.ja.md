@@ -26,7 +26,11 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 使い捨て通話に関連付けられたルームはリダイレクトではなくコンポーネントアクションを返し続け、通常のミーティングチャットルームだけが Meetings へ移動します。使い捨て通話は進行中のミーティング検出と以前のミーティング履歴の両方から除外されます。
 
+## コンポーネントウィンドウでミーティングオーバーレイを非表示
+
+コンポーネントページ契約を通じてマウントされたミーティングは、コンポーネントのライフサイクル中にミーティングオーバーレイを非表示にします。埋め込み通話フレームを遮らず、通常の Meetings ページでは従来のオーバーレイを維持します。
+
 ## コミット
 
-- [faf0878](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/faf087887c39e69f50503856ffb59ffa2d29e921)
-- [74e686a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/74e686a2083fc8440a4ffbd77d655300d211fd2a)
+- [790fa2d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790fa2d660b5f6a0c46cc3d18058790444867329)
+- [3bf5559](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bf5559f3f68dd9a57a56c5d1818e5fa931cacc9)

@@ -78,6 +78,13 @@ export async function mount(
 ) {
     await loadCommonStyles();
     if (!claimRouteRoot(root, signal)) return;
+    const componentWindow = focusState !== null;
+    if (componentWindow) root.dataset.suppressMeetingOverlay = "true";
+    signal?.addEventListener(
+        "abort",
+        () => delete root.dataset.suppressMeetingOverlay,
+        { once: true },
+    );
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
         shareContext !== null && shareContext?.directAccess !== true;

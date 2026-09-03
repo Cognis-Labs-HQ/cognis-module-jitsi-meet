@@ -6,6 +6,8 @@ Messages resolves Jitsi’s `voip:startCall` provider separately for each direct
 
 Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. After the component mounts, Back to messages preserves the live meeting and changes its window to picture-in-picture. Disposable calls stay out of the Meetings page’s active and previous meeting lists, use unique participant keys, create no meeting chat, and cannot be shared, extended with participants, or connected to a Whiteboard.
 
+Component-window mounts suppress the meeting overlay entirely so the embedded surface shows only the meeting frame while it connects and runs.
+
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 
 ## Usage Examples

@@ -714,3 +714,14 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     );
     assert.match(lifecycleSource, /action: "component"/);
 });
+
+test("component-window meetings suppress the meeting overlay", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(appSource, /focusState !== null/);
+    assert.match(appSource, /suppressMeetingOverlay = "true"/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-route-root\[data-suppress-meeting-overlay="true"\] \.jitsi-overlay\s*\{[\s\S]*?display: none/,
+    );
+});

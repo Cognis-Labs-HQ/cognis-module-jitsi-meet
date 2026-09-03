@@ -70,6 +70,10 @@
     z-index: 1;
 }
 
+.jitsi-route-root[data-suppress-meeting-overlay="true"] .jitsi-overlay {
+    display: none;
+}
+
 .jitsi-route-root .jitsi-overlay.jitsi-drop-active {
     z-index: 4;
     outline: 3px solid #22c55e;

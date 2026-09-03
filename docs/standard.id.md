@@ -6,6 +6,8 @@ Messages menyelesaikan penyedia Jitsi `voip:startCall` secara terpisah untuk set
 
 Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak mengubah DOM Messages atau memanggil broker halaman komponen secara langsung. Setelah komponen dipasang, Kembali ke pesan mempertahankan rapat aktif dan mengubah jendelanya menjadi gambar-dalam-gambar. Panggilan sekali pakai tidak muncul dalam daftar rapat aktif maupun sebelumnya pada halaman Meetings dan memakai kunci peserta unik, tidak membuat percakapan rapat, dan tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard.
 
+Pemasangan jendela komponen sepenuhnya menyembunyikan overlay rapat, sehingga permukaan tertanam hanya menampilkan bingkai rapat saat menghubungkan dan menjalankan panggilan.
+
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 
 ## Contoh Penggunaan
