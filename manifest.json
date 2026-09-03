@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.174",
+    "version": "1.5.175",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -156,7 +156,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "cfd48f64e5e3f21d5fb1ce40eb7c337928269b5cf1486043d63e9ef51d51ba6d"
+            "sha256": "24c67009bc3c39f94f1214c6289ec3dabf93d6d451b40070f394ed062b826aaa"
         },
         {
             "path": "api/meeting-chat-summary-route.js",
@@ -276,7 +276,7 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "205106faafb3e2ec5eab8b4fc46b50bac40d668237aa3f8188e3df40302e8a44"
+            "sha256": "88ac2a33feeff4cf0764a39c9fde33025124f67aa35e21cea1230368d2890cc0"
         },
         {
             "path": "api/tests/config-routes.test.js",
@@ -380,27 +380,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "1939ad66b39293bff8b72d59af07d350613e9192ae21b662cb22d2078ff66222"
+            "sha256": "768b8a8478684bf94ddd4021eb9b3115e253508ccc4392056b5eac8b5cd7e149"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "c680a07a0bb4b6f9548d19b6ee5dc660750e5902095c475af34e329f98153d32"
+            "sha256": "dc5dc24001da5abafc6ca619fe165b3b07d2b40b96826df5af06fd291c3d6356"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "669de62e29c8890ac0e964c21a2075d8c887e995de73fc10266f4ccbc2ce239e"
+            "sha256": "8155536813486d42183469687172d8ccbcfbf4d8f3a88a56a25dc02354afe531"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "b21014766a5718e11ee14fcfe8869871868543a08308ce6408722375fb287d30"
+            "sha256": "02f71948c4dc374ddc029bb736340211379895d3f7c76d08908550dbd61720ca"
         },
         {
             "path": "package-lock.json",
-            "sha256": "0b9e6f392f66abcfe8502fd91966cac6a30b046ed52a5737328491722677d3aa"
+            "sha256": "424ac5ffbad23a52393dd520fe2f82f54bc23e368e5d64bf73f957c333c591f0"
         },
         {
             "path": "package.json",
-            "sha256": "08932482d5870baa4ed7e3c714da629c45a3dc06d73cad22cb63c3fae51189c2"
+            "sha256": "53faa080a9a7da608b2da1f4ec4799f9c2e605c815d654dc724c00019e1484f6"
         },
         {
             "path": "routes.json",

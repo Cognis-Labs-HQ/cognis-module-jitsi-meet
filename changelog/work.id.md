@@ -10,7 +10,11 @@ Jitsi Meet kini menyediakan penyedia VoIP peramban untuk percakapan langsung dan
 
 Panggilan Messages tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard. Kembali ke Messages mempertahankan rapat aktif dalam jendela gambar-dalam-gambar yang dapat dipindahkan, lalu catatan rapat dihapus saat panggilan berakhir.
 
+## Penyedia tersedia pada render awal
+
+Pendaftaran bilah navigasi kini mendeklarasikan `voip:startCall`, sehingga Cognis dapat memuat Jitsi sebelum Messages memeriksa ketersediaan penyedia dan menampilkan tindakan kamera video pada render percakapan pertama.
+
 ## Komit
 
-- [d5aea92](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d5aea921e1cc515bda0859dae2e20b135e18cb72)
-- [54ef696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54ef6968d5dcde30b2e2c5de28c0b845d95188ba)
+- [39f6fde](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39f6fde4a0a48b73f1ff77259ae47ea15c125049)
+- [4800983](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4800983502abcdd530a34419f6fe8ae6ead042f1)

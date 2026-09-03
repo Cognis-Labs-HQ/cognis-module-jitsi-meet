@@ -10,7 +10,11 @@ Jitsi Meet stellt jetzt den Browser-VoIP-Anbieter für Direkt- und Gruppenchats 
 
 Messages-Anrufe können weder geteilt noch um weitere Teilnehmende erweitert oder mit einem Whiteboard verbunden werden. Die Rückkehr zu Messages erhält das laufende Meeting in einem verschiebbaren Bild-im-Bild-Fenster; nach dem Anruf wird der Meeting-Datensatz gelöscht.
 
+## Anbieter beim ersten Rendern verfügbar
+
+Die Navigationsleisten-Registrierung weist nun `voip:startCall` aus. Dadurch kann Cognis Jitsi laden, bevor Messages die Anbieter-Verfügbarkeit prüft, und die Videokamera-Aktion bereits beim ersten Rendern des Chats anzeigen.
+
 ## Commits
 
-- [d5aea92](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d5aea921e1cc515bda0859dae2e20b135e18cb72)
-- [54ef696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/54ef6968d5dcde30b2e2c5de28c0b845d95188ba)
+- [39f6fde](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/39f6fde4a0a48b73f1ff77259ae47ea15c125049)
+- [4800983](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/4800983502abcdd530a34419f6fe8ae6ead042f1)

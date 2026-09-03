@@ -4,6 +4,8 @@ Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerau
 
 Direkt- und Gruppenchats in Messages können providerbasierte Videoanrufe starten. Jeder Anruf ist ein verfügbares Komponentenfenster, das auf die Mitglieder des auslösenden Raums beschränkt ist; er erstellt keinen Meeting-Chat, bietet weder Freigabe- noch Teilnehmer-Hinzufügen-Funktionen und fordert kein Whiteboard an. Die Aktion „Zurück zu Nachrichten“ erhält das laufende Meeting und wandelt sein Fenster in Bild-im-Bild um.
 
+Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
+
 ## Anwendungsbeispiele
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.

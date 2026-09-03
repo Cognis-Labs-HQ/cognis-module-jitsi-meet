@@ -4,6 +4,8 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 
 Percakapan langsung dan grup di Messages dapat memulai panggilan video yang didukung penyedia. Setiap panggilan adalah jendela komponen sekali pakai yang dibatasi untuk anggota ruang pemicu; panggilan tidak membuat percakapan rapat, menyediakan kontrol berbagi atau penambahan peserta, maupun meminta Whiteboard. Tindakan Kembali ke pesan mempertahankan rapat aktif dan mengubah jendelanya menjadi gambar-dalam-gambar.
 
+Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
+
 ## Contoh Penggunaan
 
 - Bergabung atau mengambil alih rapat dari `/meetings` dan `/meeting` tanpa navigasi halaman penuh.
