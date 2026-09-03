@@ -8,6 +8,8 @@ Cognis owns the temporary component stage and its cleanup. Jitsi does not alter 
 
 Component-window mounts suppress both the meeting overlay and the “Meeting Window” header, so the embedded surface shows only the meeting frame while it connects and runs.
 
+When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard.
+
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 
 ## Usage Examples

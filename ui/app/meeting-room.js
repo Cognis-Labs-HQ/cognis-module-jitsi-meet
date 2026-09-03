@@ -253,27 +253,30 @@ export function createEmbedHandlers({
                 toastVariant: "warning",
                 skipPresenceUpdate: true,
             });
+            await callbacks.closeComponentWindow();
         };
-        const handleMeetingLeft = (event) => {
+        const handleMeetingLeft = async (event) => {
             if (state.jitsiApi !== apiInstance) return;
             if (isLocalParticipantKick(event)) {
                 void handleLocalParticipantKicked(event);
                 return;
             }
-            void callbacks.handleMeetingExit({
+            await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
                     "module.jitsi_meet.overlay.meeting_left",
                 honorMeetingClosed: false,
             });
+            await callbacks.closeComponentWindow();
         };
-        const handleMeetingTerminated = () => {
+        const handleMeetingTerminated = async () => {
             if (state.jitsiApi !== apiInstance) return;
-            void callbacks.handleMeetingExit({
+            await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
                     "module.jitsi_meet.overlay.meeting_closed",
                 forceClosedOverlay: true,
                 reportTerminated: true,
             });
+            await callbacks.closeComponentWindow();
         };
         const reportScreenSharingState = async (event) => {
             if (state.jitsiApi !== apiInstance || !state.meeting?.id) return;

@@ -731,3 +731,26 @@ test("component-window meetings suppress the meeting overlay", () => {
     );
     assert.doesNotMatch(appSource, /back_to_messages|jitsi-call-back-button/);
 });
+
+test("ended component meetings discard their host window", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    assert.match(appSource, /component-pages:discard/);
+    assert.match(appSource, /\.component-page-window/);
+    assert.match(appSource, /close_ended_component_meeting/);
+    assert.match(
+        roomSource,
+        /handleMeetingLeft[\s\S]*?handleMeetingExit[\s\S]*?closeComponentWindow/,
+    );
+    assert.match(
+        roomSource,
+        /handleMeetingTerminated[\s\S]*?handleMeetingExit[\s\S]*?closeComponentWindow/,
+    );
+    assert.match(
+        roomSource,
+        /handleLocalParticipantKicked[\s\S]*?resetMeetingState[\s\S]*?closeComponentWindow/,
+    );
+});

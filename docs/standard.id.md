@@ -8,6 +8,8 @@ Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak 
 
 Pemasangan jendela komponen menyembunyikan overlay rapat serta header “Jendela Rapat”, sehingga permukaan tertanam hanya menampilkan bingkai rapat saat menghubungkan dan menjalankan panggilan.
 
+Ketika peserta lokal keluar, dikeluarkan, atau konferensi berakhir, Jitsi menyelesaikan pembersihan rapat lalu meminta kapabilitas halaman komponen host untuk membuang jendela komponen yang memuatnya. Sesi pada halaman Meetings penuh tidak meminta pembuangan komponen.
+
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 
 ## Contoh Penggunaan

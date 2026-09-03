@@ -28,6 +28,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:openErrorPopup",
         "ui:reuse",
         "component-pages:spawn",
+        "component-pages:discard",
         "ui:makeFloatingWindow",
     ]);
     assert.deepEqual(manifest.capabilities, [

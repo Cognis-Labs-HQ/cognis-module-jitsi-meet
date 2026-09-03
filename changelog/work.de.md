@@ -34,7 +34,11 @@ Meetings, die über den Komponenten-Seiten-Vertrag eingebunden werden, unterdrü
 
 Meetings in Komponentenfenstern blenden nun die Überschrift „Meeting-Fenster“ zusammen mit dem Overlay aus und fügen keinen „Zurück zu Nachrichten“-Button mehr hinzu. Messages übergibt „Cognis VoIP Call“ über die Komponenten-Metadaten als Jitsi-Betreff; reguläre Meetings behalten „Cognis Classroom“.
 
+## Komponentenfenster nach Anrufende schließen
+
+Nachdem ein in einem Komponentenfenster eingebundenes Meeting wegen Verlassen, Entfernen des Teilnehmers oder Konferenzende bereinigt wurde, verwirft Jitsi nun das umgebende Host-Komponentenfenster. Vollständige Sitzungen auf der Meetings-Seite bleiben geöffnet.
+
 ## Commits
 
-- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
 - [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)
+- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)

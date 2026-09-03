@@ -1,6 +1,10 @@
 import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
+import {
+    importReuseModule,
+    loadCommonStyles,
+    uiCtx,
+} from "../reuse/resources.js";
 import { MEETING_SUBJECT } from "../constants.js";
 import { ensureSessionId } from "../session.js";
 import { resolveThemeMode } from "../meeting-embed.js";
@@ -196,6 +200,38 @@ export async function mount(
     }
     const callbacks = {
         beginPageLoading,
+        closeComponentWindow: async () => {
+            if (!componentWindow) return false;
+            const componentStage = root.closest(
+                ".component-page-window",
+            )?.parentElement;
+            const elementId = String(componentStage?.id ?? "").trim();
+            const discardComponentPage = uiCtx.capabilities.get(
+                "component-pages:discard",
+            );
+            if (!elementId || typeof discardComponentPage !== "function") {
+                return false;
+            }
+            try {
+                return await discardComponentPage(elementId);
+            } catch (error) {
+                await logUi(
+                    "error",
+                    "Meeting component window could not be closed.",
+                    {
+                        component: "module:jitsi-meet",
+                        operation: "close_ended_component_meeting",
+                        meetingId: state.meeting?.id ?? null,
+                        elementId,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return false;
+            }
+        },
         syncMeetingWhiteboardComponent: () =>
             syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>

@@ -34,7 +34,11 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 コンポーネントウィンドウのミーティングでは、オーバーレイとともに「ミーティングウィンドウ」ヘッダーを非表示にし、「メッセージに戻る」ボタンを追加しなくなりました。Messages はコンポーネントメタデータを通じて Jitsi の件名に「Cognis VoIP Call」を渡し、通常のミーティングでは「Cognis Classroom」を維持します。
 
+## 通話終了時にコンポーネントウィンドウを閉じる
+
+コンポーネントにマウントされたミーティングで、参加者の退出、キック、または会議終了に伴う後処理が完了すると、Jitsi は親のホストコンポーネントウィンドウを破棄するようになりました。通常の Meetings ページのセッションは開いたままです。
+
 ## コミット
 
-- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
 - [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)
+- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)

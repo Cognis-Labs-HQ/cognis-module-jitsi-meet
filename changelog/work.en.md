@@ -34,7 +34,11 @@ Meetings mounted through the component-page contract now suppress the meeting ov
 
 Component-window meetings now hide the “Meeting Window” header together with the overlay and no longer add a Back to messages button. Messages supplies “Cognis VoIP Call” as the Jitsi meeting subject through component metadata, while regular meetings retain “Cognis Classroom.”
 
+## Close component windows when calls end
+
+After a component-mounted meeting finishes teardown because the participant leaves, is kicked, or the conference terminates, Jitsi now discards the containing host component window. Full Meetings-page sessions remain open.
+
 ## Commits
 
-- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
 - [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)
+- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)

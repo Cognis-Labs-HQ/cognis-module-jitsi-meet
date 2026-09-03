@@ -34,7 +34,11 @@ Rapat yang dipasang melalui kontrak halaman komponen kini menyembunyikan overlay
 
 Rapat dalam jendela komponen kini menyembunyikan header “Jendela Rapat” bersama overlay dan tidak lagi menambahkan tombol Kembali ke pesan. Messages mengirim “Cognis VoIP Call” sebagai subjek rapat Jitsi melalui metadata komponen, sedangkan rapat biasa tetap memakai “Cognis Classroom”.
 
+## Tutup jendela komponen saat panggilan berakhir
+
+Setelah rapat yang dipasang dalam komponen menyelesaikan pembersihan karena peserta keluar, dikeluarkan, atau konferensi berakhir, Jitsi kini membuang jendela komponen host yang memuatnya. Sesi halaman Meetings penuh tetap terbuka.
+
 ## Komit
 
-- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
 - [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)
+- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)

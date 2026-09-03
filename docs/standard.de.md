@@ -8,6 +8,8 @@ Cognis verwaltet die temporäre Komponentenbühne und deren Bereinigung. Jitsi v
 
 Einbindungen in Komponentenfenstern unterdrücken sowohl das Meeting-Overlay als auch die Überschrift „Meeting-Fenster“, sodass die eingebettete Oberfläche beim Verbinden und während des Anrufs nur den Meeting-Frame zeigt.
 
+Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konferenz endet, schließt Jitsi die Meeting-Bereinigung ab und fordert anschließend über die Host-Capability für Komponentenseiten das Verwerfen des umgebenden Komponentenfensters an. Vollständige Sitzungen auf der Meetings-Seite lösen kein Komponenten-Verwerfen aus.
+
 Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
 
 ## Anwendungsbeispiele
