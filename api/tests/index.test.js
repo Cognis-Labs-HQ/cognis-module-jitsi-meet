@@ -27,11 +27,14 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
+        "component-pages:spawn",
+        "ui:makeFloatingWindow",
     ]);
     assert.deepEqual(manifest.capabilities, [
         "meeting:video",
         "meeting:chat",
         "meeting:moderation",
+        "voip:startCall",
     ]);
     assert.deepEqual(manifest.requires, [
         "e8732526-8976-54ef-828b-ed0dfe21bd9e",

@@ -45,6 +45,13 @@ export async function ensureJitsiStoreSchema({ db }) {
             },
             { name: "room_slug", type: "text", notNull: true },
             { name: "chat_room_id", type: "text" },
+            { name: "source_chat_room_id", type: "text" },
+            {
+                name: "disposable",
+                type: "integer",
+                notNull: true,
+                default: 0,
+            },
             { name: "classroom_id", type: "text" },
             { name: "created_by", type: "text", notNull: true },
             { name: "scheduled_at", type: "timestamp" },

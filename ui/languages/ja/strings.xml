@@ -148,4 +148,5 @@
   <string name="module.jitsi_meet.category_collaboration">コラボレーション</string>
   <string name="module.jitsi_meet.tag_video">ビデオ</string>
   <string name="module.jitsi_meet.tag_meetings">ミーティング</string>
+  <string name="module.jitsi_meet.call.back_to_messages">メッセージに戻る</string>
 </resources>

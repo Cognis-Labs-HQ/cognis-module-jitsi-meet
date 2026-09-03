@@ -1,6 +1,10 @@
 import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
+import {
+    importReuseModule,
+    loadCommonStyles,
+    uiCtx,
+} from "../reuse/resources.js";
 import { ensureSessionId } from "../session.js";
 import { resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
@@ -82,10 +86,28 @@ export async function mount(
         Boolean(shareContext?.guestAccessToken) &&
         shareContext?.directAccess !== true;
     if (!limitedShareView) await ensureFullAccountSession();
-    const resolvedMeetingId =
+    let resolvedMeetingId =
         requestedMeetingId ||
         String(focusState?.meetingId ?? "") ||
         (inShareView ? String(shareContext?.resourceId ?? "") : "");
+    if (focusState?.messagesCall === true && !resolvedMeetingId) {
+        const response = await apiFetch(
+            "/api/v1/modules/jitsi-meet/meetings/messages-call",
+            {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify(focusState.messagesCallRequest ?? {}),
+                signal,
+            },
+        );
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload?.data?.id) {
+            throw new Error(
+                payload?.error?.message ?? "Video call could not start.",
+            );
+        }
+        resolvedMeetingId = payload.data.id;
+    }
     const messageUiResources = await loadMessageUiResources();
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
         ? await import(messageUiResources.chatLoadingModuleUrl)
@@ -142,7 +164,9 @@ export async function mount(
                 new URL(window.location.href).searchParams.get("meetingId"),
         ),
         requestedMeetingStart:
+            focusState?.autoStart === true ||
             new URL(window.location.href).searchParams.get("start") === "1",
+        messagesCall: focusState?.messagesCall === true,
         shareAccessToken: String(shareContext?.guestAccessToken ?? ""),
         activeMeetings: [],
         persistedMeetings: [],
@@ -341,6 +365,7 @@ export async function mount(
         resetMeetingState,
     });
     const elements = createMeetingPageElements(i18n, limitedShareView);
+    if (state.messagesCall) elements.splice(0, 1);
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
         fetchCurrentProfile({
@@ -400,6 +425,33 @@ export async function mount(
     });
     await composer.init();
     if (signal?.aborted) return;
+    if (state.messagesCall) {
+        root.classList.add("jitsi-messages-call");
+        const backButton = document.createElement("button");
+        backButton.type = "button";
+        backButton.className = "jitsi-call-back-button btn-confirm";
+        backButton.textContent = i18n.t(
+            "module.jitsi_meet.call.back_to_messages",
+        );
+        backButton.addEventListener(
+            "click",
+            () => {
+                const componentWindow = root.closest(".component-page-window");
+                const makeFloatingWindow = uiCtx.capabilities.get(
+                    "ui:makeFloatingWindow",
+                );
+                if (componentWindow instanceof HTMLElement) {
+                    makeFloatingWindow?.(componentWindow, {
+                        signal,
+                        minWidth: 400,
+                        minHeight: 225,
+                    });
+                }
+            },
+            { signal },
+        );
+        root.prepend(backButton);
+    }
     if (state.requestedMeetingId) {
         await joinMeetingById(state.requestedMeetingId, {
             autoStart: inShareView || state.requestedMeetingStart,

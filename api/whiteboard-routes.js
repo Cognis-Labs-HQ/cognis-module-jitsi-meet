@@ -140,6 +140,15 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
+            if (resolved.meeting.disposable) {
+                sendError(
+                    res,
+                    403,
+                    "whiteboard_disabled",
+                    "Disposable chat calls cannot request a whiteboard.",
+                );
+                return;
+            }
             if (typeof body.active !== "boolean") {
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
@@ -185,6 +194,15 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
+            if (resolved.meeting.disposable) {
+                sendError(
+                    res,
+                    403,
+                    "whiteboard_disabled",
+                    "Disposable chat calls cannot request a whiteboard.",
+                );
+                return;
+            }
             if (typeof body.active !== "boolean") {
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;

@@ -2,6 +2,8 @@
 
 Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerauswahl, wiederverwendbaren Besprechungsräumen, Sitzungswiederaufnahme, Messages-Chat-Integration und einem optionalen gemeinsamen Whiteboard.
 
+Direkt- und Gruppenchats in Messages können providerbasierte Videoanrufe starten. Jeder Anruf ist ein verfügbares Komponentenfenster, das auf die Mitglieder des auslösenden Raums beschränkt ist; er erstellt keinen Meeting-Chat, bietet weder Freigabe- noch Teilnehmer-Hinzufügen-Funktionen und fordert kein Whiteboard an. Die Aktion „Zurück zu Nachrichten“ erhält das laufende Meeting und wandelt sein Fenster in Bild-im-Bild um.
+
 ## Anwendungsbeispiele
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.

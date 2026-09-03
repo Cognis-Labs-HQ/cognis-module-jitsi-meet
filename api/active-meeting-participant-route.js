@@ -40,6 +40,15 @@ export function registerActiveMeetingParticipantRoute({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
+            if (resolved.meeting.disposable) {
+                sendError(
+                    res,
+                    403,
+                    "participant_locked",
+                    "Disposable chat calls cannot add participants.",
+                );
+                return;
+            }
             if (
                 !resolved.state.firstJoinedAt ||
                 resolved.state.endedAt ||

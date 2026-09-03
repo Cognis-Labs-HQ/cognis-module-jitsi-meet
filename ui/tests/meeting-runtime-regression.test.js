@@ -682,3 +682,20 @@ test("Jitsi UI uses host logging and feedback capabilities", () => {
     assert.doesNotMatch(bundleSource, /console\.(?:error|warn)\(/);
     assert.doesNotMatch(bundleSource, /\/static\/reuse\/toast\.js/);
 });
+
+test("Messages VoIP provider creates a locked disposable component call", () => {
+    const providerSource = readFileSync(
+        resolve(ROOT, "ui/voip-provider.js"),
+        "utf8",
+    );
+    const lifecycleSource = readFileSync(
+        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        "utf8",
+    );
+    assert.match(providerSource, /voip:startCall/);
+    assert.match(providerSource, /component-pages:spawn/);
+    assert.match(providerSource, /messagesCallRequest/);
+    assert.match(lifecycleSource, /meetings\/messages-call/);
+    assert.match(lifecycleSource, /disposable: true/);
+    assert.match(lifecycleSource, /chatRoomId: null/);
+});

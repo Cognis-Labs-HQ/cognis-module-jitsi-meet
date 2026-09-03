@@ -978,3 +978,11 @@ body[data-theme="light"]
     outline: 2px solid var(--color-primary, #22c55e);
     outline-offset: 2px;
 }
+.jitsi-route-root.jitsi-messages-call .jitsi-stage-actions,
+.jitsi-route-root.jitsi-messages-call #jitsi-chat {
+    display: none;
+}
+
+.jitsi-route-root .jitsi-call-back-button {
+    margin: 0.5rem;
+}

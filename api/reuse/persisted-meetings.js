@@ -21,7 +21,11 @@ export async function listPersistedMeetings({
             : currentParticipants;
         if (participants.length <= 1) continue;
         const meeting = await getMeetingById(id);
-        if (meeting?.meetingUrl && meeting.meetingName) {
+        if (
+            !meeting?.disposable &&
+            meeting?.meetingUrl &&
+            meeting.meetingName
+        ) {
             meetings.push({ ...meeting, participants });
         }
     }

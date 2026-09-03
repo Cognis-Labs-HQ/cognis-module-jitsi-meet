@@ -45,6 +45,88 @@ export function registerMeetingLifecycleRoutes({
         log,
     });
     router.post(
+        "/api/v1/modules/jitsi-meet/meetings/messages-call",
+        async (req, res) => {
+            await store.ensureSchema();
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            const body = await readJson(req);
+            const roomId = String(body.roomId ?? "").trim();
+            const accountIds = Array.isArray(body.memberAccountIds)
+                ? Array.from(
+                      new Set(
+                          body.memberAccountIds
+                              .map((value) => String(value ?? "").trim())
+                              .filter(Boolean),
+                      ),
+                  )
+                : [];
+            if (
+                !roomId ||
+                roomId.length > 200 ||
+                accountIds.length < 2 ||
+                accountIds.length > 100 ||
+                !accountIds.includes(String(claims.sub))
+            ) {
+                sendError(res, 400, "bad_request", "Invalid chat call.");
+                return;
+            }
+            const profiles = await Promise.all(
+                accountIds.map((accountId) =>
+                    profileStore.getProfile(accountId),
+                ),
+            );
+            if (profiles.some((profile) => !profile?.handle)) {
+                sendError(res, 400, "bad_request", "Invalid chat members.");
+                return;
+            }
+            const requesterUsername = await resolveRequesterUsername(
+                profileStore,
+                claims.sub,
+            );
+            const participantUsernames = profiles.map((profile) =>
+                normalizeHandleKey(profile.handle),
+            );
+            const config = await store.getConfig();
+            if (!config.instanceUrl) {
+                sendError(
+                    res,
+                    409,
+                    "config_required",
+                    "Jitsi is not configured.",
+                );
+                return;
+            }
+            const meeting = await store.createMeeting({
+                instanceUrl: config.instanceUrl,
+                usernames: participantUsernames,
+                createdBy: requesterUsername,
+                chatRoomId: null,
+                sourceChatRoomId: roomId,
+                disposable: true,
+                forceNew: true,
+            });
+            const state = await store.getMeetingState(meeting.id);
+            const payload = await createMeetingPayload({
+                store,
+                meeting,
+                state,
+                participants: await store.listParticipants(meeting.id),
+                requesterUsername,
+                chatUrl: null,
+                requiresReclaim: false,
+            });
+            log?.("info", "Messages video call created.", {
+                component: "jitsi-meet-module",
+                operation: "create_messages_call",
+                meetingId: meeting.id,
+                roomId,
+            });
+            sendJson(res, 200, { data: payload });
+        },
+        { access: { minRole: "user" } },
+    );
+    router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
         async (req, res) => {
             await store.ensureSchema();
@@ -681,7 +763,7 @@ export function registerMeetingLifecycleRoutes({
                     const participantlessMeeting = resolved.participants.every(
                         (username) => username === resolved.meeting.createdBy,
                     );
-                    if (participantlessMeeting) {
+                    if (participantlessMeeting || resolved.meeting.disposable) {
                         await deleteDisposableMeeting({
                             meeting: resolved.meeting,
                             ownerAccountId: claims.sub,

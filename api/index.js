@@ -376,6 +376,7 @@ export function registerApiRoutes(router, ctx) {
         });
         for (const routePath of [
             "/api/v1/modules/jitsi-meet/meetings/create",
+            "/api/v1/modules/jitsi-meet/meetings/messages-call",
             "/api/v1/modules/jitsi-meet/meetings/get",
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",
