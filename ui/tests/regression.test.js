@@ -445,6 +445,10 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
         constantsSource,
         /export const MEETING_SUBJECT = "Cognis Classroom";/,
     );
+    assert.match(
+        constantsSource,
+        /export const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";/,
+    );
     const toolbarArrayMatch = constantsSource.match(
         /const JITSI_TOOLBAR_BUTTONS = \[([\s\S]*?)\];/,
     );
@@ -453,9 +457,15 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     assert.equal(/"chat"/.test(toolbarArraySource), false);
     assert.equal(/"invite"/.test(toolbarArraySource), false);
     assert.equal(/"settings"/.test(toolbarArraySource), false);
-    assert.match(source, /subject: MEETING_SUBJECT,/);
+    assert.match(
+        source,
+        /subject: state\.meetingSubject \|\| MEETING_SUBJECT,/,
+    );
     assert.match(source, /currentUserIsJitsiModerator\(apiInstance\)/);
-    assert.match(source, /"subject",[\s\S]*MEETING_SUBJECT/);
+    assert.match(
+        source,
+        /"subject",[\s\S]*state\.meetingSubject \|\| MEETING_SUBJECT/,
+    );
     assert.match(source, /preferredTheme: themeMode,/);
     assert.match(
         source,
@@ -474,7 +484,7 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.subject", MEETING_SUBJECT\)/,
+        /hashParams\.set\("config\.subject", meetingSubject\)/,
     );
     assert.match(
         embedSource,

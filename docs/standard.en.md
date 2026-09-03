@@ -4,9 +4,9 @@ The Jitsi Meet module provides Cognis-native meeting orchestration with particip
 
 Messages resolves Jitsi’s `voip:startCall` provider separately for each direct or group chat. Jitsi validates the room request with its authenticated API. If the room references a regular meeting, it returns a same-origin `navigate` action for that meeting. New calls and rooms already mapped to a disposable call return a host-owned `component` action for the Meetings route in overlay mode. Unsupported requests return `null`.
 
-Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. After the component mounts, Back to messages preserves the live meeting and changes its window to picture-in-picture. Disposable calls stay out of the Meetings page’s active and previous meeting lists, use unique participant keys, create no meeting chat, and cannot be shared, extended with participants, or connected to a Whiteboard.
+Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. Component calls use the Jitsi subject “Cognis VoIP Call,” omit a module-owned back button, and create no meeting chat. They stay out of the Meetings page’s active and previous meeting lists and cannot be shared, extended with participants, or connected to a Whiteboard.
 
-Component-window mounts suppress the meeting overlay entirely so the embedded surface shows only the meeting frame while it connects and runs.
+Component-window mounts suppress both the meeting overlay and the “Meeting Window” header, so the embedded surface shows only the meeting frame while it connects and runs.
 
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 

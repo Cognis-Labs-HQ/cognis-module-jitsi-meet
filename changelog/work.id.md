@@ -30,7 +30,11 @@ Ruang yang dipetakan ke panggilan sekali pakai tetap mengembalikan tindakan komp
 
 Rapat yang dipasang melalui kontrak halaman komponen kini menyembunyikan overlay rapat selama siklus hidup komponen. Bingkai panggilan tertanam tetap tidak terhalang, sedangkan halaman Meetings penuh tetap memakai overlay normal.
 
+## Sederhanakan tampilan panggilan tertanam dan kenali panggilan VoIP
+
+Rapat dalam jendela komponen kini menyembunyikan header “Jendela Rapat” bersama overlay dan tidak lagi menambahkan tombol Kembali ke pesan. Messages mengirim “Cognis VoIP Call” sebagai subjek rapat Jitsi melalui metadata komponen, sedangkan rapat biasa tetap memakai “Cognis Classroom”.
+
 ## Komit
 
-- [790fa2d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790fa2d660b5f6a0c46cc3d18058790444867329)
-- [3bf5559](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bf5559f3f68dd9a57a56c5d1818e5fa931cacc9)
+- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
+- [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)

@@ -4,9 +4,9 @@ Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peser
 
 Messages menyelesaikan penyedia Jitsi `voip:startCall` secara terpisah untuk setiap percakapan langsung atau grup. Jitsi memvalidasi permintaan ruang melalui API terautentikasinya. Jika ruang merujuk ke rapat biasa, penyedia mengembalikan tindakan `navigate` dengan asal yang sama untuk rapat tersebut. Panggilan baru dan ruang yang sudah dipetakan ke panggilan sekali pakai mengembalikan tindakan `component` milik host untuk rute Meetings dalam mode overlay. Permintaan yang tidak didukung menghasilkan `null`.
 
-Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak mengubah DOM Messages atau memanggil broker halaman komponen secara langsung. Setelah komponen dipasang, Kembali ke pesan mempertahankan rapat aktif dan mengubah jendelanya menjadi gambar-dalam-gambar. Panggilan sekali pakai tidak muncul dalam daftar rapat aktif maupun sebelumnya pada halaman Meetings dan memakai kunci peserta unik, tidak membuat percakapan rapat, dan tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard.
+Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak mengubah DOM Messages atau memanggil broker halaman komponen secara langsung. Panggilan komponen memakai subjek Jitsi “Cognis VoIP Call”, tidak menyertakan tombol kembali milik modul, dan tidak membuat percakapan rapat. Panggilan ini tidak muncul dalam daftar rapat aktif maupun sebelumnya pada halaman Meetings serta tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard.
 
-Pemasangan jendela komponen sepenuhnya menyembunyikan overlay rapat, sehingga permukaan tertanam hanya menampilkan bingkai rapat saat menghubungkan dan menjalankan panggilan.
+Pemasangan jendela komponen menyembunyikan overlay rapat serta header “Jendela Rapat”, sehingga permukaan tertanam hanya menampilkan bingkai rapat saat menghubungkan dan menjalankan panggilan.
 
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 

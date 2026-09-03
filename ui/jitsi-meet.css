@@ -74,6 +74,10 @@
     display: none;
 }
 
+.jitsi-route-root[data-suppress-meeting-overlay="true"] .jitsi-stage-header {
+    display: none;
+}
+
 .jitsi-route-root .jitsi-overlay.jitsi-drop-active {
     z-index: 4;
     outline: 3px solid #22c55e;
@@ -985,8 +989,4 @@ body[data-theme="light"]
 .jitsi-route-root.jitsi-messages-call .jitsi-stage-actions,
 .jitsi-route-root.jitsi-messages-call #jitsi-chat {
     display: none;
-}
-
-.jitsi-route-root .jitsi-call-back-button {
-    margin: 0.5rem;
 }

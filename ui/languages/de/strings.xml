@@ -148,5 +148,4 @@
   <string name="module.jitsi_meet.category_collaboration">Zusammenarbeit</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>
-  <string name="module.jitsi_meet.call.back_to_messages">Zurück zu Nachrichten</string>
 </resources>

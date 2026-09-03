@@ -4,9 +4,9 @@ Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerau
 
 Messages löst den Jitsi-Anbieter `voip:startCall` für jeden Direkt- oder Gruppenchat separat auf. Jitsi validiert die Raumanfrage mit seiner authentifizierten API. Verweist der Raum auf ein reguläres Meeting, gibt der Anbieter eine gleichursprüngliche `navigate`-Aktion für dieses Meeting zurück. Neue Anrufe und Räume, die bereits einem verfügbaren Anruf zugeordnet sind, liefern eine hostverwaltete `component`-Aktion für die Meetings-Route im Overlay-Modus. Nicht unterstützte Anfragen ergeben `null`.
 
-Cognis verwaltet die temporäre Komponentenbühne und deren Bereinigung. Jitsi verändert weder das Messages-DOM noch ruft es selbst den Komponenten-Seiten-Broker auf. Nach dem Einbinden erhält „Zurück zu Nachrichten“ das laufende Meeting und wandelt sein Fenster in Bild-im-Bild um. Verfügbare Anrufe erscheinen weder in der Liste aktiver noch früherer Meetings auf der Meetings-Seite und verwenden eindeutige Teilnehmerschlüssel, erstellen keinen Meeting-Chat und können weder geteilt noch um Teilnehmende erweitert oder mit einem Whiteboard verbunden werden.
+Cognis verwaltet die temporäre Komponentenbühne und deren Bereinigung. Jitsi verändert weder das Messages-DOM noch ruft es selbst den Komponenten-Seiten-Broker auf. Komponentenanrufe verwenden in Jitsi den Betreff „Cognis VoIP Call“, enthalten keinen moduleigenen Zurück-Button und erstellen keinen Meeting-Chat. Sie erscheinen weder in der Liste aktiver noch früherer Meetings auf der Meetings-Seite und können weder geteilt noch um Teilnehmende erweitert oder mit einem Whiteboard verbunden werden.
 
-Einbindungen in Komponentenfenstern unterdrücken das Meeting-Overlay vollständig, sodass die eingebettete Oberfläche beim Verbinden und während des Anrufs nur den Meeting-Frame zeigt.
+Einbindungen in Komponentenfenstern unterdrücken sowohl das Meeting-Overlay als auch die Überschrift „Meeting-Fenster“, sodass die eingebettete Oberfläche beim Verbinden und während des Anrufs nur den Meeting-Frame zeigt.
 
 Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
 

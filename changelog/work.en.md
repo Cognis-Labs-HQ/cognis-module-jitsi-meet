@@ -30,7 +30,11 @@ Rooms mapped to disposable calls now continue returning component actions instea
 
 Meetings mounted through the component-page contract now suppress the meeting overlay for the component lifecycle, leaving the embedded call frame unobstructed while retaining the normal overlay on full Meetings pages.
 
+## Simplify embedded call chrome and identify VoIP calls
+
+Component-window meetings now hide the “Meeting Window” header together with the overlay and no longer add a Back to messages button. Messages supplies “Cognis VoIP Call” as the Jitsi meeting subject through component metadata, while regular meetings retain “Cognis Classroom.”
+
 ## Commits
 
-- [790fa2d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790fa2d660b5f6a0c46cc3d18058790444867329)
-- [3bf5559](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bf5559f3f68dd9a57a56c5d1818e5fa931cacc9)
+- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
+- [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)

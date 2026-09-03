@@ -30,7 +30,11 @@ Räume, die verfügbaren Anrufen zugeordnet sind, liefern weiterhin Komponentena
 
 Meetings, die über den Komponenten-Seiten-Vertrag eingebunden werden, unterdrücken nun das Meeting-Overlay während des Komponenten-Lebenszyklus. Dadurch bleibt der eingebettete Anruf-Frame frei, während vollständige Meetings-Seiten ihr normales Overlay behalten.
 
+## Eingebettete Anrufoberfläche vereinfachen und VoIP-Anrufe kennzeichnen
+
+Meetings in Komponentenfenstern blenden nun die Überschrift „Meeting-Fenster“ zusammen mit dem Overlay aus und fügen keinen „Zurück zu Nachrichten“-Button mehr hinzu. Messages übergibt „Cognis VoIP Call“ über die Komponenten-Metadaten als Jitsi-Betreff; reguläre Meetings behalten „Cognis Classroom“.
+
 ## Commits
 
-- [790fa2d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/790fa2d660b5f6a0c46cc3d18058790444867329)
-- [3bf5559](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bf5559f3f68dd9a57a56c5d1818e5fa931cacc9)
+- [13c77d6](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/13c77d6180c67bd7d2da317603ad31e5db56c963)
+- [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)

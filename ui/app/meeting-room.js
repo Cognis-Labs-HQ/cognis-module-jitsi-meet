@@ -111,7 +111,7 @@ export function createEmbedHandlers({
                 },
                 requireDisplayName: false,
                 disableDeepLinking: true,
-                subject: MEETING_SUBJECT,
+                subject: state.meetingSubject || MEETING_SUBJECT,
                 preferredTheme: themeMode,
                 toolbarButtons: JITSI_TOOLBAR_BUTTONS,
             },
@@ -136,7 +136,7 @@ export function createEmbedHandlers({
             callbacks.executeJitsiCommandIfSupported(
                 apiInstance,
                 "subject",
-                MEETING_SUBJECT,
+                state.meetingSubject || MEETING_SUBJECT,
             );
             if (meetingPassword) {
                 callbacks.executeJitsiCommandIfSupported(

@@ -532,6 +532,7 @@ export function createInteractiveHandlersBinder({
                         buildMeetingJoinUrl(
                             state.meeting.meetingUrl,
                             state.currentProfile,
+                            state.meetingSubject,
                         ),
                         "_blank",
                         "noopener,noreferrer",

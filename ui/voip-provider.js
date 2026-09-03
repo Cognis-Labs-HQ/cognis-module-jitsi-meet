@@ -5,6 +5,7 @@ const { apiFetch } = await importReuseModule("api-client.js");
 const CAPABILITY = "voip:startCall";
 const COMPONENT_UUID = "f055f2e5-227a-5fb4-b934-5397ec32cf2d";
 const COMPONENT_ROUTE_ID = "module.jitsi.meet.meetings";
+const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";
 
 export async function resolveMessagesCallAction(input = {}) {
     const roomId = String(input.room?.id ?? "").trim();
@@ -62,6 +63,7 @@ export async function resolveMessagesCallAction(input = {}) {
             autoStart: true,
             messagesCall: true,
             meetingId,
+            meetingSubject: VOIP_MEETING_SUBJECT,
         },
     };
 }
