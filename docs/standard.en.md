@@ -12,6 +12,8 @@ When the local participant leaves, is kicked, or the conference terminates, Jits
 
 Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. Messages VoIP calls enable this flag.
 
+The provider action advertises PiP dimensions of 400 × 225 pixels, matching the Meetings component-page minimum so the host can size the floating call correctly from the initial payload.
+
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 
 ## Usage Examples

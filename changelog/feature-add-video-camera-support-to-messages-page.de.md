@@ -42,7 +42,11 @@ Nachdem ein in einem Komponentenfenster eingebundenes Meeting wegen Verlassen, E
 
 Komponenten-Metadaten können nun alle Teilnehmenden für den gesamten Anruf voraussetzen. Messages-VoIP-Anrufe aktivieren dieses Verhalten, sodass ein lokales oder entferntes Verlassen das Meeting beendet, regulär bereinigt und das Host-Komponentenfenster schließt.
 
+## Jitsi-PiP-Abmessungen bekannt geben
+
+Jitsi-VoIP-Komponentenaktionen enthalten nun Abmessungen von 400 × 225 Pixeln in ihrer Nutzlast. Die Werte entsprechen der Mindestgröße der Meetings-Komponentenseite und ermöglichen dem Host eine einheitliche Dimensionierung des schwebenden Anrufs.
+
 ## Commits
 
-- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
-- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)
+- [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
+- [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)

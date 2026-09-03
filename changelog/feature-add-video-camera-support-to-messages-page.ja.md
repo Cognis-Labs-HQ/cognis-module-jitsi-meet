@@ -42,7 +42,11 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 コンポーネントメタデータで、通話中の全参加者を必須にできるようになりました。Messages VoIP 通話ではこの動作を有効にするため、ローカルまたはリモート参加者が退出するとミーティングを終了し、通常の後処理を完了してホストコンポーネントウィンドウを閉じます。
 
+## Jitsi PiP の寸法を通知
+
+Jitsi VoIP のコンポーネントアクションが、ペイロードに 400 × 225 ピクセルの寸法を含むようになりました。Meetings コンポーネントページの最小サイズと一致し、ホストがフローティング通話を一貫した大きさにできます。
+
 ## コミット
 
-- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
-- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)
+- [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
+- [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)

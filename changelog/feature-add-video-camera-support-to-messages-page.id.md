@@ -42,7 +42,11 @@ Setelah rapat yang dipasang dalam komponen menyelesaikan pembersihan karena pese
 
 Metadata komponen kini dapat mewajibkan setiap peserta selama panggilan berlangsung. Panggilan VoIP Messages mengaktifkan perilaku ini, sehingga keluarnya peserta lokal maupun jarak jauh mengakhiri rapat, menyelesaikan pembersihan normal, dan menutup jendela komponen host.
 
+## Deklarasikan dimensi PiP Jitsi
+
+Tindakan komponen VoIP Jitsi kini menyertakan dimensi 400 × 225 piksel dalam payload. Nilai tersebut sesuai dengan ukuran minimum halaman komponen Meetings dan memungkinkan host mengatur ukuran panggilan mengambang secara konsisten.
+
 ## Komit
 
-- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
-- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)
+- [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
+- [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)

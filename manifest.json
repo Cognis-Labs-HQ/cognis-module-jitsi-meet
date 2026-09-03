@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.183",
+    "version": "1.5.184",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -385,27 +385,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "ac5f08a37c6334d3bde65aa95e63d88861890aa41e17626066c481217ac21060"
+            "sha256": "3b20746e733ab9e5abcaa7b9ebbda71a72934102bc1a1ae8ba208e496f97823e"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "8cee8c2da561e711a4fd1e1e3aded558665bd7419383421ad0f51a9a9273f88b"
+            "sha256": "4cf0348dd7502a16d99b7b2227bd1437f69f391b36393c7393210683c97d3d83"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "f16af5722e28ae489d3c91db522cd1d95c6177d110d53ed9ecf4baa3d6971572"
+            "sha256": "9b5f87549b09e6db8e60a0f6090d66768d0f91f370914be15aab107e3d2f7495"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "224164e37f56a14170e4c215dd0e8f07831b08d82bc7b91418352b38b7027e27"
+            "sha256": "09a0a0123ffbd1d6651b90272c74abcada1333e1e4498886cabcbf97beadf736"
         },
         {
             "path": "package-lock.json",
-            "sha256": "a25d3ef510934aa2fe5e92794bd9f6846ede989b24bcf73de3e7a72a03d3bdc5"
+            "sha256": "1812d8e79514d540298001c46107743fab8ca723ef20f3726fbe148a7a11289c"
         },
         {
             "path": "package.json",
-            "sha256": "05f9b167da215c80d31de6878253ce28e1dab49b84b67a1d5ec1df6458cdb589"
+            "sha256": "b5209f8842f0354d8948ce9e7667e273c05b5c31553dd656c51ea6ebdf96b8c8"
         },
         {
             "path": "routes.json",
@@ -469,7 +469,7 @@
         },
         {
             "path": "ui/constants.js",
-            "sha256": "eb859419f7d6f783b87bccb3617cdbe54673acd5c7b4e1a7884dd954ccf554be"
+            "sha256": "d7bb36279f0b66ad9cc4d089512ff0c5675d8f1ce5fc5ee7b911e3531eed7c2a"
         },
         {
             "path": "ui/index.html",
@@ -545,11 +545,11 @@
         },
         {
             "path": "ui/tests/meeting-runtime-regression.test.js",
-            "sha256": "099a49db2b5065cb517a218e945d52c529839679d950253daa4a428a9c8f4595"
+            "sha256": "f8590eb0761f0c6b271b6803f9cf96f20d4bf5e43130ce8a757b4d9e41b23144"
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "0d2baa9916c611e12e96a5eee7b982b1403554b44dded460c0de97dddaa455a1"
+            "sha256": "604a45cef9c90117fcda0f54a410f7ae4fdaad149a194fdac7054f1e63929b87"
         },
         {
             "path": "ui/tests/route-root-lifecycle.test.js",
@@ -565,7 +565,7 @@
         },
         {
             "path": "ui/voip-provider.js",
-            "sha256": "e0e525320aae1c264c5548fca6f2108c5a82c691c9982512691bd9a781be6fd3"
+            "sha256": "a178f8ae0b3706f34f755cc10901a8ab65673faa65c2f3f9d043929195941489"
         },
         {
             "path": "ui/whiteboard-control.js",

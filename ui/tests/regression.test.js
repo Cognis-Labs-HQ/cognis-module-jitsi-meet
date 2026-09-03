@@ -449,6 +449,10 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
         constantsSource,
         /export const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";/,
     );
+    assert.match(
+        constantsSource,
+        /JITSI_PIP_DIMENSIONS = Object\.freeze\(\{[\s\S]*?width: 400,[\s\S]*?height: 225/,
+    );
     const toolbarArrayMatch = constantsSource.match(
         /const JITSI_TOOLBAR_BUTTONS = \[([\s\S]*?)\];/,
     );

@@ -697,6 +697,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /action: "component"/);
     assert.match(providerSource, /meetingSubject: VOIP_MEETING_SUBJECT/);
     assert.match(providerSource, /mode: "overlay"/);
+    assert.match(providerSource, /dimensions: JITSI_PIP_DIMENSIONS/);
     assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
     assert.match(providerSource, /action: "navigate"/);
     assert.match(providerSource, /meetings\?meetingId=/);
