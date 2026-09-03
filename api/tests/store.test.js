@@ -3,6 +3,26 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { JitsiMeetStore } from "../store.js";
+import { findMeetingByChatRoomReference } from "../reuse/meeting-room-lookup.js";
+
+test("meeting room lookup falls back to disposable call sources", async () => {
+    const queriedColumns = [];
+    const meeting = { id: "meeting-from-call" };
+    const result = await findMeetingByChatRoomReference({
+        db: {
+            async executeCommand(command) {
+                queriedColumns.push(command.where[0].column);
+                return command.where[0].column === "source_chat_room_id"
+                    ? { rows: [{ id: meeting.id }] }
+                    : { rows: [] };
+            },
+        },
+        chatRoomId: "messages-room",
+        getMeetingById: async () => meeting,
+    });
+    assert.equal(result, meeting);
+    assert.deepEqual(queriedColumns, ["chat_room_id", "source_chat_room_id"]);
+});
 
 test("reserved participants include only active presence in other meetings", async () => {
     const store = new JitsiMeetStore({
@@ -501,6 +521,10 @@ test("persistent meetings reuse their stored identity after store reconstruction
     assert.notEqual(freshMeeting.id, firstMeeting.id);
     assert.notEqual(freshMeeting.meetingName, firstMeeting.meetingName);
     assert.equal(freshMeeting.reused, false);
+    assert.notEqual(
+        mockDb.insertedMeetingRows[0].participant_key,
+        mockDb.insertedMeetingRows[1].participant_key,
+    );
 });
 
 test("participant-free disposable meetings always receive distinct identities", async () => {

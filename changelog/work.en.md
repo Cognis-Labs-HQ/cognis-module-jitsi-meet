@@ -18,7 +18,11 @@ The navbar registration now advertises `voip:startCall`, allowing Cognis to load
 
 Jitsi now resolves each room request to a normalized `component` action instead of creating and mounting a stage itself. Cognis Messages owns component spawning, cleanup, and launch feedback under the latest provider contract.
 
+## Reuse meeting rooms and create collision-free calls
+
+Each VoIP capability request now checks both meeting chatrooms and disposable-call source rooms. Existing meetings return a router redirect; unmatched rooms create one disposable component meeting with a unique participant key, preventing database constraint failures.
+
 ## Commits
 
-- [3bd6d6a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bd6d6a16b4b495f91dbf1f7e55e7aa86d1381fd)
-- [b68432b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b68432b0f3db343ef0db7d706aeaad5000063e96)
+- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
+- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)

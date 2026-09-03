@@ -13,6 +13,7 @@ import {
     encryptPayload,
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
+import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
 import { ensureJitsiStoreSchemaOnce } from "./reuse/store-schema.js";
 import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
@@ -163,16 +164,11 @@ export class JitsiMeetStore {
         };
     }
     async getMeetingByChatRoomId(chatRoomId) {
-        if (!chatRoomId) return null;
-        const result = await this.db.executeCommand({
-            option: "SELECT",
-            table: "jitsi_meetings",
-            where: [{ column: "chat_room_id", value: chatRoomId }],
-            limit: 1,
+        return findMeetingByChatRoomReference({
+            db: this.db,
+            chatRoomId,
+            getMeetingById: (id) => this.getMeetingById(id),
         });
-        const row = result.rows?.[0];
-        if (!row?.id) return null;
-        return this.getMeetingById(String(row.id));
     }
     async deleteMeeting(meetingId) {
         const normalizedMeetingId = String(meetingId ?? "").trim();
@@ -437,6 +433,7 @@ export class JitsiMeetStore {
             this.normalizeHandleKeys,
             participantUsernames,
             normalizedClassroomId,
+            forceNew || disposable ? meetingId : null,
         );
         const createdAt = new Date().toISOString();
         const normalizedScheduledAt = Number.isFinite(

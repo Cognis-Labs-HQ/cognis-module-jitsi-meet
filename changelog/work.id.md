@@ -18,7 +18,11 @@ Pendaftaran bilah navigasi kini mendeklarasikan `voip:startCall`, sehingga Cogni
 
 Jitsi kini menyelesaikan setiap permintaan ruang menjadi tindakan `component` yang dinormalisasi, alih-alih membuat dan memasang panggung sendiri. Sesuai kontrak penyedia terbaru, Cognis Messages memiliki pemasangan dan pembersihan komponen serta umpan balik peluncuran.
 
+## Gunakan kembali ruang rapat dan buat panggilan tanpa benturan
+
+Setiap permintaan kapabilitas VoIP kini memeriksa ruang percakapan rapat serta ruang sumber panggilan sekali pakai. Rapat yang sudah ada mengembalikan pengalihan router; ruang yang belum cocok membuat satu rapat komponen sekali pakai dengan kunci peserta unik sehingga kegagalan batasan basis data dapat dicegah.
+
 ## Komit
 
-- [3bd6d6a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bd6d6a16b4b495f91dbf1f7e55e7aa86d1381fd)
-- [b68432b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b68432b0f3db343ef0db7d706aeaad5000063e96)
+- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
+- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)

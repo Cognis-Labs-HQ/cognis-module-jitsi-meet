@@ -86,28 +86,10 @@ export async function mount(
         Boolean(shareContext?.guestAccessToken) &&
         shareContext?.directAccess !== true;
     if (!limitedShareView) await ensureFullAccountSession();
-    let resolvedMeetingId =
+    const resolvedMeetingId =
         requestedMeetingId ||
         String(focusState?.meetingId ?? "") ||
         (inShareView ? String(shareContext?.resourceId ?? "") : "");
-    if (focusState?.messagesCall === true && !resolvedMeetingId) {
-        const response = await apiFetch(
-            "/api/v1/modules/jitsi-meet/meetings/messages-call",
-            {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify(focusState.messagesCallRequest ?? {}),
-                signal,
-            },
-        );
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok || !payload?.data?.id) {
-            throw new Error(
-                payload?.error?.message ?? "Video call could not start.",
-            );
-        }
-        resolvedMeetingId = payload.data.id;
-    }
     const messageUiResources = await loadMessageUiResources();
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
         ? await import(messageUiResources.chatLoadingModuleUrl)

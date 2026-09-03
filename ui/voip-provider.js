@@ -1,10 +1,12 @@
-import { uiCtx } from "./reuse/resources.js";
+import { importReuseModule, uiCtx } from "./reuse/resources.js";
+
+const { apiFetch } = await importReuseModule("api-client.js");
 
 const CAPABILITY = "voip:startCall";
 const COMPONENT_UUID = "f055f2e5-227a-5fb4-b934-5397ec32cf2d";
 const COMPONENT_ROUTE_ID = "module.jitsi.meet.meetings";
 
-export function resolveMessagesCallAction(input = {}) {
+export async function resolveMessagesCallAction(input = {}) {
     const roomId = String(input.room?.id ?? "").trim();
     const roomKind = String(input.room?.kind ?? "").trim();
     const members = Array.isArray(input.users) ? input.users : [];
@@ -25,6 +27,30 @@ export function resolveMessagesCallAction(input = {}) {
         return null;
     }
 
+    const response = await apiFetch(
+        "/api/v1/modules/jitsi-meet/meetings/messages-call",
+        {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                roomId,
+                memberAccountIds: members.map((member) => member.accountId),
+            }),
+        },
+    );
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(payload?.error?.message ?? "Request failed");
+    }
+    const meetingId = String(payload?.data?.id ?? "").trim();
+    if (!meetingId) return null;
+    if (payload.data.existing === true) {
+        if (!input.supportedActions.includes("navigate")) return null;
+        return {
+            action: "navigate",
+            url: `/meetings?meetingId=${encodeURIComponent(meetingId)}&start=1`,
+        };
+    }
     return {
         action: "component",
         componentUuid: COMPONENT_UUID,
@@ -34,10 +60,7 @@ export function resolveMessagesCallAction(input = {}) {
         context: {
             autoStart: true,
             messagesCall: true,
-            messagesCallRequest: {
-                roomId,
-                memberAccountIds: members.map((member) => member.accountId),
-            },
+            meetingId,
         },
     };
 }

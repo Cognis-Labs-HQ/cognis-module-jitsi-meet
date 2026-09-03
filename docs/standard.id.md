@@ -2,9 +2,9 @@
 
 Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peserta, ruang rapat yang dapat digunakan ulang, pengambilalihan sesi, integrasi chat Messages, dan Papan Tulis bersama opsional.
 
-Messages menyelesaikan penyedia Jitsi `voip:startCall` secara terpisah untuk setiap percakapan langsung atau grup. Jitsi mengembalikan `null` jika permintaan tidak didukung; jika didukung, Jitsi mengembalikan tindakan `component` milik host untuk rute Meetings dalam mode overlay dengan permintaan terserialisasi bagi panggilan sekali pakai yang dibatasi pada anggota ruang pemicu.
+Messages menyelesaikan penyedia Jitsi `voip:startCall` secara terpisah untuk setiap percakapan langsung atau grup. Jitsi memvalidasi permintaan ruang melalui API terautentikasinya. Jika ruang sudah merujuk ke rapat, penyedia mengembalikan tindakan `navigate` dengan asal yang sama untuk rapat tersebut. Jika belum, penyedia membuat satu rapat sekali pakai bagi anggota ruang yang dikirimkan dan mengembalikan tindakan `component` milik host untuk rute Meetings dalam mode overlay. Permintaan yang tidak didukung menghasilkan `null`.
 
-Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak mengubah DOM Messages atau memanggil broker halaman komponen secara langsung. Setelah komponen dipasang, Kembali ke pesan mempertahankan rapat aktif dan mengubah jendelanya menjadi gambar-dalam-gambar. Panggilan ini tidak membuat percakapan rapat dan tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard.
+Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak mengubah DOM Messages atau memanggil broker halaman komponen secara langsung. Setelah komponen dipasang, Kembali ke pesan mempertahankan rapat aktif dan mengubah jendelanya menjadi gambar-dalam-gambar. Panggilan sekali pakai memakai kunci peserta unik, tidak membuat percakapan rapat, dan tidak dapat dibagikan, ditambah pesertanya, atau dihubungkan ke Whiteboard.
 
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 

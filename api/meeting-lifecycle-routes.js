@@ -87,6 +87,25 @@ export function registerMeetingLifecycleRoutes({
             const participantUsernames = profiles.map((profile) =>
                 normalizeHandleKey(profile.handle),
             );
+            const existingMeeting = await store.getMeetingByChatRoomId(roomId);
+            if (existingMeeting) {
+                const existingParticipants = await store.listParticipants(
+                    existingMeeting.id,
+                );
+                if (!existingParticipants.includes(requesterUsername)) {
+                    sendError(
+                        res,
+                        403,
+                        "forbidden",
+                        "The chatroom meeting is not available.",
+                    );
+                    return;
+                }
+                sendJson(res, 200, {
+                    data: { id: existingMeeting.id, existing: true },
+                });
+                return;
+            }
             const config = await store.getConfig();
             if (!config.instanceUrl) {
                 sendError(
@@ -122,7 +141,7 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: meeting.id,
                 roomId,
             });
-            sendJson(res, 200, { data: payload });
+            sendJson(res, 200, { data: { ...payload, existing: false } });
         },
         { access: { minRole: "user" } },
     );

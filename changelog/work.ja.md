@@ -18,7 +18,11 @@ Messages 通話は共有、参加者の追加、Whiteboard との接続ができ
 
 Jitsi はステージを自ら作成してマウントする代わりに、各ルーム要求を正規化された `component` アクションへ解決するようになりました。最新のプロバイダー契約に従い、コンポーネントの生成、クリーンアップ、起動結果の通知は Cognis Messages が所有します。
 
+## ミーティングルームを再利用し、競合しない通話を作成
+
+各 VoIP ケイパビリティ要求で、ミーティングチャットルームと使い捨て通話の開始元ルームの両方を確認するようになりました。既存のミーティングにはルーターリダイレクトを返し、一致しないルームには一意の参加者キーを持つ使い捨てコンポーネントミーティングを作成して、データベース制約エラーを防ぎます。
+
 ## コミット
 
-- [3bd6d6a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3bd6d6a16b4b495f91dbf1f7e55e7aa86d1381fd)
-- [b68432b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b68432b0f3db343ef0db7d706aeaad5000063e96)
+- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
+- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)
