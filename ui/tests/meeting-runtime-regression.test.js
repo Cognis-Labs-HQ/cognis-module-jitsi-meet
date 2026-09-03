@@ -698,6 +698,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /supportedActions/);
     assert.match(providerSource, /action: "component"/);
     assert.match(providerSource, /meetingSubject: VOIP_MEETING_SUBJECT/);
+    assert.match(providerSource, /allowNavigation: true/);
     assert.match(providerSource, /mode: "overlay"/);
     assert.match(providerSource, /minSize: JITSI_PIP_MINIMUM_SIZE/);
     assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
@@ -733,6 +734,15 @@ test("component-window meetings suppress the meeting overlay", () => {
         /\.jitsi-route-root\[data-suppress-meeting-overlay="true"\] \.jitsi-stage-header\s*\{[\s\S]*?display: none/,
     );
     assert.doesNotMatch(appSource, /back_to_messages|jitsi-call-back-button/);
+    const interactiveSource = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
+    assert.match(appSource, /focusState\?\.allowNavigation === true/);
+    assert.match(
+        interactiveSource,
+        /if \(!isMeetingActive\(\) \|\| state\.allowNavigation\) return;/,
+    );
 });
 
 test("ended component meetings discard their host window", () => {

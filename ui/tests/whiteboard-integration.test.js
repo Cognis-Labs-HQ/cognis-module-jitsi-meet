@@ -146,6 +146,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.doesNotMatch(stylesheet, /\.jitsi-whiteboard-component-open/);
     assert.match(buttonSource, /ui:makeFloatingWindow/);
     assert.match(buttonSource, /closeButton: \{/);
+    assert.match(buttonSource, /className: "btn-cancel"/);
     assert.match(buttonSource, /onClose: \(\) => button\.click\(\)/);
     assert.match(buttonSource, /trigger\.componentWindowPending = true/);
     assert.match(

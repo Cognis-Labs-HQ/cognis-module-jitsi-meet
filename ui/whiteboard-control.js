@@ -613,6 +613,7 @@ export async function bindWhiteboardButton({
                             minHeight: minimumSize.height,
                             signal,
                             closeButton: {
+                                className: "btn-cancel",
                                 label: i18n.t(
                                     "module.jitsi_meet.whiteboard.close",
                                 ),

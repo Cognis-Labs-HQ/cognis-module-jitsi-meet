@@ -10,7 +10,7 @@ Pemasangan jendela komponen menyembunyikan overlay rapat serta header “Jendela
 
 Ketika peserta lokal keluar, dikeluarkan, atau konferensi berakhir, Jitsi menyelesaikan pembersihan rapat lalu meminta kapabilitas halaman komponen host untuk membuang jendela komponen yang memuatnya. Sesi pada halaman Meetings penuh tidak meminta pembuangan komponen. Ketika rapat dipindahkan ke PiP untuk menampilkan Papan Tulisnya, kontrol tutup milik host menutup Papan Tulis dan memulihkan rapat.
 
-Metadata komponen dapat menetapkan `allParticipantsRequired` agar seluruh daftar peserta wajib hadir. Saat rapat komponen tersebut telah diikuti, peristiwa Jitsi `participantLeft` pertama akan mengakhiri rapat, menjalankan pembersihan server dan klien seperti biasa, serta menutup jendela komponen. Panggilan VoIP Messages mengaktifkan flag ini.
+Metadata komponen dapat menetapkan `allParticipantsRequired` agar seluruh daftar peserta wajib hadir. Saat rapat komponen tersebut telah diikuti, peristiwa Jitsi `participantLeft` pertama akan mengakhiri rapat, menjalankan pembersihan server dan klien seperti biasa, serta menutup jendela komponen. Panggilan VoIP Messages mengaktifkan flag ini. Metadata komponen juga dapat menetapkan `allowNavigation`; saat diaktifkan untuk rapat komponen, pelindung pembongkaran, tautan, dan riwayat rapat aktif menyerahkan navigasi kepada host sehingga Cognis dapat mempertahankan panggilan PiP ketika meninggalkan Messages.
 
 Tindakan penyedia mendeklarasikan `minSize: { width, height }` dengan minimum 400 × 225 piksel, menggunakan definisi payload PiP yang sama dengan Nextcloud Whiteboard agar host dapat menerapkan minimum panggilan mengambang secara konsisten.
 

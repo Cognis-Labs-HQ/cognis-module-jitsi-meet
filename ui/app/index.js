@@ -159,6 +159,8 @@ export async function mount(
         messagesCall: focusState?.messagesCall === true,
         allParticipantsRequired:
             componentWindow && focusState?.allParticipantsRequired === true,
+        allowNavigation:
+            componentWindow && focusState?.allowNavigation === true,
         meetingSubject: String(
             focusState?.meetingSubject ?? MEETING_SUBJECT,
         ).trim(),

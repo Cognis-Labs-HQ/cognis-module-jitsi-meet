@@ -54,9 +54,14 @@ VoIP-Komponentenaktionen veröffentlichen nun `minSize: { width, height }` und e
 
 Meeting-PiP-Fenster, die neben einem Whiteboard geöffnet werden, stellen nun die `closeButton`-Definition für das schwebende Host-Fenster bereit. Ihre Betätigung führt die vorhandene Aktion zum Schließen des Whiteboards aus, synchronisiert den Meeting-Status und stellt das Meeting aus PiP wieder her.
 
+## Anrufe während der Host-Navigation bewahren
+
+Messages-VoIP-Aktionen aktivieren nun `allowNavigation`, sodass Cognis navigieren kann, während ein Komponenten-Meeting in PiP erhalten bleibt. Der Schutz vor Entladen, Link- und Verlaufsnavigation bleibt standardmäßig für alle anderen Meetings aktiv. Die Definition der Whiteboard-PiP-Schließen-Schaltfläche fordert außerdem den Stil `btn-cancel` an.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
+- [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)

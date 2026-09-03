@@ -463,7 +463,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "beforeunload",
             (event) => {
-                if (!isMeetingActive()) return;
+                if (!isMeetingActive() || state.allowNavigation) return;
                 event.preventDefault();
                 event.returnValue = "";
             },
@@ -472,7 +472,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "click",
             (event) => {
-                if (!isMeetingActive()) return;
+                if (!isMeetingActive() || state.allowNavigation) return;
                 const target = event.target;
                 if (!(target instanceof Element)) return;
                 const linkEl = target.closest("a[href]");
@@ -495,7 +495,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "popstate",
             () => {
-                if (!isMeetingActive()) return;
+                if (!isMeetingActive() || state.allowNavigation) return;
                 history.pushState(history.state, "", window.location.href);
                 showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
                     variant: "warning",

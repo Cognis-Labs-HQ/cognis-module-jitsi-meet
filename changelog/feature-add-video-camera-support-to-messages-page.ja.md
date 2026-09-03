@@ -54,9 +54,14 @@ VoIP コンポーネントアクションは、プロバイダー固有の寸法
 
 Whiteboard とともに開くミーティング PiP ウィンドウが、ホストのフローティングウィンドウへ `closeButton` 定義を渡すようになりました。このボタンを操作すると、既存の Whiteboard 終了処理を実行してミーティング状態を同期し、PiP からミーティングを復元します。
 
+## ホストのナビゲーション中も通話を維持
+
+Messages VoIP アクションが `allowNavigation` を有効にし、コンポーネントミーティングを PiP に保持したまま Cognis が画面遷移できるようになりました。進行中ミーティングのアンロード、リンク、履歴移動の保護は、それ以外のミーティングでは引き続き既定で有効です。Whiteboard PiP の閉じるボタン定義でも `btn-cancel` スタイルを要求します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
+- [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)

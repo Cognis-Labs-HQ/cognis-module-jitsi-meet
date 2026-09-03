@@ -54,9 +54,14 @@ VoIP component actions now publish `minSize: { width, height }`, matching the Pi
 
 Meeting PiP windows opened alongside a Whiteboard now supply the host floating-window `closeButton` definition. Activating it runs the existing Whiteboard close action, synchronizes meeting state, and restores the meeting from PiP.
 
+## Preserve calls across host navigation
+
+Messages VoIP actions now enable `allowNavigation`, allowing Cognis to navigate away while retaining a component meeting in PiP. Active-meeting unload, link, and history protection remains enabled by default for every other meeting. The Whiteboard PiP close-button definition also requests the `btn-cancel` style.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
+- [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)

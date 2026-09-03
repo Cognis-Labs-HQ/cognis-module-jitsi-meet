@@ -10,7 +10,7 @@ Component-window mounts suppress both the meeting overlay and the “Meeting Win
 
 When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard. When a meeting is moved into PiP to present its Whiteboard, the host close control closes the Whiteboard and restores the meeting.
 
-Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. Messages VoIP calls enable this flag.
+Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. Messages VoIP calls enable this flag. Component metadata can also set `allowNavigation`; when enabled for a component meeting, the active-meeting unload, link, and history guards yield to host-managed navigation so Cognis can keep a PiP call alive while leaving Messages.
 
 The provider action advertises `minSize: { width, height }` with a 400 × 225 pixel minimum, using the same PiP payload definition as Nextcloud Whiteboard so the host can enforce the floating call minimum consistently.
 

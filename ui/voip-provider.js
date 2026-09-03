@@ -67,6 +67,7 @@ export async function resolveMessagesCallAction(input = {}) {
             meetingId,
             meetingSubject: VOIP_MEETING_SUBJECT,
             allParticipantsRequired: true,
+            allowNavigation: true,
         },
     };
 }
