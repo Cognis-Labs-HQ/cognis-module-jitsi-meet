@@ -102,7 +102,12 @@ export function registerMeetingLifecycleRoutes({
                     return;
                 }
                 sendJson(res, 200, {
-                    data: { id: existingMeeting.id, existing: true },
+                    data: {
+                        id: existingMeeting.id,
+                        action: existingMeeting.disposable
+                            ? "component"
+                            : "navigate",
+                    },
                 });
                 return;
             }
@@ -141,7 +146,9 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: meeting.id,
                 roomId,
             });
-            sendJson(res, 200, { data: { ...payload, existing: false } });
+            sendJson(res, 200, {
+                data: { ...payload, action: "component" },
+            });
         },
         { access: { minRole: "user" } },
     );

@@ -699,7 +699,8 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
     assert.match(providerSource, /action: "navigate"/);
     assert.match(providerSource, /meetings\?meetingId=/);
-    assert.match(providerSource, /payload\.data\.existing === true/);
+    assert.match(providerSource, /payload\.data\.action === "navigate"/);
+    assert.match(providerSource, /action !== "component"/);
     assert.match(providerSource, /body: JSON\.stringify/);
     assert.doesNotMatch(providerSource, /component-pages:spawn/);
     assert.doesNotMatch(providerSource, /document\.(?:body|querySelector)/);
@@ -707,4 +708,9 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(lifecycleSource, /disposable: true/);
     assert.match(lifecycleSource, /chatRoomId: null/);
     assert.match(lifecycleSource, /existingMeeting/);
+    assert.match(
+        lifecycleSource,
+        /existingMeeting\.disposable[\s\S]*?"component"[\s\S]*?: "navigate"/,
+    );
+    assert.match(lifecycleSource, /action: "component"/);
 });

@@ -22,7 +22,11 @@ Jitsi löst nun jede Raumanfrage in eine normalisierte `component`-Aktion auf, s
 
 Jede VoIP-Capability-Anfrage prüft nun sowohl Meeting-Chaträume als auch Quellräume verfügbarer Anrufe. Bestehende Meetings liefern eine Router-Weiterleitung; nicht zugeordnete Räume erstellen ein verfügbares Komponenten-Meeting mit eindeutigem Teilnehmerschlüssel und vermeiden dadurch Datenbank-Konflikte.
 
+## Verfügbare Anrufe eingebettet und außerhalb von Meetings halten
+
+Räume, die verfügbaren Anrufen zugeordnet sind, liefern weiterhin Komponentenaktionen statt Weiterleitungen; nur reguläre Meeting-Chaträume navigieren zu Meetings. Verfügbare Anrufe sind sowohl aus der Erkennung aktiver Meetings als auch aus dem Verlauf früherer Meetings ausgeschlossen.
+
 ## Commits
 
-- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
-- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)
+- [faf0878](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/faf087887c39e69f50503856ffb59ffa2d29e921)
+- [74e686a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/74e686a2083fc8440a4ffbd77d655300d211fd2a)

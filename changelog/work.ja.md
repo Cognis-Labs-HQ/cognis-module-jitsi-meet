@@ -22,7 +22,11 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 各 VoIP ケイパビリティ要求で、ミーティングチャットルームと使い捨て通話の開始元ルームの両方を確認するようになりました。既存のミーティングにはルーターリダイレクトを返し、一致しないルームには一意の参加者キーを持つ使い捨てコンポーネントミーティングを作成して、データベース制約エラーを防ぎます。
 
+## 使い捨て通話を埋め込みのまま Meetings から非表示に
+
+使い捨て通話に関連付けられたルームはリダイレクトではなくコンポーネントアクションを返し続け、通常のミーティングチャットルームだけが Meetings へ移動します。使い捨て通話は進行中のミーティング検出と以前のミーティング履歴の両方から除外されます。
+
 ## コミット
 
-- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
-- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)
+- [faf0878](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/faf087887c39e69f50503856ffb59ffa2d29e921)
+- [74e686a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/74e686a2083fc8440a4ffbd77d655300d211fd2a)

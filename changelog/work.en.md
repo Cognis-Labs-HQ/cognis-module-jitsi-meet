@@ -22,7 +22,11 @@ Jitsi now resolves each room request to a normalized `component` action instead 
 
 Each VoIP capability request now checks both meeting chatrooms and disposable-call source rooms. Existing meetings return a router redirect; unmatched rooms create one disposable component meeting with a unique participant key, preventing database constraint failures.
 
+## Keep disposable calls embedded and hidden from Meetings
+
+Rooms mapped to disposable calls now continue returning component actions instead of redirects, while only regular meeting chatrooms navigate to Meetings. Disposable calls are excluded from active meeting discovery as well as previous meeting history.
+
 ## Commits
 
-- [15f072f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/15f072fa11c997d9c427c4fb01c132068eeb73ec)
-- [c4612ac](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c4612ac89019f9643fefbd41b79cfb8c30797fc6)
+- [faf0878](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/faf087887c39e69f50503856ffb59ffa2d29e921)
+- [74e686a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/74e686a2083fc8440a4ffbd77d655300d211fd2a)

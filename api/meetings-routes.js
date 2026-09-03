@@ -348,7 +348,7 @@ export function registerMeetingRoutes({
             const visibleMeetings = [];
             for (const activeMeeting of activeMeetings) {
                 const meeting = await store.getMeetingById(activeMeeting.id);
-                if (!meeting) continue;
+                if (!meeting || meeting.disposable) continue;
                 const authorized = await canAccessMeeting({
                     store,
                     meeting,

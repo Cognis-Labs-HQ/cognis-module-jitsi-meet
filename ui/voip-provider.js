@@ -44,13 +44,14 @@ export async function resolveMessagesCallAction(input = {}) {
     }
     const meetingId = String(payload?.data?.id ?? "").trim();
     if (!meetingId) return null;
-    if (payload.data.existing === true) {
+    if (payload.data.action === "navigate") {
         if (!input.supportedActions.includes("navigate")) return null;
         return {
             action: "navigate",
             url: `/meetings?meetingId=${encodeURIComponent(meetingId)}&start=1`,
         };
     }
+    if (payload.data.action !== "component") return null;
     return {
         action: "component",
         componentUuid: COMPONENT_UUID,

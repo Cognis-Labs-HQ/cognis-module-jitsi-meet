@@ -79,6 +79,14 @@ test("participant Whiteboard opens request approval from active meeting peers", 
     assert.match(source, /operation: "request_whiteboard_open_approval"/);
 });
 
+test("disposable Messages calls stay out of Meetings discovery", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
+    assert.match(source, /if \(!meeting \|\| meeting\.disposable\) continue;/);
+});
+
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 
