@@ -1,6 +1,6 @@
 # Messages-Videoanrufe mit verfügbaren Jitsi-Meetings
 
-**Feature-Zweig:** work
+**Feature-Zweig:** feature-add-video-camera-support-to-messages-page
 
 ## Eingeschränkte Anrufe aus Messages starten
 
@@ -40,5 +40,5 @@ Nachdem ein in einem Komponentenfenster eingebundenes Meeting wegen Verlassen, E
 
 ## Commits
 
-- [8443708](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8443708a97361cf0d755442beabcca2c9f20e781)
 - [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)
+- [1e4b462](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e4b46262d54f5cd87adb9f138535cf465c06251)
