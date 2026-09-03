@@ -46,7 +46,12 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 Jitsi VoIP のコンポーネントアクションが、ペイロードに 400 × 225 ピクセルの寸法を含むようになりました。Meetings コンポーネントページの最小サイズと一致し、ホストがフローティング通話を一貫した大きさにできます。
 
+## 共通の PiP 最小サイズペイロードを使用
+
+VoIP コンポーネントアクションは、プロバイダー固有の寸法フィールドではなく `minSize: { width, height }` を公開し、Nextcloud Whiteboard が使用する PiP メタデータ定義と一致するようになりました。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
+- [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)

@@ -12,7 +12,7 @@ Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konfere
 
 Komponenten-Metadaten können mit `allParticipantsRequired` die vollständige Teilnehmerliste verpflichtend machen. Sobald in einem solchen beigetretenen Komponenten-Meeting das erste Jitsi-Ereignis `participantLeft` eintritt, wird das Meeting beendet, regulär auf Server und Client bereinigt und das Komponentenfenster geschlossen. Messages-VoIP-Anrufe aktivieren dieses Flag.
 
-Die Anbieteraktion weist PiP-Abmessungen von 400 × 225 Pixeln aus. Sie entsprechen der Mindestgröße der Meetings-Komponentenseite, damit der Host den schwebenden Anruf bereits anhand der ersten Nutzlast korrekt dimensionieren kann.
+Die Anbieteraktion weist mit `minSize: { width, height }` eine Mindestgröße von 400 × 225 Pixeln aus und verwendet damit dieselbe PiP-Nutzlastdefinition wie Nextcloud Whiteboard, sodass der Host die Mindestgröße des schwebenden Anrufs einheitlich durchsetzen kann.
 
 Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
 

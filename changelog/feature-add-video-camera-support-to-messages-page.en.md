@@ -46,7 +46,12 @@ Component metadata can now require every participant for the full call. Messages
 
 Jitsi VoIP component actions now include 400 × 225 pixel dimensions in their payload. The values match the Meetings component-page minimum and let the host size the floating call consistently.
 
+## Use the shared PiP minimum-size payload
+
+VoIP component actions now publish `minSize: { width, height }`, matching the PiP metadata definition used by Nextcloud Whiteboard instead of exposing a provider-specific dimensions field.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
+- [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)

@@ -46,7 +46,12 @@ Metadata komponen kini dapat mewajibkan setiap peserta selama panggilan berlangs
 
 Tindakan komponen VoIP Jitsi kini menyertakan dimensi 400 × 225 piksel dalam payload. Nilai tersebut sesuai dengan ukuran minimum halaman komponen Meetings dan memungkinkan host mengatur ukuran panggilan mengambang secara konsisten.
 
+## Gunakan payload ukuran minimum PiP bersama
+
+Tindakan komponen VoIP kini memublikasikan `minSize: { width, height }`, sesuai definisi metadata PiP yang digunakan Nextcloud Whiteboard, alih-alih menyediakan bidang dimensi khusus penyedia.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
+- [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)

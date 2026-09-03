@@ -1,5 +1,5 @@
 import { importReuseModule, uiCtx } from "./reuse/resources.js";
-import { JITSI_PIP_DIMENSIONS } from "./constants.js";
+import { JITSI_PIP_MINIMUM_SIZE } from "./constants.js";
 
 const { apiFetch } = await importReuseModule("api-client.js");
 
@@ -60,7 +60,7 @@ export async function resolveMessagesCallAction(input = {}) {
         routeId: COMPONENT_ROUTE_ID,
         mode: "overlay",
         borderless: true,
-        dimensions: JITSI_PIP_DIMENSIONS,
+        minSize: JITSI_PIP_MINIMUM_SIZE,
         context: {
             autoStart: true,
             messagesCall: true,

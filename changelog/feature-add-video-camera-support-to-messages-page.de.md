@@ -46,7 +46,12 @@ Komponenten-Metadaten können nun alle Teilnehmenden für den gesamten Anruf vor
 
 Jitsi-VoIP-Komponentenaktionen enthalten nun Abmessungen von 400 × 225 Pixeln in ihrer Nutzlast. Die Werte entsprechen der Mindestgröße der Meetings-Komponentenseite und ermöglichen dem Host eine einheitliche Dimensionierung des schwebenden Anrufs.
 
+## Gemeinsame Nutzlast für die PiP-Mindestgröße verwenden
+
+VoIP-Komponentenaktionen veröffentlichen nun `minSize: { width, height }` und entsprechen damit der von Nextcloud Whiteboard verwendeten PiP-Metadatendefinition, anstatt ein anbieterspezifisches Abmessungsfeld bereitzustellen.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
+- [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
