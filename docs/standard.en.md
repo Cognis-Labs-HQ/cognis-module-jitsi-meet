@@ -8,7 +8,7 @@ Cognis owns the temporary component stage and its cleanup. Jitsi does not alter 
 
 Component-window mounts suppress both the meeting overlay and the “Meeting Window” header, so the embedded surface shows only the meeting frame while it connects and runs.
 
-When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard.
+When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard. When a meeting is moved into PiP to present its Whiteboard, the host close control closes the Whiteboard and restores the meeting.
 
 Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. Messages VoIP calls enable this flag.
 

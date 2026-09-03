@@ -50,8 +50,13 @@ Jitsi VoIP のコンポーネントアクションが、ペイロードに 400 �
 
 VoIP コンポーネントアクションは、プロバイダー固有の寸法フィールドではなく `minSize: { width, height }` を公開し、Nextcloud Whiteboard が使用する PiP メタデータ定義と一致するようになりました。
 
+## ホストの操作部から Whiteboard PiP を閉じる
+
+Whiteboard とともに開くミーティング PiP ウィンドウが、ホストのフローティングウィンドウへ `closeButton` 定義を渡すようになりました。このボタンを操作すると、既存の Whiteboard 終了処理を実行してミーティング状態を同期し、PiP からミーティングを復元します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
+- [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)

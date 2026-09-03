@@ -8,7 +8,7 @@ Cognis verwaltet die temporäre Komponentenbühne und deren Bereinigung. Jitsi v
 
 Einbindungen in Komponentenfenstern unterdrücken sowohl das Meeting-Overlay als auch die Überschrift „Meeting-Fenster“, sodass die eingebettete Oberfläche beim Verbinden und während des Anrufs nur den Meeting-Frame zeigt.
 
-Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konferenz endet, schließt Jitsi die Meeting-Bereinigung ab und fordert anschließend über die Host-Capability für Komponentenseiten das Verwerfen des umgebenden Komponentenfensters an. Vollständige Sitzungen auf der Meetings-Seite lösen kein Komponenten-Verwerfen aus.
+Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konferenz endet, schließt Jitsi die Meeting-Bereinigung ab und fordert anschließend über die Host-Capability für Komponentenseiten das Verwerfen des umgebenden Komponentenfensters an. Vollständige Sitzungen auf der Meetings-Seite lösen kein Komponenten-Verwerfen aus. Wenn ein Meeting zur Anzeige seines Whiteboards in PiP verschoben wird, schließt die Host-Schaltfläche das Whiteboard und stellt das Meeting wieder her.
 
 Komponenten-Metadaten können mit `allParticipantsRequired` die vollständige Teilnehmerliste verpflichtend machen. Sobald in einem solchen beigetretenen Komponenten-Meeting das erste Jitsi-Ereignis `participantLeft` eintritt, wird das Meeting beendet, regulär auf Server und Client bereinigt und das Komponentenfenster geschlossen. Messages-VoIP-Anrufe aktivieren dieses Flag.
 

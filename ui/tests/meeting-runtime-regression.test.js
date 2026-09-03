@@ -169,6 +169,8 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource,
         /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
     );
+    assert.match(controlSource, /closeButton: \{/);
+    assert.match(controlSource, /onClose: \(\) => button\.click\(\)/);
     assert.match(meetingRoomSource, /contentSharingParticipantsChanged/);
     assert.match(meetingRoomSource, /jitsi-meet\/screen-sharing/);
     assert.match(controlSource, /screenSharingActive === true/);

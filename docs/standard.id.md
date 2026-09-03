@@ -8,7 +8,7 @@ Cognis memiliki panggung komponen sementara beserta pembersihannya. Jitsi tidak 
 
 Pemasangan jendela komponen menyembunyikan overlay rapat serta header “Jendela Rapat”, sehingga permukaan tertanam hanya menampilkan bingkai rapat saat menghubungkan dan menjalankan panggilan.
 
-Ketika peserta lokal keluar, dikeluarkan, atau konferensi berakhir, Jitsi menyelesaikan pembersihan rapat lalu meminta kapabilitas halaman komponen host untuk membuang jendela komponen yang memuatnya. Sesi pada halaman Meetings penuh tidak meminta pembuangan komponen.
+Ketika peserta lokal keluar, dikeluarkan, atau konferensi berakhir, Jitsi menyelesaikan pembersihan rapat lalu meminta kapabilitas halaman komponen host untuk membuang jendela komponen yang memuatnya. Sesi pada halaman Meetings penuh tidak meminta pembuangan komponen. Ketika rapat dipindahkan ke PiP untuk menampilkan Papan Tulisnya, kontrol tutup milik host menutup Papan Tulis dan memulihkan rapat.
 
 Metadata komponen dapat menetapkan `allParticipantsRequired` agar seluruh daftar peserta wajib hadir. Saat rapat komponen tersebut telah diikuti, peristiwa Jitsi `participantLeft` pertama akan mengakhiri rapat, menjalankan pembersihan server dan klien seperti biasa, serta menutup jendela komponen. Panggilan VoIP Messages mengaktifkan flag ini.
 

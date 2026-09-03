@@ -50,8 +50,13 @@ Jitsi VoIP component actions now include 400 × 225 pixel dimensions in their pa
 
 VoIP component actions now publish `minSize: { width, height }`, matching the PiP metadata definition used by Nextcloud Whiteboard instead of exposing a provider-specific dimensions field.
 
+## Close Whiteboard PiP from host chrome
+
+Meeting PiP windows opened alongside a Whiteboard now supply the host floating-window `closeButton` definition. Activating it runs the existing Whiteboard close action, synchronizes meeting state, and restores the meeting from PiP.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
 - [6161476](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/61614768725d67669811159ec059c7d9af91a537)
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
+- [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
