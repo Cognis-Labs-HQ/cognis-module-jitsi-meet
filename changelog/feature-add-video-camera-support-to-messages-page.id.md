@@ -38,7 +38,11 @@ Rapat dalam jendela komponen kini menyembunyikan header “Jendela Rapat” bers
 
 Setelah rapat yang dipasang dalam komponen menyelesaikan pembersihan karena peserta keluar, dikeluarkan, atau konferensi berakhir, Jitsi kini membuang jendela komponen host yang memuatnya. Sesi halaman Meetings penuh tetap terbuka.
 
+## Wajibkan seluruh peserta panggilan komponen
+
+Metadata komponen kini dapat mewajibkan setiap peserta selama panggilan berlangsung. Panggilan VoIP Messages mengaktifkan perilaku ini, sehingga keluarnya peserta lokal maupun jarak jauh mengakhiri rapat, menyelesaikan pembersihan normal, dan menutup jendela komponen host.
+
 ## Komit
 
-- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)
-- [1e4b462](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e4b46262d54f5cd87adb9f138535cf465c06251)
+- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
+- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)

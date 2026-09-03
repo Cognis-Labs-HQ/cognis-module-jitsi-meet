@@ -10,6 +10,8 @@ Einbindungen in Komponentenfenstern unterdrücken sowohl das Meeting-Overlay als
 
 Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konferenz endet, schließt Jitsi die Meeting-Bereinigung ab und fordert anschließend über die Host-Capability für Komponentenseiten das Verwerfen des umgebenden Komponentenfensters an. Vollständige Sitzungen auf der Meetings-Seite lösen kein Komponenten-Verwerfen aus.
 
+Komponenten-Metadaten können mit `allParticipantsRequired` die vollständige Teilnehmerliste verpflichtend machen. Sobald in einem solchen beigetretenen Komponenten-Meeting das erste Jitsi-Ereignis `participantLeft` eintritt, wird das Meeting beendet, regulär auf Server und Client bereinigt und das Komponentenfenster geschlossen. Messages-VoIP-Anrufe aktivieren dieses Flag.
+
 Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
 
 ## Anwendungsbeispiele

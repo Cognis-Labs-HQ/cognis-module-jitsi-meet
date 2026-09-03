@@ -38,7 +38,11 @@ Jitsi はステージを自ら作成してマウントする代わりに、各�
 
 コンポーネントにマウントされたミーティングで、参加者の退出、キック、または会議終了に伴う後処理が完了すると、Jitsi は親のホストコンポーネントウィンドウを破棄するようになりました。通常の Meetings ページのセッションは開いたままです。
 
+## コンポーネント通話で全参加者を必須に
+
+コンポーネントメタデータで、通話中の全参加者を必須にできるようになりました。Messages VoIP 通話ではこの動作を有効にするため、ローカルまたはリモート参加者が退出するとミーティングを終了し、通常の後処理を完了してホストコンポーネントウィンドウを閉じます。
+
 ## コミット
 
-- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)
-- [1e4b462](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e4b46262d54f5cd87adb9f138535cf465c06251)
+- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
+- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)

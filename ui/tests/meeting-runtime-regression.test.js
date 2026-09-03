@@ -754,3 +754,26 @@ test("ended component meetings discard their host window", () => {
         /handleLocalParticipantKicked[\s\S]*?resetMeetingState[\s\S]*?closeComponentWindow/,
     );
 });
+
+test("required-participant component calls end when a participant leaves", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    const providerSource = readFileSync(
+        resolve(ROOT, "ui/voip-provider.js"),
+        "utf8",
+    );
+    assert.match(providerSource, /allParticipantsRequired: true/);
+    assert.match(
+        appSource,
+        /componentWindow && focusState\?\.allParticipantsRequired === true/,
+    );
+    assert.match(roomSource, /state\.allParticipantsRequired/);
+    assert.match(roomSource, /"participantLeft"/);
+    assert.match(
+        roomSource,
+        /handleRequiredParticipantLeft[\s\S]*?handleMeetingTerminated/,
+    );
+});

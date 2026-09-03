@@ -157,6 +157,8 @@ export async function mount(
             focusState?.autoStart === true ||
             new URL(window.location.href).searchParams.get("start") === "1",
         messagesCall: focusState?.messagesCall === true,
+        allParticipantsRequired:
+            componentWindow && focusState?.allParticipantsRequired === true,
         meetingSubject: String(
             focusState?.meetingSubject ?? MEETING_SUBJECT,
         ).trim(),

@@ -38,7 +38,11 @@ Meetings in Komponentenfenstern blenden nun die Überschrift „Meeting-Fenster�
 
 Nachdem ein in einem Komponentenfenster eingebundenes Meeting wegen Verlassen, Entfernen des Teilnehmers oder Konferenzende bereinigt wurde, verwirft Jitsi nun das umgebende Host-Komponentenfenster. Vollständige Sitzungen auf der Meetings-Seite bleiben geöffnet.
 
+## Vollständige Teilnehmerliste für Komponentenanrufe verlangen
+
+Komponenten-Metadaten können nun alle Teilnehmenden für den gesamten Anruf voraussetzen. Messages-VoIP-Anrufe aktivieren dieses Verhalten, sodass ein lokales oder entferntes Verlassen das Meeting beendet, regulär bereinigt und das Host-Komponentenfenster schließt.
+
 ## Commits
 
-- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)
-- [1e4b462](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e4b46262d54f5cd87adb9f138535cf465c06251)
+- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
+- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)

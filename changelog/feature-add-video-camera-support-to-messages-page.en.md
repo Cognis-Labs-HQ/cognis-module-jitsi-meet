@@ -38,7 +38,11 @@ Component-window meetings now hide the “Meeting Window” header together with
 
 After a component-mounted meeting finishes teardown because the participant leaves, is kicked, or the conference terminates, Jitsi now discards the containing host component window. Full Meetings-page sessions remain open.
 
+## Require the complete component-call roster
+
+Component metadata can now require every participant for the full call. Messages VoIP calls enable this behavior, so a local or remote departure terminates the meeting, completes normal teardown, and closes the host component window.
+
 ## Commits
 
-- [cc6a92c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/cc6a92c0054168293a38133b4e520d50bd8344c2)
-- [1e4b462](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e4b46262d54f5cd87adb9f138535cf465c06251)
+- [df43dbe](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/df43dbe8867bce9ab7c3361ce1c50f721b56443f)
+- [e94c9cf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e94c9cfbd0e79ca5a7b109e3e22e1854a3a4af3e)

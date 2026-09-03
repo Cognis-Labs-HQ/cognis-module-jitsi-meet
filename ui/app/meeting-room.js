@@ -278,6 +278,16 @@ export function createEmbedHandlers({
             });
             await callbacks.closeComponentWindow();
         };
+        const handleRequiredParticipantLeft = () => {
+            if (
+                state.jitsiApi !== apiInstance ||
+                !state.jitsiConferenceJoined ||
+                !state.allParticipantsRequired
+            ) {
+                return;
+            }
+            void handleMeetingTerminated();
+        };
         const reportScreenSharingState = async (event) => {
             if (state.jitsiApi !== apiInstance || !state.meeting?.id) return;
             const active = Array.isArray(event?.data) && event.data.length > 0;
@@ -384,6 +394,10 @@ export function createEmbedHandlers({
         });
         apiInstance.addEventListener("videoConferenceLeft", handleMeetingLeft);
         apiInstance.addEventListener("readyToClose", handleMeetingLeft);
+        apiInstance.addEventListener(
+            "participantLeft",
+            handleRequiredParticipantLeft,
+        );
         callbacks.renderParticipants();
 
         frame.hidden = false;

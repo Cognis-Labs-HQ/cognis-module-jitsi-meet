@@ -10,6 +10,8 @@ Pemasangan jendela komponen menyembunyikan overlay rapat serta header “Jendela
 
 Ketika peserta lokal keluar, dikeluarkan, atau konferensi berakhir, Jitsi menyelesaikan pembersihan rapat lalu meminta kapabilitas halaman komponen host untuk membuang jendela komponen yang memuatnya. Sesi pada halaman Meetings penuh tidak meminta pembuangan komponen.
 
+Metadata komponen dapat menetapkan `allParticipantsRequired` agar seluruh daftar peserta wajib hadir. Saat rapat komponen tersebut telah diikuti, peristiwa Jitsi `participantLeft` pertama akan mengakhiri rapat, menjalankan pembersihan server dan klien seperti biasa, serta menutup jendela komponen. Panggilan VoIP Messages mengaktifkan flag ini.
+
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 
 ## Contoh Penggunaan
