@@ -405,7 +405,7 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
-            if (resolved.meeting.chatRoomId) {
+            if (resolved.meeting.chatRoomId && !resolved.meeting.disposable) {
                 const chatMemberRemoved = await groupChatMembership
                     .remove({
                         roomId: resolved.meeting.chatRoomId,

@@ -90,6 +90,10 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 Meetings のルートまたはコンポーネントウィンドウを開く際に、グローバルなページコンポーサースタイルシートや共通スタイルシート一式を再要求しなくなりました。完全にスコープ化されたモジュール独自のスタイルシートだけを登録し、後方のカスケード位置によって無関係な Cognis 画面の表示が変わることを防ぎます。
 
+## キック時も開始元チャットのメンバー資格を維持
+
+破棄可能な VoIP ミーティングから参加者をキックした場合、Jitsi はミーティングと在席データ、および該当する場合はミーティングの Whiteboard からのみ削除します。通話を開始したプライベートチャットまたはグループチャットのメンバー資格は変更しません。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -105,3 +109,4 @@ Meetings のルートまたはコンポーネントウィンドウを開く際�
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
+- [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)

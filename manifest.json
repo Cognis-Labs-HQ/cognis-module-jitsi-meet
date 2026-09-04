@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.194",
+    "version": "1.5.195",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -171,7 +171,7 @@
         },
         {
             "path": "api/meeting-lifecycle-routes.js",
-            "sha256": "081ba834c667914ae345c92059a9b10ada938b302219755bb6831caebcb17997"
+            "sha256": "b0e9657c3fe6a5c9e61c11355c07e624d0bd727131315ca1f229ecfbcfa23ff5"
         },
         {
             "path": "api/meeting-name.js",
@@ -315,7 +315,7 @@
         },
         {
             "path": "api/tests/meeting-lifecycle-routes.test.js",
-            "sha256": "3573e634f76cf97e2697b637032268471283e3c16677eb0084e8f00d64fd656b"
+            "sha256": "84904248766bccc6faa91d6a035042fa4155894be44b4fabdb44bbdd894dd499"
         },
         {
             "path": "api/tests/participant-approval.test.js",
@@ -395,27 +395,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "ce00d5afe4c8463757f7ef985f3524149bdcec00cf36f515b4de50650d33437e"
+            "sha256": "e14cada3a43662d3be995afeeb4e6c6053f4bac1cd4f37b0c9875f5a9ac9850f"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "5fe8dba7d82a0d9a8fcaf034d7db40a91b39bc26d842f39328187e273aa6adfc"
+            "sha256": "a9e2a992aa39eeacaa5983b9612d9ec6efa3e3ba863f9eefe95d8a1ada5f59ce"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "7a49780d1595800f75fd459bde9a17211ad2ad17388ece2e60efe948654ac666"
+            "sha256": "4829da3dccbdec7cf42dbb0e81a2088ece4ef9e74cbb22a329453ec64bc4f054"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "261be0d5b4c27615e1df0f6212cf589f116ef45055e88e16b5f53d40ef8ae6ae"
+            "sha256": "ce46d26d9bcfba1232662959b41eeb7a8eaa2e662b0e4b833612e239c01b4789"
         },
         {
             "path": "package-lock.json",
-            "sha256": "160a212d4e29a7cb39162d8a5ed0c53c89d255f8569dc7f2862a2ea2b6dd565f"
+            "sha256": "0d752078da4b260a7c7e562f555d08976027dac6852612f94eafd0f05d912968"
         },
         {
             "path": "package.json",
-            "sha256": "67339da40dfe046724b0231791c9638fee7f5a53ce121d4c03f05f68ded746d1"
+            "sha256": "64e7cb13a3885fcf5c38e25c544e6dc9d500ff956c188309c2c4ddcfb3a25268"
         },
         {
             "path": "routes.json",

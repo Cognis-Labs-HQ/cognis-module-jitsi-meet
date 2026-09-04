@@ -503,9 +503,10 @@ test("active non-disposable meetings invite a newly dropped participant", async 
     assert.equal(chatMemberRemovals.length, 2);
 });
 
-test("a kicked account participant is removed and made inactive", async () => {
+test("a kicked account participant leaves only module-owned meeting resources", async () => {
     const handlers = new Map();
     const operations = [];
+    let meetingDisposable = false;
     registerMeetingLifecycleRoutes({
         router: { post: (path, handler) => handlers.set(path, handler) },
         store: {
@@ -531,6 +532,7 @@ test("a kicked account participant is removed and made inactive", async () => {
                 meetingName: "Bright-Otters-Meet-Safely",
                 chatRoomId: "chat-1",
                 createdBy: "alice",
+                disposable: meetingDisposable,
             },
             requesterUsername: "bob",
             participants: ["alice", "bob"],
@@ -580,6 +582,19 @@ test("a kicked account participant is removed and made inactive", async () => {
     assert.equal(response.status, 200);
     assert.deepEqual(operations, [
         ["chat", "chat-1", "account-bob"],
+        ["whiteboard", "board-1", "account-alice", "account-bob"],
+        ["remove", "meeting-1", "bob"],
+        ["inactive", "meeting-1", "bob"],
+    ]);
+
+    operations.length = 0;
+    meetingDisposable = true;
+    const disposableResponse = createRecorder();
+    await handlers.get(
+        "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
+    )({ body: { meetingId: "meeting-1" } }, disposableResponse);
+    assert.equal(disposableResponse.status, 200);
+    assert.deepEqual(operations, [
         ["whiteboard", "board-1", "account-alice", "account-bob"],
         ["remove", "meeting-1", "bob"],
         ["inactive", "meeting-1", "bob"],

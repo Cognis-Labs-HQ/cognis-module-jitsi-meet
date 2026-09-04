@@ -90,6 +90,10 @@ Verwerfbare Meetings in Komponentenfenstern enthalten weder die Meeting-Chat-Obe
 
 Meetings fordert beim Öffnen eines Routen- oder Komponentenfensters weder den globalen Page-Composer-Stylesheet noch den vollständigen gemeinsamen Stylesheet-Katalog erneut an. Es registriert ausschließlich sein moduleigenes, vollständig begrenztes Stylesheet und verhindert damit, dass eine spätere Kaskadenposition globale Cognis-Oberflächen umgestaltet.
 
+## Mitgliedschaft im Startchat bei Entfernung beibehalten
+
+Wird eine Person aus einem verwerfbaren VoIP-Meeting entfernt, entfernt Jitsi sie nur aus den Meeting- und Anwesenheitsdaten sowie gegebenenfalls aus dem Meeting-Whiteboard. Die Mitgliedschaft im privaten oder Gruppen-Chat, aus dem der Anruf gestartet wurde, bleibt unverändert.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -105,3 +109,4 @@ Meetings fordert beim Öffnen eines Routen- oder Komponentenfensters weder den g
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
+- [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)

@@ -90,6 +90,10 @@ Disposable meetings shown in component windows no longer include the meeting cha
 
 Meetings no longer requests the global page-composer stylesheet or the complete common stylesheet catalog when a route or component window opens. It registers only its fully scoped module stylesheet, preventing a later cascade position from restyling unrelated Cognis surfaces.
 
+## Preserve source-chat membership when kicked
+
+When someone is kicked from a disposable VoIP meeting, Jitsi now removes them only from the meeting and presence data and, when applicable, the meeting Whiteboard. Their membership in the private or group chat that spawned the call remains unchanged.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -105,3 +109,4 @@ Meetings no longer requests the global page-composer stylesheet or the complete 
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
+- [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)

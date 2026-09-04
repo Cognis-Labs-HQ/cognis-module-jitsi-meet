@@ -90,6 +90,10 @@ Rapat sekali pakai yang ditampilkan dalam jendela komponen tidak lagi menyertaka
 
 Meetings tidak lagi meminta stylesheet page composer global atau seluruh katalog stylesheet umum saat rute atau jendela komponen dibuka. Modul hanya mendaftarkan stylesheet miliknya yang sepenuhnya tercakup sehingga posisi kaskade yang lebih akhir tidak mengubah gaya permukaan Cognis lain.
 
+## Pertahankan keanggotaan chat sumber saat dikeluarkan
+
+Ketika seseorang dikeluarkan dari rapat VoIP sekali pakai, Jitsi kini hanya menghapusnya dari data rapat dan kehadiran serta, bila berlaku, Papan Tulis rapat. Keanggotaannya dalam chat privat atau grup yang memulai panggilan tetap tidak berubah.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -105,3 +109,4 @@ Meetings tidak lagi meminta stylesheet page composer global atau seluruh katalog
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
+- [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
