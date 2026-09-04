@@ -98,6 +98,10 @@ Ketika seseorang dikeluarkan dari rapat VoIP sekali pakai, Jitsi kini hanya meng
 
 Pemetaan rapat yang ada kini mengotorisasi anggota ruang melalui identitas akun stabil, bukan handle profil yang dapat berubah. Konsumen yang hanya mendukung `navigate` juga dapat menyelesaikan rapat reguler yang dipetakan, lalu tindakan dari server diperiksa terhadap tindakan yang ditawarkan setelah resolusi.
 
+## Lindungi panggilan komponen hingga PiP
+
+Panggilan sekali pakai tetap memakai perlindungan navigasi pembongkaran, tautan, dan riwayat dalam jendela komponen asal. Navigasi yang dikelola host hanya diizinkan ketika komponen benar-benar berada dalam jendela PiP mengambang. Rapat sekali pakai juga menekan seluruh notifikasi rapat.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -115,3 +119,4 @@ Pemetaan rapat yang ada kini mengotorisasi anggota ruang melalui identitas akun 
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
 - [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
 - [ee9e19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ee9e19a1856c0eef35b6004a206e4ce1751887dd)
+- [47ac3cb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47ac3cb3282a28e2ce0f40a72d3d592f42d49ea5)

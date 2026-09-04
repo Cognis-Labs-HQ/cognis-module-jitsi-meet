@@ -42,6 +42,8 @@ export function createInteractiveHandlersBinder({
     resetMeetingState,
 }) {
     let bindController = null;
+    const canNavigateDuringMeeting = () =>
+        state.allowNavigation && root.closest(".floating-window") !== null;
     return function bindInteractiveHandlers() {
         if (signal?.aborted) return;
         if (bindController) {
@@ -463,7 +465,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "beforeunload",
             (event) => {
-                if (!isMeetingActive() || state.allowNavigation) return;
+                if (!isMeetingActive() || canNavigateDuringMeeting()) return;
                 event.preventDefault();
                 event.returnValue = "";
             },
@@ -472,7 +474,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "click",
             (event) => {
-                if (!isMeetingActive() || state.allowNavigation) return;
+                if (!isMeetingActive() || canNavigateDuringMeeting()) return;
                 const target = event.target;
                 if (!(target instanceof Element)) return;
                 const linkEl = target.closest("a[href]");
@@ -495,7 +497,7 @@ export function createInteractiveHandlersBinder({
         window.addEventListener(
             "popstate",
             () => {
-                if (!isMeetingActive() || state.allowNavigation) return;
+                if (!isMeetingActive() || canNavigateDuringMeeting()) return;
                 history.pushState(history.state, "", window.location.href);
                 showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
                     variant: "warning",

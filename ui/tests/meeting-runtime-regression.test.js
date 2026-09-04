@@ -759,7 +759,11 @@ test("component-window meetings suppress the meeting overlay", () => {
     assert.match(appSource, /focusState\?\.allowNavigation === true/);
     assert.match(
         interactiveSource,
-        /if \(!isMeetingActive\(\) \|\| state\.allowNavigation\) return;/,
+        /state\.allowNavigation && root\.closest\("\.floating-window"\) !== null/,
+    );
+    assert.equal(
+        interactiveSource.match(/canNavigateDuringMeeting\(\)/g)?.length,
+        3,
     );
 });
 

@@ -98,6 +98,10 @@ Meetings のルートまたはコンポーネントウィンドウを開く際�
 
 既存のミーティング関連付けでは、変更可能なプロフィールハンドルではなく安定したアカウント ID でルームメンバーを認可するようになりました。`navigate` のみをサポートする利用側も関連付け済みの通常ミーティングを解決でき、サーバーから返されたアクションを解決後に提示済みアクションと照合します。
 
+## PiP へ移るまでコンポーネント通話を保護
+
+破棄可能な通話は元のコンポーネントウィンドウ内で、アンロード、リンク、履歴ナビゲーションの保護を維持します。ホスト管理のナビゲーションは、コンポーネントが実際にフローティング PiP ウィンドウ内にある間だけ許可します。破棄可能なミーティングでは、すべてのミーティング通知も抑制します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -115,3 +119,4 @@ Meetings のルートまたはコンポーネントウィンドウを開く際�
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
 - [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
 - [ee9e19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ee9e19a1856c0eef35b6004a206e4ce1751887dd)
+- [47ac3cb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47ac3cb3282a28e2ce0f40a72d3d592f42d49ea5)

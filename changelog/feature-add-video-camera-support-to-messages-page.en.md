@@ -98,6 +98,10 @@ When someone is kicked from a disposable VoIP meeting, Jitsi now removes them on
 
 Existing meeting mappings now authorize room members through stable account identity instead of mutable profile handles. Consumers that support only `navigate` can also resolve mapped regular meetings, with the returned server action checked against the advertised actions after resolution.
 
+## Protect component calls until PiP
+
+Disposable calls retain unload, link, and history navigation protection in their original component window. Host-managed navigation is allowed only while the component is actually in a floating PiP window. Disposable meetings also suppress every meeting notification.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -115,3 +119,4 @@ Existing meeting mappings now authorize room members through stable account iden
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
 - [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
 - [ee9e19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ee9e19a1856c0eef35b6004a206e4ce1751887dd)
+- [47ac3cb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47ac3cb3282a28e2ce0f40a72d3d592f42d49ea5)

@@ -215,6 +215,10 @@ test("jitsi meeting notifications target authenticated account ids", () => {
     assert.match(source, /recipientUsername: recipient\.accountId/);
     assert.match(source, /profileStore\s*\.getProfile\(recipientUsername\)/);
     assert.match(source, /resolve_meeting_notification_recipient/);
+    assert.match(
+        source,
+        /store\.getMeetingById\([\s\S]*?notificationMeeting\?\.disposable\) return;/,
+    );
 });
 
 test("jitsi meeting creation resolves hidden participants only for admins", () => {

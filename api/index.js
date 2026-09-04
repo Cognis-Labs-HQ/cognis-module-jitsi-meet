@@ -605,6 +605,12 @@ export function registerApiRoutes(router, ctx) {
     ) {
         if (typeof dispatchNotification !== "function") return;
         const notificationMeetingId = meetingId ?? metadata?.meetingId;
+        if (notificationMeetingId) {
+            const notificationMeeting = await store.getMeetingById(
+                notificationMeetingId,
+            );
+            if (notificationMeeting?.disposable) return;
+        }
         const excludedRecipients = new Set(
             [organizerUsername, ...excludeUsernames]
                 .map((username) => normalizeHandleKey(username))
