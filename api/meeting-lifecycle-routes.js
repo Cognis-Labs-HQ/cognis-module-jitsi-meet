@@ -816,6 +816,7 @@ export function registerMeetingLifecycleRoutes({
                             store,
                             deleteResourceShares,
                             deleteChatroom,
+                            preserveChatroom: resolved.meeting.disposable,
                             log,
                         });
                         disposableMeetingDeleted = true;

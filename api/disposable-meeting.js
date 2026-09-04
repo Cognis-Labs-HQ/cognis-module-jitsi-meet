@@ -6,6 +6,7 @@ export async function deleteDisposableMeeting({
     store,
     deleteResourceShares,
     deleteChatroom,
+    preserveChatroom = false,
     log,
 }) {
     await deleteResourceShares?.({
@@ -13,7 +14,7 @@ export async function deleteDisposableMeeting({
         resourceType: "meeting",
         resourceId: meeting.id,
     });
-    if (meeting.chatRoomId) {
+    if (meeting.chatRoomId && !preserveChatroom) {
         try {
             if (typeof deleteChatroom !== "function") {
                 throw new Error(
@@ -48,6 +49,7 @@ export async function deleteDisposableMeeting({
         operation: "delete_disposable_meeting",
         meetingId: meeting.id,
         chatRoomId: meeting.chatRoomId,
+        chatRoomPreserved: Boolean(meeting.chatRoomId && preserveChatroom),
         ownerAccountId,
     });
 }

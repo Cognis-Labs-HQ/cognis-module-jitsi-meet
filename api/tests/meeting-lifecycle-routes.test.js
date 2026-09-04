@@ -62,6 +62,56 @@ test("disposable meeting deletion removes its owned chatroom", async () => {
                 operation: "delete_disposable_meeting",
                 meetingId: "meeting-1",
                 chatRoomId: "chat-1",
+                chatRoomPreserved: false,
+                ownerAccountId: "account-1",
+            },
+        ],
+    ]);
+});
+
+test("VoIP-style disposable meeting deletion preserves its source chatroom", async () => {
+    const operations = [];
+
+    await deleteDisposableMeeting({
+        meeting: { id: "meeting-1", chatRoomId: "pm-room-1" },
+        ownerAccountId: "account-1",
+        preserveChatroom: true,
+        deleteResourceShares: async (input) => {
+            operations.push(["delete_shares", input]);
+        },
+        deleteChatroom: async () => {
+            assert.fail("the source chatroom must not be deleted");
+        },
+        store: {
+            deleteMeeting: async (meetingId) => {
+                operations.push(["delete_meeting", meetingId]);
+            },
+        },
+        log: (level, message, metadata) => {
+            operations.push(["log", level, message, metadata]);
+        },
+    });
+
+    assert.deepEqual(operations, [
+        [
+            "delete_shares",
+            {
+                ownerAccountId: "account-1",
+                resourceType: "meeting",
+                resourceId: "meeting-1",
+            },
+        ],
+        ["delete_meeting", "meeting-1"],
+        [
+            "log",
+            "info",
+            "Disposable meeting data deleted.",
+            {
+                component: "jitsi-meet-module",
+                operation: "delete_disposable_meeting",
+                meetingId: "meeting-1",
+                chatRoomId: "pm-room-1",
+                chatRoomPreserved: true,
                 ownerAccountId: "account-1",
             },
         ],

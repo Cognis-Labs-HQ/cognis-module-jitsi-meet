@@ -78,6 +78,10 @@ Tamu yang meninggalkan rapat sekali pakai yang dibagikan melalui tautan kini tet
 
 Rapat sekali pakai dan rapat dengan tidak lebih dari dua peserta aktif atau yang diundang kini langsung membuka Papan Tulis tanpa meminta keputusan konsensus Share. Rapat dengan lebih banyak peserta tetap memakai alur persetujuan yang ada.
 
+## Pertahankan chat sumber setelah rapat VoIP
+
+Mengakhiri rapat VoIP sekali pakai kini membersihkan data dan pembagian rapat tanpa menghapus chat Messages privat yang memulai panggilan. Chat milik modul untuk rapat tanpa peserta tetap dihapus.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -90,3 +94,4 @@ Rapat sekali pakai dan rapat dengan tidak lebih dari dua peserta aktif atau yang
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
+- [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)

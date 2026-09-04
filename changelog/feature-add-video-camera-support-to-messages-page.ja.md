@@ -78,6 +78,10 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 破棄可能なミーティング、および現在参加中または招待済みの参加者が 2 人以下のミーティングでは、Share の合意確認を求めず Whiteboard を直ちに開くようになりました。参加者が多いミーティングでは、従来の承認フローを維持します。
 
+## VoIP ミーティング終了後も開始元チャットを維持
+
+破棄可能な VoIP ミーティングを終了すると、ミーティングデータと共有は後処理されますが、通話を開始したプライベート Messages チャットは削除されず維持されます。参加者なしミーティング用にモジュールが所有するチャットは引き続き削除されます。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -90,3 +94,4 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
+- [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)

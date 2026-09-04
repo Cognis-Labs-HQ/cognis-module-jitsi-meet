@@ -78,6 +78,10 @@ Guests who leave a disposable link-shared meeting now remain on the “Left Meet
 
 Disposable meetings and meetings with no more than two current or invited participants now open a Whiteboard immediately without requesting a Share consensus decision. Meetings with more participants retain the existing approval flow.
 
+## Preserve the source chat after VoIP meetings
+
+Ending a disposable VoIP meeting now cleans up its meeting data and shares without deleting the private Messages chat that spawned the call. Module-owned chats for participant-free meetings continue to be deleted.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -90,3 +94,4 @@ Disposable meetings and meetings with no more than two current or invited partic
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
+- [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)

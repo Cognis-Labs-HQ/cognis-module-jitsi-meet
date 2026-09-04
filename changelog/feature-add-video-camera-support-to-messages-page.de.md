@@ -78,6 +78,10 @@ Gäste, die eine über einen Link geteilte verwerfbare Besprechung verlassen, bl
 
 Verwerfbare Besprechungen und Besprechungen mit höchstens zwei aktuellen oder eingeladenen Teilnehmern öffnen ein Whiteboard jetzt sofort, ohne eine Share-Konsensentscheidung anzufordern. Besprechungen mit mehr Teilnehmern behalten den bestehenden Genehmigungsablauf bei.
 
+## Startchat nach VoIP-Meetings beibehalten
+
+Beim Beenden eines verwerfbaren VoIP-Meetings werden dessen Meeting-Daten und Freigaben bereinigt, der private Messages-Chat, aus dem der Anruf gestartet wurde, bleibt jedoch unverändert erhalten. Moduleigene Chats teilnehmerloser Meetings werden weiterhin gelöscht.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -90,3 +94,4 @@ Verwerfbare Besprechungen und Besprechungen mit höchstens zwei aktuellen oder e
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
+- [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
