@@ -74,6 +74,10 @@ Penyedia memakai istilah VoIP yang netral, menerima subjek dari konsumen, dan me
 
 Tamu yang meninggalkan rapat sekali pakai yang dibagikan melalui tautan kini tetap berada pada lapisan “Meninggalkan Rapat”, bukan melihat layar beranda Rapat. Pengakhiran oleh penyelenggara mempertahankan lapisan rapat ditutup sementara pembersihan sekali pakai menghentikan tautan berbagi.
 
+## Lewati konsensus Papan Tulis untuk rapat kecil
+
+Rapat sekali pakai dan rapat dengan tidak lebih dari dua peserta aktif atau yang diundang kini langsung membuka Papan Tulis tanpa meminta keputusan konsensus Share. Rapat dengan lebih banyak peserta tetap memakai alur persetujuan yang ada.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -84,3 +88,5 @@ Tamu yang meninggalkan rapat sekali pakai yang dibagikan melalui tautan kini tet
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
+
+- [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)

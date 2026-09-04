@@ -111,7 +111,7 @@ Die aktuelle Messages-Integration stellt die Löschung als Flow-gestützte öffe
 
 Wenn der Organisator eine aktive Besprechung erweitert, synchronisiert dessen Client zusätzlich den vollständigen Teilnehmerkreis über das Whiteboard-UI-Gateway.
 
-Die Öffnungsanfrage eines Nicht-Organisators verwendet die Share-Genehmigung, sodass alle anderen aktiven Kontoteilnehmer die Konsensentscheidung erhalten, anstatt sich nur auf passive Statusabstimmungen zu verlassen.
+Die Öffnungsanfrage eines Nicht-Organisators verwendet die Share-Genehmigung, sodass alle anderen aktiven Kontoteilnehmer die Konsensentscheidung erhalten, anstatt sich nur auf passive Statusabstimmungen zu verlassen. Verwerfbare Besprechungen und Besprechungen mit höchstens zwei aktuellen oder eingeladenen Teilnehmern umgehen diese Konsensabfrage und öffnen das Whiteboard sofort.
 
 Eine gesendete Whiteboard-Genehmigungsanfrage zeigt einen Informationstoast.
 

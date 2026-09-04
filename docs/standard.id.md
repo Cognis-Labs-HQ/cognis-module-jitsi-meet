@@ -111,7 +111,7 @@ Integrasi Messages terbaru mengekspos penghapusan sebagai kapabilitas publik yan
 
 Saat penyelenggara memperluas rapat aktif, klien pemilik juga menyinkronkan ulang seluruh daftar peserta melalui gateway UI Whiteboard.
 
-Permintaan membuka dari non-penyelenggara memakai persetujuan Share agar setiap peserta akun aktif lainnya menerima keputusan konsensus, bukan hanya mengandalkan suara status pasif.
+Permintaan membuka dari non-penyelenggara memakai persetujuan Share agar setiap peserta akun aktif lainnya menerima keputusan konsensus, bukan hanya mengandalkan suara status pasif. Rapat sekali pakai dan rapat yang berisi tidak lebih dari dua peserta aktif atau yang diundang melewati permintaan konsensus ini dan langsung membuka Papan Tulis.
 
 Permintaan persetujuan Whiteboard yang dikirim menampilkan toast informasi.
 

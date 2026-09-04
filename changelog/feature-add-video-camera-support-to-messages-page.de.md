@@ -74,6 +74,10 @@ Der Anbieter verwendet neutrale VoIP-Begriffe, übernimmt einen vom Verbraucher 
 
 Gäste, die eine über einen Link geteilte verwerfbare Besprechung verlassen, bleiben nun auf der Einblendung „Besprechung verlassen“, statt die Meetings-Startseite zu sehen. Beim Beenden durch die organisierende Person bleibt die Geschlossen-Einblendung erhalten, während die Bereinigung den Freigabelink beendet.
 
+## Whiteboard-Konsens für kleine Besprechungen umgehen
+
+Verwerfbare Besprechungen und Besprechungen mit höchstens zwei aktuellen oder eingeladenen Teilnehmern öffnen ein Whiteboard jetzt sofort, ohne eine Share-Konsensentscheidung anzufordern. Besprechungen mit mehr Teilnehmern behalten den bestehenden Genehmigungsablauf bei.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -84,3 +88,5 @@ Gäste, die eine über einen Link geteilte verwerfbare Besprechung verlassen, bl
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
+
+- [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)

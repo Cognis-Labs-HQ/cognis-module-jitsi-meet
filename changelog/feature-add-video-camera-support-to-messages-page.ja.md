@@ -74,6 +74,10 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 リンク共有された使い捨てミーティングからゲストが退出した場合、Meetings のホーム画面へ戻らず、「ミーティングから退出しました」オーバーレイに留まるようになりました。主催者による終了時は、使い捨て後処理で共有リンクを終了しながら、終了済みオーバーレイを維持します。
 
+## 小規模ミーティングで Whiteboard の合意確認を省略
+
+破棄可能なミーティング、および現在参加中または招待済みの参加者が 2 人以下のミーティングでは、Share の合意確認を求めず Whiteboard を直ちに開くようになりました。参加者が多いミーティングでは、従来の承認フローを維持します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -84,3 +88,5 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
+
+- [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)

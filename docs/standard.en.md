@@ -111,7 +111,7 @@ The latest Messages integration exposes deletion as a flow-backed public capabil
 
 When the organizer expands an active meeting, the owner client also re-synchronizes the complete participant set through the Whiteboard UI gateway.
 
-A non-organizer opening request uses Share approval so every other active account participant receives the consensus decision instead of relying only on passive state votes.
+A non-organizer opening request uses Share approval so every other active account participant receives the consensus decision instead of relying only on passive state votes. Disposable meetings and meetings containing no more than two current or invited participants bypass this consensus request and open the Whiteboard immediately.
 
 A submitted Whiteboard approval request produces an informational toast.
 

@@ -74,6 +74,10 @@ The provider uses neutral VoIP terminology, accepts a consumer-supplied subject,
 
 Guests who leave a disposable link-shared meeting now remain on the “Left Meeting” overlay instead of seeing the Meetings home screen. Organizer termination retains the closed overlay while the disposable cleanup terminates the share link.
 
+## Bypass Whiteboard consensus for small meetings
+
+Disposable meetings and meetings with no more than two current or invited participants now open a Whiteboard immediately without requesting a Share consensus decision. Meetings with more participants retain the existing approval flow.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -84,3 +88,5 @@ Guests who leave a disposable link-shared meeting now remain on the “Left Meet
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
 - [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)
+
+- [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
