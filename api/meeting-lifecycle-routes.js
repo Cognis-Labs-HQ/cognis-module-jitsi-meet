@@ -98,10 +98,15 @@ export function registerMeetingLifecycleRoutes({
             );
             const existingMeeting = await store.getMeetingByChatRoomId(roomId);
             if (existingMeeting) {
-                const existingParticipants = await store.listParticipants(
-                    existingMeeting.id,
-                );
-                if (!existingParticipants.includes(requesterUsername)) {
+                const authorized = await canAccessMeeting({
+                    store,
+                    meeting: existingMeeting,
+                    username: requesterUsername,
+                    listClassroomParticipantHandles,
+                    profileStore,
+                    requesterAccountId: claims.sub,
+                });
+                if (!authorized) {
                     sendError(
                         res,
                         403,

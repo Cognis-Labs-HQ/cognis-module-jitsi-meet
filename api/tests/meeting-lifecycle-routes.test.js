@@ -123,12 +123,15 @@ test("VoIP call creation derives participants from authorized room membership", 
     const createdMeetings = [];
     const requestedMemberships = [];
     const payloadRequests = [];
+    const accessRequests = [];
+    let mappedMeeting = null;
+    let requesterUsername = "alice";
     registerMeetingLifecycleRoutes({
         router: { post: (path, handler) => handlers.set(path, handler) },
         store: {
             async ensureSchema() {},
             async getMeetingByChatRoomId() {
-                return null;
+                return mappedMeeting;
             },
             async getConfig() {
                 return { instanceUrl: "https://meet.example.com" };
@@ -163,12 +166,17 @@ test("VoIP call creation derives participants from authorized room membership", 
                 memberAccountIds: ["account-alice", "account-bob"],
             };
         },
-        resolveRequesterUsername: async () => "alice",
+        resolveRequesterUsername: async () => requesterUsername,
         normalizeHandleKey: (handle) => handle,
         createMeetingPayload: async (input) => {
             payloadRequests.push(input);
             return input.meeting;
         },
+        canAccessMeeting: async (input) => {
+            accessRequests.push(input);
+            return input.requesterAccountId === "account-alice";
+        },
+        listClassroomParticipantHandles: async () => [],
         log: () => {},
     });
 
@@ -190,6 +198,23 @@ test("VoIP call creation derives participants from authorized room membership", 
     assert.deepEqual(createdMeetings[0].usernames, ["alice", "bob"]);
     assert.equal(createdMeetings[0].chatRoomId, "room-1");
     assert.equal(payloadRequests[0].includeChatRoom, false);
+
+    mappedMeeting = { id: "meeting-2", disposable: true };
+    requesterUsername = "alice-renamed";
+    const reusedResponse = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/voip-call")(
+        { body: { roomId: "room-1" } },
+        reusedResponse,
+    );
+    assert.equal(reusedResponse.status, 200);
+    assert.deepEqual(reusedResponse.body.data, {
+        id: "meeting-2",
+        action: "component",
+    });
+    assert.equal(accessRequests.length, 1);
+    assert.equal(accessRequests[0].requesterAccountId, "account-alice");
+    assert.equal(accessRequests[0].username, "alice-renamed");
+    assert.equal(accessRequests[0].meeting, mappedMeeting);
 });
 
 test("meeting creation provisions a share-ready participant-free chat", async () => {

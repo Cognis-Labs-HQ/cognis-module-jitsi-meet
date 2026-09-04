@@ -698,6 +698,10 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     );
     assert.match(providerSource, /voip:startCall/);
     assert.match(providerSource, /supportedActions/);
+    assert.match(
+        providerSource,
+        /\["component", "navigate"\]\.some[\s\S]*supportedActions\.includes\(action\)/,
+    );
     assert.match(providerSource, /action: "component"/);
     assert.match(providerSource, /module\.jitsi_meet\.voip\.subject/);
     assert.match(providerSource, /allowNavigation: true/);
@@ -708,7 +712,9 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /action: "navigate"/);
     assert.match(providerSource, /meetings\?meetingId=/);
     assert.match(providerSource, /payload\.data\.action === "navigate"/);
+    assert.match(providerSource, /supportedActions\.includes\("navigate"\)/);
     assert.match(providerSource, /action !== "component"/);
+    assert.match(providerSource, /supportedActions\.includes\("component"\)/);
     assert.match(providerSource, /body: JSON\.stringify/);
     assert.doesNotMatch(providerSource, /component-pages:spawn/);
     assert.doesNotMatch(providerSource, /document\.(?:body|querySelector)/);

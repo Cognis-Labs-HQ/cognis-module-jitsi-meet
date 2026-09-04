@@ -15,15 +15,18 @@ export async function resolveVoipCallAction(input = {}) {
     const roomId = String(input.room?.id ?? "").trim();
     const roomKind = String(input.room?.kind ?? "").trim();
     const members = Array.isArray(input.users) ? input.users : [];
-    const supportsComponent = Array.isArray(input.supportedActions)
-        ? input.supportedActions.includes("component")
-        : false;
+    const supportedActions = Array.isArray(input.supportedActions)
+        ? input.supportedActions
+        : [];
+    const supportsCallAction = ["component", "navigate"].some((action) =>
+        supportedActions.includes(action),
+    );
     const currentMembers = members.filter(
         (member) => member?.isCurrentUser === true,
     );
     if (
         input.source !== "messages" ||
-        !supportsComponent ||
+        !supportsCallAction ||
         !["dm", "group"].includes(roomKind) ||
         !roomId ||
         members.length < 2 ||
@@ -49,13 +52,17 @@ export async function resolveVoipCallAction(input = {}) {
     const meetingId = String(payload?.data?.id ?? "").trim();
     if (!meetingId) return null;
     if (payload.data.action === "navigate") {
-        if (!input.supportedActions.includes("navigate")) return null;
+        if (!supportedActions.includes("navigate")) return null;
         return {
             action: "navigate",
             url: `/meetings?meetingId=${encodeURIComponent(meetingId)}&start=1`,
         };
     }
-    if (payload.data.action !== "component") return null;
+    if (
+        payload.data.action !== "component" ||
+        !supportedActions.includes("component")
+    )
+        return null;
     return {
         action: "component",
         componentUuid: COMPONENT_UUID,

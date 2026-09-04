@@ -94,6 +94,10 @@ Meetings fordert beim Öffnen eines Routen- oder Komponentenfensters weder den g
 
 Wird eine Person aus einem verwerfbaren VoIP-Meeting entfernt, entfernt Jitsi sie nur aus den Meeting- und Anwesenheitsdaten sowie gegebenenfalls aus dem Meeting-Whiteboard. Die Mitgliedschaft im privaten oder Gruppen-Chat, aus dem der Anruf gestartet wurde, bleibt unverändert.
 
+## Wiederverwendete VoIP-Anrufe zuverlässig auflösen
+
+Vorhandene Meeting-Zuordnungen autorisieren Raummitglieder nun über ihre stabile Kontoidentität statt über veränderliche Profilnamen. Außerdem kann ein Verbraucher, der nur `navigate` unterstützt, reguläre zugeordnete Meetings auflösen; die Aktion wird erst nach der Serverantwort gegen die angebotenen Aktionen geprüft.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -110,3 +114,4 @@ Wird eine Person aus einem verwerfbaren VoIP-Meeting entfernt, entfernt Jitsi si
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
 - [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
+- [ee9e19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ee9e19a1856c0eef35b6004a206e4ce1751887dd)

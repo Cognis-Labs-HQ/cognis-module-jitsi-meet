@@ -94,6 +94,10 @@ Meetings no longer requests the global page-composer stylesheet or the complete 
 
 When someone is kicked from a disposable VoIP meeting, Jitsi now removes them only from the meeting and presence data and, when applicable, the meeting Whiteboard. Their membership in the private or group chat that spawned the call remains unchanged.
 
+## Resolve reused VoIP calls reliably
+
+Existing meeting mappings now authorize room members through stable account identity instead of mutable profile handles. Consumers that support only `navigate` can also resolve mapped regular meetings, with the returned server action checked against the advertised actions after resolution.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -110,3 +114,4 @@ When someone is kicked from a disposable VoIP meeting, Jitsi now removes them on
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
 - [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
 - [fa90ce2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fa90ce290871f6ff69b52a9e4b2860ee3725e197)
+- [ee9e19a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ee9e19a1856c0eef35b6004a206e4ce1751887dd)
