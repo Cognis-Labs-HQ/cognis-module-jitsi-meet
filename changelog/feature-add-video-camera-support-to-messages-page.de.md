@@ -58,6 +58,18 @@ Meeting-PiP-Fenster, die neben einem Whiteboard geöffnet werden, stellen nun di
 
 Messages-VoIP-Aktionen aktivieren nun `allowNavigation`, sodass Cognis navigieren kann, während ein Komponenten-Meeting in PiP erhalten bleibt. Der Schutz vor Entladen, Link- und Verlaufsnavigation bleibt standardmäßig für alle anderen Meetings aktiv. Die Definition der Whiteboard-PiP-Schließen-Schaltfläche fordert außerdem den Stil `btn-cancel` an.
 
+## Anrufe anhand der kanonischen Raummitgliedschaft autorisieren
+
+Der VoIP-Endpunkt lässt nun den vertrauenswürdigen Messages-Raumauflöser die anfragende Person autorisieren und die vollständige Teilnehmerliste ableiten. Vom Client übermittelte Mitgliederlisten können keine Teilnehmenden mehr bestimmen.
+
+## Eine Raumzuordnung sicher wiederverwenden
+
+Verfügbare Anrufe verwenden nun die vorhandene Chatraumreferenz, die durch eine eindeutige Schemabedingung geschützt ist. Gleichzeitige Anfragen verwenden das zuerst erstellte Meeting, ohne ein zweites Quellraumfeld einzuführen, und die Bereinigung verwerfbarer Meetings löscht den Meeting-eigenen Chatraum über die autorisierte Messages-Capability.
+
+## Anbieteranrufe lokalisieren und ordnungsgemäß beenden
+
+Der Anbieter verwendet neutrale VoIP-Begriffe, übernimmt einen vom Verbraucher angegebenen Betreff und nutzt andernfalls einen lokalisierten Betreff. Beim Schließen der Host-Komponente wird nun die reguläre Anwesenheitsbereinigung vor dem Beenden von Jitsi ausgeführt. Einschränkungen für verwerfbare Meetings werden einheitlich als Meeting-Regeln statt als Regeln eines bestimmten VoIP-Verbrauchers beschrieben.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -65,3 +77,5 @@ Messages-VoIP-Aktionen aktivieren nun `allowNavigation`, sodass Cognis navigiere
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
+- [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
+- [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)

@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.188",
+    "version": "1.5.189",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -142,7 +142,7 @@
         },
         {
             "path": "api/active-meeting-participant-route.js",
-            "sha256": "3eedb7dfacb72f802af42f95c6abf6bb8f37bcb7e7ac15bec04a79a49db3f3ea"
+            "sha256": "f18f89520712bf2439927d09ef6e947aa62a247b06aaa0debd1773bd8282763c"
         },
         {
             "path": "api/admin-meetings-routes.js",
@@ -154,7 +154,7 @@
         },
         {
             "path": "api/disposable-meeting.js",
-            "sha256": "67703ecde726ec5e10cf1d2e6cf23a56c9d41828a34232d00245f3a997703a35"
+            "sha256": "6ab69eb598527982c04e6e1b05b1c27847f776dc403c31cfcaa70a1ea3b638bd"
         },
         {
             "path": "api/index.js",
@@ -274,7 +274,7 @@
         },
         {
             "path": "api/share-routes.js",
-            "sha256": "6c2b2b0b56daaae511d4dfac665908617a5a411da3949b595dc8925f7842b25a"
+            "sha256": "84d7a1e08a42d8da1f568890c7b5e277c6df1341dc064fbb9970eaa16b7de1d3"
         },
         {
             "path": "api/store.js",
@@ -306,7 +306,7 @@
         },
         {
             "path": "api/tests/meeting-lifecycle-routes.test.js",
-            "sha256": "ec0e9066abec756dbf51495071b8def713b483cce0c9e5204dde771d53f2d85d"
+            "sha256": "6d149dcb47882efb61e2e2aca1f29c7d34838f6533decd3e947387971d9f56d1"
         },
         {
             "path": "api/tests/participant-approval.test.js",
@@ -362,7 +362,7 @@
         },
         {
             "path": "api/whiteboard-routes.js",
-            "sha256": "4f3a39d2a6347ec8aa02d038a507aa5b40290a306ffb2ec50af7b15e72eb770d"
+            "sha256": "1679f751b59b083d3c32affea9a0cfba1288988e32d07dcdfe68ca079bc86dfe"
         },
         {
             "path": "api/whiteboard-verification.js",
@@ -402,11 +402,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "7c43d4cf41fe7d72ae269ae8417186716166ef09f9d483f4251e49ee37811b05"
+            "sha256": "b514768bfde4e1767e3def0ca1e036c5edeb37151592bb58770044c3eb415e18"
         },
         {
             "path": "package.json",
-            "sha256": "c30c4911231d36e83dcf3a2f51bd16da0fd55319e993f23e7198077288019b27"
+            "sha256": "3488b4f74554620bf68c148ab04e045050f2ffdf3a66fd638bb18f505fab4671"
         },
         {
             "path": "routes.json",

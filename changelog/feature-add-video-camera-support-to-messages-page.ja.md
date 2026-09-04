@@ -58,6 +58,18 @@ Whiteboard とともに開くミーティング PiP ウィンドウが、ホス�
 
 Messages VoIP アクションが `allowNavigation` を有効にし、コンポーネントミーティングを PiP に保持したまま Cognis が画面遷移できるようになりました。進行中ミーティングのアンロード、リンク、履歴移動の保護は、それ以外のミーティングでは引き続き既定で有効です。Whiteboard PiP の閉じるボタン定義でも `btn-cancel` スタイルを要求します。
 
+## 正規のルームメンバーから通話を認可
+
+VoIP エンドポイントは、信頼できる Messages ルームリゾルバーに要求者の認可と完全な参加者一覧の導出を依頼するようになりました。クライアントから送られたメンバー一覧で参加者を選択することはできません。
+
+## 1 つのルーム対応を安全に再利用
+
+使い捨て通話は、一意制約で保護された既存のチャットルーム参照を使用するようになりました。同時要求では先に作成されたミーティングを再利用し、別の開始元ルーム項目を追加しません。また、使い捨てミーティングの後処理では、認可済み Messages Capability を通じてミーティング所有のチャットルームを削除します。
+
+## プロバイダー通話をローカライズして適切に終了
+
+プロバイダーは中立な VoIP 用語を使用し、利用側が指定した件名を受け取り、未指定時はローカライズ済みの件名を使用します。ホストコンポーネントを閉じる際は、Jitsi を破棄する前に通常の在席終了処理を実行します。使い捨てミーティングの制限は、特定の VoIP 利用側ではなくミーティング自体の規則として一貫して表現します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -65,3 +77,5 @@ Messages VoIP アクションが `allowNavigation` を有効にし、コンポ�
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
+- [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
+- [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)

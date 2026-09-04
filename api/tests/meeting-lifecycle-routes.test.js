@@ -19,7 +19,7 @@ function createRecorder() {
     };
 }
 
-test("disposable meeting deletion preserves its provider room", async () => {
+test("disposable meeting deletion removes its owned chatroom", async () => {
     const operations = [];
     const meeting = { id: "meeting-1", chatRoomId: "chat-1" };
 
@@ -28,6 +28,9 @@ test("disposable meeting deletion preserves its provider room", async () => {
         ownerAccountId: "account-1",
         deleteResourceShares: async (input) => {
             operations.push(["delete_shares", input]);
+        },
+        deleteChatroom: async (input) => {
+            operations.push(["delete_chatroom", input]);
         },
         store: {
             deleteMeeting: async (meetingId) => {
@@ -48,6 +51,7 @@ test("disposable meeting deletion preserves its provider room", async () => {
                 resourceId: "meeting-1",
             },
         ],
+        ["delete_chatroom", { roomId: "chat-1", actorAccountId: "account-1" }],
         ["delete_meeting", "meeting-1"],
         [
             "log",

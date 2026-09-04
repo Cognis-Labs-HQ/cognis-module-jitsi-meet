@@ -58,6 +58,18 @@ Jendela PiP rapat yang dibuka bersama Papan Tulis kini menyediakan definisi `clo
 
 Tindakan VoIP Messages kini mengaktifkan `allowNavigation`, sehingga Cognis dapat berpindah halaman sambil mempertahankan rapat komponen dalam PiP. Perlindungan pembongkaran, tautan, dan riwayat rapat aktif tetap aktif secara bawaan untuk rapat lainnya. Definisi tombol tutup PiP Papan Tulis juga meminta gaya `btn-cancel`.
 
+## Otorisasi panggilan dari keanggotaan ruang kanonis
+
+Endpoint VoIP kini meminta penyelesai ruang Messages tepercaya untuk mengotorisasi pemohon dan memperoleh seluruh daftar peserta. Daftar anggota yang dikirim klien tidak lagi dapat memilih peserta.
+
+## Gunakan kembali satu pemetaan ruang dengan aman
+
+Panggilan sekali pakai kini memakai referensi ruang percakapan yang sudah ada dan dilindungi batasan skema unik. Permintaan serentak menggunakan kembali rapat yang lebih dahulu dibuat tanpa menambahkan bidang ruang sumber kedua, sementara pembersihan rapat sekali pakai menghapus ruang percakapan milik rapat melalui kapabilitas Messages yang terotorisasi.
+
+## Lokalkan dan bersihkan panggilan penyedia
+
+Penyedia memakai istilah VoIP yang netral, menerima subjek dari konsumen, dan menggunakan subjek terlokalkan jika tidak diberikan. Penutupan komponen host kini menjalankan pembersihan kehadiran normal sebelum membuang Jitsi. Pembatasan rapat sekali pakai dijelaskan secara konsisten sebagai aturan rapat, bukan aturan untuk konsumen VoIP tertentu.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -65,3 +77,5 @@ Tindakan VoIP Messages kini mengaktifkan `allowNavigation`, sehingga Cognis dapa
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
+- [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
+- [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)

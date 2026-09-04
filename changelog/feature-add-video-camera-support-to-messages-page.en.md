@@ -58,6 +58,18 @@ Meeting PiP windows opened alongside a Whiteboard now supply the host floating-w
 
 Messages VoIP actions now enable `allowNavigation`, allowing Cognis to navigate away while retaining a component meeting in PiP. Active-meeting unload, link, and history protection remains enabled by default for every other meeting. The Whiteboard PiP close-button definition also requests the `btn-cancel` style.
 
+## Authorize calls from canonical room membership
+
+The VoIP endpoint now asks the trusted Messages room resolver to authorize the requester and derive the complete participant roster. Client-supplied member lists can no longer select participants.
+
+## Reuse one room mapping safely
+
+Disposable calls now use the existing chat-room reference, protected by a unique schema constraint. Concurrent requests reuse the meeting that won creation without introducing a second source-room field, and disposable meeting cleanup deletes the meeting-owned chatroom through the authorized Messages capability.
+
+## Localize and clean up provider calls
+
+The provider uses neutral VoIP terminology, accepts a consumer-supplied subject, and otherwise supplies a localized subject. Closing the host component now runs normal presence teardown before disposing Jitsi. Disposable restrictions consistently describe meetings rather than one particular VoIP consumer.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -65,3 +77,5 @@ Messages VoIP actions now enable `allowNavigation`, allowing Cognis to navigate 
 - [b3f0b4c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3f0b4ccb143dc068555df17e8731d5fe90b5074)
 - [a11ea4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a11ea4a31e51f806fd80c1fde2820c011467dee9)
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
+- [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
+- [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
