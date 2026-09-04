@@ -422,6 +422,7 @@ export function createEmbedHandlers({
                 body: JSON.stringify({
                     meetingId: state.meeting.id,
                     sessionId: state.sessionId,
+                    includeChat: state.includeMeetingChat,
                 }),
                 accessToken: state.shareAccessToken || undefined,
                 suppressAccessDeniedEvent: true,

@@ -380,6 +380,7 @@ export function createMeetingHandlers({
                 },
                 body: JSON.stringify({
                     meetingId: normalizedMeetingId,
+                    includeChat: state.includeMeetingChat,
                 }),
                 accessToken: state.shareAccessToken || undefined,
                 suppressAccessDeniedEvent: true,

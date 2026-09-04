@@ -441,6 +441,7 @@ export function registerMeetingRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
+            const includeChat = body.includeChat !== false;
             const shareGuestAccess =
                 typeof resolveShareGuestMeetingAccess === "function"
                     ? await resolveShareGuestMeetingAccess({
@@ -489,9 +490,11 @@ export function registerMeetingRoutes({
                     state,
                     participants,
                     requesterUsername: meeting.createdBy,
-                    chatUrl: meeting.chatRoomId
-                        ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
-                        : null,
+                    chatUrl:
+                        includeChat && meeting.chatRoomId
+                            ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
+                            : null,
+                    includeChatRoom: includeChat,
                     requiresReclaim: false,
                 });
                 sendJson(res, 200, {
@@ -521,9 +524,11 @@ export function registerMeetingRoutes({
                 state: resolved.state,
                 participants: resolved.participants,
                 requesterUsername: resolved.requesterUsername,
-                chatUrl: resolved.meeting.chatRoomId
-                    ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
-                    : null,
+                chatUrl:
+                    includeChat && resolved.meeting.chatRoomId
+                        ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                        : null,
+                includeChatRoom: includeChat,
                 requiresReclaim: false,
             });
             sendJson(res, 200, {
@@ -771,6 +776,7 @@ export function registerMeetingRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
+            const includeChat = body.includeChat !== false;
             const shareGuestAccess =
                 typeof resolveShareGuestMeetingAccess === "function"
                     ? await resolveShareGuestMeetingAccess({
@@ -814,7 +820,9 @@ export function registerMeetingRoutes({
                                 : activeUsernames;
                         })(),
                         sessionActive: true,
-                        chatRoomId: meeting.chatRoomId,
+                        ...(includeChat
+                            ? { chatRoomId: meeting.chatRoomId }
+                            : {}),
                     },
                 });
                 return;
@@ -851,7 +859,9 @@ export function registerMeetingRoutes({
                         .filterCurrentPresenceEntries(presence)
                         .map((entry) => entry.username),
                     participants: resolved.participants,
-                    chatRoomId: resolved.meeting.chatRoomId,
+                    ...(includeChat
+                        ? { chatRoomId: resolved.meeting.chatRoomId }
+                        : {}),
                     sessionActive: sessionPresence
                         ? store.isPresenceEntryCurrent(sessionPresence)
                         : true,

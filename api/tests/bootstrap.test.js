@@ -108,6 +108,7 @@ function createScopedRuntime() {
             contributedCapability: capabilities.has(
                 "meetings:isProviderAvailable",
             ),
+            meetingChatCapability: capabilities.has("meeting:getMeetingChat"),
             createdFlows: ["construct-meetings-ui", "create-meeting"].filter(
                 (flowId) => flows.has(flowId),
             ),

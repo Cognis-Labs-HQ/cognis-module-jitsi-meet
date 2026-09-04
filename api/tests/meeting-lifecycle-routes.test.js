@@ -122,6 +122,7 @@ test("VoIP call creation derives participants from authorized room membership", 
     const handlers = new Map();
     const createdMeetings = [];
     const requestedMemberships = [];
+    const payloadRequests = [];
     registerMeetingLifecycleRoutes({
         router: { post: (path, handler) => handlers.set(path, handler) },
         store: {
@@ -164,7 +165,10 @@ test("VoIP call creation derives participants from authorized room membership", 
         },
         resolveRequesterUsername: async () => "alice",
         normalizeHandleKey: (handle) => handle,
-        createMeetingPayload: async ({ meeting }) => meeting,
+        createMeetingPayload: async (input) => {
+            payloadRequests.push(input);
+            return input.meeting;
+        },
         log: () => {},
     });
 
@@ -185,6 +189,7 @@ test("VoIP call creation derives participants from authorized room membership", 
     ]);
     assert.deepEqual(createdMeetings[0].usernames, ["alice", "bob"]);
     assert.equal(createdMeetings[0].chatRoomId, "room-1");
+    assert.equal(payloadRequests[0].includeChatRoom, false);
 });
 
 test("meeting creation provisions a share-ready participant-free chat", async () => {

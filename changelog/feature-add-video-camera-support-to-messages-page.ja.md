@@ -82,6 +82,10 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 破棄可能な VoIP ミーティングを終了すると、ミーティングデータと共有は後処理されますが、通話を開始したプライベート Messages チャットは削除されず維持されます。参加者なしミーティング用にモジュールが所有するチャットは引き続き削除されます。
 
+## 破棄可能なコンポーネントウィンドウからチャットを除外
+
+コンポーネントウィンドウに表示する破棄可能なミーティングでは、ミーティングチャット画面とペイロード内のチャット識別子を含めなくなりました。新しい認証済み Capability `meeting:getMeetingChat` は、認可済みのミーティング参加者に限り、関連付けられたチャット ID を別途返します。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -95,3 +99,4 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
+- [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)

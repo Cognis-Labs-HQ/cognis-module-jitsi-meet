@@ -869,13 +869,14 @@ export class JitsiMeetStore {
     }
 
     buildMeetingPayload(meeting, participants, state, extra = {}) {
+        const { includeChatRoom = true, ...payloadExtra } = extra;
         return {
             id: meeting.id,
             meetingUrl: meeting.meetingUrl,
             meetingName: meeting.meetingName,
             meetingPassword: extra.meetingPassword ?? "",
             classroomId: meeting.classroomId,
-            chatRoomId: meeting.chatRoomId,
+            ...(includeChatRoom ? { chatRoomId: meeting.chatRoomId } : {}),
             createdBy: meeting.createdBy,
             hasInvitedParticipants: participants.some(
                 (username) => username !== meeting.createdBy,
@@ -902,7 +903,7 @@ export class JitsiMeetStore {
             scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
             instanceUrl: extractUrlOrigin(meeting.meetingUrl),
             roomSlug: extractUrlPathSlug(meeting.meetingUrl),
-            ...extra,
+            ...payloadExtra,
         };
     }
 

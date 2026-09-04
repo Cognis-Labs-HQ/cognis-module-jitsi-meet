@@ -158,6 +158,7 @@ export function registerMeetingLifecycleRoutes({
                 participants: await store.listParticipants(meeting.id),
                 requesterUsername,
                 chatUrl: null,
+                includeChatRoom: false,
                 requiresReclaim: false,
             });
             log?.("info", "VoIP call created.", {
@@ -478,6 +479,7 @@ export function registerMeetingLifecycleRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
+            const includeChat = body.includeChat !== false;
             const meetingId = String(body.meetingId ?? "").trim();
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
                 claims,
@@ -518,9 +520,11 @@ export function registerMeetingLifecycleRoutes({
                     state,
                     participants,
                     requesterUsername: meeting.createdBy,
-                    chatUrl: meeting.chatRoomId
-                        ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
-                        : null,
+                    chatUrl:
+                        includeChat && meeting.chatRoomId
+                            ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
+                            : null,
+                    includeChatRoom: includeChat,
                     requiresReclaim: false,
                     meetingPassword: meeting.meetingPassword,
                 });
@@ -549,12 +553,14 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
             try {
-                await restoreMeetingChatMembership({
-                    meeting: resolved.meeting,
-                    userAccountId: claims.sub,
-                    groupChatMembership,
-                    log,
-                });
+                if (includeChat) {
+                    await restoreMeetingChatMembership({
+                        meeting: resolved.meeting,
+                        userAccountId: claims.sub,
+                        groupChatMembership,
+                        log,
+                    });
+                }
             } catch {
                 sendError(
                     res,
@@ -602,9 +608,11 @@ export function registerMeetingLifecycleRoutes({
                 state,
                 participants: resolved.participants,
                 requesterUsername: resolved.requesterUsername,
-                chatUrl: resolved.meeting.chatRoomId
-                    ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
-                    : null,
+                chatUrl:
+                    includeChat && resolved.meeting.chatRoomId
+                        ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                        : null,
+                includeChatRoom: includeChat,
                 requiresReclaim,
                 meetingPassword:
                     (await store.claimMeetingPassword(

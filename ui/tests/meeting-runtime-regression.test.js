@@ -601,7 +601,7 @@ test("meeting shares use the Cognis route and skip account setup", () => {
     );
     assert.match(
         appSource,
-        /createMeetingPageElements\(i18n, limitedShareView\)/,
+        /createMeetingPageElements\(i18n, limitedShareView, \{/,
     );
     assert.match(appSource, /if \(!inShareView\) \{[\s\S]*bindShareButton/);
 });
@@ -699,6 +699,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /action: "component"/);
     assert.match(providerSource, /module\.jitsi_meet\.voip\.subject/);
     assert.match(providerSource, /allowNavigation: true/);
+    assert.match(providerSource, /disposableMeeting: true/);
     assert.match(providerSource, /mode: "overlay"/);
     assert.match(providerSource, /minSize: JITSI_PIP_MINIMUM_SIZE/);
     assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
@@ -720,6 +721,13 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
         /existingMeeting\.disposable[\s\S]*?"component"[\s\S]*?: "navigate"/,
     );
     assert.match(lifecycleSource, /action: "component"/);
+    assert.match(lifecycleSource, /includeChatRoom: false/);
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    assert.match(
+        appSource,
+        /includeMeetingChat:[\s\S]*?componentWindow &&[\s\S]*?focusState\?\.disposableMeeting === true/,
+    );
+    assert.match(appSource, /includeChat: state\.includeMeetingChat/);
 });
 
 test("component-window meetings suppress the meeting overlay", () => {

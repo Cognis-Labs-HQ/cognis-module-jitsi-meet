@@ -66,6 +66,7 @@ export async function resolveVoipCallAction(input = {}) {
         context: {
             autoStart: true,
             voipCall: true,
+            disposableMeeting: true,
             meetingId,
             meetingSubject:
                 String(input.meetingSubject ?? "").trim() ||

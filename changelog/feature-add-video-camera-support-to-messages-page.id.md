@@ -82,6 +82,10 @@ Rapat sekali pakai dan rapat dengan tidak lebih dari dua peserta aktif atau yang
 
 Mengakhiri rapat VoIP sekali pakai kini membersihkan data dan pembagian rapat tanpa menghapus chat Messages privat yang memulai panggilan. Chat milik modul untuk rapat tanpa peserta tetap dihapus.
 
+## Hapus chat dari jendela komponen sekali pakai
+
+Rapat sekali pakai yang ditampilkan dalam jendela komponen tidak lagi menyertakan permukaan chat rapat atau pengenal chat dalam payload. Kapabilitas terautentikasi baru `meeting:getMeetingChat` secara terpisah mengembalikan ID chat terlampir hanya kepada peserta rapat yang berwenang.
+
 ## Komit
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -95,3 +99,4 @@ Mengakhiri rapat VoIP sekali pakai kini membersihkan data dan pembagian rapat ta
 
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
+- [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)

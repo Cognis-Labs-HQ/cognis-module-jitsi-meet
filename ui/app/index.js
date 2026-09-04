@@ -143,6 +143,9 @@ export async function mount(
         lastMeetingChatRoomId: "",
         lastMeetingParticipants: [],
         chatParticipantEntries: [],
+        includeMeetingChat: !(
+            componentWindow && focusState?.disposableMeeting === true
+        ),
         currentProfile: null,
         preflightStatus: "idle",
         preflightPassed: false,
@@ -392,7 +395,9 @@ export async function mount(
         loadActiveMeetings,
         resetMeetingState,
     });
-    const elements = createMeetingPageElements(i18n, limitedShareView);
+    const elements = createMeetingPageElements(i18n, limitedShareView, {
+        includeChat: state.includeMeetingChat,
+    });
     if (state.voipCall) elements.splice(0, 1);
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),

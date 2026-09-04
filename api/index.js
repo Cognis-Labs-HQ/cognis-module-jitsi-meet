@@ -31,6 +31,7 @@ import {
     selectDistinctParticipantMeetings,
 } from "./reuse/persisted-meetings.js";
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
+import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
@@ -545,6 +546,17 @@ export function registerApiRoutes(router, ctx) {
     ctx.capabilities?.contribute?.(
         "jitsi-meet:getMeetingById",
         store.getMeetingById.bind(store),
+    );
+    ctx.contributePublicCapability(
+        "meeting:getMeetingChat",
+        createGetMeetingChatCapability({
+            store,
+            profileStore,
+            profileIdentity,
+            canAccessMeeting: canAccessMeetingForRequester,
+            listClassroomParticipantHandles,
+            log,
+        }),
     );
     const registerExternalRoomAuthorizer = ctx.capabilities?.get?.(
         "social:messages:registerExternalRoomAuthorizer",
