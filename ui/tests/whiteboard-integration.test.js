@@ -232,7 +232,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         apiIndexSource,
-        /"\/static\/styles\/page-builder\.css"[\s\S]*?"\/static\/modules\/jitsi-meet\/jitsi-meet\.css"/,
+        /const meetingsStylesheets = \["\/static\/modules\/jitsi-meet\/jitsi-meet\.css"\]/,
     );
     assert.doesNotMatch(buttonSource, /pointer(?:move|up)/i);
     assert.doesNotMatch(buttonSource, /componentPage\.load/);
@@ -303,7 +303,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /button\.className = "btn-confirm btn-animated";/,
     );
-    assert.match(appIndexSource, /await loadCommonStyles\(\)/);
+    assert.doesNotMatch(appIndexSource, /loadCommonStyles/);
     assert.doesNotMatch(appIndexSource, /ensureStylesheetLoaded/);
     assert.doesNotMatch(helpersSource, /ensurePageStylesheet/);
     assert.match(
@@ -311,10 +311,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /uiCtx\.capabilities\.get\("ui:reuse"\)/,
     );
     assert.match(reuseResourcesSource, /reuseResources\.importModule\(path\)/);
-    assert.match(
-        reuseResourcesSource,
-        /loadCommonStyles = \(\) => reuseResources\.loadCommonStyles\(\)/,
-    );
+    assert.doesNotMatch(reuseResourcesSource, /loadCommonStyles/);
     const lifecycleSource = readFileSync(
         resolve(ROOT, "api/meeting-lifecycle-routes.js"),
         "utf8",

@@ -647,9 +647,11 @@ test("meeting routes and standalone shell load only module-owned layout styles",
     assert.doesNotMatch(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.doesNotMatch(shellSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.match(apiSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.doesNotMatch(apiSource, /\/static\/styles\/page-builder\.css/);
     assert.match(shellSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
     assert.doesNotMatch(appSource, /ensureStylesheetLoaded/);
     assert.doesNotMatch(uiResourcesSource, /stylesheetUrls/);
+    assert.doesNotMatch(appSource, /loadCommonStyles/);
 });
 
 test("profile avatar rendering is centralized behind the host capability", () => {

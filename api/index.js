@@ -110,10 +110,7 @@ export function registerUi(ctx) {
         access: { minRole: "user" },
         providesCapabilities: ["voip:startCall"],
     });
-    const meetingsStylesheets = [
-        "/static/styles/page-builder.css",
-        "/static/modules/jitsi-meet/jitsi-meet.css",
-    ];
+    const meetingsStylesheets = ["/static/modules/jitsi-meet/jitsi-meet.css"];
     for (const route of [
         {
             id: "module.jitsi.meet.meetings",

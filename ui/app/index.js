@@ -1,10 +1,6 @@
 import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import {
-    importReuseModule,
-    loadCommonStyles,
-    uiCtx,
-} from "../reuse/resources.js";
+import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import { MEETING_SUBJECT } from "../constants.js";
 import { ensureSessionId } from "../session.js";
 import { resolveThemeMode } from "../meeting-embed.js";
@@ -77,7 +73,6 @@ export async function mount(
         focusState = null,
     } = {},
 ) {
-    await loadCommonStyles();
     if (!claimRouteRoot(root, signal)) return;
     const componentWindow = focusState !== null;
     if (componentWindow) root.dataset.suppressMeetingOverlay = "true";

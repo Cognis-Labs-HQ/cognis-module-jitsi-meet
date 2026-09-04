@@ -86,6 +86,10 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 
 コンポーネントウィンドウに表示する破棄可能なミーティングでは、ミーティングチャット画面とペイロード内のチャット識別子を含めなくなりました。新しい認証済み Capability `meeting:getMeetingChat` は、認可済みのミーティング参加者に限り、関連付けられたチャット ID を別途返します。
 
+## ホストスタイルを再読み込みせず再利用
+
+Meetings のルートまたはコンポーネントウィンドウを開く際に、グローバルなページコンポーサースタイルシートや共通スタイルシート一式を再要求しなくなりました。完全にスコープ化されたモジュール独自のスタイルシートだけを登録し、後方のカスケード位置によって無関係な Cognis 画面の表示が変わることを防ぎます。
+
 ## コミット
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -100,3 +104,4 @@ VoIP エンドポイントは、信頼できる Messages ルームリゾルバ�
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
+- [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)

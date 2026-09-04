@@ -86,6 +86,10 @@ Beim Beenden eines verwerfbaren VoIP-Meetings werden dessen Meeting-Daten und Fr
 
 Verwerfbare Meetings in Komponentenfenstern enthalten weder die Meeting-Chat-Oberfläche noch eine Chatkennung in ihren Nutzdaten. Die neue authentifizierte Capability `meeting:getMeetingChat` gibt die verknüpfte Chat-ID separat nur an autorisierte Meeting-Teilnehmer zurück.
 
+## Host-Styles ohne erneutes Laden wiederverwenden
+
+Meetings fordert beim Öffnen eines Routen- oder Komponentenfensters weder den globalen Page-Composer-Stylesheet noch den vollständigen gemeinsamen Stylesheet-Katalog erneut an. Es registriert ausschließlich sein moduleigenes, vollständig begrenztes Stylesheet und verhindert damit, dass eine spätere Kaskadenposition globale Cognis-Oberflächen umgestaltet.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -100,3 +104,4 @@ Verwerfbare Meetings in Komponentenfenstern enthalten weder die Meeting-Chat-Obe
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
+- [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)

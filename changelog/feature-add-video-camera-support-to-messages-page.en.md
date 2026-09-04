@@ -86,6 +86,10 @@ Ending a disposable VoIP meeting now cleans up its meeting data and shares witho
 
 Disposable meetings shown in component windows no longer include the meeting chat surface or a chat identifier in their payloads. The new authenticated `meeting:getMeetingChat` capability separately returns the attached chat ID only to authorized meeting participants.
 
+## Reuse host styles without reloading them
+
+Meetings no longer requests the global page-composer stylesheet or the complete common stylesheet catalog when a route or component window opens. It registers only its fully scoped module stylesheet, preventing a later cascade position from restyling unrelated Cognis surfaces.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -100,3 +104,4 @@ Disposable meetings shown in component windows no longer include the meeting cha
 - [624111a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/624111a681b1a9bc49d1c4ec320ea718e5bd5d89)
 - [47d031e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/47d031ebbd27aa3bc1ae9b8b6c9926c5f4b149c1)
 - [0d7d459](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d7d4599220a9e9c53fd89f7c61b9c83249ecd76)
+- [a17a685](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a17a6852353a0e47376c352eb21213a8cf2c5f6e)
