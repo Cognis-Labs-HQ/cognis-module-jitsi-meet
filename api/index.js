@@ -187,6 +187,14 @@ export function registerApiRoutes(router, ctx) {
             "Jitsi Meet requires the Messages room membership capability.",
         );
     }
+    const resolveRoomMembership = ctx.getCapability(
+        "social:messages:resolveRoomMembership",
+    );
+    if (typeof resolveRoomMembership !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the Messages room resolver capability.",
+        );
+    }
     const listClassroomParticipantHandles =
         ctx.getCapability("study:classroom:listParticipantHandles") ??
         (async () => []);
@@ -377,7 +385,7 @@ export function registerApiRoutes(router, ctx) {
         });
         for (const routePath of [
             "/api/v1/modules/jitsi-meet/meetings/create",
-            "/api/v1/modules/jitsi-meet/meetings/messages-call",
+            "/api/v1/modules/jitsi-meet/meetings/voip-call",
             "/api/v1/modules/jitsi-meet/meetings/get",
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",
@@ -746,6 +754,7 @@ export function registerApiRoutes(router, ctx) {
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
         groupChatMembership,
+        resolveRoomMembership,
         resolveWhiteboardMembership: () =>
             systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),

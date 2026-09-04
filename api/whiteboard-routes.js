@@ -145,7 +145,7 @@ export function registerMeetingWhiteboardRoutes({
                     res,
                     403,
                     "whiteboard_disabled",
-                    "Disposable chat calls cannot request a whiteboard.",
+                    "Disposable VoIP calls cannot request a whiteboard.",
                 );
                 return;
             }
@@ -199,7 +199,7 @@ export function registerMeetingWhiteboardRoutes({
                     res,
                     403,
                     "whiteboard_disabled",
-                    "Disposable chat calls cannot request a whiteboard.",
+                    "Disposable VoIP calls cannot request a whiteboard.",
                 );
                 return;
             }

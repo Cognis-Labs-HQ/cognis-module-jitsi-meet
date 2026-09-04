@@ -13,6 +13,10 @@ function createScopedRuntime() {
             "social:messages:membership",
             { add: async () => {}, remove: async () => {} },
         ],
+        [
+            "social:messages:resolveRoomMembership",
+            async () => ({ authorized: true, memberAccountIds: [] }),
+        ],
         ["social:messages:deleteChatroom", async () => {}],
     ]);
     const flows = new Set([

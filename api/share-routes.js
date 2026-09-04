@@ -55,7 +55,7 @@ async function requireOwnedMeeting({
             res,
             403,
             "sharing_disabled",
-            "Disposable chat calls cannot be shared.",
+            "Disposable VoIP calls cannot be shared.",
         );
         return null;
     }

@@ -7,7 +7,6 @@ export const ALONE_PROMPT_GRACE_PERIOD_MS = 180_000;
 export const SESSION_ID_STORAGE_KEY = "jitsi-meet:session-id";
 export const TEXT_ENCODER = new TextEncoder();
 export const MEETING_SUBJECT = "Cognis Classroom";
-export const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";
 export const JITSI_PIP_MINIMUM_SIZE = Object.freeze({
     width: 400,
     height: 225,

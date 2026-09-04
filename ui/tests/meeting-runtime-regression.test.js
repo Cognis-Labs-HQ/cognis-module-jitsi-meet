@@ -697,7 +697,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /voip:startCall/);
     assert.match(providerSource, /supportedActions/);
     assert.match(providerSource, /action: "component"/);
-    assert.match(providerSource, /meetingSubject: VOIP_MEETING_SUBJECT/);
+    assert.match(providerSource, /module\.jitsi_meet\.voip\.subject/);
     assert.match(providerSource, /allowNavigation: true/);
     assert.match(providerSource, /mode: "overlay"/);
     assert.match(providerSource, /minSize: JITSI_PIP_MINIMUM_SIZE/);
@@ -709,9 +709,11 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
     assert.match(providerSource, /body: JSON\.stringify/);
     assert.doesNotMatch(providerSource, /component-pages:spawn/);
     assert.doesNotMatch(providerSource, /document\.(?:body|querySelector)/);
-    assert.match(lifecycleSource, /meetings\/messages-call/);
+    assert.match(lifecycleSource, /meetings\/voip-call/);
+    assert.match(lifecycleSource, /resolveRoomMembership/);
+    assert.doesNotMatch(providerSource, /memberAccountIds/);
     assert.match(lifecycleSource, /disposable: true/);
-    assert.match(lifecycleSource, /chatRoomId: null/);
+    assert.match(lifecycleSource, /chatRoomId: roomId/);
     assert.match(lifecycleSource, /existingMeeting/);
     assert.match(
         lifecycleSource,

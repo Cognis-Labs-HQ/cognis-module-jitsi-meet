@@ -445,10 +445,7 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
         constantsSource,
         /export const MEETING_SUBJECT = "Cognis Classroom";/,
     );
-    assert.match(
-        constantsSource,
-        /export const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";/,
-    );
+    assert.doesNotMatch(constantsSource, /VOIP_MEETING_SUBJECT/);
     assert.match(
         constantsSource,
         /JITSI_PIP_MINIMUM_SIZE = Object\.freeze\(\{[\s\S]*?width: 400,[\s\S]*?height: 225/,

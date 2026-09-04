@@ -150,9 +150,6 @@ export class JitsiMeetStore {
             meetingPassword,
             meetingName: buildMeetingName(row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
-            sourceChatRoomId: row.source_chat_room_id
-                ? String(row.source_chat_room_id)
-                : null,
             disposable: Number(row.disposable ?? 0) === 1,
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
@@ -163,6 +160,7 @@ export class JitsiMeetStore {
             updatedAt: readDbTimestampValue(row.updated_at),
         };
     }
+
     async getMeetingByChatRoomId(chatRoomId) {
         return findMeetingByChatRoomReference({
             db: this.db,
@@ -170,6 +168,7 @@ export class JitsiMeetStore {
             getMeetingById: (id) => this.getMeetingById(id),
         });
     }
+
     async deleteMeeting(meetingId) {
         const normalizedMeetingId = String(meetingId ?? "").trim();
         if (!normalizedMeetingId) return false;
@@ -296,6 +295,7 @@ export class JitsiMeetStore {
         });
         return this.getMeetingById(meetingId);
     }
+
     async findMeetingByParticipants(usernames, classroomId = null) {
         const normalizedUsernames = this.normalizeHandleKeys(usernames);
         if (normalizedUsernames.length <= 1) return null;
@@ -373,7 +373,6 @@ export class JitsiMeetStore {
         chatRoomId,
         scheduledAt,
         forceNew = false,
-        sourceChatRoomId = null,
         disposable = false,
     }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
@@ -451,7 +450,6 @@ export class JitsiMeetStore {
                 meeting_name: meetingName,
                 room_slug: meetingSlug,
                 chat_room_id: chatRoomId ?? null,
-                source_chat_room_id: sourceChatRoomId,
                 disposable: disposable ? 1 : 0,
                 classroom_id: normalizedClassroomId,
                 created_by: createdBy,

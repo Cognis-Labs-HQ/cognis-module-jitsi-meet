@@ -45,7 +45,7 @@ export function registerActiveMeetingParticipantRoute({
                     res,
                     403,
                     "participant_locked",
-                    "Disposable chat calls cannot add participants.",
+                    "Disposable VoIP calls cannot add participants.",
                 );
                 return;
             }

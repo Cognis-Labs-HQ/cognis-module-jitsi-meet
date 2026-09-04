@@ -25,6 +25,7 @@ export function registerMeetingLifecycleRoutes({
     canAccessMeeting,
     resolveGroupChat,
     groupChatMembership,
+    resolveRoomMembership,
     resolveWhiteboardMembership,
     fetchBoardData,
     buildMeetingChatTitle,
@@ -45,30 +46,38 @@ export function registerMeetingLifecycleRoutes({
         log,
     });
     router.post(
-        "/api/v1/modules/jitsi-meet/meetings/messages-call",
+        "/api/v1/modules/jitsi-meet/meetings/voip-call",
         async (req, res) => {
             await store.ensureSchema();
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
             const roomId = String(body.roomId ?? "").trim();
-            const accountIds = Array.isArray(body.memberAccountIds)
-                ? Array.from(
-                      new Set(
-                          body.memberAccountIds
-                              .map((value) => String(value ?? "").trim())
-                              .filter(Boolean),
-                      ),
-                  )
-                : [];
+            if (!roomId || roomId.length > 200) {
+                sendError(res, 400, "bad_request", "Invalid VoIP call.");
+                return;
+            }
+            const membership = await resolveRoomMembership({
+                roomId,
+                requesterAccountId: String(claims.sub),
+            });
+            const accountIds = Array.from(
+                new Set(
+                    (Array.isArray(membership?.memberAccountIds)
+                        ? membership.memberAccountIds
+                        : []
+                    )
+                        .map((value) => String(value ?? "").trim())
+                        .filter(Boolean),
+                ),
+            );
             if (
-                !roomId ||
-                roomId.length > 200 ||
+                membership?.authorized !== true ||
                 accountIds.length < 2 ||
                 accountIds.length > 100 ||
                 !accountIds.includes(String(claims.sub))
             ) {
-                sendError(res, 400, "bad_request", "Invalid chat call.");
+                sendError(res, 403, "forbidden", "VoIP call unavailable.");
                 return;
             }
             const profiles = await Promise.all(
@@ -121,15 +130,26 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-            const meeting = await store.createMeeting({
-                instanceUrl: config.instanceUrl,
-                usernames: participantUsernames,
-                createdBy: requesterUsername,
-                chatRoomId: null,
-                sourceChatRoomId: roomId,
-                disposable: true,
-                forceNew: true,
-            });
+            let meeting;
+            try {
+                meeting = await store.createMeeting({
+                    instanceUrl: config.instanceUrl,
+                    usernames: participantUsernames,
+                    createdBy: requesterUsername,
+                    chatRoomId: roomId,
+                    disposable: true,
+                    forceNew: true,
+                });
+            } catch (error) {
+                meeting = await store.getMeetingByChatRoomId(roomId);
+                if (!meeting) throw error;
+                log?.("info", "Concurrent VoIP call creation reused.", {
+                    component: "jitsi-meet-module",
+                    operation: "reuse_concurrent_voip_call",
+                    meetingId: meeting.id,
+                    roomId,
+                });
+            }
             const state = await store.getMeetingState(meeting.id);
             const payload = await createMeetingPayload({
                 store,
@@ -140,9 +160,9 @@ export function registerMeetingLifecycleRoutes({
                 chatUrl: null,
                 requiresReclaim: false,
             });
-            log?.("info", "Messages video call created.", {
+            log?.("info", "VoIP call created.", {
                 component: "jitsi-meet-module",
-                operation: "create_messages_call",
+                operation: "create_voip_call",
                 meetingId: meeting.id,
                 roomId,
             });

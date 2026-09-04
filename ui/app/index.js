@@ -156,7 +156,7 @@ export async function mount(
         requestedMeetingStart:
             focusState?.autoStart === true ||
             new URL(window.location.href).searchParams.get("start") === "1",
-        messagesCall: focusState?.messagesCall === true,
+        voipCall: focusState?.voipCall === true,
         allParticipantsRequired:
             componentWindow && focusState?.allParticipantsRequired === true,
         allowNavigation:
@@ -347,10 +347,9 @@ export async function mount(
         signal.addEventListener(
             "abort",
             () => {
-                clearTimers();
                 cleanupChatHandlers();
                 stopActiveMeetingsPolling();
-                closeMeetingEmbed();
+                void resetMeetingState();
             },
             { once: true },
         );
@@ -394,7 +393,7 @@ export async function mount(
         resetMeetingState,
     });
     const elements = createMeetingPageElements(i18n, limitedShareView);
-    if (state.messagesCall) elements.splice(0, 1);
+    if (state.voipCall) elements.splice(0, 1);
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
         fetchCurrentProfile({
@@ -454,8 +453,8 @@ export async function mount(
     });
     await composer.init();
     if (signal?.aborted) return;
-    if (state.messagesCall) {
-        root.classList.add("jitsi-messages-call");
+    if (state.voipCall) {
+        root.classList.add("jitsi-voip-call");
     }
     if (state.requestedMeetingId) {
         await joinMeetingById(state.requestedMeetingId, {

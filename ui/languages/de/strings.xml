@@ -148,4 +148,5 @@
   <string name="module.jitsi_meet.category_collaboration">Zusammenarbeit</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>
+  <string name="module.jitsi_meet.voip.subject">VoIP-Anruf</string>
 </resources>

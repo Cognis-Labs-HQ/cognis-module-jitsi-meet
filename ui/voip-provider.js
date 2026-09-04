@@ -2,13 +2,16 @@ import { importReuseModule, uiCtx } from "./reuse/resources.js";
 import { JITSI_PIP_MINIMUM_SIZE } from "./constants.js";
 
 const { apiFetch } = await importReuseModule("api-client.js");
+const { createI18n } = await importReuseModule("i18n.js");
+const i18n = await createI18n({
+    componentStringBaseUrls: ["/static/modules/jitsi-meet/languages"],
+});
 
 const CAPABILITY = "voip:startCall";
 const COMPONENT_UUID = "f055f2e5-227a-5fb4-b934-5397ec32cf2d";
 const COMPONENT_ROUTE_ID = "module.jitsi.meet.meetings";
-const VOIP_MEETING_SUBJECT = "Cognis VoIP Call";
 
-export async function resolveMessagesCallAction(input = {}) {
+export async function resolveVoipCallAction(input = {}) {
     const roomId = String(input.room?.id ?? "").trim();
     const roomKind = String(input.room?.kind ?? "").trim();
     const members = Array.isArray(input.users) ? input.users : [];
@@ -30,13 +33,12 @@ export async function resolveMessagesCallAction(input = {}) {
     }
 
     const response = await apiFetch(
-        "/api/v1/modules/jitsi-meet/meetings/messages-call",
+        "/api/v1/modules/jitsi-meet/meetings/voip-call",
         {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
                 roomId,
-                memberAccountIds: members.map((member) => member.accountId),
             }),
         },
     );
@@ -63,9 +65,11 @@ export async function resolveMessagesCallAction(input = {}) {
         minSize: JITSI_PIP_MINIMUM_SIZE,
         context: {
             autoStart: true,
-            messagesCall: true,
+            voipCall: true,
             meetingId,
-            meetingSubject: VOIP_MEETING_SUBJECT,
+            meetingSubject:
+                String(input.meetingSubject ?? "").trim() ||
+                i18n.t("module.jitsi_meet.voip.subject"),
             allParticipantsRequired: true,
             allowNavigation: true,
         },
@@ -73,5 +77,5 @@ export async function resolveMessagesCallAction(input = {}) {
 }
 
 if (typeof uiCtx.capabilities.get(CAPABILITY) !== "function") {
-    uiCtx.capabilities.contribute(CAPABILITY, resolveMessagesCallAction);
+    uiCtx.capabilities.contribute(CAPABILITY, resolveVoipCallAction);
 }

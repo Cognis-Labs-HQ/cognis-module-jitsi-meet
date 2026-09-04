@@ -5,23 +5,21 @@ import { createHash } from "node:crypto";
 import { JitsiMeetStore } from "../store.js";
 import { findMeetingByChatRoomReference } from "../reuse/meeting-room-lookup.js";
 
-test("meeting room lookup falls back to disposable call sources", async () => {
+test("meeting room lookup uses the canonical chat room reference", async () => {
     const queriedColumns = [];
     const meeting = { id: "meeting-from-call" };
     const result = await findMeetingByChatRoomReference({
         db: {
             async executeCommand(command) {
                 queriedColumns.push(command.where[0].column);
-                return command.where[0].column === "source_chat_room_id"
-                    ? { rows: [{ id: meeting.id }] }
-                    : { rows: [] };
+                return { rows: [{ id: meeting.id }] };
             },
         },
         chatRoomId: "messages-room",
         getMeetingById: async () => meeting,
     });
     assert.equal(result, meeting);
-    assert.deepEqual(queriedColumns, ["chat_room_id", "source_chat_room_id"]);
+    assert.deepEqual(queriedColumns, ["chat_room_id"]);
 });
 
 test("reserved participants include only active presence in other meetings", async () => {

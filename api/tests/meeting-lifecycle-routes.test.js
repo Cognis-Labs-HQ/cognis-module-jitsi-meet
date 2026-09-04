@@ -19,7 +19,7 @@ function createRecorder() {
     };
 }
 
-test("disposable meeting deletion erases its creator's associated chat", async () => {
+test("disposable meeting deletion preserves its provider room", async () => {
     const operations = [];
     const meeting = { id: "meeting-1", chatRoomId: "chat-1" };
 
@@ -28,9 +28,6 @@ test("disposable meeting deletion erases its creator's associated chat", async (
         ownerAccountId: "account-1",
         deleteResourceShares: async (input) => {
             operations.push(["delete_shares", input]);
-        },
-        deleteChatroom: async (input) => {
-            operations.push(["delete_chat", input]);
         },
         store: {
             deleteMeeting: async (meetingId) => {
@@ -51,7 +48,6 @@ test("disposable meeting deletion erases its creator's associated chat", async (
                 resourceId: "meeting-1",
             },
         ],
-        ["delete_chat", { roomId: "chat-1", actorAccountId: "account-1" }],
         ["delete_meeting", "meeting-1"],
         [
             "log",
@@ -68,55 +64,73 @@ test("disposable meeting deletion erases its creator's associated chat", async (
     ]);
 });
 
-test("a chat deletion failure preserves the disposable meeting record", async () => {
-    const deletedMeetingIds = [];
-    const logs = [];
-
-    await assert.rejects(
-        deleteDisposableMeeting({
-            meeting: { id: "meeting-1", chatRoomId: "chat-1" },
-            ownerAccountId: "account-1",
-            deleteChatroom: async () => {
-                throw new Error("messages unavailable");
-            },
-            store: {
-                deleteMeeting: async (meetingId) => {
-                    deletedMeetingIds.push(meetingId);
-                },
-            },
-            log: (...entry) => logs.push(entry),
-        }),
-        /messages unavailable/,
-    );
-
-    assert.deepEqual(deletedMeetingIds, []);
-    assert.equal(logs[0][0], "error");
-    assert.equal(logs[0][2].operation, "delete_disposable_meeting_chat");
-    assert.equal(logs[0][2].meetingId, "meeting-1");
-    assert.equal(logs[0][2].chatRoomId, "chat-1");
-});
-
-test("a missing disposable chat is treated as already deleted", async () => {
-    const deletedMeetingIds = [];
-    const logs = [];
-
-    await deleteDisposableMeeting({
-        meeting: { id: "meeting-1", chatRoomId: "chat-1" },
-        ownerAccountId: "account-1",
-        deleteChatroom: async () => {
-            throw new Error("Chatroom not found.");
-        },
+test("VoIP call creation derives participants from authorized room membership", async () => {
+    const handlers = new Map();
+    const createdMeetings = [];
+    const requestedMemberships = [];
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
         store: {
-            deleteMeeting: async (meetingId) => {
-                deletedMeetingIds.push(meetingId);
+            async ensureSchema() {},
+            async getMeetingByChatRoomId() {
+                return null;
+            },
+            async getConfig() {
+                return { instanceUrl: "https://meet.example.com" };
+            },
+            async createMeeting(input) {
+                createdMeetings.push(input);
+                return { id: "meeting-1", disposable: true };
+            },
+            async getMeetingState() {
+                return {};
+            },
+            async listParticipants() {
+                return ["alice", "bob"];
             },
         },
-        log: (...entry) => logs.push(entry),
+        requireAuth: () => ({ sub: "account-alice", role: "user" }),
+        readJson: async (req) => req.body,
+        sendJson: (res, status, body) => {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
+        },
+        sendError: () => assert.fail("authorized VoIP call was rejected"),
+        profileStore: {
+            async getProfile(accountId) {
+                return { handle: accountId.replace("account-", "") };
+            },
+        },
+        resolveRoomMembership: async (input) => {
+            requestedMemberships.push(input);
+            return {
+                authorized: true,
+                memberAccountIds: ["account-alice", "account-bob"],
+            };
+        },
+        resolveRequesterUsername: async () => "alice",
+        normalizeHandleKey: (handle) => handle,
+        createMeetingPayload: async ({ meeting }) => meeting,
+        log: () => {},
     });
 
-    assert.deepEqual(deletedMeetingIds, ["meeting-1"]);
-    assert.equal(logs[0][0], "error");
-    assert.equal(logs[0][2].operation, "delete_missing_meeting_resource");
+    const response = createRecorder();
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/voip-call")(
+        {
+            body: {
+                roomId: "room-1",
+                memberAccountIds: ["account-alice", "account-mallory"],
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(requestedMemberships, [
+        { roomId: "room-1", requesterAccountId: "account-alice" },
+    ]);
+    assert.deepEqual(createdMeetings[0].usernames, ["alice", "bob"]);
+    assert.equal(createdMeetings[0].chatRoomId, "room-1");
 });
 
 test("meeting creation provisions a share-ready participant-free chat", async () => {
