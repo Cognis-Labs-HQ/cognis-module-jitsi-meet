@@ -169,6 +169,8 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource,
         /updateMinimumSize[\s\S]*resolveMeetingPipMinimumSize/,
     );
+    assert.match(controlSource, /closeButton: \{/);
+    assert.match(controlSource, /onClose: \(\) => button\.click\(\)/);
     assert.match(meetingRoomSource, /contentSharingParticipantsChanged/);
     assert.match(meetingRoomSource, /jitsi-meet\/screen-sharing/);
     assert.match(controlSource, /screenSharingActive === true/);
@@ -599,7 +601,7 @@ test("meeting shares use the Cognis route and skip account setup", () => {
     );
     assert.match(
         appSource,
-        /createMeetingPageElements\(i18n, limitedShareView\)/,
+        /createMeetingPageElements\(i18n, limitedShareView, \{/,
     );
     assert.match(appSource, /if \(!inShareView\) \{[\s\S]*bindShareButton/);
 });
@@ -645,9 +647,11 @@ test("meeting routes and standalone shell load only module-owned layout styles",
     assert.doesNotMatch(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.doesNotMatch(shellSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.match(apiSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.doesNotMatch(apiSource, /\/static\/styles\/page-builder\.css/);
     assert.match(shellSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
     assert.doesNotMatch(appSource, /ensureStylesheetLoaded/);
     assert.doesNotMatch(uiResourcesSource, /stylesheetUrls/);
+    assert.doesNotMatch(appSource, /loadCommonStyles/);
 });
 
 test("profile avatar rendering is centralized behind the host capability", () => {
@@ -681,4 +685,161 @@ test("Jitsi UI uses host logging and feedback capabilities", () => {
     const bundleSource = readJitsiUiBundle();
     assert.doesNotMatch(bundleSource, /console\.(?:error|warn)\(/);
     assert.doesNotMatch(bundleSource, /\/static\/reuse\/toast\.js/);
+});
+
+test("Messages VoIP provider creates a locked disposable component call", () => {
+    const providerSource = readFileSync(
+        resolve(ROOT, "ui/voip-provider.js"),
+        "utf8",
+    );
+    const lifecycleSource = readFileSync(
+        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        "utf8",
+    );
+    assert.match(providerSource, /voip:startCall/);
+    assert.match(providerSource, /supportedActions/);
+    assert.match(
+        providerSource,
+        /\["component", "navigate"\]\.some[\s\S]*supportedActions\.includes\(action\)/,
+    );
+    assert.match(providerSource, /action: "component"/);
+    assert.match(providerSource, /module\.jitsi_meet\.voip\.subject/);
+    assert.match(providerSource, /allowNavigation: true/);
+    assert.match(providerSource, /disposableMeeting: true/);
+    assert.match(providerSource, /mode: "overlay"/);
+    assert.match(providerSource, /minSize: JITSI_PIP_MINIMUM_SIZE/);
+    assert.match(providerSource, /componentUuid: COMPONENT_UUID/);
+    assert.match(providerSource, /action: "navigate"/);
+    assert.match(providerSource, /meetings\?meetingId=/);
+    assert.match(providerSource, /payload\.data\.action === "navigate"/);
+    assert.match(providerSource, /supportedActions\.includes\("navigate"\)/);
+    assert.match(providerSource, /action !== "component"/);
+    assert.match(providerSource, /supportedActions\.includes\("component"\)/);
+    assert.match(providerSource, /body: JSON\.stringify/);
+    assert.doesNotMatch(providerSource, /component-pages:spawn/);
+    assert.doesNotMatch(providerSource, /document\.(?:body|querySelector)/);
+    assert.match(lifecycleSource, /meetings\/voip-call/);
+    assert.match(lifecycleSource, /resolveRoomMembership/);
+    assert.doesNotMatch(providerSource, /memberAccountIds/);
+    assert.match(lifecycleSource, /disposable: true/);
+    assert.match(lifecycleSource, /chatRoomId: roomId/);
+    assert.match(lifecycleSource, /existingMeeting/);
+    assert.match(
+        lifecycleSource,
+        /existingMeeting\.disposable[\s\S]*?"component"[\s\S]*?: "navigate"/,
+    );
+    assert.match(lifecycleSource, /action: "component"/);
+    assert.match(lifecycleSource, /includeChatRoom: false/);
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    assert.match(
+        appSource,
+        /includeMeetingChat:[\s\S]*?componentWindow &&[\s\S]*?focusState\?\.disposableMeeting === true/,
+    );
+    assert.match(appSource, /includeChat: state\.includeMeetingChat/);
+});
+
+test("component-window meetings suppress the meeting overlay", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(appSource, /focusState !== null/);
+    assert.match(appSource, /suppressMeetingOverlay = "true"/);
+    assert.match(
+        stylesheet,
+        /\.jitsi-route-root\[data-suppress-meeting-overlay="true"\] \.jitsi-overlay\s*\{[\s\S]*?display: none/,
+    );
+    assert.match(
+        stylesheet,
+        /\.jitsi-route-root\[data-suppress-meeting-overlay="true"\] \.jitsi-stage-header\s*\{[\s\S]*?display: none/,
+    );
+    assert.doesNotMatch(appSource, /back_to_messages|jitsi-call-back-button/);
+    const interactiveSource = readFileSync(
+        resolve(ROOT, "ui/app/interactive-handlers.js"),
+        "utf8",
+    );
+    assert.match(appSource, /focusState\?\.allowNavigation === true/);
+    assert.match(
+        interactiveSource,
+        /state\.allowNavigation && root\.closest\("\.floating-window"\) !== null/,
+    );
+    assert.equal(
+        interactiveSource.match(/canNavigateDuringMeeting\(\)/g)?.length,
+        3,
+    );
+});
+
+test("ended component meetings discard their host window", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    assert.match(appSource, /component-pages:discard/);
+    assert.match(appSource, /\.component-page-window/);
+    assert.match(appSource, /close_ended_component_meeting/);
+    assert.match(
+        roomSource,
+        /handleMeetingLeft[\s\S]*?handleMeetingExit[\s\S]*?closeComponentWindow/,
+    );
+    assert.match(
+        roomSource,
+        /handleMeetingTerminated[\s\S]*?handleMeetingExit[\s\S]*?closeComponentWindow/,
+    );
+    assert.match(
+        roomSource,
+        /handleLocalParticipantKicked[\s\S]*?resetMeetingState[\s\S]*?closeComponentWindow/,
+    );
+});
+
+test("disposable link-share guests remain on the meeting exit overlay", () => {
+    const listSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    assert.match(
+        listSource,
+        /isDisposableLinkShareMeeting[\s\S]*?state\.shareAccessToken[\s\S]*?state\.meeting\.disposable/,
+    );
+    assert.match(
+        listSource,
+        /retainMeetingOverlay = isDisposableLinkShareMeeting\(\)/,
+    );
+    assert.match(
+        listSource,
+        /if \(!retainMeetingOverlay\) \{\s*await loadActiveMeetings/,
+    );
+    assert.match(
+        roomSource,
+        /fallbackOverlayMessageKey:\s*"module\.jitsi_meet\.overlay\.meeting_left"/,
+    );
+    assert.match(
+        listSource,
+        /reportTerminated[\s\S]*?keepPresenceAlive\(false,[\s\S]*?terminated: reportTerminated/,
+    );
+});
+
+test("required-participant component calls end when a participant leaves", () => {
+    const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    const providerSource = readFileSync(
+        resolve(ROOT, "ui/voip-provider.js"),
+        "utf8",
+    );
+    assert.match(providerSource, /allParticipantsRequired: true/);
+    assert.match(
+        appSource,
+        /componentWindow && focusState\?\.allParticipantsRequired === true/,
+    );
+    assert.match(roomSource, /state\.allParticipantsRequired/);
+    assert.match(roomSource, /"participantLeft"/);
+    assert.match(
+        roomSource,
+        /handleRequiredParticipantLeft[\s\S]*?handleMeetingTerminated/,
+    );
 });

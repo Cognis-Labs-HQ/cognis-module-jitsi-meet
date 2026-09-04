@@ -13,6 +13,10 @@ function createScopedRuntime() {
             "social:messages:membership",
             { add: async () => {}, remove: async () => {} },
         ],
+        [
+            "social:messages:resolveRoomMembership",
+            async () => ({ authorized: true, memberAccountIds: [] }),
+        ],
         ["social:messages:deleteChatroom", async () => {}],
     ]);
     const flows = new Set([
@@ -104,6 +108,7 @@ function createScopedRuntime() {
             contributedCapability: capabilities.has(
                 "meetings:isProviderAvailable",
             ),
+            meetingChatCapability: capabilities.has("meeting:getMeetingChat"),
             createdFlows: ["construct-meetings-ui", "create-meeting"].filter(
                 (flowId) => flows.has(flowId),
             ),
@@ -170,12 +175,13 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         modes: ["overlay", "fullscreen", "pip"],
         minSize: { width: 400, height: 225 },
     });
-    assert.deepEqual(
-        firstEnabledSnapshot.uiContributions.find(
-            ({ type }) => type === "navbar",
-        ).contribution.access,
-        { minRole: "user" },
-    );
+    const navbarContribution = firstEnabledSnapshot.uiContributions.find(
+        ({ type }) => type === "navbar",
+    ).contribution;
+    assert.deepEqual(navbarContribution.access, { minRole: "user" });
+    assert.deepEqual(navbarContribution.providesCapabilities, [
+        "voip:startCall",
+    ]);
     assert.ok(firstEnabledSnapshot.hookCount > 0);
 
     firstDispose();

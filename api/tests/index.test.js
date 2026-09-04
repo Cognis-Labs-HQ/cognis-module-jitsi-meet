@@ -19,6 +19,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "social:messagesUiClient",
         "social:messages:deleteChatroom",
         "social:messages:membership",
+        "social:messages:resolveRoomMembership",
         "share:uiClient",
         "share:uiGateway",
         "share:openPopup",
@@ -27,11 +28,16 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
+        "component-pages:spawn",
+        "component-pages:discard",
+        "ui:makeFloatingWindow",
     ]);
     assert.deepEqual(manifest.capabilities, [
         "meeting:video",
         "meeting:chat",
         "meeting:moderation",
+        "meeting:getMeetingChat",
+        "voip:startCall",
     ]);
     assert.deepEqual(manifest.requires, [
         "e8732526-8976-54ef-828b-ed0dfe21bd9e",
@@ -74,6 +80,14 @@ test("participant Whiteboard opens request approval from active meeting peers", 
     assert.match(source, /requestWhiteboardOpenApproval/);
     assert.match(source, /action: "open the meeting Whiteboard"/);
     assert.match(source, /operation: "request_whiteboard_open_approval"/);
+});
+
+test("disposable Messages calls stay out of Meetings discovery", () => {
+    const source = readFileSync(
+        resolve(ROOT, "api/meetings-routes.js"),
+        "utf8",
+    );
+    assert.match(source, /if \(!meeting \|\| meeting\.disposable\) continue;/);
 });
 
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
@@ -171,8 +185,8 @@ test("participant-free meetings delete their identity, shares, and chat when clo
     );
     assert.match(source, /deleteReferencedMeetingResource\(\{/);
     assert.match(source, /deleteChatroom\(\{/);
-    assert.match(source, /roomId: meeting\.chatRoomId/);
-    assert.match(source, /actorAccountId: ownerAccountId/);
+    assert.match(source, /roomId: resolved\.meeting\.chatRoomId/);
+    assert.match(source, /actorAccountId: claims\.sub/);
     assert.match(source, /await store\.deleteMeeting\(meeting\.id\)/);
     assert.match(source, /async deleteMeeting\(meetingId\)/);
 });
@@ -201,6 +215,10 @@ test("jitsi meeting notifications target authenticated account ids", () => {
     assert.match(source, /recipientUsername: recipient\.accountId/);
     assert.match(source, /profileStore\s*\.getProfile\(recipientUsername\)/);
     assert.match(source, /resolve_meeting_notification_recipient/);
+    assert.match(
+        source,
+        /store\.getMeetingById\([\s\S]*?notificationMeeting\?\.disposable\) return;/,
+    );
 });
 
 test("jitsi meeting creation resolves hidden participants only for admins", () => {

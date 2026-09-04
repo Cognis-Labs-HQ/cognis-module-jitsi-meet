@@ -40,6 +40,15 @@ export function registerActiveMeetingParticipantRoute({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
+            if (resolved.meeting.disposable) {
+                sendError(
+                    res,
+                    403,
+                    "participant_locked",
+                    "Disposable meetings cannot modify participants.",
+                );
+                return;
+            }
             if (
                 !resolved.state.firstJoinedAt ||
                 resolved.state.endedAt ||

@@ -111,7 +111,7 @@ export function createEmbedHandlers({
                 },
                 requireDisplayName: false,
                 disableDeepLinking: true,
-                subject: MEETING_SUBJECT,
+                subject: state.meetingSubject || MEETING_SUBJECT,
                 preferredTheme: themeMode,
                 toolbarButtons: JITSI_TOOLBAR_BUTTONS,
             },
@@ -136,7 +136,7 @@ export function createEmbedHandlers({
             callbacks.executeJitsiCommandIfSupported(
                 apiInstance,
                 "subject",
-                MEETING_SUBJECT,
+                state.meetingSubject || MEETING_SUBJECT,
             );
             if (meetingPassword) {
                 callbacks.executeJitsiCommandIfSupported(
@@ -253,27 +253,40 @@ export function createEmbedHandlers({
                 toastVariant: "warning",
                 skipPresenceUpdate: true,
             });
+            await callbacks.closeComponentWindow();
         };
-        const handleMeetingLeft = (event) => {
+        const handleMeetingLeft = async (event) => {
             if (state.jitsiApi !== apiInstance) return;
             if (isLocalParticipantKick(event)) {
                 void handleLocalParticipantKicked(event);
                 return;
             }
-            void callbacks.handleMeetingExit({
+            await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
                     "module.jitsi_meet.overlay.meeting_left",
                 honorMeetingClosed: false,
             });
+            await callbacks.closeComponentWindow();
         };
-        const handleMeetingTerminated = () => {
+        const handleMeetingTerminated = async () => {
             if (state.jitsiApi !== apiInstance) return;
-            void callbacks.handleMeetingExit({
+            await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
                     "module.jitsi_meet.overlay.meeting_closed",
                 forceClosedOverlay: true,
                 reportTerminated: true,
             });
+            await callbacks.closeComponentWindow();
+        };
+        const handleRequiredParticipantLeft = () => {
+            if (
+                state.jitsiApi !== apiInstance ||
+                !state.jitsiConferenceJoined ||
+                !state.allParticipantsRequired
+            ) {
+                return;
+            }
+            void handleMeetingTerminated();
         };
         const reportScreenSharingState = async (event) => {
             if (state.jitsiApi !== apiInstance || !state.meeting?.id) return;
@@ -381,6 +394,10 @@ export function createEmbedHandlers({
         });
         apiInstance.addEventListener("videoConferenceLeft", handleMeetingLeft);
         apiInstance.addEventListener("readyToClose", handleMeetingLeft);
+        apiInstance.addEventListener(
+            "participantLeft",
+            handleRequiredParticipantLeft,
+        );
         callbacks.renderParticipants();
 
         frame.hidden = false;
@@ -405,6 +422,7 @@ export function createEmbedHandlers({
                 body: JSON.stringify({
                     meetingId: state.meeting.id,
                     sessionId: state.sessionId,
+                    includeChat: state.includeMeetingChat,
                 }),
                 accessToken: state.shareAccessToken || undefined,
                 suppressAccessDeniedEvent: true,

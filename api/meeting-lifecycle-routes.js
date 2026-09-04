@@ -25,6 +25,7 @@ export function registerMeetingLifecycleRoutes({
     canAccessMeeting,
     resolveGroupChat,
     groupChatMembership,
+    resolveRoomMembership,
     resolveWhiteboardMembership,
     fetchBoardData,
     buildMeetingChatTitle,
@@ -44,6 +45,139 @@ export function registerMeetingLifecycleRoutes({
         sendError,
         log,
     });
+    router.post(
+        "/api/v1/modules/jitsi-meet/meetings/voip-call",
+        async (req, res) => {
+            await store.ensureSchema();
+            const claims = requireAuth(req, res, "user");
+            if (!claims) return;
+            const body = await readJson(req);
+            const roomId = String(body.roomId ?? "").trim();
+            if (!roomId || roomId.length > 200) {
+                sendError(res, 400, "bad_request", "Invalid VoIP call.");
+                return;
+            }
+            const membership = await resolveRoomMembership({
+                roomId,
+                requesterAccountId: String(claims.sub),
+            });
+            const accountIds = Array.from(
+                new Set(
+                    (Array.isArray(membership?.memberAccountIds)
+                        ? membership.memberAccountIds
+                        : []
+                    )
+                        .map((value) => String(value ?? "").trim())
+                        .filter(Boolean),
+                ),
+            );
+            if (
+                membership?.authorized !== true ||
+                accountIds.length < 2 ||
+                accountIds.length > 100 ||
+                !accountIds.includes(String(claims.sub))
+            ) {
+                sendError(res, 403, "forbidden", "VoIP call unavailable.");
+                return;
+            }
+            const profiles = await Promise.all(
+                accountIds.map((accountId) =>
+                    profileStore.getProfile(accountId),
+                ),
+            );
+            if (profiles.some((profile) => !profile?.handle)) {
+                sendError(res, 400, "bad_request", "Invalid chat members.");
+                return;
+            }
+            const requesterUsername = await resolveRequesterUsername(
+                profileStore,
+                claims.sub,
+            );
+            const participantUsernames = profiles.map((profile) =>
+                normalizeHandleKey(profile.handle),
+            );
+            const existingMeeting = await store.getMeetingByChatRoomId(roomId);
+            if (existingMeeting) {
+                const authorized = await canAccessMeeting({
+                    store,
+                    meeting: existingMeeting,
+                    username: requesterUsername,
+                    listClassroomParticipantHandles,
+                    profileStore,
+                    requesterAccountId: claims.sub,
+                });
+                if (!authorized) {
+                    sendError(
+                        res,
+                        403,
+                        "forbidden",
+                        "The chatroom meeting is not available.",
+                    );
+                    return;
+                }
+                sendJson(res, 200, {
+                    data: {
+                        id: existingMeeting.id,
+                        action: existingMeeting.disposable
+                            ? "component"
+                            : "navigate",
+                    },
+                });
+                return;
+            }
+            const config = await store.getConfig();
+            if (!config.instanceUrl) {
+                sendError(
+                    res,
+                    409,
+                    "config_required",
+                    "Jitsi is not configured.",
+                );
+                return;
+            }
+            let meeting;
+            try {
+                meeting = await store.createMeeting({
+                    instanceUrl: config.instanceUrl,
+                    usernames: participantUsernames,
+                    createdBy: requesterUsername,
+                    chatRoomId: roomId,
+                    disposable: true,
+                    forceNew: true,
+                });
+            } catch (error) {
+                meeting = await store.getMeetingByChatRoomId(roomId);
+                if (!meeting) throw error;
+                log?.("info", "Concurrent VoIP call creation reused.", {
+                    component: "jitsi-meet-module",
+                    operation: "reuse_concurrent_voip_call",
+                    meetingId: meeting.id,
+                    roomId,
+                });
+            }
+            const state = await store.getMeetingState(meeting.id);
+            const payload = await createMeetingPayload({
+                store,
+                meeting,
+                state,
+                participants: await store.listParticipants(meeting.id),
+                requesterUsername,
+                chatUrl: null,
+                includeChatRoom: false,
+                requiresReclaim: false,
+            });
+            log?.("info", "VoIP call created.", {
+                component: "jitsi-meet-module",
+                operation: "create_voip_call",
+                meetingId: meeting.id,
+                roomId,
+            });
+            sendJson(res, 200, {
+                data: { ...payload, action: "component" },
+            });
+        },
+        { access: { minRole: "user" } },
+    );
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
         async (req, res) => {
@@ -276,7 +410,7 @@ export function registerMeetingLifecycleRoutes({
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
-            if (resolved.meeting.chatRoomId) {
+            if (resolved.meeting.chatRoomId && !resolved.meeting.disposable) {
                 const chatMemberRemoved = await groupChatMembership
                     .remove({
                         roomId: resolved.meeting.chatRoomId,
@@ -350,6 +484,7 @@ export function registerMeetingLifecycleRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
+            const includeChat = body.includeChat !== false;
             const meetingId = String(body.meetingId ?? "").trim();
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
                 claims,
@@ -390,9 +525,11 @@ export function registerMeetingLifecycleRoutes({
                     state,
                     participants,
                     requesterUsername: meeting.createdBy,
-                    chatUrl: meeting.chatRoomId
-                        ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
-                        : null,
+                    chatUrl:
+                        includeChat && meeting.chatRoomId
+                            ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
+                            : null,
+                    includeChatRoom: includeChat,
                     requiresReclaim: false,
                     meetingPassword: meeting.meetingPassword,
                 });
@@ -421,12 +558,14 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
             try {
-                await restoreMeetingChatMembership({
-                    meeting: resolved.meeting,
-                    userAccountId: claims.sub,
-                    groupChatMembership,
-                    log,
-                });
+                if (includeChat) {
+                    await restoreMeetingChatMembership({
+                        meeting: resolved.meeting,
+                        userAccountId: claims.sub,
+                        groupChatMembership,
+                        log,
+                    });
+                }
             } catch {
                 sendError(
                     res,
@@ -474,9 +613,11 @@ export function registerMeetingLifecycleRoutes({
                 state,
                 participants: resolved.participants,
                 requesterUsername: resolved.requesterUsername,
-                chatUrl: resolved.meeting.chatRoomId
-                    ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
-                    : null,
+                chatUrl:
+                    includeChat && resolved.meeting.chatRoomId
+                        ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                        : null,
+                includeChatRoom: includeChat,
                 requiresReclaim,
                 meetingPassword:
                     (await store.claimMeetingPassword(
@@ -681,13 +822,14 @@ export function registerMeetingLifecycleRoutes({
                     const participantlessMeeting = resolved.participants.every(
                         (username) => username === resolved.meeting.createdBy,
                     );
-                    if (participantlessMeeting) {
+                    if (participantlessMeeting || resolved.meeting.disposable) {
                         await deleteDisposableMeeting({
                             meeting: resolved.meeting,
                             ownerAccountId: claims.sub,
                             store,
                             deleteResourceShares,
                             deleteChatroom,
+                            preserveChatroom: resolved.meeting.disposable,
                             log,
                         });
                         disposableMeetingDeleted = true;

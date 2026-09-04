@@ -20,6 +20,7 @@ function createRoutes({
     authorized = true,
     requesterUsername = "alice",
     organizerUsername = "alice",
+    meetingDisposable = false,
     participants = ["alice"],
     presence = [],
     state = { whiteboardOpenVotes: [] },
@@ -55,6 +56,7 @@ function createRoutes({
                     id,
                     meetingName: "Planning",
                     createdBy: organizerUsername,
+                    disposable: meetingDisposable,
                 };
             },
             async getMeetingState() {
@@ -184,6 +186,11 @@ test("screen sharing closes and blocks meeting Whiteboards", async () => {
 test("every authorized attendee can synchronize observed screen sharing", async () => {
     for (const options of [
         { requesterUsername: "bob", organizerUsername: "alice" },
+        {
+            requesterUsername: "bob",
+            organizerUsername: "alice",
+            meetingDisposable: true,
+        },
         {
             claims: { sub: "share:share-17:guest-session-4" },
             guestAllowed: true,
@@ -545,6 +552,75 @@ test("meeting participants request consensus before opening a whiteboard", async
             requesterDisplayName: "bob",
         },
     ]);
+});
+
+test("two-participant meetings open a whiteboard without consensus", async () => {
+    const routes = createRoutes({
+        requesterUsername: "bob",
+        organizerUsername: "alice",
+        participants: ["alice", "bob"],
+        presence: [{ username: "alice" }, { username: "bob" }],
+        whiteboardApproval: { approved: false },
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(response.body.data.whiteboardOpen, true);
+    assert.equal(response.body.data.pendingConsensus, false);
+    assert.equal(response.body.data.voteCount, 0);
+    assert.equal(response.body.data.votesRequired, 0);
+    assert.deepEqual(routes.approvalRequests, []);
+});
+
+test("disposable meetings open a whiteboard without consensus", async () => {
+    const routes = createRoutes({
+        requesterUsername: "bob",
+        organizerUsername: "alice",
+        meetingDisposable: true,
+        participants: ["alice", "bob", "carol"],
+        presence: [
+            { username: "alice" },
+            { username: "bob" },
+            { username: "carol" },
+        ],
+        whiteboardApproval: { approved: false },
+    });
+    const response = createRecorder();
+
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: true,
+                active: true,
+            },
+        },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(response.body.data.whiteboardOpen, true);
+    assert.equal(response.body.data.pendingConsensus, false);
+    assert.equal(response.body.data.voteCount, 0);
+    assert.equal(response.body.data.votesRequired, 0);
+    assert.deepEqual(routes.approvalRequests, []);
 });
 
 test("a proposed canvas cannot bypass pending consensus", async () => {

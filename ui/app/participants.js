@@ -430,6 +430,7 @@ export function createPreflightHandlers({
                 body: JSON.stringify({
                     meetingId,
                     sessionId: state.sessionId,
+                    includeChat: state.includeMeetingChat,
                 }),
                 accessToken: state.shareAccessToken || undefined,
                 suppressAccessDeniedEvent: true,

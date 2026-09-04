@@ -148,4 +148,5 @@
   <string name="module.jitsi_meet.category_collaboration">Kolaborasi</string>
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Rapat</string>
+  <string name="module.jitsi_meet.voip.subject">Panggilan VoIP</string>
 </resources>

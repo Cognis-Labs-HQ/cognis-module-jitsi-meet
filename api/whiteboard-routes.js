@@ -326,10 +326,23 @@ export function registerMeetingWhiteboardRoutes({
                     return;
                 }
             }
+            const meetingParticipantUsernames = new Set(
+                await store.listParticipants(resolved.meeting.id),
+            );
+            for (const entry of store.filterCurrentPresenceEntries(
+                await store.listPresence(resolved.meeting.id),
+            )) {
+                meetingParticipantUsernames.add(entry.username);
+            }
+            meetingParticipantUsernames.add(resolved.meeting.createdBy);
+            const consensusBypassed =
+                resolved.meeting.disposable === true ||
+                meetingParticipantUsernames.size <= 2;
             let consensusApproved = null;
             let approvalRequested = false;
             if (
                 active &&
+                !consensusBypassed &&
                 !resolved.shareGuest &&
                 resolved.requesterUsername !== resolved.meeting.createdBy
             ) {
@@ -389,6 +402,8 @@ export function registerMeetingWhiteboardRoutes({
                         resolved.requesterUsername ===
                             resolved.meeting.createdBy
                     ) {
+                        whiteboardOpen = true;
+                    } else if (active && consensusBypassed) {
                         whiteboardOpen = true;
                     } else if (mappedParticipantCanvas) {
                         whiteboardOpen = true;

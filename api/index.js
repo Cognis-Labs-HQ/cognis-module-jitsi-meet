@@ -31,6 +31,7 @@ import {
     selectDistinctParticipantMeetings,
 } from "./reuse/persisted-meetings.js";
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
+import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
@@ -107,11 +108,9 @@ export function registerUi(ctx) {
     ctx.registerNavbarPlugin({
         scriptUrl: "/static/modules/jitsi-meet/navbar.js",
         access: { minRole: "user" },
+        providesCapabilities: ["voip:startCall"],
     });
-    const meetingsStylesheets = [
-        "/static/styles/page-builder.css",
-        "/static/modules/jitsi-meet/jitsi-meet.css",
-    ];
+    const meetingsStylesheets = ["/static/modules/jitsi-meet/jitsi-meet.css"];
     for (const route of [
         {
             id: "module.jitsi.meet.meetings",
@@ -184,6 +183,14 @@ export function registerApiRoutes(router, ctx) {
     ) {
         throw new Error(
             "Jitsi Meet requires the Messages room membership capability.",
+        );
+    }
+    const resolveRoomMembership = ctx.getCapability(
+        "social:messages:resolveRoomMembership",
+    );
+    if (typeof resolveRoomMembership !== "function") {
+        throw new Error(
+            "Jitsi Meet requires the Messages room resolver capability.",
         );
     }
     const listClassroomParticipantHandles =
@@ -376,6 +383,7 @@ export function registerApiRoutes(router, ctx) {
         });
         for (const routePath of [
             "/api/v1/modules/jitsi-meet/meetings/create",
+            "/api/v1/modules/jitsi-meet/meetings/voip-call",
             "/api/v1/modules/jitsi-meet/meetings/get",
             "/api/v1/modules/jitsi-meet/meetings/preflight",
             "/api/v1/modules/jitsi-meet/meetings/probe",
@@ -536,6 +544,17 @@ export function registerApiRoutes(router, ctx) {
         "jitsi-meet:getMeetingById",
         store.getMeetingById.bind(store),
     );
+    ctx.contributePublicCapability(
+        "meeting:getMeetingChat",
+        createGetMeetingChatCapability({
+            store,
+            profileStore,
+            profileIdentity,
+            canAccessMeeting: canAccessMeetingForRequester,
+            listClassroomParticipantHandles,
+            log,
+        }),
+    );
     const registerExternalRoomAuthorizer = ctx.capabilities?.get?.(
         "social:messages:registerExternalRoomAuthorizer",
     );
@@ -586,6 +605,12 @@ export function registerApiRoutes(router, ctx) {
     ) {
         if (typeof dispatchNotification !== "function") return;
         const notificationMeetingId = meetingId ?? metadata?.meetingId;
+        if (notificationMeetingId) {
+            const notificationMeeting = await store.getMeetingById(
+                notificationMeetingId,
+            );
+            if (notificationMeeting?.disposable) return;
+        }
         const excludedRecipients = new Set(
             [organizerUsername, ...excludeUsernames]
                 .map((username) => normalizeHandleKey(username))
@@ -744,6 +769,7 @@ export function registerApiRoutes(router, ctx) {
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
         groupChatMembership,
+        resolveRoomMembership,
         resolveWhiteboardMembership: () =>
             systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),

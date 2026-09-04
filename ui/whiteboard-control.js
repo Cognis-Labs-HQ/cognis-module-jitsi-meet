@@ -612,6 +612,13 @@ export async function bindWhiteboardButton({
                             minWidth: minimumSize.width,
                             minHeight: minimumSize.height,
                             signal,
+                            closeButton: {
+                                className: "btn-cancel",
+                                label: i18n.t(
+                                    "module.jitsi_meet.whiteboard.close",
+                                ),
+                                onClose: () => button.click(),
+                            },
                         },
                     );
                     placeMeetingOverlay(trigger, { floating: true });

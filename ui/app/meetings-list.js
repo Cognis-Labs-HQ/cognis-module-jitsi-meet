@@ -380,6 +380,7 @@ export function createMeetingHandlers({
                 },
                 body: JSON.stringify({
                     meetingId: normalizedMeetingId,
+                    includeChat: state.includeMeetingChat,
                 }),
                 accessToken: state.shareAccessToken || undefined,
                 suppressAccessDeniedEvent: true,
@@ -579,11 +580,26 @@ export function createMeetingHandlers({
         frame.replaceChildren();
     }
 
+    function isDisposableLinkShareMeeting() {
+        if (!state.shareAccessToken || !state.meeting?.id) return false;
+        if (state.meeting.disposable) return true;
+        const participants = Array.isArray(state.meeting.participants)
+            ? state.meeting.participants
+            : [];
+        return (
+            participants.length > 0 &&
+            participants.every(
+                (username) => username === state.meeting.createdBy,
+            )
+        );
+    }
+
     async function resetMeetingState({
         overlayMessageKey = null,
         toastMessageKey = null,
         toastVariant = "info",
         skipPresenceUpdate = false,
+        retainMeetingOverlay = isDisposableLinkShareMeeting(),
     } = {}) {
         if (!skipPresenceUpdate) {
             await callbacks.keepPresenceAlive(false).catch(() => undefined);
@@ -610,7 +626,9 @@ export function createMeetingHandlers({
             });
         }
         await callbacks.updateCognisChat();
-        await loadActiveMeetings({ resolveRequested: false });
+        if (!retainMeetingOverlay) {
+            await loadActiveMeetings({ resolveRequested: false });
+        }
         void whiteboardCleanup?.then(() => {
             if (state.overlayPresentation) {
                 utils.updateOverlay(state.overlayPresentation);

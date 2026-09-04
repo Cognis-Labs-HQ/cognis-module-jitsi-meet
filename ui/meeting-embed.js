@@ -40,14 +40,18 @@ export function resolveRoomName(meeting) {
     return String(meeting?.meetingName ?? "").trim();
 }
 
-export function buildMeetingJoinUrl(meetingUrl, profile) {
+export function buildMeetingJoinUrl(
+    meetingUrl,
+    profile,
+    meetingSubject = MEETING_SUBJECT,
+) {
     try {
         const parsed = new URL(meetingUrl);
         const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ""));
         hashParams.set("config.prejoinConfig.enabled", "false");
         hashParams.set("config.requireDisplayName", "false");
         hashParams.set("config.disableDeepLinking", "true");
-        hashParams.set("config.subject", MEETING_SUBJECT);
+        hashParams.set("config.subject", meetingSubject);
         const themeMode = resolveThemeMode();
         hashParams.set("config.preferredTheme", themeMode);
         hashParams.set(

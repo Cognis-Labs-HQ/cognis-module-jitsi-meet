@@ -50,6 +50,15 @@ async function requireOwnedMeeting({
         sendError(res, 404, "not_found", "Meeting not found.");
         return null;
     }
+    if (meeting.disposable) {
+        sendError(
+            res,
+            403,
+            "sharing_disabled",
+            "Disposable meetings cannot be shared.",
+        );
+        return null;
+    }
     const requesterUsername = await resolveRequesterUsername(
         profileStore,
         profileIdentity,

@@ -1,6 +1,7 @@
 import { logUi, openErrorPopup, showToast } from "../reuse/feedback.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
-import { importReuseModule, loadCommonStyles } from "../reuse/resources.js";
+import { importReuseModule, uiCtx } from "../reuse/resources.js";
+import { MEETING_SUBJECT } from "../constants.js";
 import { ensureSessionId } from "../session.js";
 import { resolveThemeMode } from "../meeting-embed.js";
 import { createMeetingPageElements } from "../page-elements.js";
@@ -72,8 +73,14 @@ export async function mount(
         focusState = null,
     } = {},
 ) {
-    await loadCommonStyles();
     if (!claimRouteRoot(root, signal)) return;
+    const componentWindow = focusState !== null;
+    if (componentWindow) root.dataset.suppressMeetingOverlay = "true";
+    signal?.addEventListener(
+        "abort",
+        () => delete root.dataset.suppressMeetingOverlay,
+        { once: true },
+    );
     const shareContext = routedShareContext ?? getShareContext();
     const inShareView =
         shareContext !== null && shareContext?.directAccess !== true;
@@ -131,6 +138,9 @@ export async function mount(
         lastMeetingChatRoomId: "",
         lastMeetingParticipants: [],
         chatParticipantEntries: [],
+        includeMeetingChat: !(
+            componentWindow && focusState?.disposableMeeting === true
+        ),
         currentProfile: null,
         preflightStatus: "idle",
         preflightPassed: false,
@@ -142,7 +152,16 @@ export async function mount(
                 new URL(window.location.href).searchParams.get("meetingId"),
         ),
         requestedMeetingStart:
+            focusState?.autoStart === true ||
             new URL(window.location.href).searchParams.get("start") === "1",
+        voipCall: focusState?.voipCall === true,
+        allParticipantsRequired:
+            componentWindow && focusState?.allParticipantsRequired === true,
+        allowNavigation:
+            componentWindow && focusState?.allowNavigation === true,
+        meetingSubject: String(
+            focusState?.meetingSubject ?? MEETING_SUBJECT,
+        ).trim(),
         shareAccessToken: String(shareContext?.guestAccessToken ?? ""),
         activeMeetings: [],
         persistedMeetings: [],
@@ -183,6 +202,38 @@ export async function mount(
     }
     const callbacks = {
         beginPageLoading,
+        closeComponentWindow: async () => {
+            if (!componentWindow) return false;
+            const componentStage = root.closest(
+                ".component-page-window",
+            )?.parentElement;
+            const elementId = String(componentStage?.id ?? "").trim();
+            const discardComponentPage = uiCtx.capabilities.get(
+                "component-pages:discard",
+            );
+            if (!elementId || typeof discardComponentPage !== "function") {
+                return false;
+            }
+            try {
+                return await discardComponentPage(elementId);
+            } catch (error) {
+                await logUi(
+                    "error",
+                    "Meeting component window could not be closed.",
+                    {
+                        component: "module:jitsi-meet",
+                        operation: "close_ended_component_meeting",
+                        meetingId: state.meeting?.id ?? null,
+                        elementId,
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                    },
+                );
+                return false;
+            }
+        },
         syncMeetingWhiteboardComponent: () =>
             syncMeetingWhiteboardComponent({ root, state }),
         openMeetingSharePopup: () =>
@@ -294,10 +345,9 @@ export async function mount(
         signal.addEventListener(
             "abort",
             () => {
-                clearTimers();
                 cleanupChatHandlers();
                 stopActiveMeetingsPolling();
-                closeMeetingEmbed();
+                void resetMeetingState();
             },
             { once: true },
         );
@@ -340,7 +390,10 @@ export async function mount(
         loadActiveMeetings,
         resetMeetingState,
     });
-    const elements = createMeetingPageElements(i18n, limitedShareView);
+    const elements = createMeetingPageElements(i18n, limitedShareView, {
+        includeChat: state.includeMeetingChat,
+    });
+    if (state.voipCall) elements.splice(0, 1);
     const [allParticipants, currentProfile] = await Promise.all([
         limitedShareView ? Promise.resolve([]) : fetchParticipants(""),
         fetchCurrentProfile({
@@ -400,6 +453,9 @@ export async function mount(
     });
     await composer.init();
     if (signal?.aborted) return;
+    if (state.voipCall) {
+        root.classList.add("jitsi-voip-call");
+    }
     if (state.requestedMeetingId) {
         await joinMeetingById(state.requestedMeetingId, {
             autoStart: inShareView || state.requestedMeetingStart,

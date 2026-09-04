@@ -445,6 +445,11 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
         constantsSource,
         /export const MEETING_SUBJECT = "Cognis Classroom";/,
     );
+    assert.doesNotMatch(constantsSource, /VOIP_MEETING_SUBJECT/);
+    assert.match(
+        constantsSource,
+        /JITSI_PIP_MINIMUM_SIZE = Object\.freeze\(\{[\s\S]*?width: 400,[\s\S]*?height: 225/,
+    );
     const toolbarArrayMatch = constantsSource.match(
         /const JITSI_TOOLBAR_BUTTONS = \[([\s\S]*?)\];/,
     );
@@ -453,9 +458,15 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     assert.equal(/"chat"/.test(toolbarArraySource), false);
     assert.equal(/"invite"/.test(toolbarArraySource), false);
     assert.equal(/"settings"/.test(toolbarArraySource), false);
-    assert.match(source, /subject: MEETING_SUBJECT,/);
+    assert.match(
+        source,
+        /subject: state\.meetingSubject \|\| MEETING_SUBJECT,/,
+    );
     assert.match(source, /currentUserIsJitsiModerator\(apiInstance\)/);
-    assert.match(source, /"subject",[\s\S]*MEETING_SUBJECT/);
+    assert.match(
+        source,
+        /"subject",[\s\S]*state\.meetingSubject \|\| MEETING_SUBJECT/,
+    );
     assert.match(source, /preferredTheme: themeMode,/);
     assert.match(
         source,
@@ -474,7 +485,7 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.subject", MEETING_SUBJECT\)/,
+        /hashParams\.set\("config\.subject", meetingSubject\)/,
     );
     assert.match(
         embedSource,
@@ -704,7 +715,7 @@ test("meetings page defaults stage and chat across the full composer row", () =>
     const source = readJitsiUiBundle();
     assert.match(
         source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[8,\s*5\][\s\S]*min:\s*\[6,\s*4\]/,
+        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[includeChat \? 8 : 12,\s*5\][\s\S]*min:\s*\[includeChat \? 6 : 8,\s*4\]/,
     );
     assert.match(
         source,
@@ -718,6 +729,7 @@ test("meetings page defaults stage and chat across the full composer row", () =>
         source,
         /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
     );
+    assert.match(source, /if \(includeChat\) \{[\s\S]*id: "jitsi-chat"/);
 });
 
 test("meetings UI recovers a live session after composer edit rerenders the iframe", () => {

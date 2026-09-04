@@ -2,6 +2,20 @@
 
 The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, reusable meeting rooms, session reclaim, Messages chat integration, and an optional shared Whiteboard.
 
+Jitsi provides `voip:startCall` for host surfaces that supply an eligible conversation context. Its authenticated API resolves the canonical room membership and authorizes the requester. If the room references a regular meeting, it returns a same-origin `navigate` action for that meeting. New calls and rooms already mapped to a disposable call return a host-owned `component` action for the Meetings route in overlay mode. Consumers may advertise `component`, `navigate`, or both; the provider resolves an existing room mapping before rejecting an unsupported returned action. Reused meeting access is checked through stable account identity, so a profile handle change does not block an authorized room member. Unsupported requests return `null`.
+
+Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. VoIP consumers may supply a meeting subject; otherwise the provider uses the localized subject “VoIP call.” Disposable component calls omit a module-owned back button and do not include any chat surface or chat identifier; the private Messages chat that spawned the call remains separate and unchanged, including when a caller is kicked from the meeting. They stay out of the Meetings page’s active and previous meeting lists and cannot be shared or extended with participants. The authenticated `meeting:getMeetingChat` capability separately returns a meeting’s attached chat ID only when the supplied claims identify an authorized participant.
+
+Component-window mounts suppress both the meeting overlay and the “Meeting Window” header, so the embedded surface shows only the meeting frame while it connects and runs.
+
+When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard. When a meeting is moved into PiP to present its Whiteboard, the host close control closes the Whiteboard and restores the meeting.
+
+Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. VoIP calls may enable this flag. Component metadata can also set `allowNavigation`; the active-meeting unload, link, and history guards yield to host-managed navigation only while that component is actually inside a floating PiP window. A call still shown in its original component window remains protected against navigation. Disposable meetings never dispatch meeting invitations, start, join, leave, or end notifications.
+
+The provider action advertises `minSize: { width, height }` with a 400 × 225 pixel minimum, using the same PiP payload definition as Nextcloud Whiteboard so the host can enforce the floating call minimum consistently.
+
+The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
+
 ## Usage Examples
 
 - Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.
@@ -97,7 +111,7 @@ The latest Messages integration exposes deletion as a flow-backed public capabil
 
 When the organizer expands an active meeting, the owner client also re-synchronizes the complete participant set through the Whiteboard UI gateway.
 
-A non-organizer opening request uses Share approval so every other active account participant receives the consensus decision instead of relying only on passive state votes.
+A non-organizer opening request uses Share approval so every other active account participant receives the consensus decision instead of relying only on passive state votes. Disposable meetings and meetings containing no more than two current or invited participants bypass this consensus request and open the Whiteboard immediately.
 
 A submitted Whiteboard approval request produces an informational toast.
 
@@ -147,6 +161,8 @@ Persistent meetings are resolved by their complete normalized participant set an
 
 Participant-free meetings are disposable, always receive a new identity and single-member Messages chat, and permanently delete both the chat and meeting record when they end.
 
+Guests who leave a disposable meeting through a link share remain on the “Left Meeting” overlay instead of returning to the Meetings home screen. When the organizer ends the meeting, the closed overlay remains visible and the meeting share link is terminated with the disposable meeting.
+
 The authenticated configuration `DELETE` endpoint remains available while the module is disabled so administrators can clear an invalid Jitsi URL.
 
 - Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes. Fresh-install schema initialization is serialized per database executor so simultaneous lifecycle and configuration requests cannot race while creating PostgreSQL tables. Schema creation and credential backfill live in a focused store-schema module, while the main store retains meeting, state, and presence operations.
@@ -157,7 +173,7 @@ The authenticated configuration `DELETE` endpoint remains available while the mo
 - `bootstrap.js` is the sole platform entrypoint, and ctx capabilities and flows are the only cross-component integration surface.
 - Every routed, shared, and embedded Meetings mount claims `.jitsi-route-root` only while its lifecycle signal is active. An already-aborted mount never claims the persistent Cognis app root, and aborting an active mount removes the class and disposes module-owned observers, event handlers, timers, and embedded meeting work.
 - The Meetings SPA uses the Cognis router and page composer. Embedded callers pass a serializable `meetingId` in `focusState`; embedded mounts are frameless and do not duplicate host navigation.
-- Browser utilities and the complete common stylesheet catalog are loaded through the required `ui:reuse` capability before the Meetings surface is rendered. Meeting-frame and overlay elements are resolved from the module DOM and are never read from the Whiteboard provider capability payload. Cognis core supplies standard control presentation, while the module loads no provider-owned stylesheets and scopes every module CSS selector beneath `.jitsi-route-root`. Dead legacy meeting styles are not shipped.
+- Browser utilities are loaded through the required `ui:reuse` capability, while the host-owned common and page-composer styles already mounted by Cognis are reused rather than requested again by the module. Meeting-frame and overlay elements are resolved from the module DOM and are never read from the Whiteboard provider capability payload. Cognis core supplies standard control presentation, while the module loads no provider-owned stylesheets and scopes every module CSS selector beneath `.jitsi-route-root`. Dead legacy meeting styles are not shipped.
 - Nextcloud Whiteboard is declared as a soft module dependency so administrators can select it during installation without making it required.
 
 A module-owned backend availability endpoint is the single visibility decision for every account client; browser capability discovery only initializes an already-approved control.

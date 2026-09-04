@@ -70,6 +70,14 @@
     z-index: 1;
 }
 
+.jitsi-route-root[data-suppress-meeting-overlay="true"] .jitsi-overlay {
+    display: none;
+}
+
+.jitsi-route-root[data-suppress-meeting-overlay="true"] .jitsi-stage-header {
+    display: none;
+}
+
 .jitsi-route-root .jitsi-overlay.jitsi-drop-active {
     z-index: 4;
     outline: 3px solid #22c55e;
@@ -977,4 +985,8 @@ body[data-theme="light"]
 #module-jitsi-meet-page .jitsi-persisted-meeting-card-selected {
     outline: 2px solid var(--color-primary, #22c55e);
     outline-offset: 2px;
+}
+.jitsi-route-root.jitsi-voip-call .jitsi-stage-actions,
+.jitsi-route-root.jitsi-voip-call #jitsi-chat {
+    display: none;
 }

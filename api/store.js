@@ -13,6 +13,7 @@ import {
     encryptPayload,
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
+import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
 import { ensureJitsiStoreSchemaOnce } from "./reuse/store-schema.js";
 import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
@@ -149,6 +150,7 @@ export class JitsiMeetStore {
             meetingPassword,
             meetingName: buildMeetingName(row.meeting_name),
             chatRoomId: row.chat_room_id ? String(row.chat_room_id) : null,
+            disposable: Number(row.disposable ?? 0) === 1,
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
             scheduledAt:
@@ -160,16 +162,11 @@ export class JitsiMeetStore {
     }
 
     async getMeetingByChatRoomId(chatRoomId) {
-        if (!chatRoomId) return null;
-        const result = await this.db.executeCommand({
-            option: "SELECT",
-            table: "jitsi_meetings",
-            where: [{ column: "chat_room_id", value: chatRoomId }],
-            limit: 1,
+        return findMeetingByChatRoomReference({
+            db: this.db,
+            chatRoomId,
+            getMeetingById: (id) => this.getMeetingById(id),
         });
-        const row = result.rows?.[0];
-        if (!row?.id) return null;
-        return this.getMeetingById(String(row.id));
     }
 
     async deleteMeeting(meetingId) {
@@ -376,6 +373,7 @@ export class JitsiMeetStore {
         chatRoomId,
         scheduledAt,
         forceNew = false,
+        disposable = false,
     }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
         if (!normalizedInstanceUrl) {
@@ -434,6 +432,7 @@ export class JitsiMeetStore {
             this.normalizeHandleKeys,
             participantUsernames,
             normalizedClassroomId,
+            forceNew || disposable ? meetingId : null,
         );
         const createdAt = new Date().toISOString();
         const normalizedScheduledAt = Number.isFinite(
@@ -451,6 +450,7 @@ export class JitsiMeetStore {
                 meeting_name: meetingName,
                 room_slug: meetingSlug,
                 chat_room_id: chatRoomId ?? null,
+                disposable: disposable ? 1 : 0,
                 classroom_id: normalizedClassroomId,
                 created_by: createdBy,
                 scheduled_at: normalizedScheduledAt,
@@ -869,13 +869,14 @@ export class JitsiMeetStore {
     }
 
     buildMeetingPayload(meeting, participants, state, extra = {}) {
+        const { includeChatRoom = true, ...payloadExtra } = extra;
         return {
             id: meeting.id,
             meetingUrl: meeting.meetingUrl,
             meetingName: meeting.meetingName,
             meetingPassword: extra.meetingPassword ?? "",
             classroomId: meeting.classroomId,
-            chatRoomId: meeting.chatRoomId,
+            ...(includeChatRoom ? { chatRoomId: meeting.chatRoomId } : {}),
             createdBy: meeting.createdBy,
             hasInvitedParticipants: participants.some(
                 (username) => username !== meeting.createdBy,
@@ -902,7 +903,7 @@ export class JitsiMeetStore {
             scheduledAt: meeting.scheduledAt ?? meeting.createdAt,
             instanceUrl: extractUrlOrigin(meeting.meetingUrl),
             roomSlug: extractUrlPathSlug(meeting.meetingUrl),
-            ...extra,
+            ...payloadExtra,
         };
     }
 

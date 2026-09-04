@@ -2,6 +2,20 @@
 
 Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerauswahl, wiederverwendbaren Besprechungsräumen, Sitzungswiederaufnahme, Messages-Chat-Integration und einem optionalen gemeinsamen Whiteboard.
 
+Jitsi stellt `voip:startCall` für Host-Oberflächen bereit, die einen geeigneten Unterhaltungskontext übergeben. Die authentifizierte API löst die kanonische Raummitgliedschaft auf und autorisiert die anfragende Person. Verweist der Raum auf ein reguläres Meeting, gibt der Anbieter eine gleichursprüngliche `navigate`-Aktion für dieses Meeting zurück. Neue Anrufe und Räume, die bereits einem verfügbaren Anruf zugeordnet sind, liefern eine hostverwaltete `component`-Aktion für die Meetings-Route im Overlay-Modus. Verbraucher können `component`, `navigate` oder beides anbieten; der Provider löst eine vorhandene Raumzuordnung auf, bevor er eine nicht unterstützte zurückgegebene Aktion ablehnt. Der Zugriff auf wiederverwendete Meetings wird über die stabile Kontoidentität geprüft, sodass eine Änderung des Profilnamens ein autorisiertes Raummitglied nicht blockiert. Nicht unterstützte Anfragen ergeben `null`.
+
+Cognis verwaltet die temporäre Komponentenbühne und deren Bereinigung. Jitsi verändert weder das Messages-DOM noch ruft es selbst den Komponenten-Seiten-Broker auf. VoIP-Verbraucher können einen Betreff angeben; andernfalls verwendet der Anbieter den lokalisierten Betreff „VoIP-Anruf“. Verwerfbare Komponentenanrufe enthalten keinen moduleigenen Zurück-Button und weder eine Chatoberfläche noch eine Chatkennung; der private Messages-Chat, aus dem der Anruf gestartet wurde, bleibt davon getrennt und unverändert, auch wenn eine anrufende Person aus der Besprechung entfernt wird. Sie erscheinen weder in der Liste aktiver noch früherer Meetings auf der Meetings-Seite und können weder geteilt noch um Teilnehmende erweitert werden. Die authentifizierte Capability `meeting:getMeetingChat` gibt die verknüpfte Chat-ID eines Meetings separat nur zurück, wenn die übergebenen Claims einen autorisierten Teilnehmer ausweisen.
+
+Einbindungen in Komponentenfenstern unterdrücken sowohl das Meeting-Overlay als auch die Überschrift „Meeting-Fenster“, sodass die eingebettete Oberfläche beim Verbinden und während des Anrufs nur den Meeting-Frame zeigt.
+
+Wenn der lokale Teilnehmer das Meeting verlässt, entfernt wird oder die Konferenz endet, schließt Jitsi die Meeting-Bereinigung ab und fordert anschließend über die Host-Capability für Komponentenseiten das Verwerfen des umgebenden Komponentenfensters an. Vollständige Sitzungen auf der Meetings-Seite lösen kein Komponenten-Verwerfen aus. Wenn ein Meeting zur Anzeige seines Whiteboards in PiP verschoben wird, schließt die Host-Schaltfläche das Whiteboard und stellt das Meeting wieder her.
+
+Komponenten-Metadaten können mit `allParticipantsRequired` die vollständige Teilnehmerliste verpflichtend machen. Sobald in einem solchen beigetretenen Komponenten-Meeting das erste Jitsi-Ereignis `participantLeft` eintritt, wird das Meeting beendet, regulär auf Server und Client bereinigt und das Komponentenfenster geschlossen. VoIP-Anrufe können dieses Flag aktivieren. Komponenten-Metadaten können außerdem `allowNavigation` setzen; die Schutzmechanismen gegen Entladen, Links und Verlaufsnavigation geben die Navigation jedoch nur frei, solange sich die Komponente tatsächlich in einem schwebenden PiP-Fenster befindet. Ein Anruf im ursprünglichen Komponentenfenster bleibt gegen Navigation geschützt. Verwerfbare Meetings senden niemals Benachrichtigungen über Einladungen, Start, Beitritt, Verlassen oder Ende.
+
+Die Anbieteraktion weist mit `minSize: { width, height }` eine Mindestgröße von 400 × 225 Pixeln aus und verwendet damit dieselbe PiP-Nutzlastdefinition wie Nextcloud Whiteboard, sodass der Host die Mindestgröße des schwebenden Anrufs einheitlich durchsetzen kann.
+
+Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
+
 ## Anwendungsbeispiele
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.
@@ -97,7 +111,7 @@ Die aktuelle Messages-Integration stellt die Löschung als Flow-gestützte öffe
 
 Wenn der Organisator eine aktive Besprechung erweitert, synchronisiert dessen Client zusätzlich den vollständigen Teilnehmerkreis über das Whiteboard-UI-Gateway.
 
-Die Öffnungsanfrage eines Nicht-Organisators verwendet die Share-Genehmigung, sodass alle anderen aktiven Kontoteilnehmer die Konsensentscheidung erhalten, anstatt sich nur auf passive Statusabstimmungen zu verlassen.
+Die Öffnungsanfrage eines Nicht-Organisators verwendet die Share-Genehmigung, sodass alle anderen aktiven Kontoteilnehmer die Konsensentscheidung erhalten, anstatt sich nur auf passive Statusabstimmungen zu verlassen. Verwerfbare Besprechungen und Besprechungen mit höchstens zwei aktuellen oder eingeladenen Teilnehmern umgehen diese Konsensabfrage und öffnen das Whiteboard sofort.
 
 Eine gesendete Whiteboard-Genehmigungsanfrage zeigt einen Informationstoast.
 
@@ -154,6 +168,8 @@ Dauerhafte Besprechungen werden anhand ihres vollständigen normalisierten Teiln
 
 Teilnehmerlose Besprechungen sind verwerfbar, erhalten immer eine neue Identität und einen neuen Messages-Chat mit einem Mitglied und löschen beim Ende sowohl den Chat als auch den Besprechungsdatensatz dauerhaft.
 
+Gäste, die eine verwerfbare Besprechung über eine Linkfreigabe verlassen, bleiben auf der Einblendung „Besprechung verlassen“, statt zur Meetings-Startseite zurückzukehren. Wenn die organisierende Person die Besprechung beendet, bleibt die Geschlossen-Einblendung sichtbar und der Freigabelink wird zusammen mit der verwerfbaren Besprechung beendet.
+
 Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviertem Modul verfügbar, damit Administratoren eine ungültige Jitsi-URL löschen können.
 
 - Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen. Die Schemainitialisierung bei Neuinstallationen wird pro Datenbank-Executor serialisiert, damit gleichzeitige Lebenszyklus- und Konfigurationsanfragen beim Erstellen von PostgreSQL-Tabellen nicht konkurrieren. Schemaerstellung und Zugangsdaten-Nachpflege liegen in einem fokussierten Store-Schema-Modul, während der Haupt-Store Besprechungs-, Zustands- und Anwesenheitsoperationen enthält.
@@ -164,7 +180,7 @@ Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviert
 - `bootstrap.js` ist der einzige Plattform-Einstiegspunkt; ctx-Fähigkeiten und Flows sind die einzige komponentenübergreifende Integrationsoberfläche.
 - Jede geroutete, freigegebene und eingebettete Meetings-Ansicht beansprucht `.jitsi-route-root` nur, solange ihr Lebenszyklus-Signal aktiv ist. Eine bereits abgebrochene Einbindung beansprucht das dauerhafte Cognis-App-Stammelement nicht; beim Abbruch einer aktiven Einbindung werden die Klasse sowie moduleigene Observer, Ereignisbehandlungen, Timer und eingebettete Meeting-Arbeiten entfernt.
 - Die Meetings-SPA verwendet Cognis-Router und Page Composer. Eingebettete Aufrufer übergeben eine serialisierbare `meetingId` in `focusState`; eingebettete Mounts sind rahmenlos und duplizieren nicht die Host-Navigation.
-- Browser-Werkzeuge und der vollständige Katalog gemeinsamer Stylesheets werden vor der Darstellung der Meetings-Oberfläche über die erforderliche Fähigkeit `ui:reuse` geladen. Besprechungsrahmen und Einblendungselemente werden aus dem Modul-DOM aufgelöst und niemals aus der Capability-Antwort des Whiteboard-Providers gelesen. Cognis Core liefert die Standarddarstellung der Steuerelemente; das Modul lädt keine Provider-eigenen Stylesheets und begrenzt jeden Modul-CSS-Selektor auf `.jitsi-route-root`. Nicht verwendete ältere Besprechungsstile werden nicht ausgeliefert.
+- Browser-Werkzeuge werden über die erforderliche Fähigkeit `ui:reuse` geladen, während die von Cognis bereits eingebundenen hosteigenen gemeinsamen Styles und Page-Composer-Styles wiederverwendet werden, statt sie erneut durch das Modul anzufordern. Besprechungsrahmen und Einblendungselemente werden aus dem Modul-DOM aufgelöst und niemals aus der Capability-Antwort des Whiteboard-Providers gelesen. Cognis Core liefert die Standarddarstellung der Steuerelemente; das Modul lädt keine Provider-eigenen Stylesheets und begrenzt jeden Modul-CSS-Selektor auf `.jitsi-route-root`. Nicht verwendete ältere Besprechungsstile werden nicht ausgeliefert.
 - Nextcloud Whiteboard ist als weiche Modulabhängigkeit deklariert, damit Administratoren es bei der Installation auswählen können, ohne es vorauszusetzen.
 
 Ein moduleigener Backend-Verfügbarkeitsendpunkt entscheidet einheitlich über die Sichtbarkeit für alle Konto-Clients; die Capability-Erkennung im Browser initialisiert nur ein bereits genehmigtes Steuerelement.
