@@ -70,6 +70,10 @@ Verfügbare Anrufe verwenden nun die vorhandene Chatraumreferenz, die durch eine
 
 Der Anbieter verwendet neutrale VoIP-Begriffe, übernimmt einen vom Verbraucher angegebenen Betreff und nutzt andernfalls einen lokalisierten Betreff. Beim Schließen der Host-Komponente wird nun die reguläre Anwesenheitsbereinigung vor dem Beenden von Jitsi ausgeführt. Einschränkungen für verwerfbare Meetings werden einheitlich als Meeting-Regeln statt als Regeln eines bestimmten VoIP-Verbrauchers beschrieben.
 
+## Gäste verwerfbarer Freigaben auf der Ende-Einblendung halten
+
+Gäste, die eine über einen Link geteilte verwerfbare Besprechung verlassen, bleiben nun auf der Einblendung „Besprechung verlassen“, statt die Meetings-Startseite zu sehen. Beim Beenden durch die organisierende Person bleibt die Geschlossen-Einblendung erhalten, während die Bereinigung den Freigabelink beendet.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -79,3 +83,4 @@ Der Anbieter verwendet neutrale VoIP-Begriffe, übernimmt einen vom Verbraucher 
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
+- [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)

@@ -168,6 +168,8 @@ Dauerhafte Besprechungen werden anhand ihres vollständigen normalisierten Teiln
 
 Teilnehmerlose Besprechungen sind verwerfbar, erhalten immer eine neue Identität und einen neuen Messages-Chat mit einem Mitglied und löschen beim Ende sowohl den Chat als auch den Besprechungsdatensatz dauerhaft.
 
+Gäste, die eine verwerfbare Besprechung über eine Linkfreigabe verlassen, bleiben auf der Einblendung „Besprechung verlassen“, statt zur Meetings-Startseite zurückzukehren. Wenn die organisierende Person die Besprechung beendet, bleibt die Geschlossen-Einblendung sichtbar und der Freigabelink wird zusammen mit der verwerfbaren Besprechung beendet.
+
 Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviertem Modul verfügbar, damit Administratoren eine ungültige Jitsi-URL löschen können.
 
 - Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen. Die Schemainitialisierung bei Neuinstallationen wird pro Datenbank-Executor serialisiert, damit gleichzeitige Lebenszyklus- und Konfigurationsanfragen beim Erstellen von PostgreSQL-Tabellen nicht konkurrieren. Schemaerstellung und Zugangsdaten-Nachpflege liegen in einem fokussierten Store-Schema-Modul, während der Haupt-Store Besprechungs-, Zustands- und Anwesenheitsoperationen enthält.

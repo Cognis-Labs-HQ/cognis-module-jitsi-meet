@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.189",
+    "version": "1.5.190",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -386,27 +386,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "648eae98389bc5aa0bf31369b1519d35f8dedde71f90ad227fc325bfdc41ab26"
+            "sha256": "bba439005f26300dd446f25a8f88cf8057b7d9c7f7aff14d45c5751696ca5051"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "034bf20fabc6ddd20c499458f376a2d96ad4dd7bf6c0705ddec1837841f10e3c"
+            "sha256": "64d42d10d1b7dceec125a9f6b696f02c611f51461ad71b092c76af8c9d2c0068"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "d9cc604d7476e1c023042923b190f41f9e2d59a0d7c1dc3fcf4bced4564c08c2"
+            "sha256": "5e46ffcc467e47be35112f2754399bbe1fcb6ca95504856b84f7af59e828b5eb"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "46f5a924230567506c920a867bf41e63d73bf1e7106790033ad8a27c1e3fdc43"
+            "sha256": "5947a6556de9d42ac475752b0dd44d8c7369cfd57ab37832119c783d5b3ac584"
         },
         {
             "path": "package-lock.json",
-            "sha256": "b514768bfde4e1767e3def0ca1e036c5edeb37151592bb58770044c3eb415e18"
+            "sha256": "4f389afe4b6139741093a13148c8d7bccde081ce3ebce1bf0e99de8e895da4b0"
         },
         {
             "path": "package.json",
-            "sha256": "3488b4f74554620bf68c148ab04e045050f2ffdf3a66fd638bb18f505fab4671"
+            "sha256": "a71d8fabf525761437c55ca0a29af25a7ed13b2c731b52408617d131f7a68a24"
         },
         {
             "path": "routes.json",
@@ -450,7 +450,7 @@
         },
         {
             "path": "ui/app/meetings-list.js",
-            "sha256": "cb6ce424ea6ee61ac05541d955efd0fa93d02755ed57356f4977e990a3477850"
+            "sha256": "ca2c559add4c168b2c3bf5bf328b892c607f171b9aa614a854e569f7a3ad354e"
         },
         {
             "path": "ui/app/mount-surface.js",
@@ -546,7 +546,7 @@
         },
         {
             "path": "ui/tests/meeting-runtime-regression.test.js",
-            "sha256": "dd9ba8f6a8e87ebe7b7adfaed3ff07e147ee18c0c1e6775417ae0f781bdf4b7c"
+            "sha256": "c515d657abf926072af1a9c0b5658aeb849ae186976f5fbdaef7454a9b76f523"
         },
         {
             "path": "ui/tests/regression.test.js",

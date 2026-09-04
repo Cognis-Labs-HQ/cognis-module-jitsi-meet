@@ -161,6 +161,8 @@ Persistent meetings are resolved by their complete normalized participant set an
 
 Participant-free meetings are disposable, always receive a new identity and single-member Messages chat, and permanently delete both the chat and meeting record when they end.
 
+Guests who leave a disposable meeting through a link share remain on the “Left Meeting” overlay instead of returning to the Meetings home screen. When the organizer ends the meeting, the closed overlay remains visible and the meeting share link is terminated with the disposable meeting.
+
 The authenticated configuration `DELETE` endpoint remains available while the module is disabled so administrators can clear an invalid Jitsi URL.
 
 - Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes. Fresh-install schema initialization is serialized per database executor so simultaneous lifecycle and configuration requests cannot race while creating PostgreSQL tables. Schema creation and credential backfill live in a focused store-schema module, while the main store retains meeting, state, and presence operations.

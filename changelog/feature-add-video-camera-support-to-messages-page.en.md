@@ -70,6 +70,10 @@ Disposable calls now use the existing chat-room reference, protected by a unique
 
 The provider uses neutral VoIP terminology, accepts a consumer-supplied subject, and otherwise supplies a localized subject. Closing the host component now runs normal presence teardown before disposing Jitsi. Disposable restrictions consistently describe meetings rather than one particular VoIP consumer.
 
+## Keep disposable share guests on the exit overlay
+
+Guests who leave a disposable link-shared meeting now remain on the “Left Meeting” overlay instead of seeing the Meetings home screen. Organizer termination retains the closed overlay while the disposable cleanup terminates the share link.
+
 ## Commits
 
 - [86e9ab3](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/86e9ab36cd72e15e68648d23180ea238971bce77)
@@ -79,3 +83,4 @@ The provider uses neutral VoIP terminology, accepts a consumer-supplied subject,
 - [5aea5d1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5aea5d1710aabf1cb2bdfff7a6c57f029e054c18)
 - [6e02bef](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6e02befec71d6adcd77a18e5a56487f835ee91bd)
 - [14cc4de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/14cc4de32fe631befbb9cd8cb460e00dec50239f)
+- [e348c18](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e348c183eb5930a42aaddd8fc30883a52d9e1c80)

@@ -770,6 +770,37 @@ test("ended component meetings discard their host window", () => {
     );
 });
 
+test("disposable link-share guests remain on the meeting exit overlay", () => {
+    const listSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const roomSource = readFileSync(
+        resolve(ROOT, "ui/app/meeting-room.js"),
+        "utf8",
+    );
+    assert.match(
+        listSource,
+        /isDisposableLinkShareMeeting[\s\S]*?state\.shareAccessToken[\s\S]*?state\.meeting\.disposable/,
+    );
+    assert.match(
+        listSource,
+        /retainMeetingOverlay = isDisposableLinkShareMeeting\(\)/,
+    );
+    assert.match(
+        listSource,
+        /if \(!retainMeetingOverlay\) \{\s*await loadActiveMeetings/,
+    );
+    assert.match(
+        roomSource,
+        /fallbackOverlayMessageKey:\s*"module\.jitsi_meet\.overlay\.meeting_left"/,
+    );
+    assert.match(
+        listSource,
+        /reportTerminated[\s\S]*?keepPresenceAlive\(false,[\s\S]*?terminated: reportTerminated/,
+    );
+});
+
 test("required-participant component calls end when a participant leaves", () => {
     const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
     const roomSource = readFileSync(
