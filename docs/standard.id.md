@@ -150,6 +150,8 @@ Mount berbagi terbatas hanya menyelesaikan identitas melalui profil tamu Share d
 
 Proses bergabung tamu mempertahankan resolusi keyring untuk kata sandi rapat dan chat terenkripsi.
 
+Memindahkan bingkai Jitsi aktif ke kontainer gambar-dalam-gambar milik host mengubah induk DOM-nya. Safari dapat membuat ulang konteks penjelajahan iframe tersemat selama pemindahan tersebut sehingga Jitsi tersambung ulang; Chromium dan Firefox biasanya mempertahankannya. Meetings meminta `ui:makeFloatingWindow` mempertahankan konteks penjelajahan dan, jika host atau browser masih menyambung ulang, secara otomatis mengirimkan kembali kata sandi rapat yang telah diselesaikan setelah proses bergabung ke konferensi dikonfirmasi. Permintaan kata sandi berulang sebelum berhasil bergabung tetap dianggap sebagai penolakan kata sandi dan meminta nilai terbaru dari keyring.
+
 Tamu tanpa pemetaan Papan Tulis yang sudah ada menunggu status rapat tersinkronisasi tanpa menjadwalkan persiapan kanvas tanpa hasil secara berulang.
 
 - Kata sandi dibuat per rekaman rapat.

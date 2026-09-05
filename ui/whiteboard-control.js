@@ -611,6 +611,7 @@ export async function bindWhiteboardButton({
                         {
                             minWidth: minimumSize.width,
                             minHeight: minimumSize.height,
+                            preserveBrowsingContext: true,
                             signal,
                             closeButton: {
                                 className: "btn-cancel",
