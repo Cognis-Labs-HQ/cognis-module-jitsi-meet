@@ -1,6 +1,6 @@
 # Pulihkan pembukaan kunci rapat otomatis setelah koneksi ulang
 
-**Cabang Fitur:** work
+**Cabang Fitur:** feature-fix-automatic-password-unlocking-for-pip-windows
 
 ## Gunakan kembali kata sandi tersimpan setelah proses bergabung dikonfirmasi
 

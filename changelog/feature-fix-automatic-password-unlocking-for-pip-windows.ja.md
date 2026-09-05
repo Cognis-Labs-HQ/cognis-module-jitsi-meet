@@ -1,6 +1,6 @@
 # 再接続後のミーティング自動ロック解除を復元
 
-**機能ブランチ:** work
+**機能ブランチ:** feature-fix-automatic-password-unlocking-for-pip-windows
 
 ## 参加確認後に保存済みパスワードを再利用
 

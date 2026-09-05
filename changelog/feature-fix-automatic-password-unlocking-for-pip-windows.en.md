@@ -1,6 +1,6 @@
 # Restore automatic meeting unlock after reconnects
 
-**Feature Branch:** work
+**Feature Branch:** feature-fix-automatic-password-unlocking-for-pip-windows
 
 ## Reuse the stored password after a confirmed join
 

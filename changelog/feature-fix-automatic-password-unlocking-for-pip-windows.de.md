@@ -1,6 +1,6 @@
 # Automatische Entsperrung nach Neuverbindungen wiederherstellen
 
-**Feature-Branch:** work
+**Feature-Branch:** feature-fix-automatic-password-unlocking-for-pip-windows
 
 ## Gespeichertes Kennwort nach bestätigtem Beitritt erneut verwenden
 
