@@ -323,6 +323,7 @@ export function createEmbedHandlers({
         };
         apiInstance.addEventListener("videoConferenceJoined", (event) => {
             if (state.jitsiApi !== apiInstance) return;
+            submittedStoredPassword = false;
             state.jitsiParticipantId = callbacks.getParticipantId(event);
             state.jitsiConferenceJoined = true;
             state.jitsiModerator =

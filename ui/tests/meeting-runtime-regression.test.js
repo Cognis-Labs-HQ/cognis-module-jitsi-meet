@@ -296,6 +296,10 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     );
     assert.match(
         embedSource,
+        /addEventListener\("videoConferenceJoined", \(event\) => \{[\s\S]*submittedStoredPassword = false;/,
+    );
+    assert.match(
+        embedSource,
         /new window\.JitsiMeetExternalAPI\(meetingHost, \{[\s\S]*roomName,/,
     );
     assert.match(
