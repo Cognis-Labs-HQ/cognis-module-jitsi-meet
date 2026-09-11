@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.203",
+    "version": "1.5.204",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -420,11 +420,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "6f1c074921d90673bdeee3efe43832bb2b8c4b8db420d461cdfc15dec6aad6e9"
+            "sha256": "8be403933efdb2fa9ce3fd5cd0f759eb977ba4b9ed4639e0538e53422c05940f"
         },
         {
             "path": "package.json",
-            "sha256": "956873777938930c7c6a5ab898e9cac4a706f6bfff51a0c2fb61f9b62bf721cc"
+            "sha256": "c9aac0fe4fe2001cf4d306238de863f5d6138f9d3656dca84c8d3da5c7ada580"
         },
         {
             "path": "routes.json",
