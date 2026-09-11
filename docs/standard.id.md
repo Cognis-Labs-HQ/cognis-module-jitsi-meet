@@ -170,7 +170,7 @@ Rapat tanpa peserta bersifat sekali pakai, selalu memperoleh identitas baru dan 
 
 Tamu yang meninggalkan rapat sekali pakai melalui tautan berbagi tetap berada pada lapisan “Meninggalkan Rapat”, bukan kembali ke layar beranda Rapat. Ketika penyelenggara mengakhiri rapat, lapisan rapat ditutup tetap terlihat dan tautan berbagi dihentikan bersama rapat sekali pakai.
 
-Endpoint konfigurasi `DELETE` terautentikasi tetap tersedia ketika modul dinonaktifkan agar administrator dapat menghapus URL Jitsi yang tidak valid.
+Endpoint konfigurasi `GET`, `PUT`, dan `DELETE` yang terautentikasi serta pengujian aktivasi didaftarkan melalui entrypoint API terbatas untuk modul nonaktif. Dengan demikian, administrator dapat melengkapi, memvalidasi, atau menghapus konfigurasi Jitsi sebelum aktivasi tanpa memulai rute fitur, kontribusi UI, alur, maupun kapabilitas modul. Entrypoint aktif dan nonaktif menggunakan lapisan pendaftaran konfigurasi yang sama agar validasi, autentikasi, pemeriksaan keterjangkauan, pendaftaran asal CSP, dan respons saat dependensi tidak tersedia tetap konsisten.
 
 - Persistensi milik modul menyimpan konfigurasi, peserta, kehadiran, status siklus hidup, status Papan Tulis, dan suara konsensus. Inisialisasi skema pada pemasangan baru diserialkan per eksekutor basis data agar permintaan siklus hidup dan konfigurasi yang bersamaan tidak berlomba saat membuat tabel PostgreSQL. Pembuatan skema dan pengisian ulang kredensial berada dalam modul skema-store yang terfokus, sedangkan store utama mempertahankan operasi rapat, status, dan kehadiran.
 - Pengambilalihan sesi memutus sesi rapat aktif pengguna sebelumnya.

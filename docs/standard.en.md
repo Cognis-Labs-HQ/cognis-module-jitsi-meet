@@ -165,7 +165,7 @@ Participant-free meetings are disposable, always receive a new identity and sing
 
 Guests who leave a disposable meeting through a link share remain on the “Left Meeting” overlay instead of returning to the Meetings home screen. When the organizer ends the meeting, the closed overlay remains visible and the meeting share link is terminated with the disposable meeting.
 
-The authenticated configuration `DELETE` endpoint remains available while the module is disabled so administrators can clear an invalid Jitsi URL.
+The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the enablement test are registered through the restricted disabled API entrypoint, so administrators can complete, validate, or clear Jitsi configuration before activation without starting the module's feature routes, UI contributions, flows, or capabilities. Enabled and disabled entrypoints use the same configuration registration layer for consistent validation, authentication, liveness checks, CSP origin registration, and unavailable-dependency responses.
 
 - Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes. Fresh-install schema initialization is serialized per database executor so simultaneous lifecycle and configuration requests cannot race while creating PostgreSQL tables. Schema creation and credential backfill live in a focused store-schema module, while the main store retains meeting, state, and presence operations.
 - Session reclaim disconnects the user's previous active meeting session.

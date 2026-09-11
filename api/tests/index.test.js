@@ -109,11 +109,14 @@ test("jitsi bootstrap uses scoped lifecycle registrations", () => {
 
 test("jitsi API registers configured CSP origins through auth capability", () => {
     const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
-    const bundleSource = readJitsiApiBundle();
+    const configurationSource = readFileSync(
+        resolve(ROOT, "api/reuse/configuration-api.js"),
+        "utf8",
+    );
 
-    assert.match(indexSource, /auth:registerPageScriptOrigins/);
+    assert.match(configurationSource, /auth:registerPageScriptOrigins/);
     assert.match(
-        bundleSource,
+        configurationSource,
         /registerConfiguredJitsiOrigin\(registerScriptOrigins, saved\)/,
     );
     assert.match(indexSource, /ctx\.getCapability\("auth:requireAuth"\)/);
@@ -192,7 +195,10 @@ test("participant-free meetings delete their identity, shares, and chat when clo
 });
 
 test("jitsi API logs stored CSP origin registration failures", () => {
-    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const source = readFileSync(
+        resolve(ROOT, "api/reuse/configuration-api.js"),
+        "utf8",
+    );
 
     assert.match(source, /Failed to register stored Jitsi CSP origin/);
     assert.match(source, /operation: "register_stored_jitsi_origin"/);
