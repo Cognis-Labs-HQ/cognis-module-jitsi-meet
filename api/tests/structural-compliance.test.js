@@ -55,6 +55,17 @@ test("module source does not import Cognis component internals", () => {
     assert.deepEqual(violations, []);
 });
 
+test("module source addresses only the Jitsi API namespace", () => {
+    const apiUrlPattern = /\/api\/v1\/modules\/([a-z0-9-]+)/g;
+    const violations = sourceFiles().flatMap((path) => {
+        const source = readFileSync(path, "utf8");
+        return [...source.matchAll(apiUrlPattern)]
+            .filter((match) => match[1] !== "jitsi-meet")
+            .map((match) => `${relative(ROOT, path)} (${match[0]})`);
+    });
+    assert.deepEqual(violations, []);
+});
+
 test("CSS source contains no comments", () => {
     const violations = sourceFiles()
         .filter((path) => path.endsWith(".css"))

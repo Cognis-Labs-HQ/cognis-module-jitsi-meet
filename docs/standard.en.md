@@ -172,6 +172,8 @@ The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the ena
 
 ### Integration Contract
 
+- Every packaged source addresses only the module-owned `/api/v1/modules/jitsi-meet` namespace; the standalone structural suite rejects cross-module API URLs before publication.
+
 - `bootstrap.js` is the sole platform entrypoint, and ctx capabilities and flows are the only cross-component integration surface.
 - Every routed, shared, and embedded Meetings mount claims `.jitsi-route-root` only while its lifecycle signal is active. An already-aborted mount never claims the persistent Cognis app root, and aborting an active mount removes the class and disposes module-owned observers, event handlers, timers, and embedded meeting work.
 - The Meetings SPA uses the Cognis router and page composer. Embedded callers pass a serializable `meetingId` in `focusState`; embedded mounts are frameless and do not duplicate host navigation.

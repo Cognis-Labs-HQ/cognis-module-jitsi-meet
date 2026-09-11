@@ -177,6 +177,8 @@ Endpoint konfigurasi `GET`, `PUT`, dan `DELETE` yang terautentikasi serta penguj
 
 ### Kontrak Integrasi
 
+- Setiap sumber yang dipaketkan hanya memakai ruang nama milik modul `/api/v1/modules/jitsi-meet`; rangkaian pengujian struktural mandiri menolak URL API lintas modul sebelum penerbitan.
+
 - `bootstrap.js` adalah satu-satunya entrypoint platform; kapabilitas dan flow ctx merupakan satu-satunya permukaan integrasi lintas komponen.
 - Setiap mount Meetings yang dirutekan, dibagikan, dan disematkan hanya memakai `.jitsi-route-root` selama sinyal siklus hidupnya aktif. Mount yang sudah dibatalkan tidak pernah mengambil root aplikasi Cognis yang persisten; pembatalan mount aktif menghapus kelas serta observer, penangan peristiwa, timer, dan pekerjaan rapat tersemat milik modul.
 - SPA Meetings menggunakan router dan page composer Cognis. Pemanggil tertanam meneruskan `meetingId` yang dapat diserialkan dalam `focusState`; mount tertanam tanpa bingkai dan tidak menduplikasi navigasi host.

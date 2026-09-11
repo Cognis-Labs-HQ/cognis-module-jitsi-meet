@@ -179,6 +179,8 @@ Die authentifizierten Konfigurationsendpunkte `GET`, `PUT` und `DELETE` sowie de
 
 ### Integrationsvertrag
 
+- Jede ausgelieferte Quelldatei verwendet ausschließlich den moduleigenen Namensraum `/api/v1/modules/jitsi-meet`; die eigenständige Strukturprüfung weist modulübergreifende API-URLs vor der Veröffentlichung zurück.
+
 - `bootstrap.js` ist der einzige Plattform-Einstiegspunkt; ctx-Fähigkeiten und Flows sind die einzige komponentenübergreifende Integrationsoberfläche.
 - Jede geroutete, freigegebene und eingebettete Meetings-Ansicht beansprucht `.jitsi-route-root` nur, solange ihr Lebenszyklus-Signal aktiv ist. Eine bereits abgebrochene Einbindung beansprucht das dauerhafte Cognis-App-Stammelement nicht; beim Abbruch einer aktiven Einbindung werden die Klasse sowie moduleigene Observer, Ereignisbehandlungen, Timer und eingebettete Meeting-Arbeiten entfernt.
 - Die Meetings-SPA verwendet Cognis-Router und Page Composer. Eingebettete Aufrufer übergeben eine serialisierbare `meetingId` in `focusState`; eingebettete Mounts sind rahmenlos und duplizieren nicht die Host-Navigation.
