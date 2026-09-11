@@ -1,6 +1,6 @@
 # Jitsi Meet を強化されたモジュールライフサイクルに適合
 
-**機能ブランチ:** work
+**機能ブランチ:** feature-fix-module-lifecycle-alignment
 
 ## 安全なモジュール有効化を復元
 
@@ -19,3 +19,5 @@ Jitsi Meet は Cognis 内部モジュールをインポートせず、明示的�
 - [3335e1f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3335e1fe833be67ee047c2e307ef0a5780e973c6)
 
 - [2e52a5a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2e52a5ac0a26a29a582542ac97a11f7f3139dc29)
+
+- [ffe2d69](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ffe2d69c4cf489d3ff7c74b908113d816407084d)

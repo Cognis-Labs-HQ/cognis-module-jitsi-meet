@@ -109,6 +109,10 @@ test("jitsi bootstrap uses scoped lifecycle registrations", () => {
 
 test("jitsi API registers configured CSP origins through auth capability", () => {
     const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const configRoutesSource = readFileSync(
+        resolve(ROOT, "api/config-routes.js"),
+        "utf8",
+    );
     const configurationSource = readFileSync(
         resolve(ROOT, "api/reuse/configuration-api.js"),
         "utf8",
@@ -116,7 +120,7 @@ test("jitsi API registers configured CSP origins through auth capability", () =>
 
     assert.match(configurationSource, /auth:registerPageScriptOrigins/);
     assert.match(
-        configurationSource,
+        configRoutesSource,
         /registerConfiguredJitsiOrigin\(registerScriptOrigins, saved\)/,
     );
     assert.match(indexSource, /ctx\.getCapability\("auth:requireAuth"\)/);
