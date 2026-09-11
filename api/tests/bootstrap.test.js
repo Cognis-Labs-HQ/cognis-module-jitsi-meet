@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { bootstrapModule, uninstallModule } from "../../bootstrap.js";
+import { registerDisabledApiRoutes } from "../disabled.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createScopedRuntime() {
@@ -191,6 +192,66 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
     assert.deepEqual(runtime.snapshot(), firstEnabledSnapshot);
     secondDispose();
     assert.deepEqual(runtime.snapshot(), initialSnapshot);
+});
+
+test("disabled API registration mounts only pre-enable configuration routes", () => {
+    const routes = [];
+    const requestedCapabilities = [];
+    const systemCtx = { contributePublicCapability() {} };
+    const ctx = {
+        getCapability(capabilityId) {
+            requestedCapabilities.push(capabilityId);
+            const capabilities = new Map([
+                ["auth:requireAuth", () => ({ sub: "admin-account" })],
+                [
+                    "db:executor",
+                    {
+                        async ensureTable() {},
+                        async executeCommand() {
+                            return { rows: [] };
+                        },
+                        async transaction(callback) {
+                            return callback(this);
+                        },
+                    },
+                ],
+                ["social:profile:identity", profileIdentityFake],
+                ["system:ctx", systemCtx],
+            ]);
+            return capabilities.get(capabilityId);
+        },
+        router: {
+            get: (path, _handler, options) =>
+                routes.push({ method: "GET", path, options }),
+            put: (path, _handler, options) =>
+                routes.push({ method: "PUT", path, options }),
+            delete: (path, _handler, options) =>
+                routes.push({ method: "DELETE", path, options }),
+            post: (path, _handler, options) =>
+                routes.push({ method: "POST", path, options }),
+        },
+    };
+
+    registerDisabledApiRoutes(ctx);
+
+    assert.deepEqual(
+        routes.map(({ method, path }) => `${method} ${path}`),
+        [
+            "POST /api/v1/modules/jitsi-meet/admin/enable-test",
+            "GET /api/v1/modules/jitsi-meet/config",
+            "PUT /api/v1/modules/jitsi-meet/config",
+            "DELETE /api/v1/modules/jitsi-meet/config",
+        ],
+    );
+    assert.ok(routes.every(({ options }) => options.allowWhenDisabled));
+    assert.equal(
+        requestedCapabilities.includes("share:requestApproval"),
+        false,
+    );
+    assert.equal(
+        requestedCapabilities.includes("social:messages:membership"),
+        false,
+    );
 });
 
 test("jitsi uninstall cleanup honors the content deletion choice", async () => {

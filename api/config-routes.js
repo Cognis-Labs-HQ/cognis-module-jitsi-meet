@@ -11,21 +11,6 @@ export function registerMeetingConfigRoutes({
     log,
 }) {
     router.get(
-        "/api/v1/modules/jitsi-meet/ping",
-        async (_req, res) => {
-            await store.ensureSchema();
-            const config = await store.getConfig();
-            sendJson(res, 200, {
-                data: {
-                    ready: true,
-                    configComplete: Boolean(config.instanceUrl),
-                },
-            });
-        },
-        { access: { minRole: "user" } },
-    );
-
-    router.get(
         "/api/v1/modules/jitsi-meet/config",
         async (req, res) => {
             const claims = requireAuth(req, res, "user");
@@ -88,5 +73,22 @@ export function registerMeetingConfigRoutes({
             res.end();
         },
         { access: { minRole: "admin" }, allowWhenDisabled: true },
+    );
+}
+
+export function registerMeetingPingRoute({ router, store, sendJson }) {
+    router.get(
+        "/api/v1/modules/jitsi-meet/ping",
+        async (_req, res) => {
+            await store.ensureSchema();
+            const config = await store.getConfig();
+            sendJson(res, 200, {
+                data: {
+                    ready: true,
+                    configComplete: Boolean(config.instanceUrl),
+                },
+            });
+        },
+        { access: { minRole: "user" } },
     );
 }

@@ -172,12 +172,14 @@ Teilnehmerlose Besprechungen sind verwerfbar, erhalten immer eine neue Identitä
 
 Gäste, die eine verwerfbare Besprechung über eine Linkfreigabe verlassen, bleiben auf der Einblendung „Besprechung verlassen“, statt zur Meetings-Startseite zurückzukehren. Wenn die organisierende Person die Besprechung beendet, bleibt die Geschlossen-Einblendung sichtbar und der Freigabelink wird zusammen mit der verwerfbaren Besprechung beendet.
 
-Der authentifizierte Konfigurationsendpunkt `DELETE` bleibt auch bei deaktiviertem Modul verfügbar, damit Administratoren eine ungültige Jitsi-URL löschen können.
+Die authentifizierten Konfigurationsendpunkte `GET`, `PUT` und `DELETE` sowie der Aktivierungstest werden über den eingeschränkten API-Einstiegspunkt für deaktivierte Module registriert. Dadurch können Administratoren die Jitsi-Konfiguration vor der Aktivierung vervollständigen, prüfen oder löschen, ohne Funktionsrouten, UI-Beiträge, Abläufe oder Fähigkeiten des Moduls zu starten. Die Einstiegspunkte für den aktivierten und deaktivierten Zustand verwenden dieselbe Konfigurationsschicht, sodass Validierung, Authentifizierung, Erreichbarkeitsprüfung, CSP-Ursprungsregistrierung und Antworten bei nicht verfügbaren Abhängigkeiten konsistent bleiben.
 
 - Moduleigene Persistenz speichert Konfiguration, Teilnehmer, Anwesenheit, Lebenszykluszustand, Whiteboard-Zustand und Konsensstimmen. Die Schemainitialisierung bei Neuinstallationen wird pro Datenbank-Executor serialisiert, damit gleichzeitige Lebenszyklus- und Konfigurationsanfragen beim Erstellen von PostgreSQL-Tabellen nicht konkurrieren. Schemaerstellung und Zugangsdaten-Nachpflege liegen in einem fokussierten Store-Schema-Modul, während der Haupt-Store Besprechungs-, Zustands- und Anwesenheitsoperationen enthält.
 - Die Sitzungswiederaufnahme trennt die vorherige aktive Besprechungssitzung des Benutzers.
 
 ### Integrationsvertrag
+
+- Jede ausgelieferte Quelldatei verwendet ausschließlich den moduleigenen Namensraum `/api/v1/modules/jitsi-meet`; die eigenständige Strukturprüfung weist modulübergreifende API-URLs vor der Veröffentlichung zurück.
 
 - `bootstrap.js` ist der einzige Plattform-Einstiegspunkt; ctx-Fähigkeiten und Flows sind die einzige komponentenübergreifende Integrationsoberfläche.
 - Jede geroutete, freigegebene und eingebettete Meetings-Ansicht beansprucht `.jitsi-route-root` nur, solange ihr Lebenszyklus-Signal aktiv ist. Eine bereits abgebrochene Einbindung beansprucht das dauerhafte Cognis-App-Stammelement nicht; beim Abbruch einer aktiven Einbindung werden die Klasse sowie moduleigene Observer, Ereignisbehandlungen, Timer und eingebettete Meeting-Arbeiten entfernt.

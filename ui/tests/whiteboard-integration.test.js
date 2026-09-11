@@ -314,6 +314,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         reuseResourcesSource,
         /uiCtx\.capabilities\.get\("ui:reuse"\)/,
     );
+    assert.match(reuseResourcesSource, /Symbol\.for\("cognis\.uiCtx"\)/);
     assert.match(reuseResourcesSource, /reuseResources\.importModule\(path\)/);
     assert.doesNotMatch(reuseResourcesSource, /loadCommonStyles/);
     const lifecycleSource = readFileSync(

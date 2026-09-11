@@ -1,6 +1,6 @@
 import path from "node:path";
 import { registerMeetingRoutes } from "./meetings-routes.js";
-import { registerMeetingConfigRoutes } from "./config-routes.js";
+import { registerMeetingPingRoute } from "./config-routes.js";
 import { registerMeetingParticipantRoutes } from "./participant-routes.js";
 import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
 import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
@@ -13,7 +13,6 @@ import {
     resolveMessagesUiResources,
 } from "./ui-resources.js";
 import { registerMeetingShareRoutes } from "./share-routes.js";
-import { resolveStore } from "./reuse/store-runtime.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { resolveShareGuestId } from "./reuse/share-guest.js";
 import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
@@ -32,37 +31,10 @@ import {
 } from "./reuse/persisted-meetings.js";
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
+import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
 
-const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
-
-function registerConfiguredJitsiOrigin(registerScriptOrigins, config) {
-    if (typeof registerScriptOrigins !== "function") {
-        return;
-    }
-    registerScriptOrigins(PAGE_SCRIPT_ORIGIN_OWNER_ID, [config?.instanceUrl]);
-}
-
-async function registerStoredJitsiOrigin({
-    store,
-    registerScriptOrigins,
-    log,
-}) {
-    try {
-        await store.ensureSchema();
-        registerConfiguredJitsiOrigin(
-            registerScriptOrigins,
-            await store.getConfig(),
-        );
-    } catch (error) {
-        log?.("error", "Failed to register stored Jitsi CSP origin.", {
-            component: "jitsi-meet-module",
-            operation: "register_stored_jitsi_origin",
-            error: error instanceof Error ? error.message : String(error),
-        });
-    }
-}
 
 function sendJson(res, status, payload) {
     res.writeHead(status, { "content-type": "application/json" });
@@ -292,9 +264,8 @@ export function registerApiRoutes(router, ctx) {
             options,
         );
 
-    const store = dbExecutor
-        ? resolveStore(dbExecutor, log, generatePassphrase, profileIdentity)
-        : null;
+    const configurationApi = registerJitsiConfigurationApi(router, ctx);
+    const store = configurationApi?.store ?? null;
     if (store) {
         registerMeetingWhiteboardDelegationHook(ctx, { store });
     }
@@ -315,27 +286,6 @@ export function registerApiRoutes(router, ctx) {
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
-        router.get(
-            "/api/v1/modules/jitsi-meet/config",
-            async (_req, res) => {
-                unavailablePayload(res);
-            },
-            { access: { minRole: "user" }, allowWhenDisabled: true },
-        );
-        router.put(
-            "/api/v1/modules/jitsi-meet/config",
-            async (_req, res) => {
-                unavailablePayload(res);
-            },
-            { access: { minRole: "admin" }, allowWhenDisabled: true },
-        );
-        router.delete(
-            "/api/v1/modules/jitsi-meet/config",
-            async (_req, res) => {
-                unavailablePayload(res);
-            },
-            { access: { minRole: "admin" }, allowWhenDisabled: true },
-        );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
             async (_req, res) => {
@@ -484,62 +434,6 @@ export function registerApiRoutes(router, ctx) {
         },
     );
 
-    const registerScriptOrigins = ctx.getCapability(
-        "auth:registerPageScriptOrigins",
-    );
-    const runEnableTest = async () => {
-        await store.ensureSchema();
-        const config = await store.getConfig();
-        if (!config.instanceUrl) {
-            return {
-                ok: false,
-                code: "config_required",
-                message:
-                    "The Jitsi instance URL must be configured before the module can be enabled.",
-            };
-        }
-        const liveness = await checkHttpLiveness(config.instanceUrl, {
-            timeoutMs: LIVELINESS_TIMEOUT_MS,
-        });
-        return {
-            ok: Boolean(liveness.alive),
-            code: liveness.alive ? "ok" : "liveness_failed",
-            message: liveness.alive
-                ? "Jitsi Meet enablement test passed."
-                : "The configured Jitsi instance did not respond successfully.",
-            data: { ...liveness, instanceUrl: config.instanceUrl },
-        };
-    };
-    ctx.getCapability("system:ctx")?.contributePublicCapability?.(
-        "module:jitsi-meet:enableTest",
-        runEnableTest,
-    );
-    const contributeHealth = ctx.getCapability("system:health:contribute");
-    if (typeof contributeHealth === "function") {
-        contributeHealth("module:jitsi-meet", async () => {
-            const result = await runEnableTest();
-            return {
-                componentId: "jitsi-meet",
-                componentType: "module",
-                status: result.ok ? "ok" : "warning",
-                message: result.message,
-                checkedAt: new Date().toISOString(),
-                data: result.data,
-            };
-        });
-    }
-    router.post(
-        "/api/v1/modules/jitsi-meet/admin/enable-test",
-        async (_req, res) => {
-            const result = await runEnableTest();
-            if (!result.ok) {
-                sendError(res, 409, result.code, result.message);
-                return;
-            }
-            sendJson(res, 200, { data: result.data });
-        },
-        { access: { minRole: "admin" }, allowWhenDisabled: true },
-    );
     ctx.capabilities?.contribute?.(
         "jitsi-meet:getMeetingById",
         store.getMeetingById.bind(store),
@@ -573,8 +467,6 @@ export function registerApiRoutes(router, ctx) {
             };
         },
     );
-    void registerStoredJitsiOrigin({ store, registerScriptOrigins, log });
-
     registerJitsiUiResourcesRoute({
         requireAuth,
         router,
@@ -756,8 +648,6 @@ export function registerApiRoutes(router, ctx) {
         hasMinRole,
         normalizeHttpUrl,
         normalizeHandleKey,
-        registerConfiguredJitsiOrigin,
-        registerScriptOrigins,
         log,
         resolveRequesterUsername: resolveRequesterHandle,
         resolveRequestedParticipants: resolveParticipantHandles,
@@ -863,7 +753,7 @@ export function registerApiRoutes(router, ctx) {
         },
     };
 
-    registerMeetingConfigRoutes(routeContext);
+    registerMeetingPingRoute(routeContext);
     registerMeetingParticipantRoutes(routeContext);
     registerMeetingLifecycleRoutes(routeContext);
     registerPersistedMeetingRoutes(routeContext);
