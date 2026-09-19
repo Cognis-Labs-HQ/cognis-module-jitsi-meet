@@ -761,6 +761,14 @@ test("reclaim session button uses success outline styling", () => {
     );
 });
 
+test("meeting controls honor their hidden state inside the module root", () => {
+    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        stylesheet,
+        /\.jitsi-route-root \[hidden\] \{\s*display: none !important;\s*\}/,
+    );
+});
+
 test("find participants is the first available-participant avatar", () => {
     const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
     assert.match(
