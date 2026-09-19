@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.216 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.217 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.216 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.217 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -38,6 +38,10 @@ Direkte Aufrufe von `/meetings` und Browser-Aktualisierungen importieren nun den
 
 Jitsi löst Capabilities für Whiteboard-Prüfung, Mitgliedschaft und Löschung nur auf, wenn der optionale Provider aktiviert ist. Diese Server-Capabilities blockieren die Aktivierung von Jitsi nicht mehr, während `whiteboard:uiGateway` der Vertrag zur Erkennung des Browser-Providers bleibt.
 
+## Die Datenbank-Laufzeitabhängigkeit deklarieren
+
+Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrouten, dem Aktivierungstest und dem aktivierten Meeting-Speicher benötigt wird. Cognis kann den Datenbank-Provider vor der Registrierung von `/config` initialisieren, sodass die Konfiguration nicht mehr auf HTTP 503 zurückfällt und die Aktivierungsprüfung die gespeicherte Jitsi-URL verwenden kann.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -54,3 +58,5 @@ Jitsi löst Capabilities für Whiteboard-Prüfung, Mitgliedschaft und Löschung 
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
 
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+
+- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)

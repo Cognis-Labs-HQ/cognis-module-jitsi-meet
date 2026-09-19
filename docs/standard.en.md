@@ -188,6 +188,8 @@ Jitsi declares the optional `whiteboard:uiGateway` requirement so Cognis loads N
 
 On direct `/meetings` loads and browser refreshes, the module entry imports the public host UI-context bootstrap before resolving `ui:reuse` or loading optional providers. It therefore does not depend on the dashboard shell having initialized the global context first.
 
+The database executor is a hard server dependency because both disabled configuration routes and the enabled meeting runtime use the module store. Declaring `db:executor` ensures Cognis initializes that provider before registering `/config` or running the enable test; optional Whiteboard services remain dynamically resolved.
+
 The optional integration is exposed when the base `whiteboard:uiGateway` canvas factory, component-page, and floating-window capabilities are available; the meeting API resolves the current public `whiteboard:api` provider facade, reads the mapped canvas’s actual owner, and invokes its owner-authorized membership `add` and `remove` functions with canonical account IDs before committing participant changes; the persistent `createCanvas` method from the provider contract creates normal canvases with the invited participant handles, while only participant-free meetings use `createDisposableCanvas`.
 
 Meetings never fall back from persistent to disposable creation; before accepting or delegating a mapping, they resolve the provider at request time through the scoped or system ctx capability surface and verify its identity, meeting title, and (for new mappings) creator, save the mapping type, replace unknown or mismatched legacy mappings, and reuse the verified persistent canvas only when a user deliberately opens it.

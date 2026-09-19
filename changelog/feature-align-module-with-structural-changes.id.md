@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.216 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.217 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.216.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.217.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -38,6 +38,10 @@ Pemuatan langsung `/meetings` dan penyegaran peramban kini mengimpor bootstrap k
 
 Jitsi hanya menyelesaikan kapabilitas verifikasi, keanggotaan, dan penghapusan Whiteboard ketika penyedia opsional diaktifkan. Kapabilitas server tersebut tidak lagi menghalangi pengaktifan Jitsi, sedangkan `whiteboard:uiGateway` tetap menjadi kontrak penemuan penyedia peramban.
 
+## Deklarasikan Dependensi Runtime Basis Data
+
+Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi saat nonaktif, pengujian pengaktifan, dan penyimpanan rapat saat aktif. Cognis dapat menginisialisasi penyedia basis data sebelum mendaftarkan `/config`, sehingga konfigurasi tidak lagi kembali ke HTTP 503 dan validasi pengaktifan dapat memeriksa URL Jitsi yang tersimpan.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -54,3 +58,5 @@ Jitsi hanya menyelesaikan kapabilitas verifikasi, keanggotaan, dan penghapusan W
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
 
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+
+- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)

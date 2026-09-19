@@ -8,11 +8,11 @@ Jitsi Meet now obtains capabilities and runs or extends host flows directly thro
 
 ## Declare the Current Integration Contract
 
-The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.216 and all declared file digests. Structural tests cover the new boundary.
+The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.217 and all declared file digests. Structural tests cover the new boundary.
 
 ## Keep Inactive Overlay Controls Hidden
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.216.
+The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.217.
 
 ## Restore Nextcloud Whiteboard Discovery
 
@@ -38,6 +38,10 @@ Direct `/meetings` loads and browser refreshes now import Cognis’s public UI-c
 
 Jitsi resolves Whiteboard verification, membership, and deletion capabilities only when the optional provider is enabled. These server capabilities no longer block Jitsi enablement, while `whiteboard:uiGateway` remains the browser-provider discovery contract.
 
+## Declare the Database Runtime Dependency
+
+Jitsi now declares `db:executor`, which its disabled configuration routes, enable test, and enabled meeting store all require. Cognis can initialize the database provider before registering `/config`, so configuration no longer falls back to HTTP 503 and enablement validation can run against the saved Jitsi URL.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -54,3 +58,5 @@ Jitsi resolves Whiteboard verification, membership, and deletion capabilities on
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
 
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+
+- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)

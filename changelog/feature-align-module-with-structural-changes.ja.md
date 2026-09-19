@@ -8,11 +8,11 @@ Jitsi Meet は、スコープ付きモジュールコンテキストから直接
 
 ## 現行の連携契約を宣言
 
-マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.216 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.217 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
 
 ## 非アクティブなオーバーレイ操作を非表示に維持
 
-ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.216 に同期しました。
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.217 に同期しました。
 
 ## Nextcloud Whiteboard の検出を復元
 
@@ -38,6 +38,10 @@ Jitsi は現在の Nextcloud Whiteboard モジュールが提供する公開 `wh
 
 Jitsi は、オプションの Provider が有効な場合にのみ Whiteboard の検証、メンバーシップ、削除 Capability を解決します。これらのサーバー Capability は Jitsi の有効化を妨げず、`whiteboard:uiGateway` は引き続きブラウザー Provider 検出契約として使用されます。
 
+## データベースランタイム依存関係を宣言
+
+Jitsi は、無効時の設定ルート、有効化テスト、有効時のミーティングストアで必要な `db:executor` を宣言するようになりました。Cognis は `/config` の登録前にデータベース Provider を初期化できるため、設定が HTTP 503 にフォールバックせず、保存済み Jitsi URL に対して有効化検証を実行できます。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -54,3 +58,5 @@ Jitsi は、オプションの Provider が有効な場合にのみ Whiteboard �
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
 
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+
+- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
