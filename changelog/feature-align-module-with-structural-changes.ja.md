@@ -8,11 +8,11 @@ Jitsi Meet は、スコープ付きモジュールコンテキストから直接
 
 ## 現行の連携契約を宣言
 
-マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.219 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+マニフェストはモジュールを非特権のままにし、ライフサイクル管理された Provider カタログからブラウザー Capability を公開して、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.220 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
 
 ## 非アクティブなオーバーレイ操作を非表示に維持
 
-ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.219 に同期しました。
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.220 に同期しました。
 
 ## Nextcloud Whiteboard の検出を復元
 
@@ -32,7 +32,7 @@ Jitsi は、現在の Nextcloud Whiteboard Manifest が宣言する `whiteboard:
 
 ## 公開されたブラウザーランタイムを初期化
 
-Cognis PR #224 に従い、Meetings のブラウザーエントリは Deployment が公開するランタイムリソース `/static/reuse/ui-ctx.js` をインポートし、直接読み込みや更新でも SPA ナビゲーションと同じコンテキストを初期化します。その他のブラウザーユーティリティは `ui:reuse` 経由で解決し、特権フラグはサーバー側の Meetings Capability と Flow への参加に引き続き必要です。
+Cognis PR #224 に従い、Meetings のブラウザーエントリは Deployment が公開するランタイムリソース `/static/reuse/ui-ctx.js` をインポートし、直接読み込みや更新でも SPA ナビゲーションと同じコンテキストを初期化します。その他のブラウザーユーティリティは引き続き `ui:reuse` で解決します。Jitsi は `voip:startCall` に `ctx.registerCapabilityProvider` を使用し、冗長な `meetings:isProviderAvailable` Capability を削除して、特権アクセスを要求しません。
 
 ## Whiteboard 連携をオプションとして維持
 
@@ -64,3 +64,5 @@ Jitsi は、無効時の設定ルート、有効化テスト、有効時のミ�
 - [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
 
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+
+- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)

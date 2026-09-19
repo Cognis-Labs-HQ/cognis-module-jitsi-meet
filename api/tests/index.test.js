@@ -119,17 +119,13 @@ test("disposable Messages calls stay out of Meetings discovery", () => {
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 
-    assert.match(bootstrapSource, /ctx\.contributePublicCapability\(/);
-    assert.match(bootstrapSource, /ctx\.registerFlow\(flow\)/);
-    assert.match(bootstrapSource, /if \(!ctx\.flow\.exists\(flow\.id\)\)/);
     assert.match(
         bootstrapSource,
-        /stages: \["resolve-providers", "resolve-panels", "compose-surface"\]/,
+        /ctx\.flow\.exists\("construct-meetings-ui"\)/,
     );
-    assert.match(
-        bootstrapSource,
-        /stages: \["validate-request", "provision-session", "finalize-join"\]/,
-    );
+    assert.match(bootstrapSource, /ctx\.flow\.exists\("create-meeting"\)/);
+    assert.doesNotMatch(bootstrapSource, /ctx\.registerFlow/);
+    assert.doesNotMatch(bootstrapSource, /meetings:isProviderAvailable/);
     assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
 });
 

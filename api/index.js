@@ -80,6 +80,9 @@ export function registerUi(ctx) {
     ctx.registerNavbarPlugin({
         scriptUrl: "/static/modules/jitsi-meet/navbar.js",
         access: { minRole: "user" },
+    });
+    ctx.registerCapabilityProvider({
+        scriptUrl: "/static/modules/jitsi-meet/voip-provider.js",
         providesCapabilities: ["voip:startCall"],
     });
     const meetingsStylesheets = ["/static/modules/jitsi-meet/jitsi-meet.css"];

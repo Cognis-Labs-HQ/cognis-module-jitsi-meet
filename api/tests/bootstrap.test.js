@@ -22,6 +22,8 @@ function createScopedRuntime() {
     ]);
     const flows = new Set([
         "bootstrap-platform",
+        "construct-meetings-ui",
+        "create-meeting",
         "mint-share-token",
         "resolve-share-token",
     ]);
@@ -81,6 +83,8 @@ function createScopedRuntime() {
                 registerUiContribution("static", { prefix, directory }),
             registerNavbarPlugin: (plugin) =>
                 registerUiContribution("navbar", plugin),
+            registerCapabilityProvider: (provider) =>
+                registerUiContribution("capability-provider", provider),
             registerSpaRoute: (route) => registerUiContribution("spa", route),
             registerAdminSection: (section) =>
                 registerUiContribution("admin", section),
@@ -106,13 +110,7 @@ function createScopedRuntime() {
     return {
         enable,
         snapshot: () => ({
-            contributedCapability: capabilities.has(
-                "meetings:isProviderAvailable",
-            ),
             meetingChatCapability: capabilities.has("meeting:getMeetingChat"),
-            createdFlows: ["construct-meetings-ui", "create-meeting"].filter(
-                (flowId) => flows.has(flowId),
-            ),
             hookCount: hooks.length,
             routeCount: routes.length,
             routes: routes.map(({ method, path, options }) => ({
@@ -135,11 +133,6 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
 
     const firstDispose = runtime.enable();
     const firstEnabledSnapshot = runtime.snapshot();
-    assert.equal(firstEnabledSnapshot.contributedCapability, true);
-    assert.deepEqual(firstEnabledSnapshot.createdFlows, [
-        "construct-meetings-ui",
-        "create-meeting",
-    ]);
     assert.ok(firstEnabledSnapshot.routeCount > 0);
     assert.deepEqual(
         firstEnabledSnapshot.routes.find(
@@ -180,7 +173,15 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         ({ type }) => type === "navbar",
     ).contribution;
     assert.deepEqual(navbarContribution.access, { minRole: "user" });
-    assert.deepEqual(navbarContribution.providesCapabilities, [
+    assert.equal(navbarContribution.providesCapabilities, undefined);
+    const capabilityProvider = firstEnabledSnapshot.uiContributions.find(
+        ({ type }) => type === "capability-provider",
+    ).contribution;
+    assert.equal(
+        capabilityProvider.scriptUrl,
+        "/static/modules/jitsi-meet/voip-provider.js",
+    );
+    assert.deepEqual(capabilityProvider.providesCapabilities, [
         "voip:startCall",
     ]);
     assert.ok(firstEnabledSnapshot.hookCount > 0);

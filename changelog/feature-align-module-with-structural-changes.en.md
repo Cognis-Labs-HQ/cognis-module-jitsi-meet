@@ -8,11 +8,11 @@ Jitsi Meet now obtains capabilities and runs or extends host flows directly thro
 
 ## Declare the Current Integration Contract
 
-The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.219 and all declared file digests. Structural tests cover the new boundary.
+The manifest now keeps the module unprivileged, publishes its browser capability through the lifecycle-scoped provider catalog, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.220 and all declared file digests. Structural tests cover the new boundary.
 
 ## Keep Inactive Overlay Controls Hidden
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.219.
+The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.220.
 
 ## Restore Nextcloud Whiteboard Discovery
 
@@ -32,7 +32,7 @@ Jitsi now resolves `whiteboard:fetchBoardData`, `whiteboard:membership`, and `wh
 
 ## Initialize the Exposed Browser Runtime
 
-Following Cognis PR #224, the Meetings browser entry imports the deployment-exposed `/static/reuse/ui-ctx.js` runtime resource so direct loads and refreshes initialize the same context as SPA navigation. Other browser utilities continue to resolve through `ui:reuse`; the privileged flag remains necessary for the server-side Meetings capability and flow contributions.
+Following Cognis PR #224, the Meetings browser entry imports the deployment-exposed `/static/reuse/ui-ctx.js` runtime resource so direct loads and refreshes initialize the same context as SPA navigation. Other browser utilities continue to resolve through `ui:reuse`; Jitsi now uses `ctx.registerCapabilityProvider` for `voip:startCall`, removes the redundant `meetings:isProviderAvailable` capability, and does not request privileged access.
 
 ## Keep the Whiteboard Integration Optional
 
@@ -64,3 +64,5 @@ Jitsi now declares `db:executor`, which its disabled configuration routes, enabl
 - [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
 
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+
+- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)

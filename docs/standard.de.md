@@ -2,7 +2,7 @@
 
 Das Jitsi-Meet-Modul bietet Cognis-native Besprechungssteuerung mit Teilnehmerauswahl, wiederverwendbaren Besprechungsräumen, Sitzungswiederaufnahme, Messages-Chat-Integration und einem optionalen gemeinsamen Whiteboard.
 
-Das Modul deklariert eine vertrauenswürdige privilegierte Integration, da es hosteigene Meeting-Capabilities und Meeting-Flows beiträgt. Sein Bootstrap ist der einzige Laufzeiteinstiegspunkt: API-Routen, Flow-Hooks, Capabilities, UI-Registrierungen und die Provider-Erkennung verwenden ausschließlich den lebenszyklusgebundenen `ctx`-Vertrag und werden beim Deaktivieren des Moduls entfernt.
+Das Modul wird ohne privilegierten Zugriff ausgeführt. Sein Bootstrap ist der einzige Laufzeiteinstiegspunkt: API-Routen, Flow-Hooks, Capabilities, UI-Registrierungen und die Provider-Erkennung verwenden ausschließlich den lebenszyklusgebundenen `ctx`-Vertrag und werden beim Deaktivieren des Moduls entfernt.
 
 Overlay-Steuerelemente beachten ihren HTML-Zustand `hidden` innerhalb des Modulwurzelelements auch dann, wenn Host-Schaltflächenstile einen expliziten Anzeigemodus setzen. Authentifizierungs-, Sitzungsübernahme- und Allein-Teilnehmenden-Aktionen erscheinen dadurch nur im jeweils passenden Meeting-Zustand.
 
@@ -195,7 +195,7 @@ Jitsi deklariert die optionale Anforderung `whiteboard:uiGateway`, damit Cognis 
 
 Der Browser-Einstieg von Meetings importiert die vom Deployment bereitgestellte Laufzeitressource `/static/reuse/ui-ctx.js` und löst alle weiteren Browser-Hilfsmittel über `ui:reuse` auf. Cognis PR #224 erlaubt Importe bereitgestellter Laufzeitressourcen; der Import des Kontextmoduls garantiert die Initialisierung bei direkten Aufrufen und Aktualisierungen.
 
-Das Privilegierungskennzeichen bleibt erforderlich, weil Jitsi die hostweite, von Calendar verwendete Capability `meetings:isProviderAvailable` veröffentlicht und zu hosteigenen Meetings-Flows beiträgt. Es erteilt dem Browser keine Berechtigung zum Import privater Hostmodule.
+Jitsi veröffentlicht seine browsereigene Integration `voip:startCall` über `ctx.registerCapabilityProvider` und trägt nur lebenszyklusgebundene Hooks zu vorhandenen Host-Flows bei. Es veröffentlicht keine redundante Provider-Verfügbarkeits-Capability und fordert keinen privilegierten Modulzugriff an.
 
 Der Datenbank-Executor ist eine feste Server-Abhängigkeit, weil sowohl die deaktivierten Konfigurationsrouten als auch die aktivierte Meeting-Laufzeit den Modulspeicher verwenden. Durch die Deklaration von `db:executor` initialisiert Cognis diesen Provider vor der Registrierung von `/config` oder dem Aktivierungstest; optionale Whiteboard-Dienste werden weiterhin dynamisch aufgelöst.
 

@@ -2,7 +2,7 @@
 
 The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, reusable meeting rooms, session reclaim, Messages chat integration, and an optional shared Whiteboard.
 
-The module declares trusted privileged integration because it contributes the host-owned meeting capabilities and meeting flows. Its bootstrap is the sole runtime entrypoint: API routes, flow hooks, capabilities, UI registrations, and provider discovery all use the lifecycle-scoped `ctx` contract and are removed when the module is disabled.
+The module runs without privileged access. Its bootstrap is the sole runtime entrypoint: API routes, flow hooks, capabilities, UI registrations, and provider discovery all use the lifecycle-scoped `ctx` contract and are removed when the module is disabled.
 
 Overlay controls honor their HTML `hidden` state within the module root even when host button styles set an explicit display mode, so authentication, reclaim, and alone-participant actions appear only in the matching meeting state.
 
@@ -188,7 +188,7 @@ Jitsi declares the optional `whiteboard:uiGateway` requirement so Cognis loads N
 
 The Meetings browser entry imports the deployment-exposed `/static/reuse/ui-ctx.js` runtime resource and resolves all other browser utilities through `ui:reuse`. Cognis PR #224 permits exposed runtime-resource imports, and importing the context module guarantees initialization on direct loads and refreshes.
 
-The privileged flag remains required because Jitsi publishes the host-wide `meetings:isProviderAvailable` capability used by Calendar and contributes to the host-owned Meetings flows. It does not grant the browser permission to import private host modules.
+Jitsi publishes its browser-owned `voip:startCall` integration through `ctx.registerCapabilityProvider` and contributes only lifecycle-scoped hooks to existing host flows. It does not publish a redundant provider-availability capability or request privileged module access.
 
 The database executor is a hard server dependency because both disabled configuration routes and the enabled meeting runtime use the module store. Declaring `db:executor` ensures Cognis initializes that provider before registering `/config` or running the enable test; optional Whiteboard services remain dynamically resolved.
 

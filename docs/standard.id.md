@@ -2,7 +2,7 @@
 
 Modul Jitsi Meet menyediakan orkestrasi rapat asli Cognis dengan pemilihan peserta, ruang rapat yang dapat digunakan ulang, pengambilalihan sesi, integrasi chat Messages, dan Papan Tulis bersama opsional.
 
-Modul mendeklarasikan integrasi istimewa tepercaya karena menyumbangkan kapabilitas rapat dan alur rapat milik host. Bootstrap-nya merupakan satu-satunya titik masuk waktu jalan: rute API, kait alur, kapabilitas, pendaftaran UI, dan penemuan penyedia seluruhnya memakai kontrak `ctx` yang tercakup dalam siklus hidup dan dihapus ketika modul dinonaktifkan.
+Modul berjalan tanpa akses istimewa. Bootstrap-nya merupakan satu-satunya titik masuk waktu jalan: rute API, kait alur, kapabilitas, pendaftaran UI, dan penemuan penyedia seluruhnya memakai kontrak `ctx` yang tercakup dalam siklus hidup dan dihapus ketika modul dinonaktifkan.
 
 Kontrol overlay mematuhi status HTML `hidden` di dalam akar modul meskipun gaya tombol host menetapkan mode tampilan secara eksplisit. Karena itu, tindakan autentikasi, pengambilalihan sesi, dan peserta tunggal hanya muncul pada status rapat yang sesuai.
 
@@ -193,7 +193,7 @@ Jitsi mendeklarasikan persyaratan opsional `whiteboard:uiGateway` agar Cognis me
 
 Titik masuk browser Meetings mengimpor sumber daya runtime `/static/reuse/ui-ctx.js` yang disediakan deployment dan menyelesaikan semua utilitas browser lainnya melalui `ui:reuse`. Cognis PR #224 mengizinkan impor sumber daya runtime yang diekspos, dan impor modul konteks menjamin inisialisasi pada pemuatan langsung dan penyegaran.
 
-Flag istimewa tetap diperlukan karena Jitsi menerbitkan kapabilitas tingkat host `meetings:isProviderAvailable` yang digunakan Calendar dan berkontribusi pada alur Meetings milik host. Flag tersebut tidak memberikan izin kepada browser untuk mengimpor modul host privat.
+Jitsi menerbitkan integrasi browser miliknya `voip:startCall` melalui `ctx.registerCapabilityProvider` dan hanya menyumbangkan kait bersiklus hidup ke alur host yang sudah ada. Modul tidak menerbitkan kapabilitas ketersediaan penyedia yang berlebihan atau meminta akses modul istimewa.
 
 Eksekutor basis data adalah dependensi server wajib karena rute konfigurasi saat nonaktif dan runtime rapat saat aktif sama-sama menggunakan penyimpanan modul. Deklarasi `db:executor` memastikan Cognis menginisialisasi penyedia tersebut sebelum mendaftarkan `/config` atau menjalankan pengujian pengaktifan; layanan Whiteboard opsional tetap diselesaikan secara dinamis.
 

@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.219 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest belässt das Modul nun unprivilegiert und veröffentlicht seine Browser-Capability über den lebenszyklusgebundenen Provider-Katalog, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.220 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.219 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.220 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -32,7 +32,7 @@ Jitsi löst nun `whiteboard:fetchBoardData`, `whiteboard:membership` und `whiteb
 
 ## Die bereitgestellte Browser-Laufzeit initialisieren
 
-Gemäß Cognis PR #224 importiert der Browser-Einstieg von Meetings die vom Deployment bereitgestellte Laufzeitressource `/static/reuse/ui-ctx.js`, damit direkte Aufrufe und Aktualisierungen denselben Kontext wie die SPA-Navigation initialisieren. Weitere Browser-Hilfsmittel werden über `ui:reuse` aufgelöst; das Privilegierungskennzeichen bleibt für serverseitige Meetings-Capabilities und Flow-Beiträge erforderlich.
+Gemäß Cognis PR #224 importiert der Browser-Einstieg von Meetings die vom Deployment bereitgestellte Laufzeitressource `/static/reuse/ui-ctx.js`, damit direkte Aufrufe und Aktualisierungen denselben Kontext wie die SPA-Navigation initialisieren. Weitere Browser-Hilfsmittel werden über `ui:reuse` aufgelöst; Jitsi verwendet nun `ctx.registerCapabilityProvider` für `voip:startCall`, entfernt die redundante Capability `meetings:isProviderAvailable` und fordert keinen privilegierten Zugriff an.
 
 ## Die Whiteboard-Integration optional halten
 
@@ -64,3 +64,5 @@ Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrout
 - [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
 
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+
+- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)

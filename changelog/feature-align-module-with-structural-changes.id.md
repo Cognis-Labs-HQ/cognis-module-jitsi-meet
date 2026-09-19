@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.219 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini mempertahankan modul tanpa hak istimewa dan menerbitkan kapabilitas browser melalui katalog penyedia yang tercakup siklus hidup, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.220 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.219.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.220.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -32,7 +32,7 @@ Jitsi kini menyelesaikan `whiteboard:fetchBoardData`, `whiteboard:membership`, d
 
 ## Inisialisasi Runtime Browser yang Diekspos
 
-Mengikuti Cognis PR #224, titik masuk browser Meetings mengimpor sumber daya runtime `/static/reuse/ui-ctx.js` yang diekspos deployment agar pemuatan langsung dan penyegaran menginisialisasi konteks yang sama dengan navigasi SPA. Utilitas browser lain tetap diselesaikan melalui `ui:reuse`; flag istimewa tetap diperlukan untuk kapabilitas dan kontribusi alur Meetings sisi server.
+Mengikuti Cognis PR #224, titik masuk browser Meetings mengimpor sumber daya runtime `/static/reuse/ui-ctx.js` yang diekspos deployment agar pemuatan langsung dan penyegaran menginisialisasi konteks yang sama dengan navigasi SPA. Utilitas browser lain tetap diselesaikan melalui `ui:reuse`; Jitsi kini memakai `ctx.registerCapabilityProvider` untuk `voip:startCall`, menghapus kapabilitas `meetings:isProviderAvailable` yang berlebihan, dan tidak meminta akses istimewa.
 
 ## Pertahankan Integrasi Whiteboard sebagai Opsional
 
@@ -64,3 +64,5 @@ Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi 
 - [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
 
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+
+- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)

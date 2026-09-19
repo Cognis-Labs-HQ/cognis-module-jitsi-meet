@@ -128,7 +128,7 @@ test("manifest isolates the disabled lifecycle API", () => {
     assert.equal(manifest.entrypoints.api, undefined);
     assert.equal(manifest.entrypoints.disabledApi, "./api/disabled.js");
     assert.equal(manifest.entrypoints.bootstrap, "./bootstrap.js");
-    assert.equal(manifest.privileged, true);
+    assert.equal(manifest.privileged, undefined);
 });
 
 test("runtime integration uses only the scoped module context", () => {
