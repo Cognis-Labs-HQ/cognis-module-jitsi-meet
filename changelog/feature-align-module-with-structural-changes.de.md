@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.218 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.219 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.218 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.219 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -26,13 +26,13 @@ Jitsi deklariert `whiteboard:uiGateway` nun als optionale Browser-Capability-Anf
 
 Nachdem Cognis PR #222 die Registrierung externer Capability-Provider an den Lebenszyklus gebunden hat, verwendet das Meetings-Steuerelement direkt das geladene `whiteboard:uiGateway`, statt sich aufgrund einer separaten Backend-Verfügbarkeitsanfrage zu entfernen. Der Backend-Endpunkt bleibt für Diagnosen verfügbar.
 
-## Die einheitliche Whiteboard-Provider-Fassade verwenden
+## Die vom Provider deklarierten Whiteboard-Verträge verwenden
 
-Jitsi löst nun die vom aktuellen Nextcloud-Whiteboard-Modul bereitgestellte öffentliche Fassade `whiteboard:api` auf und verwendet deren Methoden für Board-Abfrage, Mitgliedschaft und Löschung. Serverprüfung, delegierter Zugriff, Teilnehmersynchronisierung und Bereinigung verwenden damit dasselbe Provider-Objekt wie direkte Whiteboards, statt getrennt registrierte Einzel-Capabilities vorauszusetzen.
+Jitsi löst nun `whiteboard:fetchBoardData`, `whiteboard:membership` und `whiteboard:deleteCanvas` auf, die im aktuellen Nextcloud-Whiteboard-Manifest deklariert sind. Die nicht deklarierte Implementierungsfassade `whiteboard:api` wird nicht mehr vorausgesetzt; Serverprüfung und synchronisierte Meeting-Whiteboards funktionieren damit wieder.
 
-## Die Browser-Modulgrenze einhalten
+## Die bereitgestellte Browser-Laufzeit initialisieren
 
-Der Browser-Einstieg von Meetings verwendet nun den von Cognis initialisierten UI-Kontext und bezieht Hilfsmittel über `ui:reuse`; `/static/reuse/ui-ctx.js`, ein Host-Quellmodul außerhalb der Grenze externer Module, wird nicht mehr importiert. Das Privilegierungskennzeichen bleibt für die serverseitige, von Calendar verwendete Capability `meetings:isProviderAvailable` und Beiträge zu hosteigenen Meetings-Flows erforderlich.
+Gemäß Cognis PR #224 importiert der Browser-Einstieg von Meetings die vom Deployment bereitgestellte Laufzeitressource `/static/reuse/ui-ctx.js`, damit direkte Aufrufe und Aktualisierungen denselben Kontext wie die SPA-Navigation initialisieren. Weitere Browser-Hilfsmittel werden über `ui:reuse` aufgelöst; das Privilegierungskennzeichen bleibt für serverseitige Meetings-Capabilities und Flow-Beiträge erforderlich.
 
 ## Die Whiteboard-Integration optional halten
 
@@ -62,3 +62,5 @@ Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrout
 - [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
 
 - [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
+
+- [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)

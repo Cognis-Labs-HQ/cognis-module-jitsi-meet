@@ -32,7 +32,6 @@ import {
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
-import { resolveWhiteboardProvider } from "./reuse/whiteboard-provider.js";
 
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -177,14 +176,16 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
     const fetchBoardData = (...args) => {
-        const provider = resolveWhiteboardProvider(ctx);
-        if (typeof provider?.fetchBoardData !== "function") {
+        const providerFetchBoardData = ctx.getCapability(
+            "whiteboard:fetchBoardData",
+        );
+        if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
         }
-        return provider.fetchBoardData(...args);
+        return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof resolveWhiteboardProvider(ctx)?.fetchBoardData === "function";
+        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -656,10 +657,10 @@ export function registerApiRoutes(router, ctx) {
         groupChatMembership,
         resolveRoomMembership,
         resolveWhiteboardMembership: () =>
-            resolveWhiteboardProvider(ctx)?.membership,
+            ctx.getCapability("whiteboard:membership"),
         fetchBoardData,
         resolveWhiteboardDeletion: () =>
-            resolveWhiteboardProvider(ctx)?.deleteCanvas,
+            ctx.getCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,

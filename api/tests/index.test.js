@@ -91,18 +91,21 @@ test("participant Whiteboard opens request approval from active meeting peers", 
     assert.match(source, /operation: "request_whiteboard_open_approval"/);
 });
 
-test("Jitsi discovers the unified Whiteboard provider facade", () => {
+test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
     const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const delegationSource = readFileSync(
         resolve(ROOT, "api/whiteboard-delegation.js"),
         "utf8",
     );
-    assert.match(source, /resolveWhiteboardProvider/);
-    assert.match(delegationSource, /resolveWhiteboardFetchBoardData/);
-    assert.doesNotMatch(
-        `${source}\n${delegationSource}`,
-        /getCapability\(["']whiteboard:(?:fetchBoardData|membership|deleteCanvas)["']\)/,
-    );
+    for (const capability of [
+        "whiteboard:fetchBoardData",
+        "whiteboard:membership",
+        "whiteboard:deleteCanvas",
+    ]) {
+        assert.match(source, new RegExp(capability));
+    }
+    assert.match(delegationSource, /whiteboard:fetchBoardData/);
+    assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
 });
 
 test("disposable Messages calls stay out of Meetings discovery", () => {

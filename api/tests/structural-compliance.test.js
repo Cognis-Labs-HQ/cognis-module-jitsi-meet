@@ -154,16 +154,16 @@ test("dashboard source avoids full-page browser navigation", () => {
     assert.deepEqual(violations, []);
 });
 
-test("browser sources obtain the host-provided UI context without internal imports", () => {
+test("browser resources import the deployment-exposed host UI context", () => {
     const resourcesSource = readFileSync(
         resolve(ROOT, "ui/reuse/resources.js"),
         "utf8",
     );
     assert.match(
         resourcesSource,
-        /globalThis\[Symbol\.for\("cognis\.uiCtx"\)\]/,
+        /import \{ uiCtx \} from "\/static\/reuse\/ui-ctx\.js"/,
     );
-    assert.doesNotMatch(resourcesSource, /from\s+["']\/static\//);
+    assert.doesNotMatch(resourcesSource, /Symbol\.for\("cognis\.uiCtx"\)/);
 });
 
 test("browser code uses host clients for gateway-owned data", () => {
