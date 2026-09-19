@@ -8,11 +8,11 @@ Jitsi Meet は、スコープ付きモジュールコンテキストから直接
 
 ## 現行の連携契約を宣言
 
-マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.212 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.213 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
 
 ## 非アクティブなオーバーレイ操作を非表示に維持
 
-ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.212 に同期しました。
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.213 に同期しました。
 
 ## Nextcloud Whiteboard の検出を復元
 
@@ -30,6 +30,10 @@ Cognis PR #222 により外部 Capability プロバイダー登録がライフ�
 
 Jitsi は最新の Nextcloud Whiteboard Provider 契約に合わせて、`whiteboard:fetchBoardData`、`whiteboard:membership`、`whiteboard:deleteCanvas` を解決するようになりました。サーバー検証、参加者メンバーシップ、委任アクセス、クリーンアップでは、廃止されたモジュール固有の名前空間を要求しません。
 
+## 直接読み込み時にホスト UI コンテキストを初期化
+
+`/meetings` の直接読み込みとブラウザー更新では、`ui:reuse` やオプションの Capability Provider にアクセスする前に Cognis の公開 UI コンテキスト Bootstrap をインポートするようになりました。Dashboard Shell が UI コンテキストをすでに作成済みであることを前提にしません。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -38,3 +42,5 @@ Jitsi は最新の Nextcloud Whiteboard Provider 契約に合わせて、`whiteb
 - [f20e6ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
 
 - [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
+
+- [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)

@@ -1,8 +1,4 @@
-const uiCtx = globalThis[Symbol.for("cognis.uiCtx")];
-
-if (!uiCtx?.capabilities || typeof uiCtx.capabilities.get !== "function") {
-    throw new Error("Required UI context unavailable: cognis.uiCtx");
-}
+import { uiCtx } from "/static/reuse/ui-ctx.js";
 
 const reuseResources = uiCtx.capabilities.get("ui:reuse");
 

@@ -186,6 +186,8 @@ The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the ena
 
 Jitsi declares the optional `whiteboard:uiGateway` requirement so Cognis loads Nextcloud Whiteboard’s dedicated capability provider before mounting the Meetings route when that provider is enabled. The browser gateway is the control’s visibility and canvas-factory contract; the backend availability endpoint remains diagnostic and no longer removes the control before dedicated provider discovery can complete.
 
+On direct `/meetings` loads and browser refreshes, the module entry imports the public host UI-context bootstrap before resolving `ui:reuse` or loading optional providers. It therefore does not depend on the dashboard shell having initialized the global context first.
+
 The optional integration is exposed when the base `whiteboard:uiGateway` canvas factory, component-page, and floating-window capabilities are available; the meeting API resolves the mapped canvas’s actual owner and invokes the owner-authorized `whiteboard:membership` `add` and `remove` functions with canonical account IDs before committing participant changes; the persistent `createCanvas` method from the provider contract creates normal canvases with the invited participant handles, while only participant-free meetings use `createDisposableCanvas`.
 
 Meetings never fall back from persistent to disposable creation; before accepting or delegating a mapping, they resolve the provider at request time through the scoped or system ctx capability surface and verify its identity, meeting title, and (for new mappings) creator, save the mapping type, replace unknown or mismatched legacy mappings, and reuse the verified persistent canvas only when a user deliberately opens it.

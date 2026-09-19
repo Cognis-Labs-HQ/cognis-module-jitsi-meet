@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.212 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.213 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.212.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.213.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -30,6 +30,10 @@ Setelah Cognis PR #222 membuat pendaftaran penyedia kapabilitas eksternal mengik
 
 Jitsi kini menyelesaikan `whiteboard:fetchBoardData`, `whiteboard:membership`, dan `whiteboard:deleteCanvas`, sesuai dengan kontrak penyedia Nextcloud Whiteboard terbaru. Verifikasi server, keanggotaan peserta, akses terdelegasi, dan pembersihan tidak lagi meminta namespace khusus modul yang telah digantikan.
 
+## Inisialisasi Konteks UI Host pada Pemuatan Langsung
+
+Pemuatan langsung `/meetings` dan penyegaran peramban kini mengimpor bootstrap konteks UI publik Cognis sebelum mengakses `ui:reuse` atau penyedia kapabilitas opsional. Halaman tidak lagi mengasumsikan shell dasbor sudah membuat konteks UI.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -38,3 +42,5 @@ Jitsi kini menyelesaikan `whiteboard:fetchBoardData`, `whiteboard:membership`, d
 - [f20e6ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
 
 - [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
+
+- [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
