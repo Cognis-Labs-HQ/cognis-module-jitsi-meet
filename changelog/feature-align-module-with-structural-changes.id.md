@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.217 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.218 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.217.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.218.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -30,9 +30,9 @@ Setelah Cognis PR #222 membuat pendaftaran penyedia kapabilitas eksternal mengik
 
 Jitsi kini menyelesaikan fasad publik `whiteboard:api` yang dikontribusikan modul Nextcloud Whiteboard terkini, lalu menggunakan metode pencarian papan, keanggotaan, dan penghapusannya. Verifikasi server, akses terdelegasi, sinkronisasi peserta, dan pembersihan memakai objek penyedia yang sama dengan Whiteboard langsung, bukan mengasumsikan kapabilitas terpisah telah didaftarkan.
 
-## Inisialisasi Konteks UI Host pada Pemuatan Langsung
+## Patuhi Batas Modul Peramban
 
-Pemuatan langsung `/meetings` dan penyegaran peramban kini mengimpor bootstrap konteks UI publik Cognis sebelum mengakses `ui:reuse` atau penyedia kapabilitas opsional. Halaman tidak lagi mengasumsikan shell dasbor sudah membuat konteks UI.
+Titik masuk browser Meetings kini menggunakan konteks UI yang diinisialisasi Cognis dan memperoleh utilitas melalui `ui:reuse`; titik masuk tidak lagi mengimpor `/static/reuse/ui-ctx.js`, yaitu modul pohon sumber host di luar batas modul eksternal. Flag istimewa tetap diperlukan untuk kapabilitas sisi server `meetings:isProviderAvailable` yang digunakan Calendar dan kontribusi pada alur Meetings milik host.
 
 ## Pertahankan Integrasi Whiteboard sebagai Opsional
 
@@ -60,3 +60,5 @@ Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi 
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
 
 - [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
+
+- [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)

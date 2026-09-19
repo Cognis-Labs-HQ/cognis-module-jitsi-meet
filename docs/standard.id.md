@@ -191,7 +191,9 @@ Endpoint konfigurasi `GET`, `PUT`, dan `DELETE` yang terautentikasi serta penguj
 
 Jitsi mendeklarasikan persyaratan opsional `whiteboard:uiGateway` agar Cognis memuat penyedia kapabilitas khusus milik Nextcloud Whiteboard sebelum memasang rute Meetings ketika penyedia tersebut diaktifkan. Gateway browser menjadi kontrak visibilitas kontrol dan pabrik kanvas; endpoint ketersediaan backend tetap bersifat diagnostik dan tidak lagi menghapus kontrol sebelum penemuan penyedia khusus selesai.
 
-Saat `/meetings` dimuat langsung atau peramban disegarkan, titik masuk modul mengimpor bootstrap konteks UI publik milik host sebelum menyelesaikan `ui:reuse` atau memuat penyedia opsional. Dengan demikian, modul tidak bergantung pada shell dasbor untuk menginisialisasi konteks global terlebih dahulu.
+Titik masuk browser Meetings menggunakan konteks UI yang disediakan host dan menyelesaikan utilitas browser melalui `ui:reuse`; titik masuk tersebut tidak mengimpor modul pohon sumber Cognis. Cognis menginisialisasi konteks dan penyedia kapabilitas sebelum memasang rute SPA Meetings yang terdaftar.
+
+Flag istimewa tetap diperlukan karena Jitsi menerbitkan kapabilitas tingkat host `meetings:isProviderAvailable` yang digunakan Calendar dan berkontribusi pada alur Meetings milik host. Flag tersebut tidak memberikan izin kepada browser untuk mengimpor modul host privat.
 
 Eksekutor basis data adalah dependensi server wajib karena rute konfigurasi saat nonaktif dan runtime rapat saat aktif sama-sama menggunakan penyimpanan modul. Deklarasi `db:executor` memastikan Cognis menginisialisasi penyedia tersebut sebelum mendaftarkan `/config` atau menjalankan pengujian pengaktifan; layanan Whiteboard opsional tetap diselesaikan secara dinamis.
 

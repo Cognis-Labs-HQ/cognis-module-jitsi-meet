@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.217 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.218 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.217 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.218 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -30,9 +30,9 @@ Nachdem Cognis PR #222 die Registrierung externer Capability-Provider an den Leb
 
 Jitsi löst nun die vom aktuellen Nextcloud-Whiteboard-Modul bereitgestellte öffentliche Fassade `whiteboard:api` auf und verwendet deren Methoden für Board-Abfrage, Mitgliedschaft und Löschung. Serverprüfung, delegierter Zugriff, Teilnehmersynchronisierung und Bereinigung verwenden damit dasselbe Provider-Objekt wie direkte Whiteboards, statt getrennt registrierte Einzel-Capabilities vorauszusetzen.
 
-## Den Host-UI-Kontext bei direktem Laden initialisieren
+## Die Browser-Modulgrenze einhalten
 
-Direkte Aufrufe von `/meetings` und Browser-Aktualisierungen importieren nun den öffentlichen UI-Kontext-Bootstrap von Cognis, bevor auf `ui:reuse` oder optionale Capability-Provider zugegriffen wird. Die Seite setzt nicht mehr voraus, dass die Dashboard-Shell den UI-Kontext bereits erstellt hat.
+Der Browser-Einstieg von Meetings verwendet nun den von Cognis initialisierten UI-Kontext und bezieht Hilfsmittel über `ui:reuse`; `/static/reuse/ui-ctx.js`, ein Host-Quellmodul außerhalb der Grenze externer Module, wird nicht mehr importiert. Das Privilegierungskennzeichen bleibt für die serverseitige, von Calendar verwendete Capability `meetings:isProviderAvailable` und Beiträge zu hosteigenen Meetings-Flows erforderlich.
 
 ## Die Whiteboard-Integration optional halten
 
@@ -60,3 +60,5 @@ Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrout
 - [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
 
 - [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
+
+- [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)

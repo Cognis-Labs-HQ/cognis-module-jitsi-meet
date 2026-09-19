@@ -193,7 +193,9 @@ Die authentifizierten Konfigurationsendpunkte `GET`, `PUT` und `DELETE` sowie de
 
 Jitsi deklariert die optionale Anforderung `whiteboard:uiGateway`, damit Cognis den dedizierten Capability-Provider von Nextcloud Whiteboard vor der Meetings-Route lädt, wenn dieser Provider aktiviert ist. Das Browser-Gateway ist der Sichtbarkeits- und Canvas-Factory-Vertrag des Steuerelements; der Backend-Verfügbarkeitsendpunkt bleibt diagnostisch und entfernt das Steuerelement nicht mehr, bevor die Erkennung des dedizierten Providers abgeschlossen ist.
 
-Beim direkten Laden von `/meetings` und bei Browser-Aktualisierungen importiert der Moduleinstieg zuerst den öffentlichen UI-Kontext-Bootstrap des Hosts, bevor `ui:reuse` aufgelöst oder optionale Provider geladen werden. Das Modul ist daher nicht darauf angewiesen, dass die Dashboard-Shell den globalen Kontext bereits initialisiert hat.
+Der Browser-Einstieg von Meetings verwendet den vom Host bereitgestellten UI-Kontext und löst Browser-Hilfsmittel über `ui:reuse` auf; er importiert keine Cognis-Quellmodule. Cognis initialisiert den Kontext und die Capability-Provider vor dem Einhängen der registrierten Meetings-SPA-Route.
+
+Das Privilegierungskennzeichen bleibt erforderlich, weil Jitsi die hostweite, von Calendar verwendete Capability `meetings:isProviderAvailable` veröffentlicht und zu hosteigenen Meetings-Flows beiträgt. Es erteilt dem Browser keine Berechtigung zum Import privater Hostmodule.
 
 Der Datenbank-Executor ist eine feste Server-Abhängigkeit, weil sowohl die deaktivierten Konfigurationsrouten als auch die aktivierte Meeting-Laufzeit den Modulspeicher verwenden. Durch die Deklaration von `db:executor` initialisiert Cognis diesen Provider vor der Registrierung von `/config` oder dem Aktivierungstest; optionale Whiteboard-Dienste werden weiterhin dynamisch aufgelöst.
 

@@ -186,7 +186,9 @@ The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the ena
 
 Jitsi declares the optional `whiteboard:uiGateway` requirement so Cognis loads Nextcloud Whiteboard’s dedicated capability provider before mounting the Meetings route when that provider is enabled. The browser gateway is the control’s visibility and canvas-factory contract; the backend availability endpoint remains diagnostic and no longer removes the control before dedicated provider discovery can complete.
 
-On direct `/meetings` loads and browser refreshes, the module entry imports the public host UI-context bootstrap before resolving `ui:reuse` or loading optional providers. It therefore does not depend on the dashboard shell having initialized the global context first.
+The Meetings browser entry consumes the host-provided UI context and resolves browser utilities through `ui:reuse`; it does not import Cognis source-tree modules. Cognis initializes the context and capability providers before mounting the registered Meetings SPA route.
+
+The privileged flag remains required because Jitsi publishes the host-wide `meetings:isProviderAvailable` capability used by Calendar and contributes to the host-owned Meetings flows. It does not grant the browser permission to import private host modules.
 
 The database executor is a hard server dependency because both disabled configuration routes and the enabled meeting runtime use the module store. Declaring `db:executor` ensures Cognis initializes that provider before registering `/config` or running the enable test; optional Whiteboard services remain dynamically resolved.
 
