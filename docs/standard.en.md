@@ -99,7 +99,7 @@ A persistent green inset outline and dashed target remain visible for the entire
 
 When only one attendee is actively present, a new participant invitation is approved immediately without requesting consensus from absent participants.
 
-Successful active invitations show a toast, update the existing encrypted chat room membership through the Messages API and redraw that same chat during state polling, and update an existing persistent Whiteboard through `whiteboard:membership` with canonical actor and user account IDs.
+Successful active invitations show a toast, update the existing encrypted chat room membership through the Messages API and redraw that same chat during state polling, and update an existing persistent Whiteboard through `nextcloud-whiteboard:membership` with canonical actor and user account IDs.
 
 The meeting API completes the existing-room membership update before committing the meeting participant change, so clients never switch room IDs.
 
@@ -186,7 +186,7 @@ The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the ena
 
 A module-owned backend availability endpoint is the single visibility decision for every account client; browser capability discovery only initializes an already-approved control.
 
-The optional integration is exposed when the base `whiteboard:uiGateway` canvas factory, component-page, and floating-window capabilities are available; the meeting API resolves the mapped canvas’s actual owner and invokes the owner-authorized `whiteboard:membership` `add` and `remove` functions with canonical account IDs before committing participant changes; the persistent `createCanvas` method from the provider contract creates normal canvases with the invited participant handles, while only participant-free meetings use `createDisposableCanvas`.
+The optional integration is exposed when the base `whiteboard:uiGateway` canvas factory, component-page, and floating-window capabilities are available; the meeting API resolves the mapped canvas’s actual owner and invokes the owner-authorized `nextcloud-whiteboard:membership` `add` and `remove` functions with canonical account IDs before committing participant changes; the persistent `createCanvas` method from the provider contract creates normal canvases with the invited participant handles, while only participant-free meetings use `createDisposableCanvas`.
 
 Meetings never fall back from persistent to disposable creation; before accepting or delegating a mapping, they resolve the provider at request time through the scoped or system ctx capability surface and verify its identity, meeting title, and (for new mappings) creator, save the mapping type, replace unknown or mismatched legacy mappings, and reuse the verified persistent canvas only when a user deliberately opens it.
 

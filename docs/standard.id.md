@@ -99,7 +99,7 @@ Garis tepi dalam hijau dan target putus-putus tetap terlihat selama seluruh pros
 
 Jika hanya satu peserta yang aktif hadir, undangan peserta baru langsung disetujui tanpa meminta konsensus dari peserta yang tidak hadir.
 
-Undangan aktif yang berhasil menampilkan toast, memperbarui keanggotaan ruang chat terenkripsi yang sama melalui API Messages dan menggambar ulang chat tersebut selama polling status, dan memperbarui Whiteboard persisten yang sudah ada melalui `whiteboard:membership` dengan ID akun pelaku dan pengguna yang kanonis.
+Undangan aktif yang berhasil menampilkan toast, memperbarui keanggotaan ruang chat terenkripsi yang sama melalui API Messages dan menggambar ulang chat tersebut selama polling status, dan memperbarui Whiteboard persisten yang sudah ada melalui `nextcloud-whiteboard:membership` dengan ID akun pelaku dan pengguna yang kanonis.
 
 API rapat menyelesaikan pembaruan keanggotaan ruang yang sama sebelum menyimpan perubahan peserta rapat sehingga klien tidak pernah berpindah ID ruang.
 
@@ -191,7 +191,7 @@ Endpoint konfigurasi `GET`, `PUT`, dan `DELETE` yang terautentikasi serta penguj
 
 Endpoint ketersediaan backend milik modul menjadi satu-satunya keputusan visibilitas untuk semua klien akun; penemuan kapabilitas browser hanya menginisialisasi kontrol yang sudah disetujui.
 
-Integrasi opsional muncul ketika pabrik kanvas dasar `whiteboard:uiGateway`, halaman komponen, dan jendela mengambang tersedia; API rapat menyelesaikan pemilik sebenarnya dari kanvas yang dipetakan dan memanggil fungsi `add` dan `remove` milik `whiteboard:membership` yang diotorisasi pemilik dengan ID akun kanonis sebelum menyimpan perubahan peserta; metode `createCanvas` dalam kontrak penyedia membuat kanvas normal dengan handle peserta undangan, sedangkan hanya rapat tanpa peserta yang memakai `createDisposableCanvas`.
+Integrasi opsional muncul ketika pabrik kanvas dasar `whiteboard:uiGateway`, halaman komponen, dan jendela mengambang tersedia; API rapat menyelesaikan pemilik sebenarnya dari kanvas yang dipetakan dan memanggil fungsi `add` dan `remove` milik `nextcloud-whiteboard:membership` yang diotorisasi pemilik dengan ID akun kanonis sebelum menyimpan perubahan peserta; metode `createCanvas` dalam kontrak penyedia membuat kanvas normal dengan handle peserta undangan, sedangkan hanya rapat tanpa peserta yang memakai `createDisposableCanvas`.
 
 Meetings tidak pernah beralih dari pembuatan persisten ke sekali pakai; sebelum menerima atau mendelegasikan pemetaan, Meetings menyelesaikan penyedia saat permintaan melalui permukaan kapabilitas ctx tercakup atau sistem dan memverifikasi identitas, judul rapat, serta (untuk pemetaan baru) pembuatnya, menyimpan jenis pemetaan, mengganti pemetaan lama yang tidak diketahui atau tidak cocok, dan memakai kembali kanvas persisten yang telah diverifikasi hanya ketika pengguna sengaja membukanya.
 

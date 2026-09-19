@@ -177,7 +177,7 @@ export function registerApiRoutes(router, ctx) {
     const log = ctx.getCapability("logging:log");
     const fetchBoardData = (...args) => {
         const providerFetchBoardData = ctx.getCapability(
-            "whiteboard:fetchBoardData",
+            "nextcloud-whiteboard:fetchBoardData",
         );
         if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
@@ -185,7 +185,8 @@ export function registerApiRoutes(router, ctx) {
         return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
+        typeof ctx.getCapability("nextcloud-whiteboard:fetchBoardData") ===
+        "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -657,10 +658,10 @@ export function registerApiRoutes(router, ctx) {
         groupChatMembership,
         resolveRoomMembership,
         resolveWhiteboardMembership: () =>
-            ctx.getCapability("whiteboard:membership"),
+            ctx.getCapability("nextcloud-whiteboard:membership"),
         fetchBoardData,
         resolveWhiteboardDeletion: () =>
-            ctx.getCapability("whiteboard:deleteCanvas"),
+            ctx.getCapability("nextcloud-whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,
