@@ -8,15 +8,15 @@ Jitsi Meet は、スコープ付きモジュールコンテキストから直接
 
 ## 現行の連携契約を宣言
 
-マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.211 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.212 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
 
 ## 非アクティブなオーバーレイ操作を非表示に維持
 
-ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.211 に同期しました。
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.212 に同期しました。
 
 ## Nextcloud Whiteboard の検出を復元
 
-Jitsi は、現行の Nextcloud Whiteboard モジュールが公開する名前空間付きサーバー Capability を解決するようになりました。可用性エンドポイントが有効なプロバイダーを再び認識し、ミーティングの Whiteboard ボタン、ボード検証、メンバー更新、クリーンアップを復元します。
+Jitsi は、現行の Nextcloud Whiteboard モジュールが公開するサーバー Capability を解決するようになりました。可用性エンドポイントが有効なプロバイダーを再び認識し、ミーティングの Whiteboard ボタン、ボード検証、メンバー更新、クリーンアップを復元します。
 
 ## 専用 UI プロバイダーを読み込む
 
@@ -26,9 +26,15 @@ Jitsi は `whiteboard:uiGateway` をオプションのブラウザー Capability
 
 Cognis PR #222 により外部 Capability プロバイダー登録がライフサイクル対応になったため、Meetings コントロールは読み込み済みの `whiteboard:uiGateway` を直接使用します。別のバックエンド可用性リクエストに基づいて自身を削除することはなく、バックエンドエンドポイントは診断用として残ります。
 
+## 統一された Whiteboard Capability 名前空間を使用
+
+Jitsi は最新の Nextcloud Whiteboard Provider 契約に合わせて、`whiteboard:fetchBoardData`、`whiteboard:membership`、`whiteboard:deleteCanvas` を解決するようになりました。サーバー検証、参加者メンバーシップ、委任アクセス、クリーンアップでは、廃止されたモジュール固有の名前空間を要求しません。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
 - [6042833](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)
 - [055fd2a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/055fd2a7a760c5c29d1e5c9abe9d3956763712aa)
 - [f20e6ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
+
+- [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)

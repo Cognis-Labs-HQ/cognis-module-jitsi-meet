@@ -99,7 +99,7 @@ Eine dauerhafte grüne Innenkontur und ein gestrichelter Zielbereich bleiben wä
 
 Ist nur ein Teilnehmer aktiv anwesend, wird eine neue Teilnehmereinladung sofort genehmigt, ohne die Zustimmung abwesender Teilnehmer anzufordern.
 
-Erfolgreiche aktive Einladungen zeigen einen Toast, aktualisieren die Mitgliedschaft des vorhandenen verschlüsselten Chatraums über die Messages-API und zeichnen denselben Chat während der Zustandsabfrage neu und aktualisieren ein vorhandenes dauerhaftes Whiteboard über `nextcloud-whiteboard:membership` mit kanonischen Konto-IDs für Akteur und Benutzer.
+Erfolgreiche aktive Einladungen zeigen einen Toast, aktualisieren die Mitgliedschaft des vorhandenen verschlüsselten Chatraums über die Messages-API und zeichnen denselben Chat während der Zustandsabfrage neu und aktualisieren ein vorhandenes dauerhaftes Whiteboard über `whiteboard:membership` mit kanonischen Konto-IDs für Akteur und Benutzer.
 
 Die Meeting-API schließt die Mitgliedschaftsaktualisierung des vorhandenen Raums ab, bevor sie die Teilnehmeränderung speichert, sodass Clients niemals die Raumkennung wechseln.
 
@@ -193,7 +193,7 @@ Die authentifizierten Konfigurationsendpunkte `GET`, `PUT` und `DELETE` sowie de
 
 Jitsi deklariert die optionale Anforderung `whiteboard:uiGateway`, damit Cognis den dedizierten Capability-Provider von Nextcloud Whiteboard vor der Meetings-Route lädt, wenn dieser Provider aktiviert ist. Das Browser-Gateway ist der Sichtbarkeits- und Canvas-Factory-Vertrag des Steuerelements; der Backend-Verfügbarkeitsendpunkt bleibt diagnostisch und entfernt das Steuerelement nicht mehr, bevor die Erkennung des dedizierten Providers abgeschlossen ist.
 
-Die optionale Integration erscheint, wenn die grundlegende Canvas-Factory `whiteboard:uiGateway` sowie Komponentenfenster- und Floating-Window-Fähigkeiten verfügbar sind; die Meeting-API löst den tatsächlichen Eigentümer der zugeordneten Arbeitsfläche auf und ruft vor dem Speichern von Teilnehmeränderungen die eigentümerautorisierten Funktionen `add` und `remove` von `nextcloud-whiteboard:membership` mit kanonischen Konto-IDs auf; die Provider-Vertragsmethode `createCanvas` erstellt normale Arbeitsflächen mit den Kennungen der eingeladenen Teilnehmer, während nur teilnehmerlose Besprechungen `createDisposableCanvas` verwenden.
+Die optionale Integration erscheint, wenn die grundlegende Canvas-Factory `whiteboard:uiGateway` sowie Komponentenfenster- und Floating-Window-Fähigkeiten verfügbar sind; die Meeting-API löst den tatsächlichen Eigentümer der zugeordneten Arbeitsfläche auf und ruft vor dem Speichern von Teilnehmeränderungen die eigentümerautorisierten Funktionen `add` und `remove` von `whiteboard:membership` mit kanonischen Konto-IDs auf; die Provider-Vertragsmethode `createCanvas` erstellt normale Arbeitsflächen mit den Kennungen der eingeladenen Teilnehmer, während nur teilnehmerlose Besprechungen `createDisposableCanvas` verwenden.
 
 Meetings greift niemals von dauerhafter auf verwerfbare Erstellung zurück, löst den Provider zum Anfragezeitpunkt über die bereichsgebundene oder systemweite ctx-Capability-Oberfläche auf und prüft vor Annahme oder Delegierung einer Zuordnung deren Kennung, Besprechungstitel und bei neuen Zuordnungen den Ersteller, speichert den Zuordnungstyp, ersetzt unbekannte oder nicht passende ältere Zuordnungen und verwendet die geprüfte dauerhafte Arbeitsfläche nur, wenn ein Benutzer sie bewusst öffnet.
 

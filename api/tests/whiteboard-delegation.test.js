@@ -117,8 +117,7 @@ test("Jitsi extends the generic delegated-access flow", async () => {
     let providerFetchBoardData;
     const ctx = {
         getCapability(capabilityId) {
-            if (capabilityId !== "nextcloud-whiteboard:fetchBoardData")
-                return null;
+            if (capabilityId !== "whiteboard:fetchBoardData") return null;
             return providerFetchBoardData;
         },
         flow: {

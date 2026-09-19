@@ -81,7 +81,7 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
         store,
         fetchBoardData: (...args) => {
             const providerFetchBoardData = ctx.getCapability?.(
-                "nextcloud-whiteboard:fetchBoardData",
+                "whiteboard:fetchBoardData",
             );
             if (typeof providerFetchBoardData !== "function") {
                 throw new Error(

@@ -83,23 +83,23 @@ test("participant Whiteboard opens request approval from active meeting peers", 
     assert.match(source, /operation: "request_whiteboard_open_approval"/);
 });
 
-test("Jitsi discovers the namespaced Nextcloud Whiteboard server contract", () => {
+test("Jitsi discovers the unified Whiteboard server contract", () => {
     const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const delegationSource = readFileSync(
         resolve(ROOT, "api/whiteboard-delegation.js"),
         "utf8",
     );
     for (const capability of [
-        "nextcloud-whiteboard:fetchBoardData",
-        "nextcloud-whiteboard:membership",
-        "nextcloud-whiteboard:deleteCanvas",
+        "whiteboard:fetchBoardData",
+        "whiteboard:membership",
+        "whiteboard:deleteCanvas",
     ]) {
         assert.match(source, new RegExp(capability));
     }
-    assert.match(delegationSource, /nextcloud-whiteboard:fetchBoardData/);
+    assert.match(delegationSource, /whiteboard:fetchBoardData/);
     assert.doesNotMatch(
         `${source}\n${delegationSource}`,
-        /["']whiteboard:(?:fetchBoardData|membership|deleteCanvas)["']/,
+        /["']nextcloud-whiteboard:/,
     );
 });
 
