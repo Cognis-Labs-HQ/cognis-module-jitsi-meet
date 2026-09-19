@@ -32,7 +32,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const buttonSource = [
-        "whiteboard-availability.js",
         "whiteboard-control.js",
         "whiteboard-provider.js",
         "whiteboard-session.js",
@@ -81,7 +80,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.ok(manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
-    assert.match(buttonSource, /whiteboard\/availability/);
+    assert.doesNotMatch(buttonSource, /whiteboard\/availability/);
+    assert.match(
+        buttonSource,
+        /requireCanvasFactory:\s*!state\.shareAccessToken/,
+    );
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);

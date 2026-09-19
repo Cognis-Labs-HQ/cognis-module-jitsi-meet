@@ -133,12 +133,10 @@ test("meeting chat teardown clears the room and polling state after a kick", () 
 
 test("share guests bind remote whiteboard orchestration without resharing controls", () => {
     const appSource = readJitsiUiBundle();
-    const controlSource = [
-        "whiteboard-control.js",
-        "whiteboard-availability.js",
-    ]
-        .map((file) => readFileSync(resolve(ROOT, "ui", file), "utf8"))
-        .join("\n");
+    const controlSource = readFileSync(
+        resolve(ROOT, "ui/whiteboard-control.js"),
+        "utf8",
+    );
     const meetingRoomSource = readFileSync(
         resolve(ROOT, "ui/app/meeting-room.js"),
         "utf8",
@@ -154,8 +152,10 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         )?.length,
         2,
     );
-    assert.match(controlSource, /accessToken:\s*accessToken \|\| undefined/);
-    assert.match(controlSource, /requireCanvasFactory:\s*false/);
+    assert.match(
+        controlSource,
+        /requireCanvasFactory:\s*!state\.shareAccessToken/,
+    );
     assert.doesNotMatch(
         controlSource,
         /!state\.shareAccessToken &&\s*typeof whiteboardGateway\?\.createDisposableCanvas/,
