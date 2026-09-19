@@ -53,6 +53,9 @@ function createScopedRuntime() {
             moduleRoot: "/external-modules/jitsi-meet",
             getCapability: (capabilityId) => capabilities.get(capabilityId),
             contributePublicCapability(capabilityId, value) {
+                if (!capabilityId.startsWith("jitsi-meet:")) {
+                    throw new Error("module_privileged_access_required");
+                }
                 capabilities.set(capabilityId, value);
                 scope.capabilities.push(capabilityId);
             },
@@ -110,7 +113,9 @@ function createScopedRuntime() {
     return {
         enable,
         snapshot: () => ({
-            meetingChatCapability: capabilities.has("meeting:getMeetingChat"),
+            meetingChatCapability: capabilities.has(
+                "jitsi-meet:getMeetingChat",
+            ),
             hookCount: hooks.length,
             routeCount: routes.length,
             routes: routes.map(({ method, path, options }) => ({

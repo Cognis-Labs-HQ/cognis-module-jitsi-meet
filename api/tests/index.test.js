@@ -45,7 +45,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "meeting:video",
         "meeting:chat",
         "meeting:moderation",
-        "meeting:getMeetingChat",
+        "jitsi-meet:getMeetingChat",
         "voip:startCall",
     ]);
     assert.deepEqual(manifest.requires, [
@@ -127,6 +127,24 @@ test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     assert.doesNotMatch(bootstrapSource, /ctx\.registerFlow/);
     assert.doesNotMatch(bootstrapSource, /meetings:isProviderAvailable/);
     assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
+});
+
+test("jitsi contributes only module-owned capability identifiers", () => {
+    const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const configurationSource = readFileSync(
+        resolve(ROOT, "api/reuse/configuration-api.js"),
+        "utf8",
+    );
+    const capabilityIds = [
+        ...indexSource.matchAll(/contributePublicCapability\(\s*["']([^"']+)/g),
+    ]
+        .concat([
+            ...configurationSource.matchAll(
+                /contributePublicCapability\(\s*["']([^"']+)/g,
+            ),
+        ])
+        .map((match) => match[1]);
+    assert.deepEqual(capabilityIds, ["jitsi-meet:getMeetingChat"]);
 });
 
 test("jitsi API registers configured CSP origins through auth capability", () => {

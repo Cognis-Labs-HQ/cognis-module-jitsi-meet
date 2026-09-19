@@ -8,11 +8,11 @@ Jitsi Meet now obtains capabilities and runs or extends host flows directly thro
 
 ## Declare the Current Integration Contract
 
-The manifest now keeps the module unprivileged, publishes its browser capability through the lifecycle-scoped provider catalog, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.220 and all declared file digests. Structural tests cover the new boundary.
+The manifest now keeps the module unprivileged, publishes its browser capability through the lifecycle-scoped provider catalog, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.221 and all declared file digests. Structural tests cover the new boundary.
 
 ## Keep Inactive Overlay Controls Hidden
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.220.
+The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.221.
 
 ## Restore Nextcloud Whiteboard Discovery
 
@@ -42,6 +42,10 @@ Jitsi resolves Whiteboard verification, membership, and deletion capabilities on
 
 Jitsi now declares `db:executor`, which its disabled configuration routes, enable test, and enabled meeting store all require. Cognis can initialize the database provider before registering `/config`, so configuration no longer falls back to HTTP 503 and enablement validation can run against the saved Jitsi URL.
 
+## Keep Server Capabilities Module-Owned
+
+The authenticated meeting-chat resolver is now published as `jitsi-meet:getMeetingChat`. Every capability contributed by Jitsi therefore remains in the module-owned namespace and passes Cognis boundary validation without privileged access.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -66,3 +70,5 @@ Jitsi now declares `db:executor`, which its disabled configuration routes, enabl
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
 
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
+
+- [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)

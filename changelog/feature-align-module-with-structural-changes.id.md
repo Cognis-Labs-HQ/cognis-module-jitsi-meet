@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini mempertahankan modul tanpa hak istimewa dan menerbitkan kapabilitas browser melalui katalog penyedia yang tercakup siklus hidup, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.220 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini mempertahankan modul tanpa hak istimewa dan menerbitkan kapabilitas browser melalui katalog penyedia yang tercakup siklus hidup, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.221 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.220.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.221.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -42,6 +42,10 @@ Jitsi hanya menyelesaikan kapabilitas verifikasi, keanggotaan, dan penghapusan W
 
 Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi saat nonaktif, pengujian pengaktifan, dan penyimpanan rapat saat aktif. Cognis dapat menginisialisasi penyedia basis data sebelum mendaftarkan `/config`, sehingga konfigurasi tidak lagi kembali ke HTTP 503 dan validasi pengaktifan dapat memeriksa URL Jitsi yang tersimpan.
 
+## Pertahankan Kapabilitas Server dalam Namespace Modul
+
+Resolver chat rapat terautentikasi kini diterbitkan sebagai `jitsi-meet:getMeetingChat`. Dengan demikian, setiap kapabilitas yang disumbangkan Jitsi tetap berada dalam namespace milik modul dan lolos validasi batas Cognis tanpa akses istimewa.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -66,3 +70,5 @@ Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi 
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
 
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
+
+- [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)

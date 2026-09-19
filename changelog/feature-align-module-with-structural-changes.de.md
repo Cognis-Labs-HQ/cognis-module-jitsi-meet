@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest belässt das Modul nun unprivilegiert und veröffentlicht seine Browser-Capability über den lebenszyklusgebundenen Provider-Katalog, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.220 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest belässt das Modul nun unprivilegiert und veröffentlicht seine Browser-Capability über den lebenszyklusgebundenen Provider-Katalog, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.221 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.220 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.221 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -42,6 +42,10 @@ Jitsi löst Capabilities für Whiteboard-Prüfung, Mitgliedschaft und Löschung 
 
 Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrouten, dem Aktivierungstest und dem aktivierten Meeting-Speicher benötigt wird. Cognis kann den Datenbank-Provider vor der Registrierung von `/config` initialisieren, sodass die Konfiguration nicht mehr auf HTTP 503 zurückfällt und die Aktivierungsprüfung die gespeicherte Jitsi-URL verwenden kann.
 
+## Server-Capabilities im Modulnamensraum halten
+
+Der authentifizierte Resolver für Meeting-Chats wird nun als `jitsi-meet:getMeetingChat` veröffentlicht. Damit verbleibt jede von Jitsi bereitgestellte Capability im moduleigenen Namensraum und besteht die Cognis-Grenzprüfung ohne privilegierten Zugriff.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -66,3 +70,5 @@ Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrout
 - [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
 
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
+
+- [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)

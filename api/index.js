@@ -438,7 +438,7 @@ export function registerApiRoutes(router, ctx) {
         store.getMeetingById.bind(store),
     );
     ctx.contributePublicCapability(
-        "meeting:getMeetingChat",
+        "jitsi-meet:getMeetingChat",
         createGetMeetingChatCapability({
             store,
             profileStore,
