@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.215 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.216 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.215 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.216 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -26,9 +26,9 @@ Jitsi deklariert `whiteboard:uiGateway` nun als optionale Browser-Capability-Anf
 
 Nachdem Cognis PR #222 die Registrierung externer Capability-Provider an den Lebenszyklus gebunden hat, verwendet das Meetings-Steuerelement direkt das geladene `whiteboard:uiGateway`, statt sich aufgrund einer separaten Backend-Verfügbarkeitsanfrage zu entfernen. Der Backend-Endpunkt bleibt für Diagnosen verfügbar.
 
-## Den einheitlichen Whiteboard-Capability-Namensraum verwenden
+## Die einheitliche Whiteboard-Provider-Fassade verwenden
 
-Jitsi löst nun `whiteboard:fetchBoardData`, `whiteboard:membership` und `whiteboard:deleteCanvas` auf und entspricht damit dem neuesten Provider-Vertrag von Nextcloud Whiteboard. Serverprüfung, Teilnehmermitgliedschaft, delegierter Zugriff und Bereinigung verwenden nicht mehr den abgelösten modulspezifischen Namensraum.
+Jitsi löst nun die vom aktuellen Nextcloud-Whiteboard-Modul bereitgestellte öffentliche Fassade `whiteboard:api` auf und verwendet deren Methoden für Board-Abfrage, Mitgliedschaft und Löschung. Serverprüfung, delegierter Zugriff, Teilnehmersynchronisierung und Bereinigung verwenden damit dasselbe Provider-Objekt wie direkte Whiteboards, statt getrennt registrierte Einzel-Capabilities vorauszusetzen.
 
 ## Den Host-UI-Kontext bei direktem Laden initialisieren
 
@@ -52,3 +52,5 @@ Jitsi löst Capabilities für Whiteboard-Prüfung, Mitgliedschaft und Löschung 
 - [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
 
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
+
+- [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)

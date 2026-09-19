@@ -8,11 +8,11 @@ Jitsi Meet now obtains capabilities and runs or extends host flows directly thro
 
 ## Declare the Current Integration Contract
 
-The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.215 and all declared file digests. Structural tests cover the new boundary.
+The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.216 and all declared file digests. Structural tests cover the new boundary.
 
 ## Keep Inactive Overlay Controls Hidden
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.215.
+The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.216.
 
 ## Restore Nextcloud Whiteboard Discovery
 
@@ -26,9 +26,9 @@ Jitsi now declares `whiteboard:uiGateway` as an optional browser capability requ
 
 After Cognis PR #222 made external capability-provider registration lifecycle-aware, the Meetings control now uses the loaded `whiteboard:uiGateway` directly instead of removing itself based on a separate backend availability request. The backend endpoint remains available for diagnostics.
 
-## Use the Unified Whiteboard Capability Namespace
+## Use the Unified Whiteboard Provider Facade
 
-Jitsi now resolves `whiteboard:fetchBoardData`, `whiteboard:membership`, and `whiteboard:deleteCanvas`, matching the latest Nextcloud Whiteboard provider contract. Server verification, participant membership, delegated access, and cleanup no longer request the superseded module-specific namespace.
+Jitsi now resolves the public `whiteboard:api` facade contributed by the current Nextcloud Whiteboard module, then uses its board lookup, membership, and deletion methods. Server verification, delegated access, participant synchronization, and cleanup therefore use the same provider object that powers direct Whiteboards instead of assuming separately registered leaf capabilities.
 
 ## Initialize the Host UI Context on Direct Loads
 
@@ -52,3 +52,5 @@ Jitsi resolves Whiteboard verification, membership, and deletion capabilities on
 - [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
 
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
+
+- [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)

@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.215 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.216 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.215.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.216.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -26,9 +26,9 @@ Jitsi kini mendeklarasikan `whiteboard:uiGateway` sebagai persyaratan kapabilita
 
 Setelah Cognis PR #222 membuat pendaftaran penyedia kapabilitas eksternal mengikuti siklus hidup, kontrol Meetings kini memakai `whiteboard:uiGateway` yang telah dimuat secara langsung dan tidak lagi menghapus dirinya berdasarkan permintaan ketersediaan backend terpisah. Endpoint backend tetap tersedia untuk diagnosis.
 
-## Gunakan Namespace Kapabilitas Whiteboard Terpadu
+## Gunakan Fasad Penyedia Whiteboard Terpadu
 
-Jitsi kini menyelesaikan `whiteboard:fetchBoardData`, `whiteboard:membership`, dan `whiteboard:deleteCanvas`, sesuai dengan kontrak penyedia Nextcloud Whiteboard terbaru. Verifikasi server, keanggotaan peserta, akses terdelegasi, dan pembersihan tidak lagi meminta namespace khusus modul yang telah digantikan.
+Jitsi kini menyelesaikan fasad publik `whiteboard:api` yang dikontribusikan modul Nextcloud Whiteboard terkini, lalu menggunakan metode pencarian papan, keanggotaan, dan penghapusannya. Verifikasi server, akses terdelegasi, sinkronisasi peserta, dan pembersihan memakai objek penyedia yang sama dengan Whiteboard langsung, bukan mengasumsikan kapabilitas terpisah telah didaftarkan.
 
 ## Inisialisasi Konteks UI Host pada Pemuatan Langsung
 
@@ -52,3 +52,5 @@ Jitsi hanya menyelesaikan kapabilitas verifikasi, keanggotaan, dan penghapusan W
 - [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
 
 - [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
+
+- [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)

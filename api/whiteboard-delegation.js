@@ -1,3 +1,4 @@
+import { resolveWhiteboardFetchBoardData } from "./reuse/whiteboard-provider.js";
 import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
 
 const DELEGATED_WHITEBOARD_CAPABILITIES = Object.freeze([
@@ -80,9 +81,7 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
         fetchBoardData: (...args) => {
-            const providerFetchBoardData = ctx.getCapability?.(
-                "whiteboard:fetchBoardData",
-            );
+            const providerFetchBoardData = resolveWhiteboardFetchBoardData(ctx);
             if (typeof providerFetchBoardData !== "function") {
                 throw new Error(
                     "Whiteboard provider verification is unavailable.",
