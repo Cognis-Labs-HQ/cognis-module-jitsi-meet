@@ -1,6 +1,6 @@
 # Jitsi Meet an die bereichsgebundene Modul-Laufzeit anpassen
 
-**Feature-Branch:** work
+**Feature-Branch:** feature-align-module-with-structural-changes
 
 ## Den lebenszyklusgebundenen Kontext verwenden
 

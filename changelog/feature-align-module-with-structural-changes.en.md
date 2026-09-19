@@ -1,6 +1,6 @@
 # Align Jitsi Meet with the Scoped Module Runtime
 
-**Feature Branch:** work
+**Feature Branch:** feature-align-module-with-structural-changes
 
 ## Use the Lifecycle-Scoped Context
 

@@ -1,6 +1,6 @@
 # Jitsi Meet をスコープ付きモジュールランタイムに整合
 
-**機能ブランチ:** work
+**機能ブランチ:** feature-align-module-with-structural-changes
 
 ## ライフサイクルにスコープされたコンテキストを使用
 
