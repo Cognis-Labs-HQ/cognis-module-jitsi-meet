@@ -14,9 +14,11 @@ function availabilityResponse(available) {
 test("Whiteboard availability retries while an enabled provider is registering", async () => {
     let requests = 0;
     const retryDelays = [];
+    const requestOptions = [];
     const available = await resolveWhiteboardServerAvailability({
-        apiFetch: async () => {
+        apiFetch: async (_url, options) => {
             requests += 1;
+            requestOptions.push(options);
             return availabilityResponse(requests === 4);
         },
         signal: new AbortController().signal,
@@ -26,6 +28,7 @@ test("Whiteboard availability retries while an enabled provider is registering",
     assert.equal(available, true);
     assert.equal(requests, 4);
     assert.deepEqual(retryDelays, [250, 500, 1_000]);
+    assert.ok(requestOptions.every(({ cache }) => cache === "no-store"));
 });
 
 test("Whiteboard availability stops retrying when its mount is aborted", async () => {

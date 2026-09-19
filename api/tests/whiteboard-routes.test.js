@@ -7,6 +7,10 @@ function createRecorder() {
     return {
         status: 0,
         body: null,
+        headers: {},
+        setHeader(name, value) {
+            this.headers[name] = value;
+        },
         writeHead(status) {
             this.status = status;
         },
@@ -135,6 +139,7 @@ test("backend publishes consistent Whiteboard availability", async () => {
         )({}, response);
         assert.equal(response.status, 200);
         assert.equal(response.body.data.available, available);
+        assert.equal(response.headers["cache-control"], "no-store");
     }
 });
 

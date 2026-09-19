@@ -35,6 +35,7 @@ export async function resolveWhiteboardServerAvailability({
         try {
             const response = await apiFetch(WHITEBOARD_AVAILABILITY_URL, {
                 accessToken: accessToken || undefined,
+                cache: "no-store",
                 suppressAccessDeniedEvent: true,
             });
             const payload = await response

@@ -112,6 +112,7 @@ export function registerMeetingWhiteboardRoutes({
         (req, res) => {
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
+            res.setHeader?.("cache-control", "no-store");
             sendJson(res, 200, {
                 data: {
                     available: isWhiteboardProviderAvailable?.() === true,
