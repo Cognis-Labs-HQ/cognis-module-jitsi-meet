@@ -1,6 +1,7 @@
 import { logUi, showToast } from "./reuse/feedback.js";
 import { uiCtx } from "./reuse/resources.js";
 import { resolveWhiteboardCapabilities } from "./whiteboard-provider.js";
+import { resolveWhiteboardServerAvailability } from "./whiteboard-availability.js";
 import {
     ensureComponentPage,
     ensureWhiteboardKeyringUnlocked,
@@ -322,15 +323,13 @@ export async function bindWhiteboardButton({
     )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
-    let availabilityResponse;
+    let providerAvailable;
     try {
-        availabilityResponse = await apiFetch(
-            "/api/v1/modules/jitsi-meet/whiteboard/availability",
-            {
-                accessToken: state.shareAccessToken || undefined,
-                suppressAccessDeniedEvent: true,
-            },
-        );
+        providerAvailable = await resolveWhiteboardServerAvailability({
+            apiFetch,
+            signal,
+            accessToken: state.shareAccessToken,
+        });
     } catch (error) {
         await logUi("error", "Whiteboard availability check failed.", {
             component: "module:jitsi-meet",
@@ -342,13 +341,7 @@ export async function bindWhiteboardButton({
         slot.replaceChildren();
         return;
     }
-    const availabilityPayload = await availabilityResponse
-        .json()
-        .catch(() => ({ data: { available: false } }));
-    if (
-        !availabilityResponse.ok ||
-        availabilityPayload?.data?.available !== true
-    ) {
+    if (!providerAvailable) {
         mounted?.destroy();
         mountedWhiteboardButtons.delete(root);
         slot.replaceChildren();
