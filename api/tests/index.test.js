@@ -28,6 +28,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
+        "whiteboard:uiGateway",
         "component-pages:spawn",
         "component-pages:discard",
         "ui:makeFloatingWindow",

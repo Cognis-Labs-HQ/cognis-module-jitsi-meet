@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.208 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.209 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.208.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.209.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -22,8 +22,11 @@ Jitsi kini menyelesaikan kapabilitas server dengan namespace yang diterbitkan mo
 
 Klien Meetings kini mengulangi keputusan ketersediaan Whiteboard backend dengan backoff eksponensial terbatas. Penyedia yang menyelesaikan pendaftaran kapabilitas saat halaman dipasang dapat mengisi kontrol Whiteboard sehingga tempatnya tidak terus kosong.
 
+## Memuat Penyedia UI Khusus
+
+Jitsi kini mendeklarasikan `whiteboard:uiGateway` sebagai persyaratan kapabilitas browser opsional. Cognis dapat memuat penyedia khusus yang diperkenalkan oleh perubahan Nextcloud Whiteboard terbaru sebelum memasang Meetings, tanpa bergantung pada bilah navigasi Whiteboard untuk menginisialisasi pabrik kanvas.
+
 ## Commit
 
-- [17491e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/17491e947e3c67ebd030080bf619df59b1e2775f)
-- [c7ac761](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c7ac7619266b446dff0101b80ab7a95afbab3174)
-- [a77d961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a77d961bb5180a245430205e9347db4b2d66b009)
+- [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
+- [6042833](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)

@@ -8,11 +8,11 @@ Jitsi Meet は、スコープ付きモジュールコンテキストから直接
 
 ## 現行の連携契約を宣言
 
-マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.208 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+マニフェストは、ホスト所有のミーティング Capability と Flow に必要な信頼済み特権連携を明示し、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.209 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
 
 ## 非アクティブなオーバーレイ操作を非表示に維持
 
-ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.208 に同期しました。
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.209 に同期しました。
 
 ## Nextcloud Whiteboard の検出を復元
 
@@ -22,8 +22,11 @@ Jitsi は、現行の Nextcloud Whiteboard モジュールが公開する名前�
 
 Meetings クライアントは、バックエンドの Whiteboard 可用性判定を上限付き指数バックオフで再試行するようになりました。ページのマウント中に Capability 登録を完了するプロバイダーでも Whiteboard コントロールを追加でき、その領域が空のまま残りません。
 
+## 専用 UI プロバイダーを読み込む
+
+Jitsi は `whiteboard:uiGateway` をオプションのブラウザー Capability 要件として宣言するようになりました。これにより Cognis は、Whiteboard ナビゲーションバーによるキャンバスファクトリーの初期化に依存せず、最新の Nextcloud Whiteboard 変更で導入された専用プロバイダーを Meetings のマウント前に読み込めます。
+
 ## コミット
 
-- [17491e9](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/17491e947e3c67ebd030080bf619df59b1e2775f)
-- [c7ac761](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c7ac7619266b446dff0101b80ab7a95afbab3174)
-- [a77d961](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a77d961bb5180a245430205e9347db4b2d66b009)
+- [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
+- [6042833](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)
