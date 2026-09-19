@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.213",
+    "version": "1.5.214",
     "class": "extension",
     "privileged": true,
     "coreApiVersion": "v1",
@@ -68,6 +68,9 @@
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
+        "whiteboard:fetchBoardData",
+        "whiteboard:membership",
+        "whiteboard:deleteCanvas",
         "whiteboard:uiGateway",
         "component-pages:spawn",
         "component-pages:discard",
@@ -285,7 +288,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "747bb84bd8ecb96ec05a6707e14ae31b1f735f9bfe369b7c980314d5d12ad4b1"
+            "sha256": "3a713860efd028028f9e7708a0c0e41a99b643acaa261c8d5adadf5015f381ec"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -381,19 +384,19 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "bb2424be7a97743083a90fcc4188674aeb096db853ba28cd45bb3780d79d84e6"
+            "sha256": "ac2a667c4ee30a2fa2908a94409b10b80601978a9e3786a4872ca8821a4cb0af"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "61691a5c811111299e0c29b379e1f8894e36f3746c40ca106066ffeed43da8a6"
+            "sha256": "39044f89f5874c31f6ce8714c839fe55b44d5e8a46edb75265bf88851eeb4d9f"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "f086c079018fadced56c346d1ca189f7084814dff2088e9dfe7f1d65a3be7b7b"
+            "sha256": "d44761ecea99c338e90c52fa3e30d9faa37028b75c29b50be3b2fa99c36c5630"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "733264c8dfdd9d3713e1e95b0e1702e6f92df8f9267f3647793aed88dc476f4a"
+            "sha256": "cc6c34ad58eeaa5f939a90e2de1065cda49e1eb82be53a1ef21b0413627b2bbf"
         },
         {
             "path": "LICENSE",
@@ -401,11 +404,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "31c9e00a34344b4691b6727a676a9b11774d886e501b285d0aac76b9ffdfeff8"
+            "sha256": "1ff9150f772bd9dcc15ff43a43e551c30ec6cbe0f3f74595ff2e29e0baa209df"
         },
         {
             "path": "package.json",
-            "sha256": "3b42c1ab73271b7c938ddc7332f04c54439499f0dbc0f5b25edae3f55d92fcae"
+            "sha256": "1edbac4035e8c832258f70ed4b5c0f2403f4de5e20f20998be621172d144180e"
         },
         {
             "path": "README.de.md",

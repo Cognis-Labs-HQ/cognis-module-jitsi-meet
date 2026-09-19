@@ -8,11 +8,11 @@ Jitsi Meet now obtains capabilities and runs or extends host flows directly thro
 
 ## Declare the Current Integration Contract
 
-The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.213 and all declared file digests. Structural tests cover the new boundary.
+The manifest now identifies the trusted privileged integration required for host-owned meeting capabilities and flows, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.214 and all declared file digests. Structural tests cover the new boundary.
 
 ## Keep Inactive Overlay Controls Hidden
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.213.
+The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.214.
 
 ## Restore Nextcloud Whiteboard Discovery
 
@@ -34,6 +34,10 @@ Jitsi now resolves `whiteboard:fetchBoardData`, `whiteboard:membership`, and `wh
 
 Direct `/meetings` loads and browser refreshes now import Cognis’s public UI-context bootstrap before accessing `ui:reuse` or optional capability providers. The page no longer assumes that the dashboard shell has already created the UI context.
 
+## Declare the Whiteboard Server Capability Contract
+
+Jitsi now declares the Whiteboard verification, membership, and deletion capabilities it consumes. Cognis validates the enabled provider before Jitsi handles Whiteboard state synchronization, preventing the control from reaching a route with an unavailable scoped server capability.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -44,3 +48,5 @@ Direct `/meetings` loads and browser refreshes now import Cognis’s public UI-c
 - [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
 
 - [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
+
+- [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)

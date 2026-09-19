@@ -8,11 +8,11 @@ Jitsi Meet kini memperoleh kapabilitas serta menjalankan atau memperluas alur ho
 
 ## Mendeklarasikan Kontrak Integrasi Terkini
 
-Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.213 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
+Manifes kini menandai integrasi istimewa tepercaya yang diperlukan untuk kapabilitas dan alur rapat milik host, menggunakan Bootstrap sebagai satu-satunya titik masuk runtime, serta menyinkronkan versi 1.5.214 dan seluruh digest berkas yang dideklarasikan. Pengujian struktural mencakup batas baru tersebut.
 
 ## Menjaga Kontrol Overlay yang Tidak Aktif Tetap Tersembunyi
 
-Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.213.
+Lobi rapat kini memberlakukan perilaku status HTML tersembunyi di dalam permukaan modul sehingga aturan tampilan tombol host tidak dapat menampilkan kontrol autentikasi, pengambilalihan, keluar, atau tetap berada dalam rapat sebelum status rapat yang sesuai. Versi rilis dan digest integritas disinkronkan pada 1.5.214.
 
 ## Memulihkan Penemuan Nextcloud Whiteboard
 
@@ -34,6 +34,10 @@ Jitsi kini menyelesaikan `whiteboard:fetchBoardData`, `whiteboard:membership`, d
 
 Pemuatan langsung `/meetings` dan penyegaran peramban kini mengimpor bootstrap konteks UI publik Cognis sebelum mengakses `ui:reuse` atau penyedia kapabilitas opsional. Halaman tidak lagi mengasumsikan shell dasbor sudah membuat konteks UI.
 
+## Deklarasikan Kontrak Kapabilitas Server Whiteboard
+
+Jitsi kini mendeklarasikan kapabilitas verifikasi, keanggotaan, dan penghapusan Whiteboard yang digunakannya. Cognis memvalidasi penyedia aktif sebelum Jitsi menangani sinkronisasi status Whiteboard sehingga kontrol tidak mencapai rute dengan kapabilitas server terbatas yang tidak tersedia.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -44,3 +48,5 @@ Pemuatan langsung `/meetings` dan penyegaran peramban kini mengimpor bootstrap k
 - [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
 
 - [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
+
+- [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)

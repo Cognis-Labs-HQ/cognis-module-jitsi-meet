@@ -8,11 +8,11 @@ Jitsi Meet bezieht Capabilities nun direkt über seinen bereichsgebundenen Modul
 
 ## Den aktuellen Integrationsvertrag deklarieren
 
-Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.213 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
+Das Manifest kennzeichnet nun die vertrauenswürdige privilegierte Integration für hosteigene Meeting-Capabilities und -Flows, verwendet Bootstrap als einzigen Laufzeiteinstiegspunkt und synchronisiert Version 1.5.214 sowie alle deklarierten Dateiprüfsummen. Strukturtests decken die neue Grenze ab.
 
 ## Inaktive Overlay-Steuerelemente ausgeblendet lassen
 
-Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.213 synchronisiert.
+Die Meeting-Lobby erzwingt nun das HTML-Ausblendverhalten innerhalb der Moduloberfläche. Dadurch können Anzeigeregeln der Host-Schaltflächen Authentifizierungs-, Sitzungsübernahme-, Verlassen- oder Verbleiben-Aktionen nicht mehr vor dem zugehörigen Meeting-Zustand sichtbar machen. Release-Version und Integritätsprüfsummen sind auf 1.5.214 synchronisiert.
 
 ## Nextcloud-Whiteboard-Erkennung wiederherstellen
 
@@ -34,6 +34,10 @@ Jitsi löst nun `whiteboard:fetchBoardData`, `whiteboard:membership` und `whiteb
 
 Direkte Aufrufe von `/meetings` und Browser-Aktualisierungen importieren nun den öffentlichen UI-Kontext-Bootstrap von Cognis, bevor auf `ui:reuse` oder optionale Capability-Provider zugegriffen wird. Die Seite setzt nicht mehr voraus, dass die Dashboard-Shell den UI-Kontext bereits erstellt hat.
 
+## Den Vertrag der Whiteboard-Server-Capabilities deklarieren
+
+Jitsi deklariert nun die verwendeten Capabilities für Whiteboard-Prüfung, Mitgliedschaft und Löschung. Cognis validiert den aktivierten Provider, bevor Jitsi den Whiteboard-Zustand synchronisiert, sodass das Steuerelement keine Route mit einer nicht verfügbaren begrenzten Server-Capability erreicht.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -44,3 +48,5 @@ Direkte Aufrufe von `/meetings` und Browser-Aktualisierungen importieren nun den
 - [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
 
 - [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
+
+- [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
