@@ -108,7 +108,7 @@ export function registerJitsiConfigurationApi(router, ctx) {
             data: { ...liveness, instanceUrl: config.instanceUrl },
         };
     };
-    ctx.getCapability("system:ctx")?.contributePublicCapability?.(
+    ctx.contributePublicCapability(
         "module:jitsi-meet:enableTest",
         runEnableTest,
     );

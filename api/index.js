@@ -124,7 +124,6 @@ export function registerApiRoutes(router, ctx) {
     }
     const dbExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
-    const systemCtx = ctx.getCapability("system:ctx");
     const requestShareApproval = ctx.getCapability("share:requestApproval");
     if (typeof requestShareApproval !== "function") {
         throw new Error(
@@ -177,19 +176,16 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
     const fetchBoardData = (...args) => {
-        const providerFetchBoardData =
-            ctx.getCapability("whiteboard:fetchBoardData") ??
-            systemCtx?.getCapability?.("whiteboard:fetchBoardData");
+        const providerFetchBoardData = ctx.getCapability(
+            "whiteboard:fetchBoardData",
+        );
         if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
         }
         return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof (
-            ctx.getCapability("whiteboard:fetchBoardData") ??
-            systemCtx?.getCapability?.("whiteboard:fetchBoardData")
-        ) === "function";
+        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -368,12 +364,12 @@ export function registerApiRoutes(router, ctx) {
             }
         });
     };
-    systemCtx?.getCapability?.("auth:registerKeyringDataOwner")?.(
+    ctx.getCapability("auth:registerKeyringDataOwner")?.(
         "jitsi-meet",
         removeMeetingMemberships,
     );
 
-    systemCtx?.flow?.extend?.(
+    ctx.flow.extend(
         "deprovision-user",
         "cleanup-dependencies",
         { id: "jitsi-meet:delete-user-activity" },
@@ -661,11 +657,9 @@ export function registerApiRoutes(router, ctx) {
         groupChatMembership,
         resolveRoomMembership,
         resolveWhiteboardMembership: () =>
-            systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),
         fetchBoardData,
         resolveWhiteboardDeletion: () =>
-            systemCtx?.getCapability?.("whiteboard:deleteCanvas") ??
             ctx.getCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
@@ -724,11 +718,11 @@ export function registerApiRoutes(router, ctx) {
         },
         revokeKickedGuestShare: async ({ claims, meetingId }) => {
             const shareId = resolveShareGuestId(claims);
-            if (!shareId || !systemCtx?.flow?.exists?.("revoke-share-token")) {
+            if (!shareId || !ctx.flow.exists("revoke-share-token")) {
                 return false;
             }
             try {
-                const result = await systemCtx.flow.run("revoke-share-token", {
+                const result = await ctx.flow.run("revoke-share-token", {
                     claims,
                     shareId,
                     ownerAccountId: claims.sub,

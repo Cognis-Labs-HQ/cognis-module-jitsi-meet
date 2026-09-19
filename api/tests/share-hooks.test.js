@@ -185,12 +185,12 @@ function createRouterHarness({
         ["logging:log", () => undefined],
         ["reuse:generatePassphrase", () => "Amber-Cedar-Otter-Willow"],
         ["social:profile:identity", profileIdentityFake],
-        ["system:ctx", { flow: { run: runFlow } }],
         ["share:listByResource", listByResource],
     ]);
     registerMeetingShareRoutes({
         router,
         ctx: {
+            flow: { run: runFlow },
             getCapability(capabilityId) {
                 return capabilities.get(capabilityId);
             },

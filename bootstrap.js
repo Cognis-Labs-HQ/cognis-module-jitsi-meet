@@ -59,7 +59,7 @@ export function bootstrapModule(ctx) {
     ctx.flow.extend(
         "construct-meetings-ui",
         "resolve-providers",
-        { id: "jitsi-meet-module:resolve-providers" },
+        { id: "jitsi-meet:resolve-providers" },
         () => ({
             providerId: "jitsi-meet",
             providerName: "Jitsi Meet",
@@ -70,7 +70,7 @@ export function bootstrapModule(ctx) {
     ctx.flow.extend(
         "create-meeting",
         "validate-request",
-        { id: "jitsi-meet-module:validate-request" },
+        { id: "jitsi-meet:validate-request" },
         (stageCtx) => {
             const input = stageCtx.input;
             const providerId = String(input.providerId ?? "jitsi-meet");

@@ -125,8 +125,22 @@ test("external module metadata and declared files are consistent", () => {
 
 test("manifest isolates the disabled lifecycle API", () => {
     const manifest = JSON.parse(readFileSync(resolve(ROOT, "manifest.json")));
-    assert.equal(manifest.entrypoints.api, "./api/index.js");
+    assert.equal(manifest.entrypoints.api, undefined);
     assert.equal(manifest.entrypoints.disabledApi, "./api/disabled.js");
+    assert.equal(manifest.entrypoints.bootstrap, "./bootstrap.js");
+    assert.equal(manifest.privileged, true);
+});
+
+test("runtime integration uses only the scoped module context", () => {
+    const violations = sourceFiles()
+        .filter((path) => !path.includes(`${join(ROOT, "tests")}`))
+        .filter((path) =>
+            /getCapability\(["']system:ctx["']\)/.test(
+                readFileSync(path, "utf8"),
+            ),
+        )
+        .map((path) => relative(ROOT, path));
+    assert.deepEqual(violations, []);
 });
 
 test("dashboard source avoids full-page browser navigation", () => {

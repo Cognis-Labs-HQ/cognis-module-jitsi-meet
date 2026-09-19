@@ -197,8 +197,8 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
 test("disabled API registration mounts only pre-enable configuration routes", () => {
     const routes = [];
     const requestedCapabilities = [];
-    const systemCtx = { contributePublicCapability() {} };
     const ctx = {
+        contributePublicCapability() {},
         getCapability(capabilityId) {
             requestedCapabilities.push(capabilityId);
             const capabilities = new Map([
@@ -216,7 +216,6 @@ test("disabled API registration mounts only pre-enable configuration routes", ()
                     },
                 ],
                 ["social:profile:identity", profileIdentityFake],
-                ["system:ctx", systemCtx],
             ]);
             return capabilities.get(capabilityId);
         },
