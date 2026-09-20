@@ -104,10 +104,20 @@ test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
     ]) {
         assert.match(source, new RegExp(capability));
     }
-    assert.match(source, /resolveCtxCapability\(ctx, capabilityId\)/);
-    assert.match(delegationSource, /resolveCtxCapability\(/);
+    assert.match(source, /ctx\.getCapability\("whiteboard:fetchBoardData"\)/);
+    assert.match(delegationSource, /ctx\.getCapability\(/);
     assert.match(delegationSource, /whiteboard:fetchBoardData/);
     assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
+});
+
+test("account cleanup resolves canonical account ids to participant handles", () => {
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+
+    assert.match(source, /profileIdentity\.resolveAccountHandle\(accountId\)/);
+    assert.match(
+        source,
+        /store\.removeDeletedAccountFromMeetings\(participantHandle\)/,
+    );
 });
 
 test("disposable Messages calls stay out of Meetings discovery", () => {

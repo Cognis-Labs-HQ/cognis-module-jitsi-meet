@@ -62,6 +62,10 @@ Diselaraskan dengan kontrak pendaftaran terbaru dari PR #30 Nextcloud Whiteboard
 
 Jitsi kini mencerminkan perilaku pendaftaran terbaru PR #30 Nextcloud Whiteboard dengan menyelesaikan penyedia server opsional terlebih dahulu dari registry tercakup lalu dari pengakses konteks modul. Ini mencakup penyedia yang didaftarkan melalui salah satu permukaan publik yang mengikuti siklus hidup dan mencegah kanvas yang berhasil dibuat langsung gagal saat verifikasi pemetaan.
 
+## Memulihkan Kontrak Penyedia Langsung
+
+Mengikuti PR #30 Nextcloud Whiteboard, Jitsi kembali menggunakan kapabilitas publik spesifik `whiteboard:*` secara langsung melalui konteks modul dan menghapus penyelesai paralel. Selaras dengan PR #225 Cognis, pembersihan akun menyelesaikan ID akun kanonis menjadi handle profil saat ini sebelum mengubah daftar rapat tersimpan.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,3 +102,5 @@ Jitsi kini mencerminkan perilaku pendaftaran terbaru PR #30 Nextcloud Whiteboard
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
 
 - [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
+
+- [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)

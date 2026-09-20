@@ -62,6 +62,10 @@ An den neuesten Registrierungsvertrag aus Nextcloud Whiteboard PR #30 angepasst.
 
 Jitsi entspricht nun dem neuesten Registrierungsverhalten aus Nextcloud Whiteboard PR #30, indem optionale Server-Provider zuerst aus der bereichsgebundenen Registry und danach über den Modulkontext-Zugriff aufgelöst werden. Damit werden Provider über beide öffentlichen, lebenszyklusgebundenen Zugriffe erkannt und eine erfolgreich erstellte Arbeitsfläche scheitert nicht unmittelbar danach bei der Zuordnungsprüfung.
 
+## Direkten Provider-Vertrag wiederherstellen
+
+Nach dem Vorbild von Nextcloud Whiteboard PR #30 verwendet Jitsi die öffentlichen Leaf-Capabilities `whiteboard:*` wieder direkt über den Modulkontext und entfernt den parallelen Resolver. In Übereinstimmung mit Cognis PR #225 löst die Kontobereinigung kanonische Konto-IDs in aktuelle Profil-Handles auf, bevor gespeicherte Besprechungsgruppen geändert werden.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,3 +102,5 @@ Jitsi entspricht nun dem neuesten Registrierungsverhalten aus Nextcloud Whiteboa
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
 
 - [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
+
+- [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)

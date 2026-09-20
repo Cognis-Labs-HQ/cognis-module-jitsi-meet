@@ -62,6 +62,10 @@ Nextcloud Whiteboard PR #30 の最新登録契約に整合しました。Jitsi �
 
 Jitsi は Nextcloud Whiteboard PR #30 の最新登録動作に合わせ、オプションのサーバー Provider を最初にスコープ付きレジストリから、次にモジュールコンテキストアクセサーから解決します。どちらの公開ライフサイクルスコープ面で登録された Provider も認識し、正常に作成されたキャンバスが直後のマッピング検証で失敗することを防ぎます。
 
+## 直接 Provider 契約を復元
+
+Nextcloud Whiteboard PR #30 に倣い、Jitsi は公開された `whiteboard:*` の個別 Capability をモジュールコンテキストから直接使用し、並行 Resolver を削除しました。Cognis PR #225 に合わせ、アカウントクリーンアップは保存済みミーティングの参加者構成を変更する前に、正規アカウント ID を現在のプロフィールハンドルへ解決します。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,3 +102,5 @@ Jitsi は Nextcloud Whiteboard PR #30 の最新登録動作に合わせ、オプ
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
 
 - [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
+
+- [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)

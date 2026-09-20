@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.225",
+    "version": "1.5.226",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -164,7 +164,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "5aaa8672783e9102d2a1a5c2154e2f5e497e013709875ff566af1670584e31e2"
+            "sha256": "abb4b597c69a29b4b4232e9b83e18e9f93bb8f98975d8cdf16b6d4547fee6608"
         },
         {
             "path": "api/meeting-chat-capability.js",
@@ -197,10 +197,6 @@
         {
             "path": "api/persisted-meeting-routes.js",
             "sha256": "79ce37ce4152972890aa6dd96fdeb7003ca332c1dcf1556a8a0c8999881b8bf0"
-        },
-        {
-            "path": "api/reuse/capability-resolution.js",
-            "sha256": "1ca1dcef78b6c9065155141bb6c5af5d3861a4a0b5fc9c9e313682af7f916ca9"
         },
         {
             "path": "api/reuse/chat-membership.js",
@@ -307,10 +303,6 @@
             "sha256": "64cfb6b40dd59fcd06b94e2b1c9e2a02d98eb3e9fb15984d90dfee28504aeb88"
         },
         {
-            "path": "api/tests/capability-resolution.test.js",
-            "sha256": "1111b4f9e77587bf2316837aee18696bcb879af57de95c723f00405c55f4acd1"
-        },
-        {
             "path": "api/tests/config-routes.test.js",
             "sha256": "2d28a83a4cbce7f8ab263874d53b113541fb8196406801972cc2734a18d59531"
         },
@@ -320,7 +312,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "b2034d769815dbe627a6090b7ed5c0185ae21f1af241fb70b315bb95ece3735e"
+            "sha256": "c4ad62aeedd47abbe330a7ca931dae076c4f725e88d8438e8bb3eb2468996591"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -372,7 +364,7 @@
         },
         {
             "path": "api/tests/whiteboard-delegation.test.js",
-            "sha256": "fcfbb911e9edb537a215345dea79a2b609be9573d01f76b4407d18623e77560d"
+            "sha256": "b661b45071298839fdf2856442b10e236921cdde24d96c7b19ad6466f3a93d3b"
         },
         {
             "path": "api/tests/whiteboard-membership.test.js",
@@ -388,7 +380,7 @@
         },
         {
             "path": "api/whiteboard-delegation.js",
-            "sha256": "b3cc5882b01f717430d220512103694a2b6284387a8b2b160119c956b1de6ba0"
+            "sha256": "f56559d8519b17a5c569618ce5cf329f374baef399bf83041b3d748b6562ba96"
         },
         {
             "path": "api/whiteboard-routes.js",
@@ -416,27 +408,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "0ab952ad76161a6672e815a5b458e17e23f1c462d4544fac2ced11ee91ea9765"
+            "sha256": "b1721fd93427c91881857e84bb6f884dd144c25f5e199eafa1cd32bbe9ecba77"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "908374703e1e44cfb05a07e237603eb0317e54679c7577f55a4f87860b4334bc"
+            "sha256": "b16fa274f2fa3e0634f4cbe56f3aa2fe8eb98f703cda111959b225c5396493f2"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "49a0fee609a95492aa2f72f652288dd6f1004e18d4494a471d2290720299e77c"
+            "sha256": "16ab618088311c81cef8f57aff39299c02c5a308a716bff94fcf88066bebb151"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "223a16ff91325c815393881fc9af523da814e497ac9aa80ced02e14ff0039f56"
+            "sha256": "a1c0ac45c5d9b682cfcda3ab2bc56ebac45b72ea585d32491047c8db969f8367"
         },
         {
             "path": "package-lock.json",
-            "sha256": "830e9599bb2f642225444c41627122c4f016c5d25e0665753b1018410ee0bad4"
+            "sha256": "00b2c99f814be69c6dbe232ccc95ffc7e6652ff63dbd0aac6a436af468ad4fb8"
         },
         {
             "path": "package.json",
-            "sha256": "1cbedf86eea764780f5e024e315d84f635604793b83edbdb9092f704a1257291"
+            "sha256": "d49a5a00f79be5b2afd89c48473b29a0b2ea9b889bf9062173236584e1ce30c3"
         },
         {
             "path": "routes.json",
