@@ -17,6 +17,7 @@ import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
 import { ensureJitsiStoreSchemaOnce } from "./reuse/store-schema.js";
 import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
+import { removeDeletedAccountFromMeetings } from "./reuse/deleted-account-meetings.js";
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 120 * 1000;
 export class JitsiMeetStore {
@@ -29,7 +30,6 @@ export class JitsiMeetStore {
         this.normalizeHandleKeys =
             profileIdentity.normalizeHandleKeys.bind(profileIdentity);
     }
-
     async ensureSchema() {
         return ensureJitsiStoreSchemaOnce(this.db);
     }
@@ -294,6 +294,10 @@ export class JitsiMeetStore {
             });
         });
         return this.getMeetingById(meetingId);
+    }
+
+    async removeDeletedAccountFromMeetings(username) {
+        return removeDeletedAccountFromMeetings(this, username);
     }
 
     async findMeetingByParticipants(usernames, classroomId = null) {

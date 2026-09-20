@@ -46,6 +46,10 @@ Jitsi now declares `db:executor`, which its disabled configuration routes, enabl
 
 The authenticated meeting-chat resolver is now published as `jitsi-meet:getMeetingChat`. Every capability contributed by Jitsi therefore remains in the module-owned namespace and passes Cognis boundary validation without privileged access.
 
+## Update Saved Meetings After Account Deletion
+
+When Cognis deletes an account, Jitsi now removes the account from both live and original participant records. Reusable meetings are re-keyed for the remaining saved roster, while meetings with fewer than two saved participants are deleted.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -72,3 +76,5 @@ The authenticated meeting-chat resolver is now published as `jitsi-meet:getMeeti
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
 
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+
+- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)

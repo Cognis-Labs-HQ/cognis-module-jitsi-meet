@@ -46,6 +46,10 @@ Jitsi kini mendeklarasikan `db:executor`, yang diperlukan oleh rute konfigurasi 
 
 Resolver chat rapat terautentikasi kini diterbitkan sebagai `jitsi-meet:getMeetingChat`. Dengan demikian, setiap kapabilitas yang disumbangkan Jitsi tetap berada dalam namespace milik modul dan lolos validasi batas Cognis tanpa akses istimewa.
 
+## Memperbarui Rapat Tersimpan Setelah Penghapusan Akun
+
+Ketika Cognis menghapus akun, Jitsi kini menghapus akun tersebut dari catatan peserta aktif dan peserta asli. Kunci rapat yang dapat digunakan kembali diperbarui untuk daftar tersimpan yang tersisa, sedangkan rapat dengan kurang dari dua peserta tersimpan akan dihapus.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -72,3 +76,5 @@ Resolver chat rapat terautentikasi kini diterbitkan sebagai `jitsi-meet:getMeeti
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
 
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+
+- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)

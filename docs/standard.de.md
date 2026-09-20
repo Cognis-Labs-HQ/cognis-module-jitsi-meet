@@ -20,6 +20,8 @@ Die Anbieteraktion weist mit `minSize: { width, height }` eine Mindestgröße vo
 
 Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter vor der ersten Verfügbarkeitsprüfung von Messages zu laden, sodass die Videokamera-Aktion bereits beim ersten Rendern des Chats angezeigt wird.
 
+Wenn Cognis ein Konto löscht, entfernt Jitsi dieses Konto sowohl aus der aktuellen als auch aus der gespeicherten Teilnehmerliste. Wiederverwendbare Besprechungen werden für die verbleibenden Teilnehmer aktualisiert; Besprechungen ohne weiterhin nutzbare Gruppe aus mehreren Konten werden gelöscht.
+
 ## Anwendungsbeispiele
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.

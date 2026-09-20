@@ -46,6 +46,10 @@ Jitsi deklariert nun `db:executor`, das von den deaktivierten Konfigurationsrout
 
 Der authentifizierte Resolver für Meeting-Chats wird nun als `jitsi-meet:getMeetingChat` veröffentlicht. Damit verbleibt jede von Jitsi bereitgestellte Capability im moduleigenen Namensraum und besteht die Cognis-Grenzprüfung ohne privilegierten Zugriff.
 
+## Gespeicherte Besprechungen nach Kontolöschung aktualisieren
+
+Wenn Cognis ein Konto löscht, entfernt Jitsi das Konto nun sowohl aus den aktuellen als auch aus den ursprünglichen Teilnehmerdatensätzen. Wiederverwendbare Besprechungen erhalten einen neuen Schlüssel für die verbleibende gespeicherte Gruppe; Besprechungen mit weniger als zwei gespeicherten Teilnehmern werden gelöscht.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -72,3 +76,5 @@ Der authentifizierte Resolver für Meeting-Chats wird nun als `jitsi-meet:getMee
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
 
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+
+- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)

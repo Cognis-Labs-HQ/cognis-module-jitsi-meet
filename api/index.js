@@ -387,49 +387,16 @@ export function registerApiRoutes(router, ctx) {
                 return { cleaned: false };
             }
             const accountId = normalizeHandleKey(input.username);
-            await dbExecutor.transaction(async (transactionDb) => {
-                for (const table of [
-                    "jitsi_meeting_presence",
-                    "jitsi_meeting_participants",
-                ]) {
-                    await transactionDb.executeCommand({
-                        option: "DELETE",
-                        table,
-                        where: [{ column: "username", value: accountId }],
-                    });
-                }
-                const meetingResult = await transactionDb.executeCommand({
-                    option: "SELECT",
-                    table: "jitsi_meetings",
-                    columns: ["id"],
-                    where: [{ column: "created_by", value: accountId }],
-                });
-                for (const meetingRow of meetingResult.rows ?? []) {
-                    const meetingId = String(meetingRow.id);
-                    for (const table of [
-                        "jitsi_meeting_presence",
-                        "jitsi_meeting_participants",
-                        "jitsi_meeting_state",
-                    ]) {
-                        await transactionDb.executeCommand({
-                            option: "DELETE",
-                            table,
-                            where: [{ column: "meeting_id", value: meetingId }],
-                        });
-                    }
-                }
-                await transactionDb.executeCommand({
-                    option: "DELETE",
-                    table: "jitsi_meetings",
-                    where: [{ column: "created_by", value: accountId }],
-                });
-            });
+            const cleanup =
+                await store.removeDeletedAccountFromMeetings(accountId);
             ctx.log?.("info", "Deleted user meeting activity.", {
                 component: "jitsi-meet-module",
                 operation: "delete_user_activity",
                 accountId,
+                updatedMeetingIds: cleanup.updatedMeetingIds,
+                deletedMeetingIds: cleanup.deletedMeetingIds,
             });
-            return { cleaned: true, accountId };
+            return { cleaned: true, accountId, ...cleanup };
         },
     );
 

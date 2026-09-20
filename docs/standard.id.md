@@ -20,6 +20,8 @@ Tindakan penyedia mendeklarasikan `minSize: { width, height }` dengan minimum 40
 
 Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Messages melakukan pemeriksaan ketersediaan awal, sehingga tindakan kamera video tersedia pada render percakapan pertama.
 
+Ketika Cognis menghapus akun, Jitsi menghapus akun tersebut dari daftar peserta saat ini dan daftar peserta tersimpan. Rapat yang dapat digunakan kembali diperbarui untuk peserta yang tersisa, sedangkan rapat yang tidak lagi memiliki daftar beberapa akun yang dapat digunakan kembali akan dihapus.
+
 ## Contoh Penggunaan
 
 - Bergabung atau mengambil alih rapat dari `/meetings` dan `/meeting` tanpa navigasi halaman penuh.

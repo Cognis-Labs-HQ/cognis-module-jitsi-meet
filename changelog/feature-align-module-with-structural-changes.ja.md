@@ -46,6 +46,10 @@ Jitsi は、無効時の設定ルート、有効化テスト、有効時のミ�
 
 認証済みミーティングチャット Resolver を `jitsi-meet:getMeetingChat` として公開するようにしました。これにより、Jitsi が提供するすべての Capability はモジュール所有の名前空間に留まり、特権アクセスなしで Cognis の境界検証を通過します。
 
+## アカウント削除後に保存済みミーティングを更新
+
+Cognis がアカウントを削除すると、Jitsi は現在および元の参加者レコードからそのアカウントを削除します。再利用可能なミーティングは残りの保存済み参加者構成に合わせてキーを更新し、保存済み参加者が2人未満になったミーティングは削除します。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -72,3 +76,5 @@ Jitsi は、無効時の設定ルート、有効化テスト、有効時のミ�
 - [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
 
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+
+- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)

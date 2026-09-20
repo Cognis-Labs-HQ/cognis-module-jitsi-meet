@@ -257,6 +257,111 @@ function createMockJitsiDb({
     };
 }
 
+test("account deletion removes saved participants and deletes unusable meetings", async () => {
+    const meetings = new Map([
+        ["keep", { id: "keep", classroom_id: null }],
+        ["delete", { id: "delete", classroom_id: null }],
+    ]);
+    const currentParticipants = [
+        { meeting_id: "keep", username: "deleted" },
+        { meeting_id: "keep", username: "alice" },
+        { meeting_id: "keep", username: "bob" },
+        { meeting_id: "delete", username: "deleted" },
+        { meeting_id: "delete", username: "alice" },
+    ];
+    const originalParticipants = currentParticipants.map((row) => ({ ...row }));
+    const deletedCommands = [];
+    const databaseExecutor = {
+        async transaction(callback) {
+            return callback(this);
+        },
+        async executeCommand(command) {
+            const rowsFor = (rows) =>
+                rows.filter((row) =>
+                    (command.where ?? []).every(
+                        ({ column, value }) => row[column] === value,
+                    ),
+                );
+            if (command.option === "SELECT") {
+                if (command.table === "jitsi_meeting_participants") {
+                    return { rows: rowsFor(currentParticipants) };
+                }
+                if (command.table === "jitsi_meeting_original_participants") {
+                    return { rows: rowsFor(originalParticipants) };
+                }
+                if (command.table === "jitsi_meetings") {
+                    const id = command.where?.[0]?.value;
+                    return { rows: meetings.has(id) ? [meetings.get(id)] : [] };
+                }
+            }
+            if (command.option === "DELETE") {
+                deletedCommands.push(command);
+                const rows =
+                    command.table === "jitsi_meeting_participants"
+                        ? currentParticipants
+                        : command.table ===
+                            "jitsi_meeting_original_participants"
+                          ? originalParticipants
+                          : null;
+                if (rows) {
+                    for (let index = rows.length - 1; index >= 0; index -= 1) {
+                        if (
+                            (command.where ?? []).every(
+                                ({ column, value }) =>
+                                    rows[index][column] === value,
+                            )
+                        ) {
+                            rows.splice(index, 1);
+                        }
+                    }
+                }
+                if (command.table === "jitsi_meetings") {
+                    meetings.delete(command.where[0].value);
+                }
+                return { rows: [] };
+            }
+            if (
+                command.option === "UPDATE" &&
+                command.table === "jitsi_meetings"
+            ) {
+                Object.assign(
+                    meetings.get(command.where[0].value),
+                    command.set,
+                );
+                return { rows: [] };
+            }
+            return { rows: [] };
+        },
+    };
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: databaseExecutor,
+    });
+
+    const result = await store.removeDeletedAccountFromMeetings("DELETED");
+
+    assert.deepEqual(result, {
+        updatedMeetingIds: ["keep"],
+        deletedMeetingIds: ["delete"],
+    });
+    assert.deepEqual(
+        originalParticipants.filter(({ meeting_id }) => meeting_id === "keep"),
+        [
+            { meeting_id: "keep", username: "alice" },
+            { meeting_id: "keep", username: "bob" },
+        ],
+    );
+    assert.equal(meetings.has("delete"), false);
+    assert.ok(meetings.get("keep").participant_key);
+    assert.ok(
+        deletedCommands.some(
+            ({ table, where }) =>
+                table === "jitsi_meeting_original_participants" &&
+                where[0].column === "username",
+        ),
+    );
+});
+
 test("active whiteboard mappings resolve only to an existing open meeting", async () => {
     const meetingRow = {
         id: "meeting-1",

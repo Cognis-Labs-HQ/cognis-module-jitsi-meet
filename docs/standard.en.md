@@ -20,6 +20,8 @@ The provider action advertises `minSize: { width, height }` with a 400 × 225 pi
 
 The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
 
+When Cognis deletes an account, Jitsi removes that account from both the current and saved participant rosters. It updates reusable meetings for the remaining participants and deletes meetings that no longer have a reusable multi-account roster.
+
 ## Usage Examples
 
 - Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.
