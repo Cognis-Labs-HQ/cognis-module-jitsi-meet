@@ -116,9 +116,11 @@ test("Jitsi extends the generic delegated-access flow", async () => {
     const hooks = [];
     let providerFetchBoardData;
     const ctx = {
-        getCapability(capabilityId) {
-            if (capabilityId !== "whiteboard:fetchBoardData") return null;
-            return providerFetchBoardData;
+        capabilities: {
+            get(capabilityId) {
+                if (capabilityId !== "whiteboard:fetchBoardData") return null;
+                return providerFetchBoardData;
+            },
         },
         flow: {
             exists: (flowId) => flowId === "resolve-share-delegated-access",

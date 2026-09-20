@@ -54,6 +54,10 @@ Cognis がアカウントを削除すると、Jitsi は現在および元の参�
 
 Meetings は、オプションのブラウザー Whiteboard Gateway をルートレベルの要件として宣言しなくなりました。直接読み込みや更新では、Jitsi が Whiteboard Provider を検出して読み込む前に Cognis が UI コンテキストを初期化でき、SPA ナビゲーションと Whiteboard コントロールは引き続き同じ Gateway 契約を使用します。
 
+## スコープ付きレジストリから Whiteboard Capability を解決
+
+Nextcloud Whiteboard PR #30 の最新登録契約に整合しました。Jitsi はボード検証、メンバーシップ、削除、委任アクセスの Provider を `ctx.capabilities` から動的に解決するため、Jitsi の Bootstrap 後に提供された Provider を `/whiteboard/state` で利用できます。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -86,3 +90,5 @@ Meetings は、オプションのブラウザー Whiteboard Gateway をルート
 - [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
 
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+
+- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)

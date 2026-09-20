@@ -54,6 +54,10 @@ Ketika Cognis menghapus akun, Jitsi kini menghapus akun tersebut dari catatan pe
 
 Meetings tidak lagi mendeklarasikan gateway Whiteboard browser opsional sebagai persyaratan tingkat rute. Pemuatan langsung dan penyegaran kini memungkinkan Cognis menginisialisasi konteks UI sebelum Jitsi menemukan dan memuat penyedia Whiteboard, sementara navigasi SPA dan kontrol Whiteboard tetap menggunakan kontrak gateway yang sama.
 
+## Menyelesaikan Kapabilitas Whiteboard dari Registry Tercakup
+
+Diselaraskan dengan kontrak pendaftaran terbaru dari PR #30 Nextcloud Whiteboard. Jitsi kini menyelesaikan penyedia verifikasi papan, keanggotaan, penghapusan, dan akses terdelegasi secara dinamis melalui `ctx.capabilities`, sehingga penyedia yang dikontribusikan setelah bootstrap Jitsi tersedia untuk `/whiteboard/state`.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -86,3 +90,5 @@ Meetings tidak lagi mendeklarasikan gateway Whiteboard browser opsional sebagai 
 - [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
 
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+
+- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)

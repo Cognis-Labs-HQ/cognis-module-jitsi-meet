@@ -178,8 +178,10 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
+    const getOptionalRuntimeCapability = (capabilityId) =>
+        ctx.capabilities?.get?.(capabilityId);
     const fetchBoardData = (...args) => {
-        const providerFetchBoardData = ctx.getCapability(
+        const providerFetchBoardData = getOptionalRuntimeCapability(
             "whiteboard:fetchBoardData",
         );
         if (typeof providerFetchBoardData !== "function") {
@@ -188,7 +190,8 @@ export function registerApiRoutes(router, ctx) {
         return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
+        typeof getOptionalRuntimeCapability("whiteboard:fetchBoardData") ===
+        "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -627,10 +630,10 @@ export function registerApiRoutes(router, ctx) {
         groupChatMembership,
         resolveRoomMembership,
         resolveWhiteboardMembership: () =>
-            ctx.getCapability("whiteboard:membership"),
+            getOptionalRuntimeCapability("whiteboard:membership"),
         fetchBoardData,
         resolveWhiteboardDeletion: () =>
-            ctx.getCapability("whiteboard:deleteCanvas"),
+            getOptionalRuntimeCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
         resolveModeratorUsernames,

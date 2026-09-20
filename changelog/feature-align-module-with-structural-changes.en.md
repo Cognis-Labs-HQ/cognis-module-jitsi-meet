@@ -54,6 +54,10 @@ When Cognis deletes an account, Jitsi now removes the account from both live and
 
 Meetings no longer declares the optional browser Whiteboard gateway as a route-level requirement. Direct loads and refreshes now let Cognis initialize its UI context before Jitsi discovers and loads the Whiteboard provider, while SPA navigation and the Whiteboard control continue to use the same gateway contract.
 
+## Resolve Whiteboard Capabilities from the Scoped Registry
+
+Aligned with the latest Nextcloud Whiteboard PR #30 registration contract. Jitsi now resolves board verification, membership, deletion, and delegated-access providers dynamically through `ctx.capabilities`, so providers contributed after Jitsi bootstrap are available to `/whiteboard/state`.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -86,3 +90,5 @@ Meetings no longer declares the optional browser Whiteboard gateway as a route-l
 - [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
 
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+
+- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)

@@ -54,6 +54,10 @@ Wenn Cognis ein Konto löscht, entfernt Jitsi das Konto nun sowohl aus den aktue
 
 Meetings deklariert das optionale Browser-Whiteboard-Gateway nicht mehr als Anforderung der Route. Bei direktem Laden und Aktualisieren kann Cognis nun seinen UI-Kontext initialisieren, bevor Jitsi den Whiteboard-Provider erkennt und lädt; SPA-Navigation und Whiteboard-Steuerelement verwenden weiterhin denselben Gateway-Vertrag.
 
+## Whiteboard-Capabilities aus der bereichsgebundenen Registry auflösen
+
+An den neuesten Registrierungsvertrag aus Nextcloud Whiteboard PR #30 angepasst. Jitsi löst Provider für Board-Prüfung, Mitgliedschaft, Löschung und delegierten Zugriff nun dynamisch über `ctx.capabilities` auf, sodass nach dem Jitsi-Bootstrap beigesteuerte Provider für `/whiteboard/state` verfügbar sind.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -86,3 +90,5 @@ Meetings deklariert das optionale Browser-Whiteboard-Gateway nicht mehr als Anfo
 - [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
 
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+
+- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)

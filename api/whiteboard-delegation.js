@@ -80,7 +80,7 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
         fetchBoardData: (...args) => {
-            const providerFetchBoardData = ctx.getCapability?.(
+            const providerFetchBoardData = ctx.capabilities?.get?.(
                 "whiteboard:fetchBoardData",
             );
             if (typeof providerFetchBoardData !== "function") {

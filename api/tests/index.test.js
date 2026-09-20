@@ -104,6 +104,8 @@ test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
     ]) {
         assert.match(source, new RegExp(capability));
     }
+    assert.match(source, /ctx\.capabilities\?\.get\?\.\(capabilityId\)/);
+    assert.match(delegationSource, /ctx\.capabilities\?\.get\?\.\(/);
     assert.match(delegationSource, /whiteboard:fetchBoardData/);
     assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
 });
