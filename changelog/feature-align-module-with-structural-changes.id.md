@@ -50,6 +50,10 @@ Resolver chat rapat terautentikasi kini diterbitkan sebagai `jitsi-meet:getMeeti
 
 Ketika Cognis menghapus akun, Jitsi kini menghapus akun tersebut dari catatan peserta aktif dan peserta asli. Kunci rapat yang dapat digunakan kembali diperbarui untuk daftar tersimpan yang tersisa, sedangkan rapat dengan kurang dari dua peserta tersimpan akan dihapus.
 
+## Menunda Pemuatan Penyedia Whiteboard Opsional
+
+Meetings tidak lagi mendeklarasikan gateway Whiteboard browser opsional sebagai persyaratan tingkat rute. Pemuatan langsung dan penyegaran kini memungkinkan Cognis menginisialisasi konteks UI sebelum Jitsi menemukan dan memuat penyedia Whiteboard, sementara navigasi SPA dan kontrol Whiteboard tetap menggunakan kontrak gateway yang sama.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -78,3 +82,7 @@ Ketika Cognis menghapus akun, Jitsi kini menghapus akun tersebut dari catatan pe
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
 
 - [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+
+- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+
+- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)

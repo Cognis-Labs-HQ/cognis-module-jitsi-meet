@@ -50,6 +50,10 @@ Der authentifizierte Resolver für Meeting-Chats wird nun als `jitsi-meet:getMee
 
 Wenn Cognis ein Konto löscht, entfernt Jitsi das Konto nun sowohl aus den aktuellen als auch aus den ursprünglichen Teilnehmerdatensätzen. Wiederverwendbare Besprechungen erhalten einen neuen Schlüssel für die verbleibende gespeicherte Gruppe; Besprechungen mit weniger als zwei gespeicherten Teilnehmern werden gelöscht.
 
+## Optionalen Whiteboard-Provider verzögert laden
+
+Meetings deklariert das optionale Browser-Whiteboard-Gateway nicht mehr als Anforderung der Route. Bei direktem Laden und Aktualisieren kann Cognis nun seinen UI-Kontext initialisieren, bevor Jitsi den Whiteboard-Provider erkennt und lädt; SPA-Navigation und Whiteboard-Steuerelement verwenden weiterhin denselben Gateway-Vertrag.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -78,3 +82,7 @@ Wenn Cognis ein Konto löscht, entfernt Jitsi das Konto nun sowohl aus den aktue
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
 
 - [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+
+- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+
+- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)

@@ -50,6 +50,10 @@ The authenticated meeting-chat resolver is now published as `jitsi-meet:getMeeti
 
 When Cognis deletes an account, Jitsi now removes the account from both live and original participant records. Reusable meetings are re-keyed for the remaining saved roster, while meetings with fewer than two saved participants are deleted.
 
+## Defer Optional Whiteboard Provider Loading
+
+Meetings no longer declares the optional browser Whiteboard gateway as a route-level requirement. Direct loads and refreshes now let Cognis initialize its UI context before Jitsi discovers and loads the Whiteboard provider, while SPA navigation and the Whiteboard control continue to use the same gateway contract.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -78,3 +82,7 @@ When Cognis deletes an account, Jitsi now removes the account from both live and
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
 
 - [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+
+- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+
+- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)

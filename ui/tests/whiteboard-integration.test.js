@@ -79,7 +79,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
-    assert.ok(manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
+    assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
     assert.doesNotMatch(buttonSource, /whiteboard\/availability/);
     assert.match(
         buttonSource,
@@ -322,7 +322,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         reuseResourcesSource,
         /uiCtx\.capabilities\.get\("ui:reuse"\)/,
     );
-    assert.match(reuseResourcesSource, /from "\/static\/reuse\/ui-ctx\.js"/);
+    assert.match(reuseResourcesSource, /Symbol\.for\("cognis\.uiCtx"\)/);
     assert.match(reuseResourcesSource, /reuseResources\.importModule\(path\)/);
     assert.doesNotMatch(reuseResourcesSource, /loadCommonStyles/);
     const lifecycleSource = readFileSync(

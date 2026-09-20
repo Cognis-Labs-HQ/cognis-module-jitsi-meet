@@ -50,6 +50,10 @@ Jitsi は、無効時の設定ルート、有効化テスト、有効時のミ�
 
 Cognis がアカウントを削除すると、Jitsi は現在および元の参加者レコードからそのアカウントを削除します。再利用可能なミーティングは残りの保存済み参加者構成に合わせてキーを更新し、保存済み参加者が2人未満になったミーティングは削除します。
 
+## オプションの Whiteboard Provider 読み込みを遅延
+
+Meetings は、オプションのブラウザー Whiteboard Gateway をルートレベルの要件として宣言しなくなりました。直接読み込みや更新では、Jitsi が Whiteboard Provider を検出して読み込む前に Cognis が UI コンテキストを初期化でき、SPA ナビゲーションと Whiteboard コントロールは引き続き同じ Gateway 契約を使用します。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -78,3 +82,7 @@ Cognis がアカウントを削除すると、Jitsi は現在および元の参�
 - [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
 
 - [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+
+- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+
+- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)

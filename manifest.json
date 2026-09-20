@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.222",
+    "version": "1.5.223",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -68,7 +68,6 @@
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
-        "whiteboard:uiGateway",
         "component-pages:spawn",
         "component-pages:discard",
         "ui:makeFloatingWindow"
@@ -313,7 +312,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "5e73f8b41529266083871b79c76bfbf74d8c1ff69b3960e29a2e94b46b6f07c4"
+            "sha256": "f44eab68f53ddd81762d90569b903c5c0b08372b86ae67ad3e459e95dcd07128"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -361,7 +360,7 @@
         },
         {
             "path": "api/tests/structural-compliance.test.js",
-            "sha256": "76c9ae5bff7fa695a5e766f5a9e381c73754a22f29c4dc747ca1085ea1fc367f"
+            "sha256": "5cbacf59d7a559712ceee07f9899ef82ab05ae0dbd4ac538c4a1f30a78a71f2f"
         },
         {
             "path": "api/tests/whiteboard-delegation.test.js",
@@ -409,27 +408,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "e6ddf5481ab9fbe64e0bc085f52c937009a9a57cf5be5cee2da955248bbe407b"
+            "sha256": "8271362216e8941ece420eb1b48e7b8e36eec507845f1eef1cdf08c080d1ad2c"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "713b39a395c229364e7ce3e11f3d9770f2fc200b2f65cffb7a8e7366744c7e20"
+            "sha256": "eed751253fd1ac05898fd828281524d63daf4b3f3f62fdf09fbc55927131ad76"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "180850999e1966a3b877080c705e6df7a964ae401b90afa08ce26f813a3d52de"
+            "sha256": "330ec24f05aecc6705e41192d9586ff5eec4c290e51e5e145f140da79f04728c"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "df8c4ac03dc340bd2530b054d82e1681c4058f8c7afd879add21ed496688eb63"
+            "sha256": "6e9253343593dcaf4e3db0d24da06368a4566874175cbcb1c573f93ed31b3b66"
         },
         {
             "path": "package-lock.json",
-            "sha256": "ddd5edbc2e4dcbed6b4887c50c9ccaf02c347febfe405d0a71e118dd7739cdf5"
+            "sha256": "ed9268cc21e8c49110f48d11b4b493edef83483b5d808b11e67f16690ed43255"
         },
         {
             "path": "package.json",
-            "sha256": "7b620ec6f3d56577fedf171f8d513119af6eb0f7eda0679184d16f5556a9145f"
+            "sha256": "bb885b7ff301cc206bf2f4f3901eef522c78a94a8da642b31f7de7709f45f4ff"
         },
         {
             "path": "routes.json",
@@ -549,7 +548,7 @@
         },
         {
             "path": "ui/reuse/resources.js",
-            "sha256": "2676fc2628ed1b70002685184c52ce35d04bc47792bacde98cbff23a8256bbfc"
+            "sha256": "0d1daa8551be15e309400d523da47b7fd71a5aae75a63c5b194b5254c2485fac"
         },
         {
             "path": "ui/session.js",
@@ -581,7 +580,7 @@
         },
         {
             "path": "ui/tests/whiteboard-integration.test.js",
-            "sha256": "3e6f7eb8f16a217790b59a240185544c558bc3f6610d20be051761fdac7c8255"
+            "sha256": "02c69f37ae4f1f28618eafc21fb82411650615f1c96f70bce0ea72e6137c5b38"
         },
         {
             "path": "ui/tests/whiteboard-session.test.js",
