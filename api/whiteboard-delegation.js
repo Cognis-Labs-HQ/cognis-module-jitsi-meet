@@ -1,4 +1,5 @@
 import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
+import { resolveCtxCapability } from "./reuse/capability-resolution.js";
 
 const DELEGATED_WHITEBOARD_CAPABILITIES = Object.freeze([
     "whiteboard:read",
@@ -80,7 +81,8 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
         fetchBoardData: (...args) => {
-            const providerFetchBoardData = ctx.capabilities?.get?.(
+            const providerFetchBoardData = resolveCtxCapability(
+                ctx,
                 "whiteboard:fetchBoardData",
             );
             if (typeof providerFetchBoardData !== "function") {

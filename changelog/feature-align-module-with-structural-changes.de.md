@@ -58,6 +58,10 @@ Meetings deklariert das optionale Browser-Whiteboard-Gateway nicht mehr als Anfo
 
 An den neuesten Registrierungsvertrag aus Nextcloud Whiteboard PR #30 angepasst. Jitsi löst Provider für Board-Prüfung, Mitgliedschaft, Löschung und delegierten Zugriff nun dynamisch über `ctx.capabilities` auf, sodass nach dem Jitsi-Bootstrap beigesteuerte Provider für `/whiteboard/state` verfügbar sind.
 
+## Beide öffentlichen Capability-Zugriffe auflösen
+
+Jitsi entspricht nun dem neuesten Registrierungsverhalten aus Nextcloud Whiteboard PR #30, indem optionale Server-Provider zuerst aus der bereichsgebundenen Registry und danach über den Modulkontext-Zugriff aufgelöst werden. Damit werden Provider über beide öffentlichen, lebenszyklusgebundenen Zugriffe erkannt und eine erfolgreich erstellte Arbeitsfläche scheitert nicht unmittelbar danach bei der Zuordnungsprüfung.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -92,3 +96,5 @@ An den neuesten Registrierungsvertrag aus Nextcloud Whiteboard PR #30 angepasst.
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
 
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
+
+- [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)

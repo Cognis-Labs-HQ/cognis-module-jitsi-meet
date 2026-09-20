@@ -22,7 +22,7 @@ The navbar provider metadata lets Cognis load the provider before Messages perfo
 
 When Cognis deletes an account, Jitsi removes that account from both the current and saved participant rosters. It updates reusable meetings for the remaining participants and deletes meetings that no longer have a reusable multi-account roster.
 
-Server-side Whiteboard verification, membership, and deletion are resolved dynamically from the lifecycle-scoped `ctx.capabilities` registry. This matches the provider registration contract and allows Jitsi to see capabilities contributed after its own bootstrap without requiring Whiteboard for Jitsi enablement.
+Server-side Whiteboard verification, membership, and deletion are resolved dynamically through both public lifecycle-scoped capability access surfaces: the `ctx.capabilities` registry used by current providers and the module context accessor used when providers publish public capabilities. This mirrors the Nextcloud Whiteboard registration contract and keeps Whiteboard optional for Jitsi enablement.
 
 ## Usage Examples
 

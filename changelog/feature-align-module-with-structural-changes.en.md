@@ -58,6 +58,10 @@ Meetings no longer declares the optional browser Whiteboard gateway as a route-l
 
 Aligned with the latest Nextcloud Whiteboard PR #30 registration contract. Jitsi now resolves board verification, membership, deletion, and delegated-access providers dynamically through `ctx.capabilities`, so providers contributed after Jitsi bootstrap are available to `/whiteboard/state`.
 
+## Resolve Both Public Capability Access Surfaces
+
+Jitsi now mirrors the latest Nextcloud Whiteboard PR #30 registration behavior by resolving optional server providers from the scoped registry first and the module context accessor second. This covers providers registered through either public lifecycle-scoped surface and prevents a successfully created canvas from failing mapping verification immediately afterward.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -92,3 +96,5 @@ Aligned with the latest Nextcloud Whiteboard PR #30 registration contract. Jitsi
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
 
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
+
+- [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)

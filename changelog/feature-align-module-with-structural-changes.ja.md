@@ -58,6 +58,10 @@ Meetings は、オプションのブラウザー Whiteboard Gateway をルート
 
 Nextcloud Whiteboard PR #30 の最新登録契約に整合しました。Jitsi はボード検証、メンバーシップ、削除、委任アクセスの Provider を `ctx.capabilities` から動的に解決するため、Jitsi の Bootstrap 後に提供された Provider を `/whiteboard/state` で利用できます。
 
+## 両方の公開 Capability アクセス面から解決
+
+Jitsi は Nextcloud Whiteboard PR #30 の最新登録動作に合わせ、オプションのサーバー Provider を最初にスコープ付きレジストリから、次にモジュールコンテキストアクセサーから解決します。どちらの公開ライフサイクルスコープ面で登録された Provider も認識し、正常に作成されたキャンバスが直後のマッピング検証で失敗することを防ぎます。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -92,3 +96,5 @@ Nextcloud Whiteboard PR #30 の最新登録契約に整合しました。Jitsi �
 - [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
 
 - [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
+
+- [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)

@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.224",
+    "version": "1.5.225",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -164,7 +164,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "b744bd7dd3ae557af90add02b11cf8dadfc3017dfe3e7affb7c8baf4dfb91588"
+            "sha256": "5aaa8672783e9102d2a1a5c2154e2f5e497e013709875ff566af1670584e31e2"
         },
         {
             "path": "api/meeting-chat-capability.js",
@@ -197,6 +197,10 @@
         {
             "path": "api/persisted-meeting-routes.js",
             "sha256": "79ce37ce4152972890aa6dd96fdeb7003ca332c1dcf1556a8a0c8999881b8bf0"
+        },
+        {
+            "path": "api/reuse/capability-resolution.js",
+            "sha256": "1ca1dcef78b6c9065155141bb6c5af5d3861a4a0b5fc9c9e313682af7f916ca9"
         },
         {
             "path": "api/reuse/chat-membership.js",
@@ -303,6 +307,10 @@
             "sha256": "64cfb6b40dd59fcd06b94e2b1c9e2a02d98eb3e9fb15984d90dfee28504aeb88"
         },
         {
+            "path": "api/tests/capability-resolution.test.js",
+            "sha256": "1111b4f9e77587bf2316837aee18696bcb879af57de95c723f00405c55f4acd1"
+        },
+        {
             "path": "api/tests/config-routes.test.js",
             "sha256": "2d28a83a4cbce7f8ab263874d53b113541fb8196406801972cc2734a18d59531"
         },
@@ -312,7 +320,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "2c837f5bff244b60d9548f72cc748ae6fb674da890e21fd6969e3a773dcf6189"
+            "sha256": "b2034d769815dbe627a6090b7ed5c0185ae21f1af241fb70b315bb95ece3735e"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -380,7 +388,7 @@
         },
         {
             "path": "api/whiteboard-delegation.js",
-            "sha256": "7b833f30b1639ba378d2d978bf3bd37a8eff67663705e66c33e3a9650d5af02e"
+            "sha256": "b3cc5882b01f717430d220512103694a2b6284387a8b2b160119c956b1de6ba0"
         },
         {
             "path": "api/whiteboard-routes.js",
@@ -408,27 +416,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "17f153f7aca02a2939fa53dd5c085495ae7b67cb5b399f5e0eca0130f7bf273a"
+            "sha256": "0ab952ad76161a6672e815a5b458e17e23f1c462d4544fac2ced11ee91ea9765"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "45305bd036e2675cffe4e059df41c0629fdcbce9b3822f9cd51126a21e82703f"
+            "sha256": "908374703e1e44cfb05a07e237603eb0317e54679c7577f55a4f87860b4334bc"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "ffb55e71bf062dd9fae8d7586de0584d484dbb38724cd282bf361f62fe647e4c"
+            "sha256": "49a0fee609a95492aa2f72f652288dd6f1004e18d4494a471d2290720299e77c"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "98e087879307d31ee3c95e67cbaa0b2cdeddceb85bfe48a19f85abcf035dc702"
+            "sha256": "223a16ff91325c815393881fc9af523da814e497ac9aa80ced02e14ff0039f56"
         },
         {
             "path": "package-lock.json",
-            "sha256": "3360b3f955c08ba3c0cdf59600b04c4239c3ebc414e8ba12819e5759a0a5e2c8"
+            "sha256": "830e9599bb2f642225444c41627122c4f016c5d25e0665753b1018410ee0bad4"
         },
         {
             "path": "package.json",
-            "sha256": "dc58cab2906e874c3f874bce64fd6bf489bfbaa5725a62513c6603836e3fbb49"
+            "sha256": "1cbedf86eea764780f5e024e315d84f635604793b83edbdb9092f704a1257291"
         },
         {
             "path": "routes.json",
