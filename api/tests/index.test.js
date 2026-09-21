@@ -108,6 +108,11 @@ test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
     assert.match(delegationSource, /ctx\.getCapability\(/);
     assert.match(delegationSource, /whiteboard:fetchBoardData/);
     assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
+    const verificationSource = readFileSync(
+        resolve(ROOT, "api/whiteboard-verification.js"),
+        "utf8",
+    );
+    assert.match(verificationSource, /createdByAccountId/);
 });
 
 test("account cleanup resolves canonical account ids to participant handles", () => {

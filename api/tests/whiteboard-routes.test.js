@@ -34,6 +34,7 @@ function createRoutes({
         id: "board-1",
         title: "Planning",
         createdBy: requesterUsername,
+        createdByAccountId: claims.sub,
     },
     whiteboardAvailable = true,
     beforeStateRead = () => {},
@@ -432,8 +433,18 @@ test("Whiteboard activation rechecks screen sharing after verification", async (
 
 test("meeting participants cannot map an unrelated provider whiteboard", async () => {
     for (const board of [
-        { id: "board-1", title: "Other meeting", createdBy: "alice" },
-        { id: "board-1", title: "Planning", createdBy: "mallory" },
+        {
+            id: "board-1",
+            title: "Other meeting",
+            createdBy: "alice",
+            createdByAccountId: "account-alice",
+        },
+        {
+            id: "board-1",
+            title: "Planning",
+            createdBy: "alice",
+            createdByAccountId: "account-mallory",
+        },
         null,
     ]) {
         const routes = createRoutes({ board });

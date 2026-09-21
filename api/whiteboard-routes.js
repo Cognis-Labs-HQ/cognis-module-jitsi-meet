@@ -246,7 +246,7 @@ export function registerMeetingWhiteboardRoutes({
                         fetchBoardData,
                         meeting: resolved.meeting,
                         whiteboardId,
-                        expectedCreator: resolved.requesterUsername,
+                        expectedCreatorAccountId: resolved.requesterAccountId,
                     });
                 } catch (error) {
                     ctx.log?.(

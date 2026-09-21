@@ -66,6 +66,10 @@ Jitsi entspricht nun dem neuesten Registrierungsverhalten aus Nextcloud Whiteboa
 
 Nach dem Vorbild von Nextcloud Whiteboard PR #30 verwendet Jitsi die öffentlichen Leaf-Capabilities `whiteboard:*` wieder direkt über den Modulkontext und entfernt den parallelen Resolver. In Übereinstimmung mit Cognis PR #225 löst die Kontobereinigung kanonische Konto-IDs in aktuelle Profil-Handles auf, bevor gespeicherte Besprechungsgruppen geändert werden.
 
+## Koordinierten Whiteboard-Vertrag vervollständigen
+
+Die Canvas-Factory im Browser und der Server-Provider für die Prüfung sind getrennte Verträge. Jitsi prüft Zuordnungen nun mit der kanonischen Ersteller-Konto-ID aus dem neuesten Stand von Nextcloud Whiteboard PR #30. Bereitstellungen müssen außerdem dessen direkte Bootstrap-Veröffentlichung von `whiteboard:fetchBoardData` und `whiteboard:membership` enthalten; andernfalls kann die Canvas-Erstellung gelingen, während `/whiteboard/state` korrekt meldet, dass die Serverprüfung nicht verfügbar ist.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -104,3 +108,5 @@ Nach dem Vorbild von Nextcloud Whiteboard PR #30 verwendet Jitsi die öffentlich
 - [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
 
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
+
+- [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)

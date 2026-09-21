@@ -21,7 +21,7 @@ Jitsi は、対象となる会話コンテキストを渡すホスト画面に `
 ナビゲーションバーのプロバイダーメタデータにより、Messages が最初の利用可否確認を行う前に Cognis がプロバイダーを読み込むため、初回のチャット描画からビデオカメラ操作が表示されます。
 
 Cognis がアカウントを削除すると、Jitsi は現在および保存済みの参加者一覧からそのアカウントを削除します。残りの参加者がいる再利用可能なミーティングは更新され、再利用可能な複数アカウントの参加者構成が残らないミーティングは削除されます。
-サーバー側の Whiteboard 検証、メンバーシップ、削除は、Nextcloud Whiteboard がモジュールコンテキストを通じて公開する個別の公開 Capability を使用します。Jitsi は Provider の非公開 API ファサードを参照せず、並行する Capability Resolver も維持しません。Whiteboard は引き続き Jitsi の有効化要件ではありません。アカウント削除時のクリーンアップでは、保存済み参加者構成を更新する前に Cognis の正規アカウント ID を現在のプロフィールハンドルへ解決します。
+サーバー側の Whiteboard 検証、メンバーシップ、削除は、Nextcloud Whiteboard がモジュールコンテキストを通じて公開する個別の公開 Capability を使用します。ブラウザーでのキャンバス作成とサーバー Capability は別の契約であり、キャンバス作成の成功はサーバー Provider が公開済みであることを示しません。現在の連携には、`whiteboard:fetchBoardData` と `whiteboard:membership` を直接公開する Nextcloud Whiteboard PR #30 の Bootstrap が必要です。Jitsi は Provider の非公開 API ファサードを参照せず、並行する Capability Resolver も維持しません。Whiteboard は引き続き Jitsi の有効化要件ではありません。マッピング検証では Provider が返す正規の作成者アカウント ID を比較し、アカウント削除時には保存済み参加者構成を更新する前に Cognis の正規アカウント ID を現在のプロフィールハンドルへ解決します。
 
 ## 使用例
 

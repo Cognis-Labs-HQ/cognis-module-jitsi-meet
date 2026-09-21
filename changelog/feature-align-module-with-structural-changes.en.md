@@ -66,6 +66,10 @@ Jitsi now mirrors the latest Nextcloud Whiteboard PR #30 registration behavior b
 
 Following Nextcloud Whiteboard PR #30, Jitsi again consumes the public `whiteboard:*` leaf capabilities directly through the module context and removes the parallel resolver. In alignment with Cognis PR #225, account cleanup resolves canonical account IDs to current profile handles before changing saved meeting rosters.
 
+## Complete the Coordinated Whiteboard Contract
+
+The browser canvas factory and server verification provider are separate contracts. Jitsi now verifies mappings with the canonical creator account ID added by the latest Nextcloud Whiteboard PR #30. Deployments must also include that PR’s direct bootstrap publication of `whiteboard:fetchBoardData` and `whiteboard:membership`; otherwise canvas creation can succeed while `/whiteboard/state` correctly reports that server verification is unavailable.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -104,3 +108,5 @@ Following Nextcloud Whiteboard PR #30, Jitsi again consumes the public `whiteboa
 - [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
 
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
+
+- [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
