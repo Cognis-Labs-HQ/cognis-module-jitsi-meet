@@ -70,6 +70,10 @@ Following Nextcloud Whiteboard PR #30, Jitsi again consumes the public `whiteboa
 
 The browser canvas factory and server verification provider are separate contracts. Jitsi now verifies mappings with the canonical creator account ID added by the latest Nextcloud Whiteboard PR #30. Deployments must also include that PR’s direct bootstrap publication of `whiteboard:fetchBoardData` and `whiteboard:membership`; otherwise canvas creation can succeed while `/whiteboard/state` correctly reports that server verification is unavailable.
 
+## Stabilize Presence and Periodic Refreshes
+
+Periodic polling now discards superseded responses and preserves existing participant and meeting DOM when data is unchanged, preventing avatar fallback flashes and cross-meeting state overwrites. Chat avatars follow active presence rather than the invited roster. Joining a meeting deactivates the same account in other meetings, ended meetings ignore residual presence, and stale presence expires after missed heartbeats instead of two minutes.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -110,3 +114,5 @@ The browser canvas factory and server verification provider are separate contrac
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
 
 - [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+
+- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)

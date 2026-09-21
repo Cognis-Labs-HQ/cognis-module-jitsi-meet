@@ -24,6 +24,8 @@ When Cognis deletes an account, Jitsi removes that account from both the current
 
 Server-side Whiteboard verification, membership, and deletion use the public leaf capabilities published by Nextcloud Whiteboard through the module context. Browser canvas creation and these server capabilities are separate contracts: successful canvas creation does not prove that the server provider was published. Deployments using the current integration require the Nextcloud Whiteboard PR #30 bootstrap that publishes `whiteboard:fetchBoardData` and `whiteboard:membership` directly. Jitsi does not inspect the provider’s private API facade or maintain a parallel capability resolver; Whiteboard remains optional for Jitsi enablement. Mapping verification compares the canonical creator account ID exposed by the provider, and account-deletion cleanup resolves Cognis’s canonical account ID to its current profile handle before updating saved participant rosters.
 
+Periodic participant and meeting refreshes update the DOM only when their underlying data changes, preserving hydrated profile avatars without flashing initials. The meeting chat participant strip follows currently active meeting presence rather than the complete invited roster. Starting or joining a meeting immediately deactivates that account’s presence in other meetings, ended meetings ignore residual presence rows, and presence expires after missed heartbeats instead of remaining active for two minutes.
+
 ## Usage Examples
 
 - Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.

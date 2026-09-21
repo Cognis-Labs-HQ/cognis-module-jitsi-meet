@@ -70,6 +70,10 @@ Nextcloud Whiteboard PR #30 に倣い、Jitsi は公開された `whiteboard:*` 
 
 ブラウザーのキャンバスファクトリーとサーバー検証 Provider は別の契約です。Jitsi は、Nextcloud Whiteboard PR #30 の最新版で追加された正規の作成者アカウント ID を使ってマッピングを検証します。デプロイには同 PR の `whiteboard:fetchBoardData` と `whiteboard:membership` の直接 Bootstrap 公開も必要です。これがない場合、キャンバス作成は成功しても `/whiteboard/state` はサーバー検証が利用できないことを正しく報告します。
 
+## 在席情報と定期更新を安定化
+
+定期ポーリングは置き換えられた応答を破棄し、データが変わらない場合は既存の参加者およびミーティング DOM を維持します。これにより、アバターがイニシャルへ点滅する問題とミーティング間の状態上書きを防ぎます。チャットアバターは招待者一覧ではなくアクティブな在席に従います。ミーティング参加時には同じアカウントの他ミーティングでの在席を無効化し、終了済みミーティングは残存在席を無視し、古い在席は2分ではなく Heartbeat の欠落後に期限切れになります。
+
 ## コミット
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -110,3 +114,5 @@ Nextcloud Whiteboard PR #30 に倣い、Jitsi は公開された `whiteboard:*` 
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
 
 - [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+
+- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)

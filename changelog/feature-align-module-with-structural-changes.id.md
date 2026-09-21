@@ -70,6 +70,10 @@ Mengikuti PR #30 Nextcloud Whiteboard, Jitsi kembali menggunakan kapabilitas pub
 
 Pabrik kanvas browser dan penyedia verifikasi server adalah kontrak terpisah. Jitsi kini memverifikasi pemetaan dengan ID akun pembuat kanonis yang ditambahkan oleh perubahan terbaru PR #30 Nextcloud Whiteboard. Deployment juga harus menyertakan publikasi bootstrap langsung untuk `whiteboard:fetchBoardData` dan `whiteboard:membership`; jika tidak, pembuatan kanvas dapat berhasil sementara `/whiteboard/state` dengan benar melaporkan bahwa verifikasi server tidak tersedia.
 
+## Menstabilkan Kehadiran dan Penyegaran Berkala
+
+Polling berkala kini membuang respons yang telah digantikan dan mempertahankan DOM peserta serta rapat ketika data tidak berubah, sehingga mencegah avatar berkedip kembali menjadi inisial dan penimpaan status lintas rapat. Avatar chat mengikuti kehadiran aktif, bukan daftar undangan. Bergabung ke rapat menonaktifkan akun yang sama di rapat lain, rapat berakhir mengabaikan sisa kehadiran, dan kehadiran usang kedaluwarsa setelah heartbeat terlewat alih-alih dua menit.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -110,3 +114,5 @@ Pabrik kanvas browser dan penyedia verifikasi server adalah kontrak terpisah. Ji
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
 
 - [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+
+- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)

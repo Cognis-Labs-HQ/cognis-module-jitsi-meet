@@ -22,6 +22,8 @@ Die Anbieter-Metadaten der Navigationsleiste ermöglichen Cognis, den Anbieter v
 
 Wenn Cognis ein Konto löscht, entfernt Jitsi dieses Konto sowohl aus der aktuellen als auch aus der gespeicherten Teilnehmerliste. Wiederverwendbare Besprechungen werden für die verbleibenden Teilnehmer aktualisiert; Besprechungen ohne weiterhin nutzbare Gruppe aus mehreren Konten werden gelöscht.
 
+Regelmäßige Aktualisierungen von Teilnehmern und Besprechungen ändern das DOM nur bei tatsächlich geänderten Daten, sodass geladene Profilbilder nicht zwischenzeitlich als Initialen erscheinen. Die Teilnehmerleiste des Besprechungschats folgt der aktuell aktiven Anwesenheit statt der vollständigen Einladungsliste. Beim Starten oder Beitreten werden Anwesenheiten dieses Kontos in anderen Besprechungen sofort deaktiviert, beendete Besprechungen ignorieren verbliebene Anwesenheitszeilen, und Anwesenheit läuft nach ausgebliebenen Heartbeats ab, statt zwei Minuten aktiv zu bleiben.
+
 ## Anwendungsbeispiele
 
 - Besprechungen über `/meetings` und `/meeting` ohne vollständige Seitennavigation beitreten oder wiederaufnehmen.

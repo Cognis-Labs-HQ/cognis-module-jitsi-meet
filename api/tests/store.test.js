@@ -838,6 +838,45 @@ test("jitsi active meeting summaries report invited and active participants sepa
     assert.equal(meetings[0].activeSessionCount, 3);
 });
 
+test("ended meetings ignore presence rows that have not expired yet", async () => {
+    const now = new Date().toISOString();
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: createMockJitsiDb({
+            meetingRows: [
+                {
+                    id: "ended-meeting",
+                    meeting_url: "https://meet.example.test/Ended",
+                    meeting_name: "Ended",
+                    created_by: "alice",
+                    created_at: now,
+                    updated_at: now,
+                },
+            ],
+            participantRows: [
+                { meeting_id: "ended-meeting", username: "alice" },
+            ],
+            presenceRows: [
+                {
+                    meeting_id: "ended-meeting",
+                    username: "alice",
+                    session_id: "stale-session",
+                    active: 1,
+                    last_seen_at: now,
+                },
+            ],
+            stateRows: [
+                {
+                    meeting_id: "ended-meeting",
+                    ended_at: now,
+                },
+            ],
+        }),
+    });
+
+    assert.deepEqual(await store.listActiveMeetings(), []);
+});
+
 test("active membership changes use a meeting-scoped participant key", async () => {
     const now = new Date().toISOString();
     const meetingRow = {

@@ -420,8 +420,11 @@ export function createChatHandlers({
         } else if (state.meeting?.id) {
             state.lastMeetingChatRoomId = "";
         }
-        if (Array.isArray(state.meeting?.participants)) {
-            state.lastMeetingParticipants = state.meeting.participants.slice();
+        const visibleParticipants = state.jitsiConferenceJoined
+            ? state.meeting?.activeParticipants
+            : state.meeting?.participants;
+        if (Array.isArray(visibleParticipants)) {
+            state.lastMeetingParticipants = visibleParticipants.slice();
         }
         if (state.chatMode !== "private") {
             applyActiveChatRoom(state.lastMeetingChatRoomId);

@@ -70,6 +70,10 @@ Nach dem Vorbild von Nextcloud Whiteboard PR #30 verwendet Jitsi die öffentlich
 
 Die Canvas-Factory im Browser und der Server-Provider für die Prüfung sind getrennte Verträge. Jitsi prüft Zuordnungen nun mit der kanonischen Ersteller-Konto-ID aus dem neuesten Stand von Nextcloud Whiteboard PR #30. Bereitstellungen müssen außerdem dessen direkte Bootstrap-Veröffentlichung von `whiteboard:fetchBoardData` und `whiteboard:membership` enthalten; andernfalls kann die Canvas-Erstellung gelingen, während `/whiteboard/state` korrekt meldet, dass die Serverprüfung nicht verfügbar ist.
 
+## Anwesenheit und regelmäßige Aktualisierungen stabilisieren
+
+Regelmäßige Abfragen verwerfen nun überholte Antworten und erhalten das vorhandene Teilnehmer- und Besprechungs-DOM bei unveränderten Daten. Dadurch werden Avatar-Rückfälle auf Initialen und Zustandsüberschreibungen zwischen Besprechungen verhindert. Chat-Avatare folgen der aktiven Anwesenheit statt der Einladungsliste. Beim Beitritt wird dasselbe Konto in anderen Besprechungen deaktiviert, beendete Besprechungen ignorieren Restanwesenheit, und veraltete Anwesenheit läuft nach ausgebliebenen Heartbeats statt nach zwei Minuten ab.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -110,3 +114,5 @@ Die Canvas-Factory im Browser und der Server-Provider für die Prüfung sind get
 - [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
 
 - [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+
+- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)

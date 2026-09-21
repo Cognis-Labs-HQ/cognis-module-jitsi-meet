@@ -27,6 +27,7 @@ export function createMeetingHandlers({
     allowParticipantlessJoin = false,
 }) {
     let meetingExitPromise = null;
+    let activeMeetingsRequestSequence = 0;
     let persistedMeetingHoldTimer = null;
     let suppressPersistedMeetingClick = false;
 
@@ -509,27 +510,46 @@ export function createMeetingHandlers({
     }
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
-        renderActiveMeetings({ loading: true });
+        const requestSequence = ++activeMeetingsRequestSequence;
+        if (
+            resolveRequested &&
+            state.activeMeetings.length === 0 &&
+            state.persistedMeetings.length === 0
+        ) {
+            renderActiveMeetings({ loading: true });
+        }
         const [response, persistedResponse] = await Promise.all([
             apiFetch("/api/v1/modules/jitsi-meet/meetings/active"),
             apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted"),
             callbacks.refreshAvailableParticipants?.(),
         ]);
         if (!response.ok) {
+            if (requestSequence !== activeMeetingsRequestSequence) return;
             state.activeMeetings = [];
             renderActiveMeetings();
             return;
         }
         const payload = await response.json().catch(() => ({ data: [] }));
-        state.activeMeetings = Array.isArray(payload?.data) ? payload.data : [];
+        if (requestSequence !== activeMeetingsRequestSequence) return;
+        const nextActiveMeetings = Array.isArray(payload?.data)
+            ? payload.data
+            : [];
         const persistedPayload = persistedResponse.ok
             ? await persistedResponse.json().catch(() => ({ data: [] }))
             : { data: [] };
-        state.persistedMeetings = Array.isArray(persistedPayload.data)
+        const nextPersistedMeetings = Array.isArray(persistedPayload.data)
             ? persistedPayload.data
             : [];
-        renderActiveMeetings();
-        renderPersistedMeetings();
+        const activeMeetingsChanged =
+            JSON.stringify(nextActiveMeetings) !==
+            JSON.stringify(state.activeMeetings);
+        const persistedMeetingsChanged =
+            JSON.stringify(nextPersistedMeetings) !==
+            JSON.stringify(state.persistedMeetings);
+        state.activeMeetings = nextActiveMeetings;
+        state.persistedMeetings = nextPersistedMeetings;
+        if (activeMeetingsChanged) renderActiveMeetings();
+        if (persistedMeetingsChanged) renderPersistedMeetings();
         const requestedMeetingId = resolveRequested
             ? normalizeMeetingId(state.requestedMeetingId)
             : "";

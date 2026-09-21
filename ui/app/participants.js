@@ -36,6 +36,8 @@ export function createPreflightHandlers({
     callbacks,
     utils,
 }) {
+    let participantRefreshSequence = 0;
+    let stateRefreshSequence = 0;
     if (!(state.pendingParticipantUsernames instanceof Set)) {
         state.pendingParticipantUsernames = new Set();
     }
@@ -168,6 +170,7 @@ export function createPreflightHandlers({
 
     async function refreshAvailableParticipants() {
         if (state.shareAccessToken) return;
+        const requestSequence = ++participantRefreshSequence;
         const meetingId = String(state.meeting?.id ?? "").trim();
         const query = meetingId
             ? `?meetingId=${encodeURIComponent(meetingId)}`
@@ -177,10 +180,11 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: [] }));
+        if (requestSequence !== participantRefreshSequence) return;
         const selectedByUsername = new Map(
             state.selectedParticipants.map((entry) => [entry.username, entry]),
         );
-        state.allParticipants = (
+        const refreshedParticipants = (
             Array.isArray(payload?.data) ? payload.data : []
         )
             .map((entry) => ({
@@ -193,6 +197,20 @@ export function createPreflightHandlers({
             }))
             .filter((entry) => entry.username)
             .sort((left, right) => left.username.localeCompare(right.username));
+        const participantSignature = (entries) =>
+            entries
+                .map(
+                    ({ username, displayName, avatarKey }) =>
+                        `${username}\u0000${displayName}\u0000${avatarKey ?? ""}`,
+                )
+                .join("\u0001");
+        if (
+            participantSignature(refreshedParticipants) ===
+            participantSignature(state.allParticipants)
+        ) {
+            return;
+        }
+        state.allParticipants = refreshedParticipants;
         state.selectedParticipants = state.selectedParticipants.map(
             (entry) =>
                 state.allParticipants.find(
@@ -420,6 +438,7 @@ export function createPreflightHandlers({
     async function loadMeetingState() {
         const meetingId = state.meeting?.id;
         if (!meetingId) return;
+        const requestSequence = ++stateRefreshSequence;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/state",
             {
@@ -438,6 +457,7 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: null }));
+        if (requestSequence !== stateRefreshSequence) return;
         const latestState = payload?.data?.state;
         if (!latestState) return;
         if (latestState.endedAt) {
@@ -457,6 +477,15 @@ export function createPreflightHandlers({
             return;
         }
         if (state.meeting?.id !== meetingId) return;
+        const previousParticipants = Array.isArray(state.meeting.participants)
+            ? state.meeting.participants
+            : [];
+        const previousActiveParticipants = Array.isArray(
+            state.meeting.activeParticipants,
+        )
+            ? state.meeting.activeParticipants
+            : [];
+        const previousChatRoomId = state.meeting.chatRoomId;
         state.meeting.state = latestState;
         if (Array.isArray(payload?.data?.activeParticipants)) {
             state.meeting.activeParticipants = payload.data.activeParticipants;
@@ -485,11 +514,19 @@ export function createPreflightHandlers({
                 (entry) => !participantUsernames.has(entry.username),
             );
             state.meeting.participants = payload.data.participants;
+            const membershipChanged =
+                previousParticipants.join("\u0000") !==
+                    payload.data.participants.join("\u0000") ||
+                previousActiveParticipants.join("\u0000") !==
+                    (state.meeting.activeParticipants ?? []).join("\u0000") ||
+                previousChatRoomId !== payload.data.chatRoomId;
             if (typeof payload.data.chatRoomId === "string") {
                 state.meeting.chatRoomId = payload.data.chatRoomId;
             }
-            renderParticipants();
-            await callbacks.updateCognisChat();
+            if (membershipChanged) {
+                renderParticipants();
+                await callbacks.updateCognisChat();
+            }
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (latestState.authRequired && !latestState.authCompletedAt) {

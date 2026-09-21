@@ -22,6 +22,8 @@ Metadata penyedia bilah navigasi memungkinkan Cognis memuat penyedia sebelum Mes
 
 Ketika Cognis menghapus akun, Jitsi menghapus akun tersebut dari daftar peserta saat ini dan daftar peserta tersimpan. Rapat yang dapat digunakan kembali diperbarui untuk peserta yang tersisa, sedangkan rapat yang tidak lagi memiliki daftar beberapa akun yang dapat digunakan kembali akan dihapus.
 
+Penyegaran berkala peserta dan rapat hanya memperbarui DOM ketika data dasarnya berubah sehingga avatar profil yang telah dimuat tidak berkedip menjadi inisial. Bilah peserta chat rapat mengikuti kehadiran yang sedang aktif, bukan seluruh daftar undangan. Memulai atau bergabung ke rapat langsung menonaktifkan kehadiran akun tersebut di rapat lain, rapat yang telah berakhir mengabaikan baris kehadiran tersisa, dan kehadiran kedaluwarsa setelah heartbeat terlewat alih-alih tetap aktif selama dua menit.
+
 ## Contoh Penggunaan
 
 - Bergabung atau mengambil alih rapat dari `/meetings` dan `/meeting` tanpa navigasi halaman penuh.
