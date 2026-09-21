@@ -150,9 +150,12 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource.match(
             /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
         )?.length,
-        3,
+        2,
     );
-    assert.match(controlSource, /requireCanvasFactory:\s*false/);
+    assert.match(
+        controlSource,
+        /requireCanvasFactory:\s*!state\.shareAccessToken/,
+    );
     assert.doesNotMatch(
         controlSource,
         /!state\.shareAccessToken &&\s*typeof whiteboardGateway\?\.createDisposableCanvas/,

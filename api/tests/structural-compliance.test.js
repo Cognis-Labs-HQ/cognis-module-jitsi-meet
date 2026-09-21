@@ -125,8 +125,22 @@ test("external module metadata and declared files are consistent", () => {
 
 test("manifest isolates the disabled lifecycle API", () => {
     const manifest = JSON.parse(readFileSync(resolve(ROOT, "manifest.json")));
-    assert.equal(manifest.entrypoints.api, "./api/index.js");
+    assert.equal(manifest.entrypoints.api, undefined);
     assert.equal(manifest.entrypoints.disabledApi, "./api/disabled.js");
+    assert.equal(manifest.entrypoints.bootstrap, "./bootstrap.js");
+    assert.equal(manifest.privileged, undefined);
+});
+
+test("runtime integration uses only the scoped module context", () => {
+    const violations = sourceFiles()
+        .filter((path) => !path.includes(`${join(ROOT, "tests")}`))
+        .filter((path) =>
+            /getCapability\(["']system:ctx["']\)/.test(
+                readFileSync(path, "utf8"),
+            ),
+        )
+        .map((path) => relative(ROOT, path));
+    assert.deepEqual(violations, []);
 });
 
 test("dashboard source avoids full-page browser navigation", () => {
@@ -140,16 +154,13 @@ test("dashboard source avoids full-page browser navigation", () => {
     assert.deepEqual(violations, []);
 });
 
-test("browser sources obtain the host UI context without internal imports", () => {
+test("browser resources consume the host-initialized UI context", () => {
     const resourcesSource = readFileSync(
         resolve(ROOT, "ui/reuse/resources.js"),
         "utf8",
     );
-    assert.match(
-        resourcesSource,
-        /globalThis\[Symbol\.for\("cognis\.uiCtx"\)\]/,
-    );
-    assert.doesNotMatch(resourcesSource, /from\s+["']\/static\//);
+    assert.match(resourcesSource, /Symbol\.for\("cognis\.uiCtx"\)/);
+    assert.doesNotMatch(resourcesSource, /\/static\/reuse\/ui-ctx\.js/);
 });
 
 test("browser code uses host clients for gateway-owned data", () => {

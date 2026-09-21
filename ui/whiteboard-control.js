@@ -322,38 +322,6 @@ export async function bindWhiteboardButton({
     )
         return;
     const mounted = mountedWhiteboardButtons.get(root);
-    let availabilityResponse;
-    try {
-        availabilityResponse = await apiFetch(
-            "/api/v1/modules/jitsi-meet/whiteboard/availability",
-            {
-                accessToken: state.shareAccessToken || undefined,
-                suppressAccessDeniedEvent: true,
-            },
-        );
-    } catch (error) {
-        await logUi("error", "Whiteboard availability check failed.", {
-            component: "module:jitsi-meet",
-            operation: "check_whiteboard_availability",
-            error: error instanceof Error ? error.message : String(error),
-        });
-        mounted?.destroy();
-        mountedWhiteboardButtons.delete(root);
-        slot.replaceChildren();
-        return;
-    }
-    const availabilityPayload = await availabilityResponse
-        .json()
-        .catch(() => ({ data: { available: false } }));
-    if (
-        !availabilityResponse.ok ||
-        availabilityPayload?.data?.available !== true
-    ) {
-        mounted?.destroy();
-        mountedWhiteboardButtons.delete(root);
-        slot.replaceChildren();
-        return;
-    }
     if (mounted?.slot === slot) {
         syncWhiteboardButtonAvailability({ root, state });
         return;
@@ -383,7 +351,7 @@ export async function bindWhiteboardButton({
     let capabilities;
     try {
         capabilities = await resolveWhiteboardCapabilities(signal, {
-            requireCanvasFactory: false,
+            requireCanvasFactory: !state.shareAccessToken,
         });
     } catch (error) {
         await logUi("error", "Whiteboard UI providers could not load.", {

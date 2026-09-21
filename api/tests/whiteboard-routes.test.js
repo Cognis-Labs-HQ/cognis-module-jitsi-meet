@@ -7,6 +7,10 @@ function createRecorder() {
     return {
         status: 0,
         body: null,
+        headers: {},
+        setHeader(name, value) {
+            this.headers[name] = value;
+        },
         writeHead(status) {
             this.status = status;
         },
@@ -30,6 +34,7 @@ function createRoutes({
         id: "board-1",
         title: "Planning",
         createdBy: requesterUsername,
+        createdByAccountId: claims.sub,
     },
     whiteboardAvailable = true,
     beforeStateRead = () => {},
@@ -135,6 +140,7 @@ test("backend publishes consistent Whiteboard availability", async () => {
         )({}, response);
         assert.equal(response.status, 200);
         assert.equal(response.body.data.available, available);
+        assert.equal(response.headers["cache-control"], "no-store");
     }
 });
 
@@ -427,8 +433,18 @@ test("Whiteboard activation rechecks screen sharing after verification", async (
 
 test("meeting participants cannot map an unrelated provider whiteboard", async () => {
     for (const board of [
-        { id: "board-1", title: "Other meeting", createdBy: "alice" },
-        { id: "board-1", title: "Planning", createdBy: "mallory" },
+        {
+            id: "board-1",
+            title: "Other meeting",
+            createdBy: "alice",
+            createdByAccountId: "account-alice",
+        },
+        {
+            id: "board-1",
+            title: "Planning",
+            createdBy: "alice",
+            createdByAccountId: "account-mallory",
+        },
         null,
     ]) {
         const routes = createRoutes({ board });

@@ -12,6 +12,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
 
     assert.deepEqual(manifest.requiresCapabilities, [
         "auth:requireAuth",
+        "db:executor",
         "ui:profileAvatarRenderer",
         "files:uiClient",
         "social:profileUiClient",
@@ -32,11 +33,19 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "component-pages:discard",
         "ui:makeFloatingWindow",
     ]);
+    for (const optionalCapability of [
+        "whiteboard:uiGateway",
+        "whiteboard:fetchBoardData",
+        "whiteboard:membership",
+        "whiteboard:deleteCanvas",
+    ]) {
+        assert.ok(!manifest.requiresCapabilities.includes(optionalCapability));
+    }
     assert.deepEqual(manifest.capabilities, [
         "meeting:video",
         "meeting:chat",
         "meeting:moderation",
-        "meeting:getMeetingChat",
+        "jitsi-meet:getMeetingChat",
         "voip:startCall",
     ]);
     assert.deepEqual(manifest.requires, [
@@ -82,6 +91,40 @@ test("participant Whiteboard opens request approval from active meeting peers", 
     assert.match(source, /operation: "request_whiteboard_open_approval"/);
 });
 
+test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const delegationSource = readFileSync(
+        resolve(ROOT, "api/whiteboard-delegation.js"),
+        "utf8",
+    );
+    for (const capability of [
+        "whiteboard:fetchBoardData",
+        "whiteboard:membership",
+        "whiteboard:deleteCanvas",
+    ]) {
+        assert.match(source, new RegExp(capability));
+    }
+    assert.match(source, /ctx\.getCapability\("whiteboard:fetchBoardData"\)/);
+    assert.match(delegationSource, /ctx\.getCapability\(/);
+    assert.match(delegationSource, /whiteboard:fetchBoardData/);
+    assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
+    const verificationSource = readFileSync(
+        resolve(ROOT, "api/whiteboard-verification.js"),
+        "utf8",
+    );
+    assert.match(verificationSource, /createdByAccountId/);
+});
+
+test("account cleanup resolves canonical account ids to participant handles", () => {
+    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+
+    assert.match(source, /profileIdentity\.resolveAccountHandle\(accountId\)/);
+    assert.match(
+        source,
+        /store\.removeDeletedAccountFromMeetings\(participantHandle\)/,
+    );
+});
+
 test("disposable Messages calls stay out of Meetings discovery", () => {
     const source = readFileSync(
         resolve(ROOT, "api/meetings-routes.js"),
@@ -93,18 +136,32 @@ test("disposable Messages calls stay out of Meetings discovery", () => {
 test("jitsi bootstrap uses scoped lifecycle registrations", () => {
     const bootstrapSource = readFileSync(resolve(ROOT, "bootstrap.js"), "utf8");
 
-    assert.match(bootstrapSource, /ctx\.contributePublicCapability\(/);
-    assert.match(bootstrapSource, /ctx\.registerFlow\(flow\)/);
-    assert.match(bootstrapSource, /if \(!ctx\.flow\.exists\(flow\.id\)\)/);
     assert.match(
         bootstrapSource,
-        /stages: \["resolve-providers", "resolve-panels", "compose-surface"\]/,
+        /ctx\.flow\.exists\("construct-meetings-ui"\)/,
     );
-    assert.match(
-        bootstrapSource,
-        /stages: \["validate-request", "provision-session", "finalize-join"\]/,
-    );
+    assert.match(bootstrapSource, /ctx\.flow\.exists\("create-meeting"\)/);
+    assert.doesNotMatch(bootstrapSource, /ctx\.registerFlow/);
+    assert.doesNotMatch(bootstrapSource, /meetings:isProviderAvailable/);
     assert.doesNotMatch(bootstrapSource, /getCapability\(['"]system:ctx['"]\)/);
+});
+
+test("jitsi contributes only module-owned capability identifiers", () => {
+    const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const configurationSource = readFileSync(
+        resolve(ROOT, "api/reuse/configuration-api.js"),
+        "utf8",
+    );
+    const capabilityIds = [
+        ...indexSource.matchAll(/contributePublicCapability\(\s*["']([^"']+)/g),
+    ]
+        .concat([
+            ...configurationSource.matchAll(
+                /contributePublicCapability\(\s*["']([^"']+)/g,
+            ),
+        ])
+        .map((match) => match[1]);
+    assert.deepEqual(capabilityIds, ["jitsi-meet:getMeetingChat"]);
 });
 
 test("jitsi API registers configured CSP origins through auth capability", () => {

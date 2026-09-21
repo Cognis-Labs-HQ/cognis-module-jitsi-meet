@@ -193,6 +193,29 @@ test("meeting link chat uses scoped message APIs without requesting room metadat
     assert.match(chatSource, /messagesClient\(\)\.listRoomMessages\(roomId/);
 });
 
+test("periodic refreshes preserve hydrated avatars and current chat membership", () => {
+    const participantsSource = readFileSync(
+        resolve(ROOT, "ui/app/participants.js"),
+        "utf8",
+    );
+    const meetingsSource = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    const chatSource = readFileSync(resolve(ROOT, "ui/app/chat.js"), "utf8");
+
+    assert.match(
+        participantsSource,
+        /participantSignature\(refreshedParticipants\)/,
+    );
+    assert.match(participantsSource, /if \(membershipChanged\)/);
+    assert.match(participantsSource, /participantRefreshSequence/);
+    assert.match(participantsSource, /stateRefreshSequence/);
+    assert.match(meetingsSource, /if \(persistedMeetingsChanged\)/);
+    assert.match(meetingsSource, /activeMeetingsRequestSequence/);
+    assert.match(chatSource, /state\.meeting\?\.activeParticipants/);
+});
+
 test("meeting link guests can join without participant-card data", () => {
     const appSource = readJitsiUiBundle();
     const meetingSource = readFileSync(
@@ -758,6 +781,14 @@ test("reclaim session button uses success outline styling", () => {
     assert.match(
         cssSource,
         /\.jitsi-section-heading[\s\S]*color: var\(--text\)/,
+    );
+});
+
+test("meeting controls honor their hidden state inside the module root", () => {
+    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    assert.match(
+        stylesheet,
+        /\.jitsi-route-root \[hidden\] \{\s*display: none !important;\s*\}/,
     );
 });
 
