@@ -1,6 +1,6 @@
 # Restore Reliable Jitsi Meeting Joins
 
-**Feature Branch:** work
+**Feature Branch:** feature-investigate-jitsi-meet-impact-on-cognis
 
 ## Discard expired Jitsi authentication sessions
 

@@ -1,6 +1,6 @@
 # Zuverlässige Jitsi-Besprechungsbeitritte wiederherstellen
 
-**Feature-Branch:** work
+**Feature-Branch:** feature-investigate-jitsi-meet-impact-on-cognis
 
 ## Abgelaufene Jitsi-Authentifizierungssitzungen verwerfen
 

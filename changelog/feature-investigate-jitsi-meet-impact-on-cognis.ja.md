@@ -1,6 +1,6 @@
 # Jitsi ミーティング参加の信頼性を回復
 
-**機能ブランチ:** work
+**機能ブランチ:** feature-investigate-jitsi-meet-impact-on-cognis
 
 ## 期限切れの Jitsi 認証セッションを破棄
 
