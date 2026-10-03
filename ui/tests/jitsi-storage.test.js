@@ -22,6 +22,7 @@ test("stale Jitsi authentication sessions are removed before embedding", () => {
     assert.deepEqual(clearJitsiAuthenticationSession(storage), {
         cleared: true,
         malformed: false,
+        unavailable: false,
     });
     assert.deepEqual(JSON.parse(storage.value()), { displayName: "User" });
 });
@@ -33,6 +34,7 @@ test("valid Jitsi settings without a session remain unchanged", () => {
     assert.deepEqual(clearJitsiAuthenticationSession(storage), {
         cleared: false,
         malformed: false,
+        unavailable: false,
     });
     assert.equal(storage.value(), value);
 });
@@ -43,6 +45,23 @@ test("malformed Jitsi settings are reported without overwriting them", () => {
     assert.deepEqual(clearJitsiAuthenticationSession(storage), {
         cleared: false,
         malformed: true,
+        unavailable: false,
     });
     assert.equal(storage.value(), "not-json");
+});
+
+test("unavailable browser storage is treated as a recoverable fallback", () => {
+    const storage = {
+        getItem() {
+            const error = new Error("Storage is unavailable");
+            error.name = "SecurityError";
+            throw error;
+        },
+    };
+
+    assert.deepEqual(clearJitsiAuthenticationSession(storage), {
+        cleared: false,
+        malformed: false,
+        unavailable: true,
+    });
 });

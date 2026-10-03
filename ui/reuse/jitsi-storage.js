@@ -1,9 +1,15 @@
 const JITSI_STORAGE_KEY = "jitsiLocalStorage";
 
 export function clearJitsiAuthenticationSession(storage) {
-    const serializedSettings = storage?.getItem?.(JITSI_STORAGE_KEY);
-    if (!serializedSettings) return { cleared: false, malformed: false };
-
+    let serializedSettings;
+    try {
+        serializedSettings = storage?.getItem?.(JITSI_STORAGE_KEY);
+    } catch {
+        return { cleared: false, malformed: false, unavailable: true };
+    }
+    if (!serializedSettings) {
+        return { cleared: false, malformed: false, unavailable: false };
+    }
     try {
         const settings = JSON.parse(serializedSettings);
         if (
@@ -11,12 +17,16 @@ export function clearJitsiAuthenticationSession(storage) {
             typeof settings !== "object" ||
             !("sessionId" in settings)
         ) {
-            return { cleared: false, malformed: false };
+            return { cleared: false, malformed: false, unavailable: false };
         }
         delete settings.sessionId;
-        storage.setItem(JITSI_STORAGE_KEY, JSON.stringify(settings));
-        return { cleared: true, malformed: false };
+        try {
+            storage.setItem(JITSI_STORAGE_KEY, JSON.stringify(settings));
+        } catch {
+            return { cleared: false, malformed: false, unavailable: true };
+        }
+        return { cleared: true, malformed: false, unavailable: false };
     } catch {
-        return { cleared: false, malformed: true };
+        return { cleared: false, malformed: true, unavailable: false };
     }
 }
