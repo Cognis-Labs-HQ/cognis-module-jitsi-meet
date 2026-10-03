@@ -162,6 +162,8 @@ Gastbeitritte behalten die Schlüsselbundauflösung für das Besprechungskennwor
 
 Beim Verschieben des aktiven Jitsi-Frames in den hosteigenen Bild-in-Bild-Container ändert sich sein DOM-Elternelement. Safari kann dabei den Browsing-Kontext eines eingebetteten Iframes neu erstellen, wodurch Jitsi eine Neuverbindung durchführt; Chromium und Firefox behalten ihn üblicherweise bei. Meetings fordert von `ui:makeFloatingWindow` die Beibehaltung des Browsing-Kontexts an und übermittelt nach einem bestätigten Konferenzbeitritt das aufgelöste Besprechungskennwort automatisch erneut, falls Host oder Browser dennoch neu verbinden. Eine wiederholte Kennwortanforderung vor einem erfolgreichen Beitritt gilt weiterhin als abgelehntes Kennwort und fordert einen aktualisierten Wert aus dem Schlüsselbund an.
 
+Wenn der Browserspeicher verfügbar ist, entfernt Meetings vor dem Erstellen einer eingebetteten Konferenz die zwischengespeicherte Jitsi-Authentifizierungssitzungskennung und behält alle anderen lokalen Einstellungen bei. Cognis tritt über die konfigurierte Gast-Domain bei; dadurch können ein Jicofo-Neustart oder ein Sitzungsablauf spätere Beitritte nicht in wiederholten `session-invalid`-Konferenzanfragen festhalten.
+
 Ein Gast ohne vorhandene Whiteboard-Zuordnung wartet auf den synchronisierten Besprechungszustand, ohne wiederholt wirkungslose Arbeitsflächenvorbereitungen einzuplanen.
 
 - Kennwörter werden pro Besprechungsdatensatz erzeugt.

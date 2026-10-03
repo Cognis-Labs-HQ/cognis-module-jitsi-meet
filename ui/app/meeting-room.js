@@ -1,5 +1,6 @@
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
+import { clearJitsiAuthenticationSession } from "../reuse/jitsi-storage.js";
 import {
     loadJitsiExternalApi,
     resolveJitsiDefaultBackground,
@@ -47,6 +48,40 @@ export function createEmbedHandlers({
                 variant: "error",
             });
             return;
+        }
+
+        let jitsiStorage = null;
+        try {
+            jitsiStorage = window.localStorage;
+        } catch (error) {
+            await logUi(
+                "error",
+                "Jitsi session cleanup continued without browser storage.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "access_jitsi_authentication_session_storage",
+                    meetingId: state.meeting.id,
+                    errorName: error?.name,
+                },
+            );
+        }
+        const sessionCleanup = clearJitsiAuthenticationSession(jitsiStorage);
+        if (sessionCleanup.unavailable && jitsiStorage) {
+            await logUi(
+                "error",
+                "Jitsi session cleanup continued without browser storage.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "read_jitsi_authentication_session_storage",
+                    meetingId: state.meeting.id,
+                },
+            );
+        } else if (sessionCleanup.malformed) {
+            await logUi("error", "Invalid Jitsi local storage was ignored.", {
+                component: "module:jitsi-meet",
+                operation: "clear_stale_jitsi_authentication_session",
+                meetingId: state.meeting.id,
+            });
         }
 
         const createKeyringScope = uiCtx.capabilities.get(

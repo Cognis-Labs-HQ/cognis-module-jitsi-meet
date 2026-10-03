@@ -157,6 +157,8 @@ Guest joins retain keyring resolution for the meeting password and encrypted cha
 
 Moving the live Jitsi frame into the host-owned picture-in-picture container changes its DOM parent. Safari can recreate an embedded iframe's browsing context during that move, which makes Jitsi reconnect; Chromium and Firefox commonly preserve it. Meetings requests browsing-context preservation from `ui:makeFloatingWindow` and, if the host or browser still reconnects, automatically resubmits the resolved meeting password after a confirmed conference join. A repeated password request before a successful join is still treated as a rejected password and requests an updated value from the keyring.
 
+When browser storage is available, before creating an embedded conference Meetings removes Jitsi's cached authentication session identifier while preserving its other local preferences. Cognis joins through the configured guest domain, so this prevents a Jicofo restart or session expiry from trapping subsequent joins in repeated `session-invalid` conference requests.
+
 A guest without an existing Whiteboard mapping waits for synchronized meeting state without repeatedly scheduling no-op canvas preparation.
 
 - Meeting passwords are generated per meeting record.
