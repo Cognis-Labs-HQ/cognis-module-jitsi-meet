@@ -1,5 +1,6 @@
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
+import { clearJitsiAuthenticationSession } from "../reuse/jitsi-storage.js";
 import {
     loadJitsiExternalApi,
     resolveJitsiDefaultBackground,
@@ -47,6 +48,15 @@ export function createEmbedHandlers({
                 variant: "error",
             });
             return;
+        }
+
+        const sessionCleanup = clearJitsiAuthenticationSession(localStorage);
+        if (sessionCleanup.malformed) {
+            await logUi("error", "Invalid Jitsi local storage was ignored.", {
+                component: "module:jitsi-meet",
+                operation: "clear_stale_jitsi_authentication_session",
+                meetingId: state.meeting.id,
+            });
         }
 
         const createKeyringScope = uiCtx.capabilities.get(

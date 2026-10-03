@@ -160,6 +160,8 @@ Proses bergabung tamu mempertahankan resolusi keyring untuk kata sandi rapat dan
 
 Memindahkan bingkai Jitsi aktif ke kontainer gambar-dalam-gambar milik host mengubah induk DOM-nya. Safari dapat membuat ulang konteks penjelajahan iframe tersemat selama pemindahan tersebut sehingga Jitsi tersambung ulang; Chromium dan Firefox biasanya mempertahankannya. Meetings meminta `ui:makeFloatingWindow` mempertahankan konteks penjelajahan dan, jika host atau browser masih menyambung ulang, secara otomatis mengirimkan kembali kata sandi rapat yang telah diselesaikan setelah proses bergabung ke konferensi dikonfirmasi. Permintaan kata sandi berulang sebelum berhasil bergabung tetap dianggap sebagai penolakan kata sandi dan meminta nilai terbaru dari keyring.
 
+Sebelum membuat konferensi tersemat, Meetings menghapus pengenal sesi autentikasi Jitsi yang tersimpan sambil mempertahankan preferensi lokal lainnya. Cognis bergabung melalui domain tamu yang dikonfigurasi, sehingga mulai ulang Jicofo atau sesi kedaluwarsa tidak dapat menjebak upaya bergabung berikutnya dalam permintaan konferensi `session-invalid` berulang.
+
 Tamu tanpa pemetaan Papan Tulis yang sudah ada menunggu status rapat tersinkronisasi tanpa menjadwalkan persiapan kanvas tanpa hasil secara berulang.
 
 - Kata sandi dibuat per rekaman rapat.
