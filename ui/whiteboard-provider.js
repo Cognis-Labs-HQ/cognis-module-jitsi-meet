@@ -69,5 +69,9 @@ export async function resolveWhiteboardServerContract(apiFetch, signal) {
         requiredProvider: String(
             payload?.data?.requiredProvider ?? "nextcloud-whiteboard@2.3.146+",
         ),
+        provider:
+            payload?.data?.provider && typeof payload.data.provider === "object"
+                ? payload.data.provider
+                : null,
     };
 }

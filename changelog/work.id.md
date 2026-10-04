@@ -26,6 +26,10 @@ Kontrol Whiteboard kini menjadi interaktif segera setelah penyedia peramban dan 
 
 Jitsi kini memakai `whiteboard:fetchBoardData` persis seperti yang diterbitkan Nextcloud Whiteboard 2.3.146 dan versi lebih baru melalui bootstrap tercakup. Sebelum membuat kanvas, aktivasi memeriksa kontrak tersebut dan menampilkan petunjuk pembaruan serta pengaktifan ulang yang dapat ditindaklanjuti, alih-alih membuat kanvas yang tidak dapat diverifikasi server.
 
+## Diagnosis batas siklus hidup penyedia
+
+Kontrak ketersediaan kini melaporkan versi Whiteboard terpasang, hasil integritas, permintaan hak istimewa, dan status sumber tepercaya. Ini membedakan penyedia lama atau tidak tepercaya dari kegagalan siklus hidup Cognis core yang tidak mengekspos kapabilitas publik penyedia yang valid.
+
 ## Commit
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
@@ -33,3 +37,4 @@ Jitsi kini memakai `whiteboard:fetchBoardData` persis seperti yang diterbitkan N
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
 - [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
+- [736abfb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736abfbf2a8579b7c6961755ad26cb6446a54cac)

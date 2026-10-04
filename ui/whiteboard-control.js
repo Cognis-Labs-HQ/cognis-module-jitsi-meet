@@ -522,6 +522,14 @@ export async function bindWhiteboardButton({
                                     serverContract.requiredCapability,
                                 requiredProvider:
                                     serverContract.requiredProvider,
+                                installedProviderVersion:
+                                    serverContract.provider?.version,
+                                providerIntegrity:
+                                    serverContract.provider?.integrity,
+                                providerPrivileged:
+                                    serverContract.provider?.privileged,
+                                providerTrustedSource:
+                                    serverContract.provider?.trustedSource,
                             },
                         );
                         showToast(

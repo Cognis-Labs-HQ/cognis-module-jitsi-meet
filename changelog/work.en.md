@@ -26,6 +26,10 @@ The Whiteboard control now becomes interactive as soon as its browser and compon
 
 Jitsi now consumes `whiteboard:fetchBoardData` exactly as Nextcloud Whiteboard 2.3.146 and newer publish it through scoped bootstrap. Before creating a canvas, activation checks that contract and reports an actionable update-and-re-enable message instead of creating a canvas that the server cannot verify.
 
+## Diagnose the provider lifecycle boundary
+
+The availability contract now reports the installed Whiteboard version, integrity result, privilege request, and trusted-source state. This distinguishes an outdated or untrusted provider from a Cognis core lifecycle failure that did not expose a valid provider's public capability.
+
 ## Commits
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
@@ -33,3 +37,4 @@ Jitsi now consumes `whiteboard:fetchBoardData` exactly as Nextcloud Whiteboard 2
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
 - [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
+- [736abfb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736abfbf2a8579b7c6961755ad26cb6446a54cac)

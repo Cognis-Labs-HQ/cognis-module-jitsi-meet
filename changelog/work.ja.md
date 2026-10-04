@@ -26,6 +26,10 @@ Whiteboard コントロールは、ブラウザーとコンポーネントウィ
 
 Jitsi は、Nextcloud Whiteboard 2.3.146 以降がスコープ付き Bootstrap から公開する `whiteboard:fetchBoardData` をそのまま使用します。キャンバス作成前に有効化処理がこの契約を確認し、サーバーが検証できないキャンバスを作成する代わりに、更新と再有効化を求める具体的なメッセージを表示します。
 
+## Provider ライフサイクル境界を診断
+
+可用性契約は、インストール済み Whiteboard のバージョン、整合性結果、特権要求、信頼済みソース状態を報告するようになりました。これにより、古いまたは信頼されていない Provider と、有効な Provider の公開 Capability を露出しなかった Cognis core のライフサイクル障害を区別できます。
+
 ## コミット
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
@@ -33,3 +37,4 @@ Jitsi は、Nextcloud Whiteboard 2.3.146 以降がスコープ付き Bootstrap �
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
 - [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
+- [736abfb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736abfbf2a8579b7c6961755ad26cb6446a54cac)

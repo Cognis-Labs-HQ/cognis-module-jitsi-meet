@@ -26,6 +26,10 @@ Das Whiteboard-Steuerelement wird nun interaktiv, sobald seine Browser- und Komp
 
 Jitsi verwendet `whiteboard:fetchBoardData` nun genau so, wie Nextcloud Whiteboard 2.3.146 und neuer es über den bereichsgebundenen Bootstrap veröffentlicht. Vor der Canvas-Erstellung prüft die Aktivierung diesen Vertrag und zeigt eine konkrete Aufforderung zum Aktualisieren und erneuten Aktivieren, statt eine vom Server nicht prüfbare Arbeitsfläche zu erstellen.
 
+## Provider-Lebenszyklusgrenze diagnostizieren
+
+Der Verfügbarkeitsvertrag meldet nun installierte Whiteboard-Version, Integritätsergebnis, Privilegienanforderung und Vertrauensstatus der Quelle. Dadurch lässt sich ein veralteter oder nicht vertrauenswürdiger Provider von einem Cognis-Core-Lebenszyklusfehler unterscheiden, der die öffentliche Capability eines gültigen Providers nicht bereitgestellt hat.
+
 ## Commits
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
@@ -33,3 +37,4 @@ Jitsi verwendet `whiteboard:fetchBoardData` nun genau so, wie Nextcloud Whiteboa
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
 - [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
+- [736abfb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736abfbf2a8579b7c6961755ad26cb6446a54cac)
