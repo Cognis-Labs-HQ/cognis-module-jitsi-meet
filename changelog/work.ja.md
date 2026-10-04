@@ -18,6 +18,11 @@
 
 対応するすべての文書で、Whiteboard Capability の解決はライフサイクルにスコープされたモジュールコンテキストのみを介すると説明するようになりました。
 
+## キャンバス作成前に両方の Whiteboard 連携面を確認
+
+ミーティング Whiteboard はキャンバスを作成する前に、ブラウザーがミーティング種別に適したキャンバスファクトリーを提供し、サーバーが Provider 検証 Capability を提供していることを確認するようになりました。完全な Provider 契約が利用できる場合は PiP 初期化を維持しながら、起動失敗によって重複キャンバスが残ることを防ぎます。
+
 ## コミット
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
+- [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)

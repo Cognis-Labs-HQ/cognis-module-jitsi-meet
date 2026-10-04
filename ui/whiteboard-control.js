@@ -1,6 +1,9 @@
 import { logUi, showToast } from "./reuse/feedback.js";
 import { uiCtx } from "./reuse/resources.js";
-import { resolveWhiteboardCapabilities } from "./whiteboard-provider.js";
+import {
+    resolveWhiteboardCapabilities,
+    verifyWhiteboardServerAvailable,
+} from "./whiteboard-provider.js";
 import {
     ensureComponentPage,
     ensureWhiteboardKeyringUnlocked,
@@ -350,9 +353,29 @@ export async function bindWhiteboardButton({
     slot.replaceChildren(button);
     let capabilities;
     try {
+        const canvasFactory = state.shareAccessToken
+            ? null
+            : meetingHasInvitedParticipants(state.meeting)
+              ? "createCanvas"
+              : "createDisposableCanvas";
         capabilities = await resolveWhiteboardCapabilities(signal, {
-            requireCanvasFactory: !state.shareAccessToken,
+            canvasFactory,
         });
+        if (
+            !state.shareAccessToken &&
+            !(await verifyWhiteboardServerAvailable(apiFetch, signal))
+        ) {
+            await logUi(
+                "error",
+                "Whiteboard server provider is unavailable; canvas preparation was skipped.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "verify_whiteboard_server_provider",
+                    meetingId: state.meeting?.id,
+                },
+            );
+            return;
+        }
     } catch (error) {
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",
@@ -374,7 +397,11 @@ export async function bindWhiteboardButton({
         typeof spawnComponentPage !== "function" ||
         typeof makeFloatingWindow !== "function" ||
         (!state.shareAccessToken &&
-            typeof whiteboardGateway?.createDisposableCanvas !== "function")
+            typeof whiteboardGateway?.[
+                meetingHasInvitedParticipants(state.meeting)
+                    ? "createCanvas"
+                    : "createDisposableCanvas"
+            ] !== "function")
     )
         return;
 
