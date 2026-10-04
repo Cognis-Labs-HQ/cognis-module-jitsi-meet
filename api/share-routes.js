@@ -91,12 +91,11 @@ export function registerMeetingShareRoutes({
 }) {
     const dbExecutor = ctx.getCapability("db:executor");
     const log = ctx.getCapability("logging:log");
-    const systemCtx = ctx.getCapability("system:ctx");
     const listSharesByResource = ctx.getCapability("share:listByResource");
     if (
         !dbExecutor ||
         !profileStore ||
-        !systemCtx ||
+        !ctx.flow ||
         typeof listSharesByResource !== "function"
     ) {
         router.get(
@@ -208,7 +207,7 @@ export function registerMeetingShareRoutes({
                 );
                 return;
             }
-            const flowResult = await systemCtx.flow.run("mint-share-token", {
+            const flowResult = await ctx.flow.run("mint-share-token", {
                 claims,
                 ownerAccountId: claims.sub,
                 resourceType: "meeting",
@@ -264,7 +263,7 @@ export function registerMeetingShareRoutes({
                 res,
             });
             if (!meeting) return;
-            const flowResult = await systemCtx.flow.run("revoke-share-token", {
+            const flowResult = await ctx.flow.run("revoke-share-token", {
                 claims,
                 shareId,
                 ownerAccountId: claims.sub,

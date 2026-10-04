@@ -108,10 +108,6 @@ export function registerJitsiConfigurationApi(router, ctx) {
             data: { ...liveness, instanceUrl: config.instanceUrl },
         };
     };
-    ctx.getCapability("system:ctx")?.contributePublicCapability?.(
-        "module:jitsi-meet:enableTest",
-        runEnableTest,
-    );
     const contributeHealth = ctx.getCapability("system:health:contribute");
     if (typeof contributeHealth === "function") {
         contributeHealth("module:jitsi-meet", async () => {

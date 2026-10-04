@@ -1,7 +1,7 @@
 const uiCtx = globalThis[Symbol.for("cognis.uiCtx")];
 
-if (!uiCtx?.capabilities || typeof uiCtx.capabilities.get !== "function") {
-    throw new Error("Required UI context unavailable: cognis.uiCtx");
+if (!uiCtx || typeof uiCtx.capabilities?.get !== "function") {
+    throw new TypeError("Cognis UI context is unavailable.");
 }
 
 const reuseResources = uiCtx.capabilities.get("ui:reuse");

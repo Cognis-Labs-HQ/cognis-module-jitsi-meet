@@ -15,7 +15,12 @@ function createResponse() {
     };
 }
 
-function registerJoinHandler({ addMembership, operations, logs = [] }) {
+function registerJoinHandler({
+    addMembership,
+    operations,
+    logs = [],
+    activeMeetings = [],
+}) {
     const handlers = new Map();
     const meeting = {
         id: "meeting-1",
@@ -26,6 +31,12 @@ function registerJoinHandler({ addMembership, operations, logs = [] }) {
         router: { post: (path, handler) => handlers.set(path, handler) },
         store: {
             async ensureSchema() {},
+            async listActiveMeetings() {
+                return activeMeetings;
+            },
+            async setUserSessionsInactive(meetingId, username) {
+                operations.push(`inactive:${meetingId}:${username}`);
+            },
             async getActiveSessionsForUser() {
                 return [];
             },
@@ -100,6 +111,36 @@ test("joining a meeting restores an archived chat membership before chat loading
         },
     ]);
     assert.deepEqual(operations, ["membership", "presence", "payload"]);
+});
+
+test("joining deactivates the account's presence in another meeting", async () => {
+    const operations = [];
+    const handler = registerJoinHandler({
+        operations,
+        activeMeetings: [
+            {
+                id: "older-meeting",
+                activeUsernames: ["bob"],
+            },
+        ],
+        addMembership: async () => {
+            operations.push("membership");
+        },
+    });
+    const response = createResponse();
+
+    await handler(
+        { body: { meetingId: "meeting-1", sessionId: "session-1" } },
+        response,
+    );
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations, [
+        "membership",
+        "inactive:older-meeting:bob",
+        "presence",
+        "payload",
+    ]);
 });
 
 test("joining fails safely when chat membership cannot be restored", async () => {

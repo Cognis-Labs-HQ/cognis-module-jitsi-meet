@@ -131,6 +131,7 @@
   <string name="module.jitsi_meet.whiteboard.open">ホワイトボード</string>
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard を閉じる</string>
   <string name="module.jitsi_meet.whiteboard.description">このミーティング用の同期ホワイトボードを開きます。</string>
+  <string name="module.jitsi_meet.whiteboard.provider_unavailable">サーバーの Whiteboard 連携を利用できません。Nextcloud Whiteboard を更新して再度有効化してから、もう一度お試しください。</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">ホワイトボードの読み込みエラー</string>
   <string name="module.jitsi_meet.whiteboard.load_failed_detailed">{{stage}}中に Whiteboard を開けませんでした。正確なエラーはブラウザコンソールで確認してください。</string>
   <string name="module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip">参加者が画面を共有している間は Whiteboard を使用できません。</string>

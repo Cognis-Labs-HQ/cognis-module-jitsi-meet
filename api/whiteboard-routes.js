@@ -109,12 +109,41 @@ export function registerMeetingWhiteboardRoutes({
     const serializeMeetingStateUpdate = createMeetingStateSerializer();
     router.get(
         "/api/v1/modules/jitsi-meet/whiteboard/availability",
-        (req, res) => {
+        async (req, res) => {
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
+            const providerAssurance = await ctx
+                .getModuleAssurance?.("nextcloud-whiteboard")
+                .catch((error) => {
+                    ctx.log?.(
+                        "error",
+                        "Whiteboard module assurance lookup failed.",
+                        {
+                            component: "jitsi-meet-module",
+                            operation: "resolve_whiteboard_module_assurance",
+                            error:
+                                error instanceof Error
+                                    ? error.message
+                                    : String(error),
+                        },
+                    );
+                    return null;
+                });
+            res.setHeader?.("cache-control", "no-store");
             sendJson(res, 200, {
                 data: {
                     available: isWhiteboardProviderAvailable?.() === true,
+                    requiredCapability: "whiteboard:fetchBoardData",
+                    requiredProvider: "nextcloud-whiteboard@2.3.146+",
+                    provider: providerAssurance
+                        ? {
+                              version: providerAssurance.version ?? null,
+                              integrity: providerAssurance.integrity,
+                              privileged: providerAssurance.requested === true,
+                              trustedSource:
+                                  providerAssurance.trustedSource === true,
+                          }
+                        : null,
                 },
             });
         },
@@ -245,7 +274,7 @@ export function registerMeetingWhiteboardRoutes({
                         fetchBoardData,
                         meeting: resolved.meeting,
                         whiteboardId,
-                        expectedCreator: resolved.requesterUsername,
+                        expectedCreatorAccountId: resolved.requesterAccountId,
                     });
                 } catch (error) {
                     ctx.log?.(

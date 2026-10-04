@@ -22,7 +22,7 @@ function waitForProviderRetry(signal, delayMs) {
 
 export async function resolveWhiteboardCapabilities(
     signal,
-    { requireCanvasFactory = true } = {},
+    { canvasFactory = "createDisposableCanvas" } = {},
 ) {
     const ensureProvidersLoaded = uiCtx.capabilities.get(
         "ui:ensureProvidersLoaded",
@@ -42,9 +42,9 @@ export async function resolveWhiteboardCapabilities(
         }
         capabilities = readCapabilities();
         if (
-            (!requireCanvasFactory ||
-                typeof capabilities.whiteboardGateway
-                    ?.createDisposableCanvas === "function") &&
+            (!canvasFactory ||
+                typeof capabilities.whiteboardGateway?.[canvasFactory] ===
+                    "function") &&
             typeof capabilities.spawnComponentPage === "function" &&
             typeof capabilities.makeFloatingWindow === "function"
         ) {
@@ -53,4 +53,25 @@ export async function resolveWhiteboardCapabilities(
         if (attempt < 2) await waitForProviderRetry(signal, 150);
     }
     return capabilities;
+}
+
+export async function resolveWhiteboardServerContract(apiFetch, signal) {
+    const response = await apiFetch(
+        "/api/v1/modules/jitsi-meet/whiteboard/availability",
+        { signal },
+    );
+    const payload = await response.json().catch(() => ({}));
+    return {
+        available: response.ok && payload?.data?.available === true,
+        requiredCapability: String(
+            payload?.data?.requiredCapability ?? "whiteboard:fetchBoardData",
+        ),
+        requiredProvider: String(
+            payload?.data?.requiredProvider ?? "nextcloud-whiteboard@2.3.146+",
+        ),
+        provider:
+            payload?.data?.provider && typeof payload.data.provider === "object"
+                ? payload.data.provider
+                : null,
+    };
 }

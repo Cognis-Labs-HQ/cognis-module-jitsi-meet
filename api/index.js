@@ -32,6 +32,7 @@ import {
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
+import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
 
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -80,6 +81,9 @@ export function registerUi(ctx) {
     ctx.registerNavbarPlugin({
         scriptUrl: "/static/modules/jitsi-meet/navbar.js",
         access: { minRole: "user" },
+    });
+    ctx.registerCapabilityProvider({
+        scriptUrl: "/static/modules/jitsi-meet/voip-provider.js",
         providesCapabilities: ["voip:startCall"],
     });
     const meetingsStylesheets = ["/static/modules/jitsi-meet/jitsi-meet.css"];
@@ -124,7 +128,6 @@ export function registerApiRoutes(router, ctx) {
     }
     const dbExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
-    const systemCtx = ctx.getCapability("system:ctx");
     const requestShareApproval = ctx.getCapability("share:requestApproval");
     if (typeof requestShareApproval !== "function") {
         throw new Error(
@@ -177,19 +180,16 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
     const fetchBoardData = (...args) => {
-        const providerFetchBoardData =
-            ctx.getCapability("whiteboard:fetchBoardData") ??
-            systemCtx?.getCapability?.("whiteboard:fetchBoardData");
+        const providerFetchBoardData = ctx.getCapability(
+            "whiteboard:fetchBoardData",
+        );
         if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
         }
         return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof (
-            ctx.getCapability("whiteboard:fetchBoardData") ??
-            systemCtx?.getCapability?.("whiteboard:fetchBoardData")
-        ) === "function";
+        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
     const resolveShareGuestMeetingAccess = async ({
         claims,
         meetingId,
@@ -368,12 +368,12 @@ export function registerApiRoutes(router, ctx) {
             }
         });
     };
-    systemCtx?.getCapability?.("auth:registerKeyringDataOwner")?.(
+    ctx.getCapability("auth:registerKeyringDataOwner")?.(
         "jitsi-meet",
         removeMeetingMemberships,
     );
 
-    systemCtx?.flow?.extend?.(
+    ctx.flow.extend(
         "deprovision-user",
         "cleanup-dependencies",
         { id: "jitsi-meet:delete-user-activity" },
@@ -387,50 +387,91 @@ export function registerApiRoutes(router, ctx) {
             ) {
                 return { cleaned: false };
             }
-            const accountId = normalizeHandleKey(input.username);
-            await dbExecutor.transaction(async (transactionDb) => {
-                for (const table of [
-                    "jitsi_meeting_presence",
-                    "jitsi_meeting_participants",
-                ]) {
-                    await transactionDb.executeCommand({
-                        option: "DELETE",
-                        table,
-                        where: [{ column: "username", value: accountId }],
-                    });
-                }
-                const meetingResult = await transactionDb.executeCommand({
-                    option: "SELECT",
-                    table: "jitsi_meetings",
-                    columns: ["id"],
-                    where: [{ column: "created_by", value: accountId }],
+            const accountId = String(input.username).trim();
+            const participantHandle =
+                await profileIdentity.resolveAccountHandle(accountId);
+            let cleanup;
+            try {
+                cleanup = await store.removeDeletedAccountFromMeetings(
+                    participantHandle,
+                    {
+                        beforeDeleteMeeting: async (meeting) => {
+                            const ownerAccountId =
+                                normalizeHandleKey(meeting.createdBy) ===
+                                normalizeHandleKey(participantHandle)
+                                    ? accountId
+                                    : (
+                                          await profileStore.getProfileByHandle(
+                                              meeting.createdBy,
+                                          )
+                                      )?.accountId;
+                            if (!ownerAccountId) {
+                                throw new Error(
+                                    "Meeting owner is unavailable for resource cleanup.",
+                                );
+                            }
+                            if (meeting.whiteboardId) {
+                                const deleteWhiteboard = ctx.getCapability(
+                                    "whiteboard:deleteCanvas",
+                                );
+                                if (typeof deleteWhiteboard !== "function") {
+                                    throw new Error(
+                                        "Whiteboard deletion capability is unavailable.",
+                                    );
+                                }
+                                await deleteReferencedMeetingResource({
+                                    deleteResource: () =>
+                                        deleteWhiteboard({
+                                            whiteboardId: meeting.whiteboardId,
+                                            actorAccountId: ownerAccountId,
+                                        }),
+                                    resourceType: "whiteboard",
+                                    resourceId: meeting.whiteboardId,
+                                    meetingId: meeting.id,
+                                    log,
+                                });
+                            }
+                            if (meeting.chatRoomId) {
+                                await deleteReferencedMeetingResource({
+                                    deleteResource: () =>
+                                        deleteChatroom({
+                                            roomId: meeting.chatRoomId,
+                                            actorAccountId: ownerAccountId,
+                                        }),
+                                    resourceType: "chatroom",
+                                    resourceId: meeting.chatRoomId,
+                                    meetingId: meeting.id,
+                                    log,
+                                });
+                            }
+                            await deleteResourceShares?.({
+                                ownerAccountId,
+                                resourceType: "meeting",
+                                resourceId: meeting.id,
+                            });
+                        },
+                    },
+                );
+            } catch (error) {
+                ctx.log?.("error", "Deleted user meeting cleanup failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "delete_user_meeting_resources",
+                    accountId,
+                    participantHandle,
+                    error:
+                        error instanceof Error ? error.message : String(error),
                 });
-                for (const meetingRow of meetingResult.rows ?? []) {
-                    const meetingId = String(meetingRow.id);
-                    for (const table of [
-                        "jitsi_meeting_presence",
-                        "jitsi_meeting_participants",
-                        "jitsi_meeting_state",
-                    ]) {
-                        await transactionDb.executeCommand({
-                            option: "DELETE",
-                            table,
-                            where: [{ column: "meeting_id", value: meetingId }],
-                        });
-                    }
-                }
-                await transactionDb.executeCommand({
-                    option: "DELETE",
-                    table: "jitsi_meetings",
-                    where: [{ column: "created_by", value: accountId }],
-                });
-            });
+                throw error;
+            }
             ctx.log?.("info", "Deleted user meeting activity.", {
                 component: "jitsi-meet-module",
                 operation: "delete_user_activity",
                 accountId,
+                participantHandle,
+                updatedMeetingIds: cleanup.updatedMeetingIds,
+                deletedMeetingIds: cleanup.deletedMeetingIds,
             });
-            return { cleaned: true, accountId };
+            return { cleaned: true, accountId, ...cleanup };
         },
     );
 
@@ -439,7 +480,7 @@ export function registerApiRoutes(router, ctx) {
         store.getMeetingById.bind(store),
     );
     ctx.contributePublicCapability(
-        "meeting:getMeetingChat",
+        "jitsi-meet:getMeetingChat",
         createGetMeetingChatCapability({
             store,
             profileStore,
@@ -661,11 +702,9 @@ export function registerApiRoutes(router, ctx) {
         groupChatMembership,
         resolveRoomMembership,
         resolveWhiteboardMembership: () =>
-            systemCtx?.getCapability?.("whiteboard:membership") ??
             ctx.getCapability("whiteboard:membership"),
         fetchBoardData,
         resolveWhiteboardDeletion: () =>
-            systemCtx?.getCapability?.("whiteboard:deleteCanvas") ??
             ctx.getCapability("whiteboard:deleteCanvas"),
         buildMeetingChatTitle,
         dispatchMeetingNotifications,
@@ -724,11 +763,11 @@ export function registerApiRoutes(router, ctx) {
         },
         revokeKickedGuestShare: async ({ claims, meetingId }) => {
             const shareId = resolveShareGuestId(claims);
-            if (!shareId || !systemCtx?.flow?.exists?.("revoke-share-token")) {
+            if (!shareId || !ctx.flow.exists("revoke-share-token")) {
                 return false;
             }
             try {
-                const result = await systemCtx.flow.run("revoke-share-token", {
+                const result = await ctx.flow.run("revoke-share-token", {
                     claims,
                     shareId,
                     ownerAccountId: claims.sub,

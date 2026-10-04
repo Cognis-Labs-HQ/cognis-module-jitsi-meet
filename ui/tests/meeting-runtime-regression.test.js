@@ -150,12 +150,15 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         controlSource.match(
             /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
         )?.length,
-        3,
+        2,
     );
-    assert.match(controlSource, /requireCanvasFactory:\s*false/);
-    assert.doesNotMatch(
+    assert.match(
         controlSource,
-        /!state\.shareAccessToken &&\s*typeof whiteboardGateway\?\.createDisposableCanvas/,
+        /canvasFactory,[\s\S]*await prepareMeetingCanvas\(trigger, state\)/,
+    );
+    assert.match(
+        controlSource,
+        /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,
     );
     assert.match(
         controlSource,
@@ -845,5 +848,20 @@ test("required-participant component calls end when a participant leaves", () =>
     assert.match(
         roomSource,
         /handleRequiredParticipantLeft[\s\S]*?handleMeetingTerminated/,
+    );
+});
+
+test("initial empty meeting responses replace both loading presentations", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    assert.match(
+        source,
+        /if \(resolveRequested \|\| activeMeetingsChanged\) renderActiveMeetings\(\)/,
+    );
+    assert.match(
+        source,
+        /if \(resolveRequested \|\| persistedMeetingsChanged\)[\s\S]*renderPersistedMeetings\(\)/,
     );
 });

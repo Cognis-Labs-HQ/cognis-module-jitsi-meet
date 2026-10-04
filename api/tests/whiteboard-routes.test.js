@@ -7,6 +7,10 @@ function createRecorder() {
     return {
         status: 0,
         body: null,
+        headers: {},
+        setHeader(name, value) {
+            this.headers[name] = value;
+        },
         writeHead(status) {
             this.status = status;
         },
@@ -30,6 +34,7 @@ function createRoutes({
         id: "board-1",
         title: "Planning",
         createdBy: requesterUsername,
+        createdByAccountId: claims.sub,
     },
     whiteboardAvailable = true,
     beforeStateRead = () => {},
@@ -48,7 +53,18 @@ function createRoutes({
                 handlers.set(`POST ${path}`, handler);
             },
         },
-        ctx: { log() {} },
+        ctx: {
+            async getModuleAssurance(moduleId) {
+                assert.equal(moduleId, "nextcloud-whiteboard");
+                return {
+                    version: "2.3.146",
+                    integrity: "verified",
+                    requested: true,
+                    trustedSource: true,
+                };
+            },
+            log() {},
+        },
         store: {
             async ensureSchema() {},
             async getMeetingById(id) {
@@ -135,6 +151,21 @@ test("backend publishes consistent Whiteboard availability", async () => {
         )({}, response);
         assert.equal(response.status, 200);
         assert.equal(response.body.data.available, available);
+        assert.equal(
+            response.body.data.requiredCapability,
+            "whiteboard:fetchBoardData",
+        );
+        assert.equal(
+            response.body.data.requiredProvider,
+            "nextcloud-whiteboard@2.3.146+",
+        );
+        assert.deepEqual(response.body.data.provider, {
+            version: "2.3.146",
+            integrity: "verified",
+            privileged: true,
+            trustedSource: true,
+        });
+        assert.equal(response.headers["cache-control"], "no-store");
     }
 });
 
@@ -427,8 +458,18 @@ test("Whiteboard activation rechecks screen sharing after verification", async (
 
 test("meeting participants cannot map an unrelated provider whiteboard", async () => {
     for (const board of [
-        { id: "board-1", title: "Other meeting", createdBy: "alice" },
-        { id: "board-1", title: "Planning", createdBy: "mallory" },
+        {
+            id: "board-1",
+            title: "Other meeting",
+            createdBy: "alice",
+            createdByAccountId: "account-alice",
+        },
+        {
+            id: "board-1",
+            title: "Planning",
+            createdBy: "alice",
+            createdByAccountId: "account-mallory",
+        },
         null,
     ]) {
         const routes = createRoutes({ board });

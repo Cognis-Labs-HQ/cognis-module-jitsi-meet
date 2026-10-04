@@ -3,6 +3,7 @@ export async function verifyMeetingWhiteboard({
     meeting,
     whiteboardId,
     expectedCreator = "",
+    expectedCreatorAccountId = "",
     expectedCreators = [],
 }) {
     if (typeof fetchBoardData !== "function") return false;
@@ -14,6 +15,15 @@ export async function verifyMeetingWhiteboard({
         return false;
     }
     const creator = String(whiteboard?.createdBy ?? "").trim();
+    const creatorAccountId = String(
+        whiteboard?.createdByAccountId ?? "",
+    ).trim();
+    if (
+        expectedCreatorAccountId &&
+        creatorAccountId !== expectedCreatorAccountId
+    ) {
+        return false;
+    }
     if (expectedCreator && creator !== expectedCreator) return false;
     return expectedCreators.length === 0 || expectedCreators.includes(creator);
 }

@@ -575,6 +575,21 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
+            const otherActiveMeetings = await store.listActiveMeetings();
+            for (const activeMeeting of otherActiveMeetings) {
+                if (
+                    activeMeeting.id === resolved.meeting.id ||
+                    !activeMeeting.activeUsernames?.includes(
+                        resolved.requesterUsername,
+                    )
+                ) {
+                    continue;
+                }
+                await store.setUserSessionsInactive(
+                    activeMeeting.id,
+                    resolved.requesterUsername,
+                );
+            }
             const conflictingSessions = await store.getActiveSessionsForUser(
                 resolved.meeting.id,
                 resolved.requesterUsername,

@@ -1,0 +1,118 @@
+# Jitsi Meet をスコープ付きモジュールランタイムに整合
+
+**機能ブランチ:** feature-align-module-with-structural-changes
+
+## ライフサイクルにスコープされたコンテキストを使用
+
+Jitsi Meet は、スコープ付きモジュールコンテキストから直接 Capability を取得し、ホスト Flow を実行または拡張するようになりました。共有管理、アカウントのクリーンアップ、Whiteboard 連携、設定の有効化チェック、プロバイダーフックは非公開のシステムコンテキストに依存しなくなり、無効化と再有効化のサイクルを Cognis が完全に追跡できます。
+
+## 現行の連携契約を宣言
+
+マニフェストはモジュールを非特権のままにし、ライフサイクル管理された Provider カタログからブラウザー Capability を公開して、Bootstrap を唯一のランタイム連携エントリポイントとして使用するようになりました。さらに、バージョン 1.5.221 と宣言済みの全ファイルダイジェストを同期しました。構造テストでも新しい境界を検証します。
+
+## 非アクティブなオーバーレイ操作を非表示に維持
+
+ミーティングロビーは、モジュール画面内で HTML の非表示状態を確実に適用するようになりました。これにより、ホストのボタン表示規則が、対応するミーティング状態になる前に認証、セッション再取得、退出、残留の操作を表示することはありません。リリースバージョンと整合性ダイジェストを 1.5.221 に同期しました。
+
+## Nextcloud Whiteboard の検出を復元
+
+Jitsi は、現行の Nextcloud Whiteboard モジュールが公開するサーバー Capability を解決するようになりました。可用性エンドポイントが有効なプロバイダーを再び認識し、ミーティングの Whiteboard ボタン、ボード検証、メンバー更新、クリーンアップを復元します。
+
+## 専用 UI プロバイダーを読み込む
+
+Jitsi は `whiteboard:uiGateway` をオプションのブラウザー Capability 要件として宣言するようになりました。これにより Cognis は、Whiteboard ナビゲーションバーによるキャンバスファクトリーの初期化に依存せず、最新の Nextcloud Whiteboard 変更で導入された専用プロバイダーを Meetings のマウント前に読み込めます。
+
+## ブラウザープロバイダー検出で表示を決定
+
+Cognis PR #222 により外部 Capability プロバイダー登録がライフサイクル対応になったため、Meetings コントロールは読み込み済みの `whiteboard:uiGateway` を直接使用します。別のバックエンド可用性リクエストに基づいて自身を削除することはなく、バックエンドエンドポイントは診断用として残ります。
+
+## Provider が宣言する Whiteboard 契約を使用
+
+Jitsi は、現在の Nextcloud Whiteboard Manifest が宣言する `whiteboard:fetchBoardData`、`whiteboard:membership`、`whiteboard:deleteCanvas` Capability を解決します。宣言されていない実装ファサード `whiteboard:api` には依存せず、サーバー検証と同期されたミーティング Whiteboard を復元します。
+
+## 公開されたブラウザーランタイムを初期化
+
+Cognis PR #224 に従い、Meetings のブラウザーエントリは Deployment が公開するランタイムリソース `/static/reuse/ui-ctx.js` をインポートし、直接読み込みや更新でも SPA ナビゲーションと同じコンテキストを初期化します。その他のブラウザーユーティリティは引き続き `ui:reuse` で解決します。Jitsi は `voip:startCall` に `ctx.registerCapabilityProvider` を使用し、冗長な `meetings:isProviderAvailable` Capability を削除して、特権アクセスを要求しません。
+
+## Whiteboard 連携をオプションとして維持
+
+Jitsi は、オプションの Provider が有効な場合にのみ Whiteboard の検証、メンバーシップ、削除 Capability を解決します。これらのサーバー Capability は Jitsi の有効化を妨げず、`whiteboard:uiGateway` は引き続きブラウザー Provider 検出契約として使用されます。
+
+## データベースランタイム依存関係を宣言
+
+Jitsi は、無効時の設定ルート、有効化テスト、有効時のミーティングストアで必要な `db:executor` を宣言するようになりました。Cognis は `/config` の登録前にデータベース Provider を初期化できるため、設定が HTTP 503 にフォールバックせず、保存済み Jitsi URL に対して有効化検証を実行できます。
+
+## サーバー Capability をモジュール所有の名前空間に維持
+
+認証済みミーティングチャット Resolver を `jitsi-meet:getMeetingChat` として公開するようにしました。これにより、Jitsi が提供するすべての Capability はモジュール所有の名前空間に留まり、特権アクセスなしで Cognis の境界検証を通過します。
+
+## アカウント削除後に保存済みミーティングを更新
+
+Cognis がアカウントを削除すると、Jitsi は現在および元の参加者レコードからそのアカウントを削除します。再利用可能なミーティングは残りの保存済み参加者構成に合わせてキーを更新し、保存済み参加者が2人未満になったミーティングは削除します。
+
+## オプションの Whiteboard Provider 読み込みを遅延
+
+Meetings は、オプションのブラウザー Whiteboard Gateway をルートレベルの要件として宣言しなくなりました。直接読み込みや更新では、Jitsi が Whiteboard Provider を検出して読み込む前に Cognis が UI コンテキストを初期化でき、SPA ナビゲーションと Whiteboard コントロールは引き続き同じ Gateway 契約を使用します。
+
+## スコープ付きレジストリから Whiteboard Capability を解決
+
+Nextcloud Whiteboard PR #30 の最新登録契約に整合しました。Jitsi はボード検証、メンバーシップ、削除、委任アクセスの Provider を `ctx.capabilities` から動的に解決するため、Jitsi の Bootstrap 後に提供された Provider を `/whiteboard/state` で利用できます。
+
+## 両方の公開 Capability アクセス面から解決
+
+Jitsi は Nextcloud Whiteboard PR #30 の最新登録動作に合わせ、オプションのサーバー Provider を最初にスコープ付きレジストリから、次にモジュールコンテキストアクセサーから解決します。どちらの公開ライフサイクルスコープ面で登録された Provider も認識し、正常に作成されたキャンバスが直後のマッピング検証で失敗することを防ぎます。
+
+## 直接 Provider 契約を復元
+
+Nextcloud Whiteboard PR #30 に倣い、Jitsi は公開された `whiteboard:*` の個別 Capability をモジュールコンテキストから直接使用し、並行 Resolver を削除しました。Cognis PR #225 に合わせ、アカウントクリーンアップは保存済みミーティングの参加者構成を変更する前に、正規アカウント ID を現在のプロフィールハンドルへ解決します。
+
+## 連携する Whiteboard 契約を完成
+
+ブラウザーのキャンバスファクトリーとサーバー検証 Provider は別の契約です。Jitsi は、Nextcloud Whiteboard PR #30 の最新版で追加された正規の作成者アカウント ID を使ってマッピングを検証します。デプロイには同 PR の `whiteboard:fetchBoardData` と `whiteboard:membership` の直接 Bootstrap 公開も必要です。これがない場合、キャンバス作成は成功しても `/whiteboard/state` はサーバー検証が利用できないことを正しく報告します。
+
+## 在席情報と定期更新を安定化
+
+定期ポーリングは置き換えられた応答を破棄し、データが変わらない場合は既存の参加者およびミーティング DOM を維持します。これにより、アバターがイニシャルへ点滅する問題とミーティング間の状態上書きを防ぎます。チャットアバターは招待者一覧ではなくアクティブな在席に従います。ミーティング参加時には同じアカウントの他ミーティングでの在席を無効化し、終了済みミーティングは残存在席を無視し、古い在席は2分ではなく Heartbeat の欠落後に期限切れになります。
+
+## コミット
+
+- [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
+- [6042833](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)
+- [055fd2a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/055fd2a7a760c5c29d1e5c9abe9d3956763712aa)
+- [f20e6ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
+
+- [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
+
+- [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
+
+- [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
+
+- [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
+
+- [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+
+- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
+
+- [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
+
+- [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+
+- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
+
+- [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+
+- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+
+- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+
+- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+
+- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
+
+- [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
+
+- [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
+
+- [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+
+- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)

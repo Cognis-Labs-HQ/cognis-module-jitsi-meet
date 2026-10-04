@@ -5,8 +5,6 @@ const [{ apiFetch }, { createI18n }] = await Promise.all([
     importReuseModule("i18n.js"),
 ]);
 import { logUi } from "./reuse/feedback.js";
-import "./voip-provider.js";
-
 const i18n = await createI18n({
     componentStringBaseUrls: ["/static/modules/jitsi-meet/languages"],
 });

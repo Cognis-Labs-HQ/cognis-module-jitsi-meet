@@ -23,6 +23,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         "utf8",
     );
     const apiIndexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
+    const manifest = JSON.parse(
+        readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
+    );
     const storeSource = readFileSync(resolve(ROOT, "api/store.js"), "utf8");
     const meetingsRoutesSource = readFileSync(
         resolve(ROOT, "api/meetings-routes.js"),
@@ -54,7 +57,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
-    assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
+    assert.doesNotMatch(apiSource, /\/api\/v1\/modules\/nextcloud-whiteboard/);
     assert.match(
         storeSource,
         /state\.whiteboardId[\s\S]*?whiteboardDisposable:\s*state\.whiteboardDisposable[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
@@ -76,7 +79,14 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
+    assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
     assert.match(buttonSource, /whiteboard\/availability/);
+    assert.match(buttonSource, /resolveWhiteboardServerContract/);
+    assert.match(buttonSource, /provider_unavailable/);
+    assert.match(
+        buttonSource,
+        /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,
+    );
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);
@@ -111,7 +121,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /!state\.shareAccessToken[\s\S]*meetingCanvasNeedsPreparation\(trigger, state\)/,
+        /button\.addEventListener\([\s\S]*await prepareMeetingCanvas\(trigger, state\)[\s\S]*loadStage = "unlock"/,
+    );
+    assert.doesNotMatch(
+        buttonSource,
+        /await ensureComponentPage\(trigger, state\.meeting\?\.id\);\s*await prepareMeetingCanvas/,
     );
     assert.doesNotMatch(buttonSource, /shouldAutoOpenMappedCanvas/);
     assert.doesNotMatch(buttonSource, /autoOpenedMeetingIds/);

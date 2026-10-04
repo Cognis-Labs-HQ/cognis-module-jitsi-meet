@@ -1,5 +1,6 @@
 const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
 const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
+const uncommittedMeetingCanvases = new Map();
 
 function getParticipantHandles(meeting) {
     return (meeting?.participants ?? [])
@@ -268,6 +269,13 @@ export function prepareMeetingCanvas(trigger, state) {
     const participantHandles = getParticipantHandles(meeting);
     trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
     const disposableCanvas = trigger.disposableCanvas;
+    const cachedCanvas = uncommittedMeetingCanvases.get(meetingId);
+    if (cachedCanvas?.disposable === disposableCanvas) {
+        trigger.preparedWhiteboardId = cachedCanvas.whiteboardId;
+        trigger.preparedMeetingId = meetingId;
+        trigger.preparationFailedMeetingId = "";
+        return Promise.resolve();
+    }
     if (
         !disposableCanvas &&
         typeof trigger.whiteboardGateway.createCanvas !== "function"
@@ -290,18 +298,23 @@ export function prepareMeetingCanvas(trigger, state) {
               })
     )
         .then((canvas) => {
+            const whiteboardId = String(
+                canvas?.whiteboardId ?? canvas?.id ?? "",
+            ).trim();
+            if (!whiteboardId) {
+                throw new Error("whiteboard_id_missing");
+            }
+            uncommittedMeetingCanvases.set(meetingId, {
+                disposable: disposableCanvas,
+                whiteboardId,
+            });
             if (
                 state.meeting?.id !== meetingId ||
                 trigger.preparedMeetingId !== meetingId
             ) {
                 return;
             }
-            trigger.preparedWhiteboardId = String(
-                canvas?.whiteboardId ?? canvas?.id ?? "",
-            ).trim();
-            if (!trigger.preparedWhiteboardId) {
-                throw new Error("whiteboard_id_missing");
-            }
+            trigger.preparedWhiteboardId = whiteboardId;
             trigger.preparationFailedMeetingId = "";
             trigger.preparedMeetingId = meetingId;
         })
@@ -312,4 +325,11 @@ export function prepareMeetingCanvas(trigger, state) {
         });
     trigger.preparationPromise = preparationPromise;
     return preparationPromise;
+}
+
+export function confirmMeetingCanvasMapping(meetingId, whiteboardId) {
+    const cachedCanvas = uncommittedMeetingCanvases.get(meetingId);
+    if (cachedCanvas?.whiteboardId === whiteboardId) {
+        uncommittedMeetingCanvases.delete(meetingId);
+    }
 }
