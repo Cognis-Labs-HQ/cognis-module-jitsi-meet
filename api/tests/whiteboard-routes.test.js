@@ -140,6 +140,14 @@ test("backend publishes consistent Whiteboard availability", async () => {
         )({}, response);
         assert.equal(response.status, 200);
         assert.equal(response.body.data.available, available);
+        assert.equal(
+            response.body.data.requiredCapability,
+            "whiteboard:fetchBoardData",
+        );
+        assert.equal(
+            response.body.data.requiredProvider,
+            "nextcloud-whiteboard@2.3.146+",
+        );
         assert.equal(response.headers["cache-control"], "no-store");
     }
 });

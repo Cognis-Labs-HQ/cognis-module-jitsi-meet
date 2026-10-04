@@ -22,9 +22,9 @@
 
 Whiteboard コントロールは、ブラウザーとコンポーネントウィンドウの Provider が準備でき次第操作可能になります。キャンバス作成は有効化後にのみ開始され、未関連付けのキャンバスは再試行や再マウント時に再利用されるため、状態同期に失敗しても重複は作成されません。
 
-## 遅延したサーバー Capability 公開から回復
+## 公開された Whiteboard サーバー契約を適用
 
-Whiteboard 検証と委任アクセス確認では、ライフサイクルにスコープされた Capability の検出を一定時間再試行するようになりました。要求中に登録を完了する Provider は即座に `503` を発生させず利用でき、オプション Provider が存在しない場合は引き続き安全側で失敗します。
+Jitsi は、Nextcloud Whiteboard 2.3.146 以降がスコープ付き Bootstrap から公開する `whiteboard:fetchBoardData` をそのまま使用します。キャンバス作成前に有効化処理がこの契約を確認し、サーバーが検証できないキャンバスを作成する代わりに、更新と再有効化を求める具体的なメッセージを表示します。
 
 ## コミット
 
@@ -32,3 +32,4 @@ Whiteboard 検証と委任アクセス確認では、ライフサイクルにス
 - [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
+- [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)

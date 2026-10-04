@@ -131,6 +131,7 @@
   <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard schließen</string>
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
+  <string name="module.jitsi_meet.whiteboard.provider_unavailable">Die serverseitige Whiteboard-Integration ist nicht verfügbar. Aktualisieren und reaktivieren Sie Nextcloud Whiteboard und versuchen Sie es erneut.</string>
   <string name="module.jitsi_meet.whiteboard.load_failed">Fehler beim Laden des Whiteboards</string>
   <string name="module.jitsi_meet.whiteboard.load_failed_detailed">Das Whiteboard ist bei {{stage}} fehlgeschlagen. Den genauen Fehler finden Sie in der Browserkonsole.</string>
   <string name="module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip">Das Whiteboard ist nicht verfügbar, während ein Teilnehmer seinen Bildschirm teilt.</string>

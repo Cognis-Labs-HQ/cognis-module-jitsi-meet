@@ -1,6 +1,9 @@
 import { logUi, showToast } from "./reuse/feedback.js";
 import { uiCtx } from "./reuse/resources.js";
-import { resolveWhiteboardCapabilities } from "./whiteboard-provider.js";
+import {
+    resolveWhiteboardCapabilities,
+    resolveWhiteboardServerContract,
+} from "./whiteboard-provider.js";
 import {
     confirmMeetingCanvasMapping,
     ensureComponentPage,
@@ -503,6 +506,32 @@ export async function bindWhiteboardButton({
             let whiteboardId = trigger.preparedWhiteboardId;
             void (async () => {
                 try {
+                    const serverContract =
+                        await resolveWhiteboardServerContract(apiFetch, signal);
+                    if (!requestIsCurrent()) return;
+                    if (!serverContract.available) {
+                        await logUi(
+                            "error",
+                            "Meeting Whiteboard server contract is unavailable.",
+                            {
+                                component: "module:jitsi-meet",
+                                operation:
+                                    "resolve_meeting_whiteboard_server_contract",
+                                meetingId,
+                                requiredCapability:
+                                    serverContract.requiredCapability,
+                                requiredProvider:
+                                    serverContract.requiredProvider,
+                            },
+                        );
+                        showToast(
+                            i18n.t(
+                                "module.jitsi_meet.whiteboard.provider_unavailable",
+                            ),
+                            { variant: "error" },
+                        );
+                        return;
+                    }
                     await prepareMeetingCanvas(trigger, state);
                     if (!requestIsCurrent()) return;
                     whiteboardId = trigger.preparedWhiteboardId;

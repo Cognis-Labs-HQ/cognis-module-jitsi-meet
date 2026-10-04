@@ -116,6 +116,8 @@ export function registerMeetingWhiteboardRoutes({
             sendJson(res, 200, {
                 data: {
                     available: isWhiteboardProviderAvailable?.() === true,
+                    requiredCapability: "whiteboard:fetchBoardData",
+                    requiredProvider: "nextcloud-whiteboard@2.3.146+",
                 },
             });
         },

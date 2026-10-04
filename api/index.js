@@ -33,7 +33,6 @@ import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
 import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
-import { resolveOptionalCapability } from "./reuse/optional-capability.js";
 
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -180,9 +179,8 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
-    const fetchBoardData = async (...args) => {
-        const providerFetchBoardData = await resolveOptionalCapability(
-            ctx,
+    const fetchBoardData = (...args) => {
+        const providerFetchBoardData = ctx.getCapability(
             "whiteboard:fetchBoardData",
         );
         if (typeof providerFetchBoardData !== "function") {

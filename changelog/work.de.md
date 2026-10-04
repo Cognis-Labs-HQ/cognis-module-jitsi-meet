@@ -22,9 +22,9 @@ Alle unterstützten Dokumentationen beschreiben die Auflösung von Whiteboard-Ca
 
 Das Whiteboard-Steuerelement wird nun interaktiv, sobald seine Browser- und Komponentenfenster-Provider bereit sind. Die Canvas-Erstellung beginnt erst nach der Aktivierung, und eine noch nicht zugeordnete Arbeitsfläche wird bei Wiederholungen oder erneutem Einhängen wiederverwendet, sodass eine fehlgeschlagene Zustandssynchronisierung keine Duplikate erzeugt.
 
-## Verzögerte Veröffentlichung der Server-Capability auffangen
+## Veröffentlichten Whiteboard-Serververtrag durchsetzen
 
-Whiteboard-Prüfung und delegierte Zugriffsprüfungen wiederholen nun die lebenszyklusgebundene Capability-Auflösung für einen begrenzten Zeitraum. Ein Provider, der seine Registrierung während der Anfrage abschließt, kann dadurch verwendet werden, statt sofort einen `503`-Fehler auszulösen; ein fehlender optionaler Provider bleibt sicher geschlossen.
+Jitsi verwendet `whiteboard:fetchBoardData` nun genau so, wie Nextcloud Whiteboard 2.3.146 und neuer es über den bereichsgebundenen Bootstrap veröffentlicht. Vor der Canvas-Erstellung prüft die Aktivierung diesen Vertrag und zeigt eine konkrete Aufforderung zum Aktualisieren und erneuten Aktivieren, statt eine vom Server nicht prüfbare Arbeitsfläche zu erstellen.
 
 ## Commits
 
@@ -32,3 +32,4 @@ Whiteboard-Prüfung und delegierte Zugriffsprüfungen wiederholen nun die lebens
 - [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
+- [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)

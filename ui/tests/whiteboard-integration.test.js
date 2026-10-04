@@ -57,7 +57,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
-    assert.doesNotMatch(apiSource, /nextcloud-whiteboard/);
+    assert.doesNotMatch(apiSource, /\/api\/v1\/modules\/nextcloud-whiteboard/);
     assert.match(
         storeSource,
         /state\.whiteboardId[\s\S]*?whiteboardDisposable:\s*state\.whiteboardDisposable[\s\S]*?whiteboardOpen:\s*state\.whiteboardActive/,
@@ -80,7 +80,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
-    assert.doesNotMatch(buttonSource, /whiteboard\/availability/);
+    assert.match(buttonSource, /whiteboard\/availability/);
+    assert.match(buttonSource, /resolveWhiteboardServerContract/);
+    assert.match(buttonSource, /provider_unavailable/);
     assert.match(
         buttonSource,
         /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,

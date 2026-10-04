@@ -54,3 +54,20 @@ export async function resolveWhiteboardCapabilities(
     }
     return capabilities;
 }
+
+export async function resolveWhiteboardServerContract(apiFetch, signal) {
+    const response = await apiFetch(
+        "/api/v1/modules/jitsi-meet/whiteboard/availability",
+        { signal },
+    );
+    const payload = await response.json().catch(() => ({}));
+    return {
+        available: response.ok && payload?.data?.available === true,
+        requiredCapability: String(
+            payload?.data?.requiredCapability ?? "whiteboard:fetchBoardData",
+        ),
+        requiredProvider: String(
+            payload?.data?.requiredProvider ?? "nextcloud-whiteboard@2.3.146+",
+        ),
+    };
+}

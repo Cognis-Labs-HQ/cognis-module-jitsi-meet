@@ -22,9 +22,9 @@ Semua dokumentasi yang didukung kini menjelaskan penyelesaian kapabilitas Whiteb
 
 Kontrol Whiteboard kini menjadi interaktif segera setelah penyedia peramban dan jendela komponennya siap. Pembuatan kanvas baru dimulai setelah aktivasi, dan kanvas yang belum dipetakan digunakan kembali saat percobaan ulang atau pemasangan ulang sehingga kegagalan sinkronisasi status tidak membuat duplikat.
 
-## Pulihkan publikasi kapabilitas server yang tertunda
+## Terapkan kontrak server Whiteboard yang diterbitkan
 
-Verifikasi Whiteboard dan pemeriksaan akses terdelegasi kini mencoba ulang penemuan kapabilitas tercakup siklus hidup selama waktu terbatas. Penyedia yang menyelesaikan registrasi selama permintaan dapat digunakan tanpa langsung menghasilkan `503`, sementara penyedia opsional yang tidak ada tetap gagal secara tertutup.
+Jitsi kini memakai `whiteboard:fetchBoardData` persis seperti yang diterbitkan Nextcloud Whiteboard 2.3.146 dan versi lebih baru melalui bootstrap tercakup. Sebelum membuat kanvas, aktivasi memeriksa kontrak tersebut dan menampilkan petunjuk pembaruan serta pengaktifan ulang yang dapat ditindaklanjuti, alih-alih membuat kanvas yang tidak dapat diverifikasi server.
 
 ## Commit
 
@@ -32,3 +32,4 @@ Verifikasi Whiteboard dan pemeriksaan akses terdelegasi kini mencoba ulang penem
 - [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
 - [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
 - [561ab35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
+- [30603f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
