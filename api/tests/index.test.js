@@ -104,8 +104,11 @@ test("Jitsi resolves the provider-declared Whiteboard capabilities", () => {
     ]) {
         assert.match(source, new RegExp(capability));
     }
-    assert.match(source, /ctx\.getCapability\("whiteboard:fetchBoardData"\)/);
-    assert.match(delegationSource, /ctx\.getCapability\(/);
+    assert.match(
+        source,
+        /resolveOptionalCapability\(\s*ctx,\s*"whiteboard:fetchBoardData"/,
+    );
+    assert.match(delegationSource, /resolveOptionalCapability\(/);
     assert.match(delegationSource, /whiteboard:fetchBoardData/);
     assert.doesNotMatch(`${source}\n${delegationSource}`, /whiteboard:api/);
     const verificationSource = readFileSync(

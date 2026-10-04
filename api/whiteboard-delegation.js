@@ -1,4 +1,5 @@
 import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
+import { resolveOptionalCapability } from "./reuse/optional-capability.js";
 
 const DELEGATED_WHITEBOARD_CAPABILITIES = Object.freeze([
     "whiteboard:read",
@@ -79,8 +80,9 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     if (!ctx.flow.exists("resolve-share-delegated-access")) return false;
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
-        fetchBoardData: (...args) => {
-            const providerFetchBoardData = ctx.getCapability(
+        fetchBoardData: async (...args) => {
+            const providerFetchBoardData = await resolveOptionalCapability(
+                ctx,
                 "whiteboard:fetchBoardData",
             );
             if (typeof providerFetchBoardData !== "function") {
