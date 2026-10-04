@@ -18,11 +18,12 @@ Bei der Kontodeprovisionierung werden nun zugeordnete Whiteboards, Messages-Chat
 
 Alle unterstützten Dokumentationen beschreiben die Auflösung von Whiteboard-Capabilities nun ausschließlich über den lebenszyklusgebundenen Modulkontext.
 
-## Beide Whiteboard-Integrationsoberflächen vor der Canvas-Erstellung prüfen
+## Whiteboard vor der Canvas-Vorbereitung aktivieren
 
-Meeting-Whiteboards bestätigen nun vor der Canvas-Erstellung, dass der Browser die passende Canvas-Factory für den Besprechungstyp und der Server die Provider-Prüf-Capability bereitstellen. Dadurch funktioniert die PiP-Initialisierung mit dem vollständigen Provider-Vertrag, während fehlgeschlagene Starts keine doppelten Arbeitsflächen mehr hinterlassen.
+Das Whiteboard-Steuerelement wird nun interaktiv, sobald seine Browser- und Komponentenfenster-Provider bereit sind. Die Canvas-Erstellung beginnt erst nach der Aktivierung, und eine noch nicht zugeordnete Arbeitsfläche wird bei Wiederholungen oder erneutem Einhängen wiederverwendet, sodass eine fehlgeschlagene Zustandssynchronisierung keine Duplikate erzeugt.
 
 ## Commits
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
 - [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
+- [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)

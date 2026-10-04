@@ -80,12 +80,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
-    assert.match(buttonSource, /whiteboard\/availability/);
+    assert.doesNotMatch(buttonSource, /whiteboard\/availability/);
     assert.match(
         buttonSource,
         /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,
     );
-    assert.match(buttonSource, /verifyWhiteboardServerAvailable/);
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
     assert.match(buttonSource, /createDisposableCanvas/);
@@ -120,7 +119,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /!state\.shareAccessToken[\s\S]*meetingCanvasNeedsPreparation\(trigger, state\)/,
+        /button\.addEventListener\([\s\S]*await prepareMeetingCanvas\(trigger, state\)[\s\S]*loadStage = "unlock"/,
+    );
+    assert.doesNotMatch(
+        buttonSource,
+        /await ensureComponentPage\(trigger, state\.meeting\?\.id\);\s*await prepareMeetingCanvas/,
     );
     assert.doesNotMatch(buttonSource, /shouldAutoOpenMappedCanvas/);
     assert.doesNotMatch(buttonSource, /autoOpenedMeetingIds/);

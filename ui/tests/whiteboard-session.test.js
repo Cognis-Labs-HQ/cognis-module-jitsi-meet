@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+    confirmMeetingCanvasMapping,
     ensureComponentPage,
     meetingCanvasNeedsPreparation,
     meetingWhiteboardShouldOpen,
@@ -8,6 +9,40 @@ import {
     spawnComponentWindowWithRetry,
     resolveMeetingPipMinimumSize,
 } from "../whiteboard-session.js";
+
+test("failed state synchronization reuses its uncommitted meeting canvas", async () => {
+    let creationCount = 0;
+    const state = {
+        meeting: {
+            id: "retry-meeting",
+            meetingName: "Retry Meeting",
+            roomSlug: "RetryMeeting",
+            createdBy: "alice",
+            participants: ["alice", "bob"],
+        },
+    };
+    const createTrigger = () => ({
+        disposableCanvas: false,
+        preparationFailedMeetingId: "",
+        preparationPromise: null,
+        preparedMeetingId: "retry-meeting",
+        preparedWhiteboardId: "",
+        whiteboardGateway: {
+            async createCanvas() {
+                creationCount += 1;
+                return { whiteboardId: "retry-canvas" };
+            },
+        },
+    });
+    const firstTrigger = createTrigger();
+    await prepareMeetingCanvas(firstTrigger, state);
+    const remountedTrigger = createTrigger();
+    await prepareMeetingCanvas(remountedTrigger, state);
+
+    assert.equal(creationCount, 1);
+    assert.equal(remountedTrigger.preparedWhiteboardId, "retry-canvas");
+    confirmMeetingCanvasMapping("retry-meeting", "retry-canvas");
+});
 
 test("meeting PiP minimum grows once when a third participant joins", () => {
     assert.deepEqual(resolveMeetingPipMinimumSize({}), {

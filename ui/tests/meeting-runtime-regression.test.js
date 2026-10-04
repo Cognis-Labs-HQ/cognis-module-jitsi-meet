@@ -154,7 +154,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
-        /canvasFactory,[\s\S]*verifyWhiteboardServerAvailable/,
+        /canvasFactory,[\s\S]*await prepareMeetingCanvas\(trigger, state\)/,
     );
     assert.match(
         controlSource,

@@ -18,11 +18,12 @@ Deprovisi akun kini menghapus Whiteboard yang dipetakan, ruang obrolan Messages,
 
 Semua dokumentasi yang didukung kini menjelaskan penyelesaian kapabilitas Whiteboard secara eksklusif melalui konteks modul yang tercakup dalam siklus hidup.
 
-## Verifikasi kedua permukaan integrasi Whiteboard sebelum membuat kanvas
+## Aktifkan Whiteboard sebelum menyiapkan kanvas
 
-Whiteboard rapat kini memastikan bahwa peramban menyediakan pabrik kanvas yang tepat untuk jenis rapat dan server menyediakan kapabilitas verifikasi penyedia sebelum membuat kanvas. Ini mempertahankan inisialisasi PiP ketika kontrak penyedia lengkap tersedia sekaligus mencegah peluncuran gagal meninggalkan kanvas duplikat.
+Kontrol Whiteboard kini menjadi interaktif segera setelah penyedia peramban dan jendela komponennya siap. Pembuatan kanvas baru dimulai setelah aktivasi, dan kanvas yang belum dipetakan digunakan kembali saat percobaan ulang atau pemasangan ulang sehingga kegagalan sinkronisasi status tidak membuat duplikat.
 
 ## Commit
 
 - [9894d9e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
 - [dccbd01](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
+- [1d99048](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)

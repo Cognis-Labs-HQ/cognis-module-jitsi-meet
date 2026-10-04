@@ -54,13 +54,3 @@ export async function resolveWhiteboardCapabilities(
     }
     return capabilities;
 }
-
-export async function verifyWhiteboardServerAvailable(apiFetch, signal) {
-    const response = await apiFetch(
-        "/api/v1/modules/jitsi-meet/whiteboard/availability",
-        { signal },
-    );
-    if (!response.ok) return false;
-    const payload = await response.json().catch(() => null);
-    return payload?.data?.available === true;
-}
