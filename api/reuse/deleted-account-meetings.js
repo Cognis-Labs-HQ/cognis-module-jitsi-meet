@@ -36,7 +36,11 @@ async function deleteMeetingRows(executor, meetingId) {
     }
 }
 
-export async function removeDeletedAccountFromMeetings(store, username) {
+export async function removeDeletedAccountFromMeetings(
+    store,
+    username,
+    { beforeDeleteMeeting } = {},
+) {
     const { db } = store;
     const normalizeHandleKey = (handle) => store.normalizeHandleKey(handle);
     const normalizeHandleKeys = (handles) => store.normalizeHandleKeys(handles);
@@ -90,6 +94,35 @@ export async function removeDeletedAccountFromMeetings(store, username) {
                 : currentParticipants;
 
             if (savedParticipants.length <= 1) {
+                const [meetingResult, stateResult] = await Promise.all([
+                    executor.executeCommand({
+                        option: "SELECT",
+                        table: "jitsi_meetings",
+                        columns: ["chat_room_id", "created_by"],
+                        where: [{ column: "id", value: meetingId }],
+                        limit: 1,
+                    }),
+                    executor.executeCommand({
+                        option: "SELECT",
+                        table: "jitsi_meeting_state",
+                        columns: ["whiteboard_id"],
+                        where: [{ column: "meeting_id", value: meetingId }],
+                        limit: 1,
+                    }),
+                ]);
+                const meeting = meetingResult.rows?.[0];
+                if (meeting && typeof beforeDeleteMeeting === "function") {
+                    await beforeDeleteMeeting({
+                        id: meetingId,
+                        chatRoomId: meeting.chat_room_id
+                            ? String(meeting.chat_room_id)
+                            : null,
+                        createdBy: String(meeting.created_by ?? ""),
+                        whiteboardId: stateResult.rows?.[0]?.whiteboard_id
+                            ? String(stateResult.rows[0].whiteboard_id)
+                            : null,
+                    });
+                }
                 await deleteMeetingRows(executor, meetingId);
                 deletedMeetingIds.push(meetingId);
                 continue;

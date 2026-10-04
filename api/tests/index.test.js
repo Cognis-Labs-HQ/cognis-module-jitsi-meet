@@ -121,8 +121,12 @@ test("account cleanup resolves canonical account ids to participant handles", ()
     assert.match(source, /profileIdentity\.resolveAccountHandle\(accountId\)/);
     assert.match(
         source,
-        /store\.removeDeletedAccountFromMeetings\(participantHandle\)/,
+        /store\.removeDeletedAccountFromMeetings\(\s*participantHandle/,
     );
+    assert.match(source, /beforeDeleteMeeting: async \(meeting\)/);
+    assert.match(source, /whiteboard:deleteCanvas/);
+    assert.match(source, /deleteChatroom\(/);
+    assert.match(source, /deleteResourceShares\?\.\(/);
 });
 
 test("disposable Messages calls stay out of Meetings discovery", () => {

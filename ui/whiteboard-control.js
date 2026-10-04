@@ -372,7 +372,9 @@ export async function bindWhiteboardButton({
     } = capabilities;
     if (
         typeof spawnComponentPage !== "function" ||
-        typeof makeFloatingWindow !== "function"
+        typeof makeFloatingWindow !== "function" ||
+        (!state.shareAccessToken &&
+            typeof whiteboardGateway?.createDisposableCanvas !== "function")
     )
         return;
 

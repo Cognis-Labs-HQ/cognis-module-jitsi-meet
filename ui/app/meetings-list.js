@@ -548,8 +548,9 @@ export function createMeetingHandlers({
             JSON.stringify(state.persistedMeetings);
         state.activeMeetings = nextActiveMeetings;
         state.persistedMeetings = nextPersistedMeetings;
-        if (activeMeetingsChanged) renderActiveMeetings();
-        if (persistedMeetingsChanged) renderPersistedMeetings();
+        if (resolveRequested || activeMeetingsChanged) renderActiveMeetings();
+        if (resolveRequested || persistedMeetingsChanged)
+            renderPersistedMeetings();
         const requestedMeetingId = resolveRequested
             ? normalizeMeetingId(state.requestedMeetingId)
             : "";

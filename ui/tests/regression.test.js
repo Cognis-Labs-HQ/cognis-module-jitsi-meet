@@ -211,7 +211,10 @@ test("periodic refreshes preserve hydrated avatars and current chat membership",
     assert.match(participantsSource, /if \(membershipChanged\)/);
     assert.match(participantsSource, /participantRefreshSequence/);
     assert.match(participantsSource, /stateRefreshSequence/);
-    assert.match(meetingsSource, /if \(persistedMeetingsChanged\)/);
+    assert.match(
+        meetingsSource,
+        /if \(resolveRequested \|\| persistedMeetingsChanged\)/,
+    );
     assert.match(meetingsSource, /activeMeetingsRequestSequence/);
     assert.match(chatSource, /state\.meeting\?\.activeParticipants/);
 });

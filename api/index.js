@@ -32,6 +32,7 @@ import {
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
+import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
 
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -389,8 +390,79 @@ export function registerApiRoutes(router, ctx) {
             const accountId = String(input.username).trim();
             const participantHandle =
                 await profileIdentity.resolveAccountHandle(accountId);
-            const cleanup =
-                await store.removeDeletedAccountFromMeetings(participantHandle);
+            let cleanup;
+            try {
+                cleanup = await store.removeDeletedAccountFromMeetings(
+                    participantHandle,
+                    {
+                        beforeDeleteMeeting: async (meeting) => {
+                            const ownerAccountId =
+                                normalizeHandleKey(meeting.createdBy) ===
+                                normalizeHandleKey(participantHandle)
+                                    ? accountId
+                                    : (
+                                          await profileStore.getProfileByHandle(
+                                              meeting.createdBy,
+                                          )
+                                      )?.accountId;
+                            if (!ownerAccountId) {
+                                throw new Error(
+                                    "Meeting owner is unavailable for resource cleanup.",
+                                );
+                            }
+                            if (meeting.whiteboardId) {
+                                const deleteWhiteboard = ctx.getCapability(
+                                    "whiteboard:deleteCanvas",
+                                );
+                                if (typeof deleteWhiteboard !== "function") {
+                                    throw new Error(
+                                        "Whiteboard deletion capability is unavailable.",
+                                    );
+                                }
+                                await deleteReferencedMeetingResource({
+                                    deleteResource: () =>
+                                        deleteWhiteboard({
+                                            whiteboardId: meeting.whiteboardId,
+                                            actorAccountId: ownerAccountId,
+                                        }),
+                                    resourceType: "whiteboard",
+                                    resourceId: meeting.whiteboardId,
+                                    meetingId: meeting.id,
+                                    log,
+                                });
+                            }
+                            if (meeting.chatRoomId) {
+                                await deleteReferencedMeetingResource({
+                                    deleteResource: () =>
+                                        deleteChatroom({
+                                            roomId: meeting.chatRoomId,
+                                            actorAccountId: ownerAccountId,
+                                        }),
+                                    resourceType: "chatroom",
+                                    resourceId: meeting.chatRoomId,
+                                    meetingId: meeting.id,
+                                    log,
+                                });
+                            }
+                            await deleteResourceShares?.({
+                                ownerAccountId,
+                                resourceType: "meeting",
+                                resourceId: meeting.id,
+                            });
+                        },
+                    },
+                );
+            } catch (error) {
+                ctx.log?.("error", "Deleted user meeting cleanup failed.", {
+                    component: "jitsi-meet-module",
+                    operation: "delete_user_meeting_resources",
+                    accountId,
+                    participantHandle,
+                    error:
+                        error instanceof Error ? error.message : String(error),
+                });
+                throw error;
+            }
             ctx.log?.("info", "Deleted user meeting activity.", {
                 component: "jitsi-meet-module",
                 operation: "delete_user_activity",

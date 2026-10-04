@@ -296,8 +296,8 @@ export class JitsiMeetStore {
         return this.getMeetingById(meetingId);
     }
 
-    async removeDeletedAccountFromMeetings(username) {
-        return removeDeletedAccountFromMeetings(this, username);
+    async removeDeletedAccountFromMeetings(username, options) {
+        return removeDeletedAccountFromMeetings(this, username, options);
     }
 
     async findMeetingByParticipants(usernames, classroomId = null) {
