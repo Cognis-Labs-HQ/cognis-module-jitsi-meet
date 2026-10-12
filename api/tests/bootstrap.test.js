@@ -296,6 +296,7 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
             .filter(({ option }) => option === "DELETE")
             .map(({ table }) => table),
         [
+            "jitsi_chat_calls",
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
             "jitsi_meeting_original_participants",

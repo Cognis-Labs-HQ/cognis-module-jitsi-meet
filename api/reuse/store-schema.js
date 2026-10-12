@@ -4,6 +4,15 @@ import {
     getDataEncryptionKey,
 } from "./crypto.js";
 
+export const MEETING_TABLES = [
+    "jitsi_chat_calls",
+    "jitsi_meeting_presence",
+    "jitsi_meeting_state",
+    "jitsi_meeting_original_participants",
+    "jitsi_meeting_participants",
+    "jitsi_meetings",
+];
+
 export async function ensureJitsiStoreSchema({ db }) {
     await db.ensureTable({
         name: "jitsi_module_config",
@@ -44,7 +53,7 @@ export async function ensureJitsiStoreSchema({ db }) {
                 default: "",
             },
             { name: "room_slug", type: "text", notNull: true },
-            { name: "chat_room_id", type: "text", unique: true },
+            { name: "chat_room_id", type: "text" },
             {
                 name: "disposable",
                 type: "integer",
@@ -65,6 +74,24 @@ export async function ensureJitsiStoreSchema({ db }) {
                 type: "timestamp",
                 notNull: true,
                 default: "now",
+            },
+        ],
+    });
+
+    await db.ensureTable({
+        name: "jitsi_chat_calls",
+        columns: [
+            { name: "chat_room_id", type: "text", primaryKey: true },
+            {
+                name: "meeting_id",
+                type: "text",
+                unique: true,
+                notNull: true,
+                references: {
+                    table: "jitsi_meetings",
+                    column: "id",
+                    onDelete: "CASCADE",
+                },
             },
         ],
     });

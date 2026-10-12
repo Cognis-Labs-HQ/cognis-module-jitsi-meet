@@ -74,6 +74,10 @@ The browser canvas factory and server verification provider are separate contrac
 
 Periodic polling now discards superseded responses and preserves existing participant and meeting DOM when data is unchanged, preventing avatar fallback flashes and cross-meeting state overwrites. Chat avatars follow active presence rather than the invited roster. Joining a meeting deactivates the same account in other meetings, ended meetings ignore residual presence, and stale presence expires after missed heartbeats instead of two minutes.
 
+## Conversation and Call Identity
+
+Saved meetings may share a conversation. The module declares `chat_room_id` as a normal historical reference; `jitsi_chat_calls` reserves one disposable call per conversation and one conversation per current call. Reservations, meeting creation and room changes use the injected database transaction; competing creations roll back without orphan rows. Lookup prefers the reserved call, otherwise the most recently updated saved meeting. Deletion and configuration resets release reservations. PostgreSQL reconciles this declared schema without deleting saved meetings.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

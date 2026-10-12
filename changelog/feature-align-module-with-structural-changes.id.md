@@ -74,6 +74,10 @@ Pabrik kanvas browser dan penyedia verifikasi server adalah kontrak terpisah. Ji
 
 Polling berkala kini membuang respons yang telah digantikan dan mempertahankan DOM peserta serta rapat ketika data tidak berubah, sehingga mencegah avatar berkedip kembali menjadi inisial dan penimpaan status lintas rapat. Avatar chat mengikuti kehadiran aktif, bukan daftar undangan. Bergabung ke rapat menonaktifkan akun yang sama di rapat lain, rapat berakhir mengabaikan sisa kehadiran, dan kehadiran usang kedaluwarsa setelah heartbeat terlewat alih-alih dua menit.
 
+## Identitas Percakapan dan Panggilan
+
+Rapat tersimpan dapat berbagi percakapan. Modul mendeklarasikan `chat_room_id` sebagai referensi riwayat biasa; `jitsi_chat_calls` mereservasi satu panggilan sementara per percakapan dan satu percakapan per panggilan saat ini. Reservasi, pembuatan rapat dan perubahan ruangan memakai transaksi basis data yang diinjeksi. Pembuatan bersaing dibatalkan tanpa baris yatim. Pencarian mengutamakan panggilan yang direservasi, lalu rapat tersimpan yang terakhir diperbarui. Penghapusan dan reset konfigurasi melepas reservasi. PostgreSQL menyelaraskan skema tanpa menghapus rapat tersimpan.
+
 ## Commit
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

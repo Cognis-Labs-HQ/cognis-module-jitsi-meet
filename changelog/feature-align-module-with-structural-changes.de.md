@@ -74,6 +74,10 @@ Die Canvas-Factory im Browser und der Server-Provider für die Prüfung sind get
 
 Regelmäßige Abfragen verwerfen nun überholte Antworten und erhalten das vorhandene Teilnehmer- und Besprechungs-DOM bei unveränderten Daten. Dadurch werden Avatar-Rückfälle auf Initialen und Zustandsüberschreibungen zwischen Besprechungen verhindert. Chat-Avatare folgen der aktiven Anwesenheit statt der Einladungsliste. Beim Beitritt wird dasselbe Konto in anderen Besprechungen deaktiviert, beendete Besprechungen ignorieren Restanwesenheit, und veraltete Anwesenheit läuft nach ausgebliebenen Heartbeats statt nach zwei Minuten ab.
 
+## Konversation und Anrufidentität
+
+Gespeicherte Meetings dürfen eine Konversation gemeinsam nutzen. `chat_room_id` ist ein normaler historischer Verweis; `jitsi_chat_calls` reserviert je einen temporären Anruf pro Konversation und eine Konversation pro aktuellem Anruf. Reservierung, Erstellung und Raumwechsel laufen in der injizierten Datenbanktransaktion. Konkurrierende Erstellungen werden ohne verwaiste Datensätze zurückgerollt. Die Suche bevorzugt den reservierten Anruf, sonst das zuletzt aktualisierte gespeicherte Meeting. Löschen und Konfigurationswechsel geben Reservierungen frei. PostgreSQL gleicht das deklarierte Schema ohne Löschung gespeicherter Meetings ab.
+
 ## Commits
 
 - [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

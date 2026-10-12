@@ -1,3 +1,7 @@
+import {
+    reserveChatCallRoom,
+    assignMeetingChatRoom,
+} from "./reuse/chat-call-room.js";
 import { randomBytes, randomUUID } from "node:crypto";
 import {
     extractUrlOrigin,
@@ -14,7 +18,10 @@ import {
     getDataEncryptionKey,
 } from "./reuse/crypto.js";
 import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
-import { ensureJitsiStoreSchemaOnce } from "./reuse/store-schema.js";
+import {
+    ensureJitsiStoreSchemaOnce,
+    MEETING_TABLES,
+} from "./reuse/store-schema.js";
 import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
 import { removeDeletedAccountFromMeetings } from "./reuse/deleted-account-meetings.js";
@@ -59,13 +66,7 @@ export class JitsiMeetStore {
 
         await this.db.transaction(async (executor) => {
             if (instanceChanged) {
-                for (const table of [
-                    "jitsi_meeting_presence",
-                    "jitsi_meeting_state",
-                    "jitsi_meeting_original_participants",
-                    "jitsi_meeting_participants",
-                    "jitsi_meetings",
-                ]) {
+                for (const table of MEETING_TABLES) {
                     await executor.executeCommand({
                         option: "DELETE",
                         table,
@@ -103,14 +104,7 @@ export class JitsiMeetStore {
     }
 
     async deleteAllData() {
-        for (const table of [
-            "jitsi_meeting_presence",
-            "jitsi_meeting_state",
-            "jitsi_meeting_original_participants",
-            "jitsi_meeting_participants",
-            "jitsi_meetings",
-            "jitsi_module_config",
-        ]) {
+        for (const table of [...MEETING_TABLES, "jitsi_module_config"]) {
             await this.db.executeCommand({ option: "DELETE", table });
         }
     }
@@ -173,13 +167,7 @@ export class JitsiMeetStore {
         const normalizedMeetingId = String(meetingId ?? "").trim();
         if (!normalizedMeetingId) return false;
         await this.db.transaction(async (executor) => {
-            for (const table of [
-                "jitsi_meeting_presence",
-                "jitsi_meeting_state",
-                "jitsi_meeting_original_participants",
-                "jitsi_meeting_participants",
-                "jitsi_meetings",
-            ]) {
+            for (const table of MEETING_TABLES) {
                 await executor.executeCommand({
                     option: "DELETE",
                     table,
@@ -228,6 +216,7 @@ export class JitsiMeetStore {
         if (!meeting) return null;
         const updatedAt = new Date().toISOString();
         await this.db.transaction(async (executor) => {
+            await reserveChatCallRoom(executor, meeting, chatRoomId);
             await executor.executeCommand({
                 option: "INSERT",
                 table: "jitsi_meeting_participants",
@@ -357,15 +346,9 @@ export class JitsiMeetStore {
     async setMeetingChatRoomId(meetingId, chatRoomId) {
         const normalizedChatRoomId = String(chatRoomId ?? "").trim();
         if (!normalizedChatRoomId) return this.getMeetingById(meetingId);
-        await this.db.executeCommand({
-            option: "UPDATE",
-            table: "jitsi_meetings",
-            set: {
-                chat_room_id: normalizedChatRoomId,
-                updated_at: new Date().toISOString(),
-            },
-            where: [{ column: "id", value: meetingId }],
-        });
+        const meeting = await this.getMeetingById(meetingId);
+        if (!meeting) return null;
+        await assignMeetingChatRoom(this.db, meeting, normalizedChatRoomId);
         return this.getMeetingById(meetingId);
     }
 
@@ -402,15 +385,10 @@ export class JitsiMeetStore {
                 normalizedChatRoomId &&
                 existing.chatRoomId !== normalizedChatRoomId
             ) {
-                await this.db.executeCommand({
-                    option: "UPDATE",
-                    table: "jitsi_meetings",
-                    set: {
-                        chat_room_id: normalizedChatRoomId,
-                        updated_at: new Date().toISOString(),
-                    },
-                    where: [{ column: "id", value: existing.id }],
-                });
+                await this.setMeetingChatRoomId(
+                    existing.id,
+                    normalizedChatRoomId,
+                );
             }
             return {
                 ...(existing ?? {}),
@@ -465,6 +443,11 @@ export class JitsiMeetStore {
                 option: "INSERT",
                 table: "jitsi_meetings",
                 values: meetingValues,
+            });
+            await reserveChatCallRoom(executor, {
+                id: meetingId,
+                disposable,
+                chatRoomId,
             });
 
             for (const username of participantUsernames) {

@@ -19,7 +19,7 @@ test("meeting room lookup uses the canonical chat room reference", async () => {
         getMeetingById: async () => meeting,
     });
     assert.equal(result, meeting);
-    assert.deepEqual(queriedColumns, ["chat_room_id"]);
+    assert.deepEqual(queriedColumns, ["chat_room_id", "chat_room_id"]);
 });
 
 test("reserved participants include only active presence in other meetings", async () => {
@@ -428,6 +428,7 @@ test("schema initialization is shared across concurrent store instances", async 
     assert.deepEqual(ensuredTables, [
         "jitsi_module_config",
         "jitsi_meetings",
+        "jitsi_chat_calls",
         "jitsi_meeting_participants",
         "jitsi_meeting_original_participants",
         "jitsi_meeting_state",
@@ -454,7 +455,7 @@ test("schema initialization can retry after a failed create", async () => {
     await assert.rejects(store.ensureSchema(), /create raced/);
     await store.ensureSchema();
 
-    assert.equal(ensureAttempts, 7);
+    assert.equal(ensureAttempts, 8);
 });
 
 test("jitsi store meeting creation uses the modern column set", async () => {
@@ -772,6 +773,7 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
             .filter((command) => command.option === "DELETE")
             .map((command) => command.table),
         [
+            "jitsi_chat_calls",
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
             "jitsi_meeting_original_participants",
