@@ -27,6 +27,10 @@ globalThis[Symbol.for("cognis.uiCtx")] = {
                 : undefined,
     },
 };
+globalThis.window = {
+    location: { href: "http://localhost/meetings" },
+    history: { replaceState() {} },
+};
 globalThis.HTMLElement = class {};
 globalThis.HTMLButtonElement = class extends HTMLElement {};
 const { createPreflightHandlers } = await import("../app/participants.js");
@@ -108,3 +112,57 @@ test("a superseded persisted response cannot overwrite newer lists while its bod
     assert.deepEqual(state.persistedMeetings, [{ id: "new-meeting" }]);
     assert.deepEqual(state.activeMeetings, [{ id: "new-meeting" }]);
 });
+
+for (const outcome of ["auth", "failure", "cancel"]) {
+    test(`meeting selection cannot replace an in-flight join: ${outcome}`, async () => {
+        const pending = deferred();
+        const state = {
+            meeting: null,
+            activeMeetings: [],
+            persistedMeetings: [],
+            allParticipants: [],
+            selectedParticipants: [],
+        };
+        let requests = 0;
+        const handlers = createMeetingHandlers({
+            root: { querySelector: () => null },
+            state,
+            allowParticipantlessJoin: true,
+            utils: { isMeetingActive: () => false, updateOverlay() {} },
+            i18n: { t: (key) => key },
+            callbacks: {
+                renderParticipants() {},
+                updateCognisChat: async () => {},
+                joinMeeting: async () => ({ trackingAllowed: false }),
+            },
+            apiFetch: () => {
+                requests += 1;
+                return pending.promise;
+            },
+        });
+        const joining = handlers.joinMeetingById("first");
+        await handlers.joinMeetingById("second");
+        assert.equal(requests, 1);
+        if (outcome === "cancel") state.meetingTransition = null;
+        pending.resolve({
+            ok: true,
+            json: async () => ({
+                data:
+                    outcome === "failure"
+                        ? null
+                        : {
+                              id: "first",
+                              participants: [],
+                              state: { authRequired: true },
+                          },
+            }),
+        });
+        await joining;
+        assert.equal(state.meetingTransition, null);
+        if (outcome === "auth") {
+            await handlers.joinMeetingById("second");
+            assert.equal(requests, 1);
+            assert.equal(state.meeting.id, "first");
+        } else assert.equal(state.meeting, null);
+    });
+}

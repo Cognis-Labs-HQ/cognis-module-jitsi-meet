@@ -276,7 +276,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.equal(
         meetingsListSource.match(
-            /const whiteboardCleanup = closeMeetingWhiteboard\(root\);\s*state\.meeting = null;\s*closeMeetingEmbed\(\);/g,
+            /const whiteboardCleanup = closeMeetingWhiteboard\(root\);\s*state\.meeting = null;\s*(?:state\.meetingTransition = null;\s*)?closeMeetingEmbed\(\);/g,
         )?.length,
         2,
     );
@@ -319,6 +319,9 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         lifecycleSource.indexOf("meetingStarted = true"),
     );
     assert.doesNotMatch(meetingRestartSource, /whiteboardId:\s*null/);
-    assert.match(meetingRestartSource, /whiteboardActive:\s*false/);
+    assert.match(
+        meetingRestartSource,
+        /whiteboardActive:\s*restorePersistentCanvas/,
+    );
     assert.match(meetingRestartSource, /whiteboardOpenVotes:\s*\[\]/);
 });

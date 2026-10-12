@@ -300,6 +300,7 @@ export async function mount(
     });
     const embedHandlers = createEmbedHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,

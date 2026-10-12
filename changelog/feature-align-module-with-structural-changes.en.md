@@ -24,7 +24,7 @@ Meetings uses host page composer, router, profile previews, controls, overlays a
 
 ## Publish one synchronized release contract
 
-Module 1.5.241 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
+Module 1.5.242 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
 
 ## Restore Whiteboard access before automatic opening
 
@@ -37,6 +37,10 @@ Jitsi uses the public gateway methods `requestCanvasPage({signal})` and `openCan
 ## Explain unavailable Whiteboard controls
 
 An enabled Whiteboard provider with an incomplete public UI contract leaves a disabled control with an explanatory tooltip and logs the missing capability methods. A failed provider load is also explained. An absent optional provider omits the control. Avatar availability is independent of Whiteboard readiness; a profile availability 404 does not disable it.
+
+## Protect meeting transitions and restore persistent canvases
+
+Meeting selection stays locked while loading, resolving a keyring, awaiting authentication or reclaim, and throughout an embedded conference. Join requests share their pending operation; cancellation and stale responses cannot replace the current target. Active discovery includes authorized invited meetings with current presence while authentication is pending. Restarting a persistent meeting restores its saved canvas through the public owner-authorized membership contract. An unavailable or deleted optional canvas is logged and leaves the meeting join available.
 
 ## Commits
 

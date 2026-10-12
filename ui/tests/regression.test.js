@@ -262,7 +262,7 @@ test("active meetings lock previous meeting interaction and profile hydration", 
 
     assert.match(
         source,
-        /const persistedMeetingsLocked = utils\.isMeetingActive\(\)/,
+        /const persistedMeetingsLocked = isMeetingSelectionLocked\(state\)/,
     );
     assert.match(
         source,
@@ -594,11 +594,11 @@ test("active meetings are locked while the user is joined to a meeting", () => {
     const cssSource = readModuleStyles();
     assert.match(
         source,
-        /activeMeetingsLocked = Boolean\([\s\S]*?state\.meeting\?\.id[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
+        /activeMeetingsLocked = Boolean\([\s\S]*?isMeetingSelectionLocked\(state\)[\s\S]*?jitsi-active-meetings-disabled[\s\S]*?button\.disabled = activeMeetingsLocked/,
     );
     assert.match(
         source,
-        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(state\.meeting\?\.id \|\| isMeetingActive\(\)\) return/,
+        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(isMeetingSelectionLocked\(state\)\) return/,
     );
     assert.match(
         source,
@@ -667,7 +667,7 @@ test("starting a meeting uses the Cognis page loading wheel until join completes
     assert.match(source, /\{ beginPageLoading, mountWhenDirect \}/);
     assert.match(
         source,
-        /prepareMeetingStart[\s\S]*callbacks\.beginPageLoading\(\)[\s\S]*finally[\s\S]*finishPageLoading\(\)/,
+        /prepareMeetingStart[\s\S]*callbacks\.beginPageLoading\(\)[\s\S]*finally[\s\S]*finishPageLoading\?\.\(\)/,
     );
 });
 

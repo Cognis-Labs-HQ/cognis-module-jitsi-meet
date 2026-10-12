@@ -668,3 +668,91 @@ test("a kicked guest invalidates the share link used to join", async () => {
         { inactive: ["meeting-1", "guest:guest-1"] },
     ]);
 });
+
+for (const providerAvailable of [true, false]) {
+    test(`repeated persistent meetings restore their saved canvas with optional provider available=${providerAvailable}`, async () => {
+        const handlers = new Map();
+        const meeting = { id: "repeat", createdBy: "alice", disposable: false };
+        let state = {
+            firstJoinedBy: "alice",
+            endedAt: "2026-10-12",
+            whiteboardId: "saved-canvas",
+            whiteboardDisposable: false,
+            whiteboardActive: false,
+        };
+        const memberships = [];
+        registerMeetingLifecycleRoutes({
+            router: { post: (path, handler) => handlers.set(path, handler) },
+            store: {
+                ensureSchema: async () => {},
+                listActiveMeetings: async () => [],
+                getActiveSessionsForUser: async () => [],
+                upsertPresence: async () => {},
+                updateMeetingState: async (_id, updates) =>
+                    (state = { ...state, ...updates }),
+                claimMeetingPassword: async () => "",
+            },
+            profileStore: {
+                getProfileByHandle: async () => ({
+                    accountId: "owner-account",
+                }),
+            },
+            requireAuth: () => ({ sub: "invited-account" }),
+            resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+            readJson: async () => ({
+                meetingId: "repeat",
+                sessionId: "session",
+                includeChat: false,
+            }),
+            resolveMeetingPayload: async () => ({
+                meeting,
+                state,
+                participants: ["alice", "bob"],
+                requesterUsername: "bob",
+            }),
+            fetchBoardData: async () => {
+                if (!providerAvailable) throw new Error("provider unavailable");
+                return { id: "saved-canvas", createdBy: "alice" };
+            },
+            resolveWhiteboardMembership: () => ({
+                add: async (input) => memberships.push(input),
+            }),
+            createMeetingPayload: async (input) => ({
+                ...input.meeting,
+                state: input.state,
+            }),
+            sendJson: (res, status, payload) => {
+                res.writeHead(status);
+                res.end(JSON.stringify(payload));
+            },
+            sendError: () =>
+                assert.fail(
+                    "An unavailable optional canvas cannot prevent joining",
+                ),
+            resolveModeratorUsernames: async () => ["alice"],
+            dispatchMeetingNotifications: async () => {},
+            log() {},
+        });
+        for (let iteration = 0; iteration < 2; iteration += 1) {
+            const response = createRecorder();
+            await handlers.get("/api/v1/modules/jitsi-meet/meetings/join")(
+                {},
+                response,
+            );
+            assert.equal(response.status, 200);
+            assert.equal(state.whiteboardActive, providerAvailable);
+            assert.equal(state.whiteboardId, "saved-canvas");
+            state = {
+                ...state,
+                endedAt: "2026-10-12",
+                whiteboardActive: false,
+            };
+        }
+        assert.equal(memberships.length, providerAvailable ? 2 : 0);
+        if (providerAvailable)
+            assert.equal(
+                memberships[0].whiteboardId,
+                memberships[1].whiteboardId,
+            );
+    });
+}

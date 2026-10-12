@@ -587,6 +587,20 @@ export function registerMeetingLifecycleRoutes({
                 }))
             )
                 return;
+            const restorePersistentCanvas = Boolean(
+                (!resolved.state.firstJoinedBy || resolved.state.endedAt) &&
+                !resolved.meeting.disposable &&
+                resolved.state.whiteboardId &&
+                resolved.state.whiteboardDisposable === false &&
+                (await updateWhiteboardMember({
+                    operation: "add",
+                    meeting: resolved.meeting,
+                    state: resolved.state,
+                    userAccountId: claims.sub,
+                    response: null,
+                    logOperation: "restore_persistent_meeting_whiteboard",
+                })),
+            );
             const otherActiveMeetings = await store.listActiveMeetings();
             for (const activeMeeting of otherActiveMeetings) {
                 if (
@@ -628,7 +642,7 @@ export function registerMeetingLifecycleRoutes({
                     authCompletedAt: null,
                     endedBy: null,
                     endedAt: null,
-                    whiteboardActive: false,
+                    whiteboardActive: restorePersistentCanvas,
                     screenSharingActive: false,
                     whiteboardOpenVotes: [],
                 });

@@ -1,3 +1,4 @@
+import { isMeetingSelectionLocked } from "./reuse/meeting-transition.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
@@ -249,7 +250,7 @@ export function createInteractiveHandlersBinder({
             activeMeetingsEl.addEventListener(
                 "click",
                 (event) => {
-                    if (state.meeting?.id || isMeetingActive()) return;
+                    if (isMeetingSelectionLocked(state)) return;
                     const button = event.target.closest(
                         ".jitsi-active-meeting-item[data-meeting-id]",
                     );

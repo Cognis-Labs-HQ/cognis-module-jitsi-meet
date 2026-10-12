@@ -1,3 +1,7 @@
+import {
+    claimMeetingTransition,
+    isMeetingSelectionLocked,
+} from "./reuse/meeting-transition.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import { clearJitsiAuthenticationSession } from "../reuse/jitsi-storage.js";
@@ -17,6 +21,7 @@ const [{ escapeHtml }, { openPopup }, { resolveUrlHost }] = await Promise.all([
 
 export function createEmbedHandlers({
     root,
+    signal,
     state,
     i18n,
     apiFetch,
@@ -25,6 +30,12 @@ export function createEmbedHandlers({
 }) {
     async function openMeetingEmbed() {
         if (!state.meeting?.meetingUrl) return;
+        const meetingId = state.meeting.id;
+        const transitionToken = state.meetingTransition;
+        const isCurrent = () =>
+            !signal?.aborted &&
+            state.meeting?.id === meetingId &&
+            state.meetingTransition === transitionToken;
         const frame = root.querySelector("#jitsi-meeting-frame");
         if (!(frame instanceof HTMLElement)) return;
 
@@ -33,6 +44,7 @@ export function createEmbedHandlers({
             state.meeting.instanceUrl || state.meeting.meetingUrl,
         );
 
+        if (!isCurrent()) return;
         const meetingHost = resolveUrlHost(
             state.meeting.instanceUrl || state.meeting.meetingUrl,
         );
@@ -113,6 +125,7 @@ export function createEmbedHandlers({
                 },
             })) || suppliedMeetingPassword,
         ).trim();
+        if (!isCurrent()) return;
         if (
             meetingKeyring &&
             suppliedMeetingPassword &&
@@ -127,6 +140,7 @@ export function createEmbedHandlers({
                     body: JSON.stringify({ meetingId: state.meeting.id }),
                 },
             );
+            if (!isCurrent()) return;
             if (!acknowledgeResponse.ok) {
                 showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                     variant: "error",
@@ -446,7 +460,13 @@ export function createEmbedHandlers({
         });
     }
 
-    async function joinMeeting() {
+    async function performJoinMeeting() {
+        const meetingId = state.meeting?.id;
+        const transitionToken = state.meetingTransition;
+        const isCurrent = () =>
+            !signal?.aborted &&
+            state.meeting?.id === meetingId &&
+            state.meetingTransition === transitionToken;
         if (!state.meeting?.id) return;
         const joinResponse = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/join",
@@ -464,6 +484,7 @@ export function createEmbedHandlers({
                 suppressAccessDeniedEvent: true,
             },
         );
+        if (!isCurrent()) return;
         if (!joinResponse.ok) {
             showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                 variant: "error",
@@ -472,10 +493,12 @@ export function createEmbedHandlers({
         }
 
         const joinPayload = await joinResponse.json();
+        if (!isCurrent()) return;
         state.meeting = joinPayload?.data ?? state.meeting;
         utils.deferAloneParticipantPrompt();
         await callbacks.updateCognisChat();
 
+        if (!isCurrent()) return;
         if (state.meeting.requiresReclaim) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.reclaim_prompt"),
@@ -511,14 +534,32 @@ export function createEmbedHandlers({
         return { trackingAllowed: true };
     }
 
+    async function joinMeeting() {
+        if (state.joinMeetingPromise) return state.joinMeetingPromise;
+        const transition = state.meetingTransition
+            ? null
+            : claimMeetingTransition(state, signal);
+        const pending = performJoinMeeting().finally(() => {
+            if (state.joinMeetingPromise === pending)
+                state.joinMeetingPromise = null;
+            transition?.release();
+        });
+        state.joinMeetingPromise = pending;
+        return pending;
+    }
+
     async function prepareMeetingStart() {
-        const finishPageLoading = callbacks.beginPageLoading();
+        if (isMeetingSelectionLocked(state)) return;
+        const transition = claimMeetingTransition(state, signal);
+        if (!transition) return;
+        let finishPageLoading;
         try {
+            finishPageLoading = callbacks.beginPageLoading();
             if (!state.preflightPassed) {
                 const passed = await callbacks.runPreflightCheck({
                     showErrors: true,
                 });
-                if (!passed) return;
+                if (!passed || !transition.isCurrent()) return;
             }
 
             const selected = utils.selectedUsernames();
@@ -534,6 +575,7 @@ export function createEmbedHandlers({
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.creating"),
                 loading: true,
+                canStart: false,
                 visible: true,
             });
 
@@ -551,6 +593,7 @@ export function createEmbedHandlers({
                 },
             );
 
+            if (!transition.isCurrent()) return;
             if (!createResponse.ok) {
                 const message =
                     createResponse.status === 409
@@ -569,6 +612,7 @@ export function createEmbedHandlers({
             const createPayload = await createResponse
                 .json()
                 .catch(() => ({ data: null }));
+            if (!transition.isCurrent()) return;
             state.meeting = createPayload?.data;
             state.promptShareOnJoin =
                 Boolean(state.meeting?.id) &&
@@ -591,7 +635,8 @@ export function createEmbedHandlers({
             }
             void callbacks.loadActiveMeetings({ resolveRequested: false });
         } finally {
-            finishPageLoading();
+            transition.release();
+            finishPageLoading?.();
         }
     }
 

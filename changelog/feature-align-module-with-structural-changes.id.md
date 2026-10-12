@@ -24,7 +24,7 @@ Meetings menggunakan page composer, router, pratinjau profil, kontrol, overlay d
 
 ## Terbitkan satu kontrak rilis tersinkron
 
-Modul 1.5.241 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
+Modul 1.5.242 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
 
 ## Pulihkan akses Whiteboard sebelum pembukaan otomatis
 
@@ -37,6 +37,10 @@ Jitsi memakai metode gateway publik `requestCanvasPage({signal})` dan `openCanva
 ## Jelaskan kontrol Whiteboard yang tidak tersedia
 
 Provider Whiteboard yang aktif dengan kontrak UI publik tidak lengkap tetap menampilkan kontrol nonaktif dengan tooltip penjelasan dan mencatat metode capability yang hilang. Kegagalan pemuatan provider juga dijelaskan. Provider opsional yang tidak ada tidak menampilkan kontrol. Ketersediaan avatar terpisah dari kesiapan Whiteboard; respons 404 ketersediaan profil tidak menonaktifkannya.
+
+## Lindungi transisi rapat dan pulihkan kanvas persisten
+
+Pemilihan rapat terkunci saat memuat, menyelesaikan keyring, menunggu autentikasi atau pengambilalihan sesi, dan selama konferensi tertanam. Permintaan bergabung berbagi operasi tertunda; pembatalan dan respons usang tidak mengganti tujuan saat ini. Pencarian aktif menyertakan rapat undangan yang diizinkan dengan kehadiran terkini meskipun autentikasi tertunda. Memulai kembali rapat persisten memulihkan kanvas tersimpan melalui kontrak keanggotaan publik yang diizinkan pemilik. Kanvas opsional yang tidak tersedia atau dihapus dicatat dan tidak mencegah pengguna bergabung.
 
 ## Commit
 

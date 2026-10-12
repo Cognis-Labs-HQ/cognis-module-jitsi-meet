@@ -89,6 +89,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
     const sendJsonCalls = [];
     const logCalls = [];
     const accessChecks = [];
+    let authPending = false;
     const profileStore = {
         async getProfile() {
             return null;
@@ -140,7 +141,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
                 return ["previous-handle"];
             },
             async getMeetingState() {
-                return { endedAt: null, authRequired: false };
+                return { endedAt: null, authRequired: authPending };
             },
         },
         profileStore,
@@ -201,6 +202,10 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
     assert.equal(logCalls.length, 1);
     assert.equal(logCalls[0][0], "error");
     assert.equal(logCalls[0][2].operation, "list_active_meetings");
+    authPending = true;
+    await activeRoute.handler({}, {});
+    assert.equal(sendJsonCalls[1].payload.data.length, 1);
+    assert.equal(sendJsonCalls[1].payload.data[0].state.authRequired, true);
 });
 
 test("LDAP participants retain meeting access when their profile handle changes", async () => {

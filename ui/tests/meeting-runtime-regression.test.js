@@ -230,7 +230,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     assert.match(source, /alonePromptDismissedMeetingId/);
     assert.match(
         source,
-        /const joinPayload = await joinResponse\.json\(\);\n\s*state\.meeting = joinPayload\?\.data \?\? state\.meeting;\n\s*utils\.deferAloneParticipantPrompt\(\);/,
+        /const joinPayload = await joinResponse\.json\(\);\n\s*if \(!isCurrent\(\)\) return;\n\s*state\.meeting = joinPayload\?\.data \?\? state\.meeting;\n\s*utils\.deferAloneParticipantPrompt\(\);/,
     );
     assert.match(
         source,
@@ -538,10 +538,7 @@ test("jitsi API exposes user active meetings endpoint", () => {
         meetingsRoutesSource,
         /const activeMeetings = await store\.listActiveMeetings\(\)/,
     );
-    assert.match(
-        meetingsRoutesSource,
-        /if \(state\.authRequired && !state\.authCompletedAt\) continue;/,
-    );
+    assert.match(meetingsRoutesSource, /authRequired: state\.authRequired/);
 });
 
 test("jitsi opts into composer DOM parking for its stateful iframe", () => {

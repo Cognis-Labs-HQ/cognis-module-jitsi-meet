@@ -363,7 +363,6 @@ export function registerMeetingRoutes({
                     store.getMeetingState(meeting.id),
                 ]);
                 if (state.endedAt) continue;
-                if (state.authRequired && !state.authCompletedAt) continue;
                 const startedByUsername =
                     state.firstJoinedBy ?? meeting.createdBy ?? "";
                 const startedByProfile = startedByUsername

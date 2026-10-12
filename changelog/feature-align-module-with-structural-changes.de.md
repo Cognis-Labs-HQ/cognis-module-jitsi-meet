@@ -24,7 +24,7 @@ Meetings verwendet den Page Composer, Router, Profilvorschauen, Bedienelemente, 
 
 ## Einen synchronisierten Release-Vertrag veröffentlichen
 
-Modul 1.5.241 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
+Modul 1.5.242 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
 
 ## Whiteboard-Zugriff vor automatischem Öffnen wiederherstellen
 
@@ -37,6 +37,10 @@ Jitsi verwendet die öffentlichen Gateway-Methoden `requestCanvasPage({signal})`
 ## Nicht verfügbare Whiteboard-Schalter erklären
 
 Ein aktivierter Whiteboard-Provider mit unvollständigem öffentlichen UI-Vertrag lässt einen deaktivierten Schalter mit erklärendem Tooltip stehen und protokolliert fehlende Capability-Methoden. Ein fehlgeschlagener Provider-Ladevorgang wird ebenfalls erklärt. Fehlt der optionale Provider, entfällt der Schalter. Die Avatar-Verfügbarkeit ist unabhängig von der Whiteboard-Bereitschaft; ein Profilverfügbarkeits-404 deaktiviert sie nicht.
+
+## Meeting-Übergänge schützen und persistente Canvas wiederherstellen
+
+Die Meeting-Auswahl bleibt beim Laden, während der Keyring-Auflösung, bei ausstehender Authentifizierung oder Sitzungsübernahme und während einer eingebetteten Konferenz gesperrt. Beitrittsanfragen teilen ihre ausstehende Operation; Abbruch und veraltete Antworten ersetzen das aktuelle Ziel nicht. Die aktive Suche enthält autorisierte eingeladene Meetings mit aktueller Präsenz auch bei ausstehender Authentifizierung. Beim Neustart eines persistenten Meetings wird seine gespeicherte Canvas über den öffentlichen, vom Besitzer autorisierten Mitgliedschaftsvertrag wiederhergestellt. Eine nicht verfügbare oder gelöschte optionale Canvas wird protokolliert und verhindert den Meeting-Beitritt nicht.
 
 ## Commits
 
