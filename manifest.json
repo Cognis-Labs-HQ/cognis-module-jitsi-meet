@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.240",
+    "version": "1.5.241",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -332,7 +332,7 @@
         },
         {
             "path": "api/tests/documentation-convention.test.js",
-            "sha256": "80d505756df3cb1c0669db8a702bde65d8d1f22b9efcd59e96a9bddff0e21aa8"
+            "sha256": "313bca082d8a67e6b645cdcc68a0d717f0d5a13794e2b1178ee0e13bbf3dfe43"
         },
         {
             "path": "api/tests/flow-runtime-fake.js",
@@ -440,27 +440,27 @@
         },
         {
             "path": "docs/standard.de.md",
-            "sha256": "f4523a0c9a9e3d299400ec423515ff26f86d28896ca4d6950975e5413f341b3e"
+            "sha256": "bb7e1ef4a8c583b524a6402a8012592ceff5c4eeb8f8f9225917dc3f7533afbd"
         },
         {
             "path": "docs/standard.en.md",
-            "sha256": "a83d5265c5800f6e126f2d6f15871add83182f2faafc0b43bf8ee1326be2050c"
+            "sha256": "4361091317dd60a1f7553448a9c1d946b0617616a4b0c623f3a9e484705463f0"
         },
         {
             "path": "docs/standard.id.md",
-            "sha256": "f7f8a619f66111f9ccd3c1de9bba3d7ba6c17e39823f8f1363942b04201bd3be"
+            "sha256": "ba27b5147fe9d8a4c493fa2a2046853c90a555890cd46f5ce25b1fed4b4a4f5a"
         },
         {
             "path": "docs/standard.ja.md",
-            "sha256": "9b5ee1e2d648b8aca163c2c91811ad01244275c3b26f8a79d259f0bcec1fca21"
+            "sha256": "73c2ac804be7f37a1f2daae30c415c53bb68eacc7ee5e31dfbf1be331d036230"
         },
         {
             "path": "package-lock.json",
-            "sha256": "9aa5b3f62c29925f723d6efce67052cc8aff51beea13e58065d91f39cc737076"
+            "sha256": "39d0cc06252e220d2268402ad3eee05717de5b8bfd0fcf356fc55e816716eaed"
         },
         {
             "path": "package.json",
-            "sha256": "841fab1abb6591fb200aacc6852788da4736645ce71b48eef9b111f44a00f945"
+            "sha256": "99379349c9d41f45f7b46a621b98e85fb090df7b1d8cecd00710fb09dfbe7084"
         },
         {
             "path": "routes.json",
@@ -540,19 +540,19 @@
         },
         {
             "path": "ui/languages/de/strings.xml",
-            "sha256": "00589a304cfb6ba7b4aa7d1bcc95c2ee44008fd5662f1aa46604a5fc4d211863"
+            "sha256": "7d230a3f2737894a6791f74f87affcde305572b85a3b16fed813174b5dffea27"
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "44cf7236f1d7682976a9188c1cd6f177ed9622ed25b6a833dfc89c505be9553f"
+            "sha256": "5d45dd603ddcd78564bb52b2da8c37427713ba477a6ef9c0b2c23b6bac377c3d"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "8acfac68e586199173d42ec853ce99dd45138edbe00a144058dfb09f38ded137"
+            "sha256": "7bc68f6d65e11b6ef16c327f24ef206af5b47b6b2056b1e28c1b2a3c5e8960cb"
         },
         {
             "path": "ui/languages/ja/strings.xml",
-            "sha256": "17e4e492ca13bb335a1f9ed03e2c11bc18bd9415496e2ebccf2dcfda578800f2"
+            "sha256": "036f600dc07b6d0a0f4830ccf882e19de4e0202e8d3815ed495948a77c3aa2bc"
         },
         {
             "path": "ui/markup.js",
@@ -640,7 +640,7 @@
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",
-            "sha256": "1ccc325c0582acf2f4003f46ee85534a3170ef469887dddba943c284784472cd"
+            "sha256": "c97b7dede1cc579a09ee13ff34e70c900d973bbd929e1b432fc5cc3ef9957213"
         },
         {
             "path": "ui/tests/whiteboard-follow.test.js",
@@ -660,11 +660,11 @@
         },
         {
             "path": "ui/whiteboard-control.js",
-            "sha256": "b3cccbb6d3c12d739e4eb7b2a37153ce667e34c58764ad1829c59fc8c6ea7ca6"
+            "sha256": "1dcab6ba3223af42474de1248d326cd2e6f9dec66681c69e3efbddffb2dbbbaf"
         },
         {
             "path": "ui/whiteboard-provider.js",
-            "sha256": "481665c9110d36ce3e524b5f71acb9fd5f054056abd7424f3260219313a4a130"
+            "sha256": "793b0ba523c0b191403c8bef413030685ebd23ffb5bf0bd2ff51b19c6964ec9a"
         },
         {
             "path": "ui/whiteboard-session.js",

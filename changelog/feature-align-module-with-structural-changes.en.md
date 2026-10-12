@@ -24,7 +24,7 @@ Meetings uses host page composer, router, profile previews, controls, overlays a
 
 ## Publish one synchronized release contract
 
-Module 1.5.240 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
+Module 1.5.241 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
 
 ## Restore Whiteboard access before automatic opening
 
@@ -33,6 +33,10 @@ Joining an active meeting restores the authorized account’s membership in its 
 ## Public presentation contract
 
 Jitsi uses the public gateway methods `requestCanvasPage({signal})` and `openCanvas({whiteboardId, elementId, signal})`. The Whiteboard provider owns its route IDs, canvas layout, transport and session semantics. Jitsi supplies only the exact board ID and its own mount target; it releases the returned window on teardown. Presentation requires Whiteboard 2.3.147 or newer. Membership changes use the server-owned public membership contract.
+
+## Explain unavailable Whiteboard controls
+
+An enabled Whiteboard provider with an incomplete public UI contract leaves a disabled control with an explanatory tooltip and logs the missing capability methods. A failed provider load is also explained. An absent optional provider omits the control. Avatar availability is independent of Whiteboard readiness; a profile availability 404 does not disable it.
 
 ## Commits
 

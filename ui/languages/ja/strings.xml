@@ -150,4 +150,5 @@
   <string name="module.jitsi_meet.tag_video">ビデオ</string>
   <string name="module.jitsi_meet.tag_meetings">ミーティング</string>
   <string name="module.jitsi_meet.voip.subject">VoIP 通話</string>
+  <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard を利用できません。キャンバスの作成と表示に対応する Whiteboard Provider を更新または有効化してください。</string>
 </resources>

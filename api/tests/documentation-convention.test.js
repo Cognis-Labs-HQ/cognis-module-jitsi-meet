@@ -83,7 +83,7 @@ test("current release documentation has matching localized structure and provena
         ].map((match) => match[1]);
         assert.ok(commits.length > 0);
         assert.equal(commits.length, new Set(commits).size);
-        assert.equal((source.match(/1\.5\.240/g) ?? []).length, 1);
+        assert.equal((source.match(/1\.5\.241/g) ?? []).length, 1);
         const standardHeadings = headingLevels(
             resolve(ROOT, `docs/standard.${language}.md`),
         );

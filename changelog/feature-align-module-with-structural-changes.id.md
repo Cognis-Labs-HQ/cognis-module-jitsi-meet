@@ -24,7 +24,7 @@ Meetings menggunakan page composer, router, pratinjau profil, kontrol, overlay d
 
 ## Terbitkan satu kontrak rilis tersinkron
 
-Modul 1.5.240 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
+Modul 1.5.241 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
 
 ## Pulihkan akses Whiteboard sebelum pembukaan otomatis
 
@@ -33,6 +33,10 @@ Bergabung ke rapat aktif memulihkan keanggotaan akun terotorisasi pada Whiteboar
 ## Kontrak presentasi publik
 
 Jitsi memakai metode gateway publik `requestCanvasPage({signal})` dan `openCanvas({whiteboardId, elementId, signal})`. Provider Whiteboard memiliki ID rute, tata letak kanvas, transport dan semantik sesi. Jitsi hanya memberikan ID papan yang tepat dan target pemasangannya sendiri, lalu melepas jendela saat pembongkaran. Presentasi memerlukan Whiteboard 2.3.147 atau lebih baru. Perubahan anggota memakai kontrak keanggotaan publik milik server.
+
+## Jelaskan kontrol Whiteboard yang tidak tersedia
+
+Provider Whiteboard yang aktif dengan kontrak UI publik tidak lengkap tetap menampilkan kontrol nonaktif dengan tooltip penjelasan dan mencatat metode capability yang hilang. Kegagalan pemuatan provider juga dijelaskan. Provider opsional yang tidak ada tidak menampilkan kontrol. Ketersediaan avatar terpisah dari kesiapan Whiteboard; respons 404 ketersediaan profil tidak menonaktifkannya.
 
 ## Commit
 

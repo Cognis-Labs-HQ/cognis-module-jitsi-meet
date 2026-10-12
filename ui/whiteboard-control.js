@@ -39,6 +39,16 @@ function setButtonDisabled(button, disabled) {
     button?.setAttribute("aria-disabled", String(disabled));
 }
 
+function explainUnavailableWhiteboard(button, slot, i18n, signal) {
+    const message = i18n.t(
+        "module.jitsi_meet.whiteboard.provider_contract_unavailable",
+    );
+    setButtonDisabled(button, true);
+    button.title = message;
+    slot.title = message;
+    signal?.addEventListener("abort", () => button.remove(), { once: true });
+}
+
 function placeMeetingOverlay(trigger, { floating = false } = {}) {
     const overlay = trigger?.overlay;
     const parent = floating ? trigger?.meetingFrame : trigger?.frameWrap;
@@ -321,6 +331,7 @@ export async function bindWhiteboardButton({
         button.setAttribute("aria-hidden", "true");
     }
     setButtonDisabled(button, true);
+    slot.title = "";
     slot.replaceChildren(button);
     let capabilities;
     try {
@@ -333,8 +344,11 @@ export async function bindWhiteboardButton({
             canvasFactory,
         });
     } catch (error) {
-        button.remove();
-        if (signal?.aborted) return;
+        if (signal?.aborted || slot.firstElementChild !== button) {
+            button.remove();
+            return;
+        }
+        explainUnavailableWhiteboard(button, slot, i18n, signal);
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",
             operation: "load_whiteboard_ui_providers",
@@ -353,18 +367,17 @@ export async function bindWhiteboardButton({
         requestKeyringUnlock,
         whiteboardGateway,
     } = capabilities;
-    if (
-        typeof whiteboardGateway?.requestCanvasPage !== "function" ||
-        typeof whiteboardGateway?.openCanvas !== "function" ||
-        typeof makeFloatingWindow !== "function" ||
-        (!state.shareAccessToken &&
-            typeof whiteboardGateway?.[
-                meetingHasInvitedParticipants(state.meeting)
-                    ? "createCanvas"
-                    : "createDisposableCanvas"
-            ] !== "function")
-    ) {
+    if (!whiteboardGateway) {
         button.remove();
+        return;
+    }
+    if (capabilities.missingCapabilities.length > 0) {
+        explainUnavailableWhiteboard(button, slot, i18n, signal);
+        await logUi("error", "Whiteboard UI contract is incomplete.", {
+            component: "module:jitsi-meet",
+            operation: "resolve_whiteboard_ui_contract",
+            missingCapabilities: capabilities.missingCapabilities,
+        });
         return;
     }
 

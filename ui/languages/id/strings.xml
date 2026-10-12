@@ -150,4 +150,5 @@
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Rapat</string>
   <string name="module.jitsi_meet.voip.subject">Panggilan VoIP</string>
+  <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard tidak tersedia. Perbarui atau aktifkan provider Whiteboard yang mendukung pembuatan dan presentasi kanvas.</string>
 </resources>

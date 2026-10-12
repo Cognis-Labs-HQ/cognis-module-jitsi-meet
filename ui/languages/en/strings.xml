@@ -150,4 +150,5 @@
   <string name="module.jitsi_meet.tag_video">Video</string>
   <string name="module.jitsi_meet.tag_meetings">Meetings</string>
   <string name="module.jitsi_meet.voip.subject">VoIP call</string>
+  <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard is unavailable. Update or enable the Whiteboard provider with canvas creation and presentation support.</string>
 </resources>

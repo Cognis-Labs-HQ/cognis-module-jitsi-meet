@@ -10,30 +10,46 @@ export async function resolveWhiteboardCapabilities(
     const ensureProvidersLoaded = uiCtx.capabilities.get(
         "ui:ensureProvidersLoaded",
     );
-    const readCapabilities = () => ({
-        discardComponentPage: uiCtx.capabilities.get("component-pages:discard"),
-        isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
-        makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
-        requestKeyringUnlock: uiCtx.capabilities.get("keyring:requestUnlock"),
-        whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
-    });
+    const readCapabilities = () => {
+        const whiteboardGateway = uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY);
+        const makeFloatingWindow = uiCtx.capabilities.get(
+            "ui:makeFloatingWindow",
+        );
+        const requiredMethods = new Map([
+            [
+                "whiteboard:uiGateway.requestCanvasPage",
+                whiteboardGateway?.requestCanvasPage,
+            ],
+            ["whiteboard:uiGateway.openCanvas", whiteboardGateway?.openCanvas],
+            ["ui:makeFloatingWindow", makeFloatingWindow],
+        ]);
+        if (canvasFactory)
+            requiredMethods.set(
+                `whiteboard:uiGateway.${canvasFactory}`,
+                whiteboardGateway?.[canvasFactory],
+            );
+        return {
+            discardComponentPage: uiCtx.capabilities.get(
+                "component-pages:discard",
+            ),
+            isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
+            makeFloatingWindow,
+            requestKeyringUnlock: uiCtx.capabilities.get(
+                "keyring:requestUnlock",
+            ),
+            whiteboardGateway,
+            missingCapabilities: [...requiredMethods]
+                .filter(([, value]) => typeof value !== "function")
+                .map(([name]) => name),
+        };
+    };
     let capabilities = readCapabilities();
     for (let attempt = 0; attempt < 3 && !signal?.aborted; attempt += 1) {
         if (typeof ensureProvidersLoaded === "function") {
             await ensureProvidersLoaded({ force: attempt > 0 });
         }
         capabilities = readCapabilities();
-        if (
-            (!canvasFactory ||
-                typeof capabilities.whiteboardGateway?.[canvasFactory] ===
-                    "function") &&
-            typeof capabilities.whiteboardGateway?.requestCanvasPage ===
-                "function" &&
-            typeof capabilities.whiteboardGateway?.openCanvas === "function" &&
-            typeof capabilities.makeFloatingWindow === "function"
-        ) {
-            return capabilities;
-        }
+        if (capabilities.missingCapabilities.length === 0) return capabilities;
         if (attempt < 2) await waitForRetry(signal, 150);
     }
     return capabilities;
