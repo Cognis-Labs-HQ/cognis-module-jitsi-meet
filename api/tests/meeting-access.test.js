@@ -346,3 +346,63 @@ test("jitsi meetings active endpoint passes account identity to access checks", 
     );
     assert.equal(accessChecks[0].profileStore, profileStore);
 });
+
+test("Share guest permission denial never retries without the required capability", async () => {
+    const { createShareGuestMeetingAccessResolver } =
+        await import("../reuse/meeting-access.js");
+    const requests = [];
+    const resolveAccess = createShareGuestMeetingAccessResolver(
+        (capabilityId) => {
+            assert.equal(capabilityId, "share:resolveGuestAccess");
+            return async (request) => {
+                requests.push(request);
+                return {
+                    shareGuest: true,
+                    authorized: !request.requiredCapability,
+                };
+            };
+        },
+    );
+    const claims = { sub: "guest", shareId: "share-1" };
+    assert.deepEqual(
+        await resolveAccess({
+            claims,
+            meetingId: "meeting-1",
+            requiredCapability: "meeting:join",
+        }),
+        {
+            isGuest: true,
+            allowed: false,
+            tokenRecord: null,
+        },
+    );
+    assert.deepEqual(requests, [
+        {
+            claims,
+            resourceType: "meeting",
+            resourceId: "meeting-1",
+            requiredCapability: "meeting:join",
+        },
+    ]);
+});
+
+test("Share guest resolver uses the current public provider and fails closed when absent", async () => {
+    const { createShareGuestMeetingAccessResolver } =
+        await import("../reuse/meeting-access.js");
+    let provider;
+    const resolveAccess = createShareGuestMeetingAccessResolver(() => provider);
+    const input = {
+        claims: { sub: "guest" },
+        meetingId: "meeting-1",
+        requiredCapability: "meeting:join",
+    };
+    assert.equal((await resolveAccess(input)).allowed, false);
+    provider = async () => ({ shareGuest: true, authorized: true });
+    assert.deepEqual(await resolveAccess(input), {
+        isGuest: true,
+        allowed: true,
+        tokenRecord: null,
+    });
+    provider = undefined;
+    assert.equal((await resolveAccess(input)).allowed, false);
+});

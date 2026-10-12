@@ -21,12 +21,15 @@ import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
 import {
     ensureJitsiStoreSchemaOnce,
     MEETING_TABLES,
+    deleteMeetingRows,
 } from "./reuse/store-schema.js";
 import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
 import { removeDeletedAccountFromMeetings } from "./reuse/deleted-account-meetings.js";
+
 const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MS = 35 * 1000;
+
 export class JitsiMeetStore {
     constructor({ db, log, generatePassphrase, profileIdentity }) {
         this.db = db;
@@ -37,6 +40,7 @@ export class JitsiMeetStore {
         this.normalizeHandleKeys =
             profileIdentity.normalizeHandleKeys.bind(profileIdentity);
     }
+
     async ensureSchema() {
         return ensureJitsiStoreSchemaOnce(this.db);
     }
@@ -167,21 +171,7 @@ export class JitsiMeetStore {
         const normalizedMeetingId = String(meetingId ?? "").trim();
         if (!normalizedMeetingId) return false;
         await this.db.transaction(async (executor) => {
-            for (const table of MEETING_TABLES) {
-                await executor.executeCommand({
-                    option: "DELETE",
-                    table,
-                    where: [
-                        {
-                            column:
-                                table === "jitsi_meetings"
-                                    ? "id"
-                                    : "meeting_id",
-                            value: normalizedMeetingId,
-                        },
-                    ],
-                });
-            }
+            await deleteMeetingRows(executor, normalizedMeetingId);
         });
         return true;
     }

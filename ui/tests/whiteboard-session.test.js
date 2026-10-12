@@ -21,18 +21,19 @@ test("failed state synchronization reuses its uncommitted meeting canvas", async
             participants: ["alice", "bob"],
         },
     };
+    const whiteboardGateway = {
+        async createCanvas() {
+            creationCount += 1;
+            return { whiteboardId: "retry-canvas" };
+        },
+    };
     const createTrigger = () => ({
         disposableCanvas: false,
         preparationFailedMeetingId: "",
         preparationPromise: null,
         preparedMeetingId: "retry-meeting",
         preparedWhiteboardId: "",
-        whiteboardGateway: {
-            async createCanvas() {
-                creationCount += 1;
-                return { whiteboardId: "retry-canvas" };
-            },
-        },
+        whiteboardGateway,
     });
     const firstTrigger = createTrigger();
     await prepareMeetingCanvas(firstTrigger, state);
@@ -41,7 +42,11 @@ test("failed state synchronization reuses its uncommitted meeting canvas", async
 
     assert.equal(creationCount, 1);
     assert.equal(remountedTrigger.preparedWhiteboardId, "retry-canvas");
-    confirmMeetingCanvasMapping("retry-meeting", "retry-canvas");
+    confirmMeetingCanvasMapping(
+        "retry-meeting",
+        "retry-canvas",
+        whiteboardGateway,
+    );
 });
 
 test("meeting PiP minimum grows once when a third participant joins", () => {
@@ -306,4 +311,104 @@ test("share guests wait for a host mapping instead of creating a canvas", async 
     await prepareMeetingCanvas(trigger, state);
 
     assert.equal(trigger.preparedWhiteboardId, "");
+});
+
+test("an aborted component retry never spawns another window", async () => {
+    const controller = new AbortController();
+    let spawns = 0;
+    const trigger = {
+        signal: controller.signal,
+        componentHost: { id: "stage" },
+        spawnComponentPage() {
+            spawns += 1;
+            return null;
+        },
+        waitForComponentWindowRetry: async () => controller.abort(),
+    };
+    await assert.rejects(
+        spawnComponentWindowWithRetry(trigger, { meetingId: "cancelled" }),
+        { name: "AbortError" },
+    );
+    assert.equal(spawns, 1);
+});
+
+test("concurrent preparation uses one canvas factory call and provider replacement starts fresh", async () => {
+    let creations = 0;
+    const requests = [];
+    const whiteboardGateway = {
+        async createCanvas(request) {
+            creations += 1;
+            requests.push(request);
+            return { whiteboardId: `board-${creations}` };
+        },
+        createDisposableCanvas() {
+            assert.fail("Persistent meeting cannot use a disposable factory");
+        },
+    };
+    const state = {
+        meeting: {
+            id: "concurrent-meeting",
+            roomSlug: "Room",
+            meetingName: "Room",
+            createdBy: "alice",
+            participants: ["alice", "bob"],
+        },
+    };
+    const makeTrigger = (gateway = whiteboardGateway) => ({
+        preparedMeetingId: state.meeting.id,
+        whiteboardGateway: gateway,
+    });
+    const first = makeTrigger();
+    const second = makeTrigger();
+    await Promise.all([
+        prepareMeetingCanvas(first, state),
+        prepareMeetingCanvas(second, state),
+    ]);
+    assert.equal(creations, 1);
+    assert.equal(first.preparedWhiteboardId, second.preparedWhiteboardId);
+    assert.deepEqual(requests[0], {
+        resourceType: "meeting",
+        resourceId: "Room",
+        title: "Room",
+        participantHandles: ["alice", "bob"],
+    });
+    await prepareMeetingCanvas(makeTrigger({ ...whiteboardGateway }), state);
+    assert.equal(creations, 2);
+});
+
+test("a participant-free meeting uses its disposable factory", async () => {
+    const requests = [];
+    const trigger = {
+        preparedMeetingId: "disposable-meeting",
+        whiteboardGateway: {
+            async createDisposableCanvas(input) {
+                requests.push(input);
+                return { whiteboardId: "disposable-board" };
+            },
+            createCanvas() {
+                assert.fail(
+                    "Participant-free meeting must use its disposable factory",
+                );
+            },
+        },
+    };
+    await prepareMeetingCanvas(trigger, {
+        meeting: {
+            id: "disposable-meeting",
+            roomSlug: "Solo",
+            meetingName: "Solo",
+            createdBy: "alice",
+            participants: ["alice"],
+        },
+    });
+    assert.equal(trigger.disposableCanvas, true);
+    assert.equal(trigger.preparedWhiteboardId, "disposable-board");
+    assert.deepEqual(requests, [
+        {
+            resourceType: "meeting",
+            resourceId: "Solo",
+            title: "Solo",
+            participantHandles: ["alice"],
+        },
+    ]);
 });

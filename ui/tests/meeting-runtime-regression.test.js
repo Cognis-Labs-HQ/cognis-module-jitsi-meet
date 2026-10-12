@@ -1,3 +1,4 @@
+import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -38,20 +39,6 @@ test("Jitsi toolbar hides participant, performance, and background controls", ()
     assert.doesNotMatch(constantsSource, /"participants-pane"/);
     assert.doesNotMatch(constantsSource, /"videoquality"/);
     assert.doesNotMatch(constantsSource, /"select-background"/);
-});
-
-test("meeting state polling ignores responses after meeting teardown", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/app/participants.js"),
-        "utf8",
-    );
-
-    assert.match(source, /const meetingId = state\.meeting\?\.id/);
-    assert.match(source, /if \(state\.meeting\?\.id !== meetingId\) return/);
-    assert.match(
-        source,
-        /meetings\/state[\s\S]*accessToken:\s*state\.shareAccessToken/,
-    );
 });
 
 test("interactive handlers import their extracted meeting embed dependencies", () => {
@@ -362,10 +349,7 @@ test("meetings mini chat supports the Messages reaction floating menu", () => {
 });
 
 test("meetings speech bubbles use the same contrast-oriented color tokens as Messages", () => {
-    const variantsCssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const variantsCssSource = readModuleStyles();
     assert.match(
         variantsCssSource,
         /\.jitsi-chat-message[\s\S]*background:\s*var\(--color-surface-elevated\);/,
@@ -514,7 +498,7 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
 
 test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => {
     const appSource = readJitsiUiBundle();
-    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const cssSource = readModuleStyles();
     assert.doesNotMatch(appSource, /jitsi-theme-sync/);
     assert.doesNotMatch(appSource, /applyJitsiWindowTheme/);
     assert.match(appSource, /const syncJitsiTheme = \(event\) =>/);
@@ -672,7 +656,7 @@ test("profile avatar rendering is centralized behind the host capability", () =>
 });
 
 test("module CSS does not style host profile adapter structures", () => {
-    const source = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const source = readModuleStyles();
     assert.doesNotMatch(
         source,
         /\.(?:avatar-button|availability-|profile-capability-)/,
@@ -747,7 +731,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
 
 test("component-window meetings suppress the meeting overlay", () => {
     const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
-    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const stylesheet = readModuleStyles();
     assert.match(appSource, /focusState !== null/);
     assert.match(appSource, /suppressMeetingOverlay = "true"/);
     assert.match(

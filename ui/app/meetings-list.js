@@ -19,6 +19,7 @@ const [{ escapeHtml }, { openPopup }, { normalizeUsername }] =
 
 export function createMeetingHandlers({
     root,
+    signal,
     state,
     i18n,
     apiFetch,
@@ -524,19 +525,32 @@ export function createMeetingHandlers({
             callbacks.refreshAvailableParticipants?.(),
         ]);
         if (!response.ok) {
-            if (requestSequence !== activeMeetingsRequestSequence) return;
+            if (
+                signal?.aborted ||
+                requestSequence !== activeMeetingsRequestSequence
+            )
+                return;
             state.activeMeetings = [];
             renderActiveMeetings();
             return;
         }
         const payload = await response.json().catch(() => ({ data: [] }));
-        if (requestSequence !== activeMeetingsRequestSequence) return;
+        if (
+            signal?.aborted ||
+            requestSequence !== activeMeetingsRequestSequence
+        )
+            return;
         const nextActiveMeetings = Array.isArray(payload?.data)
             ? payload.data
             : [];
         const persistedPayload = persistedResponse.ok
             ? await persistedResponse.json().catch(() => ({ data: [] }))
             : { data: [] };
+        if (
+            signal?.aborted ||
+            requestSequence !== activeMeetingsRequestSequence
+        )
+            return;
         const nextPersistedMeetings = Array.isArray(persistedPayload.data)
             ? persistedPayload.data
             : [];

@@ -1,4 +1,4 @@
-import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
+import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
 
 export function registerPersistedMeetingRoutes({
     router,
@@ -69,49 +69,24 @@ export function registerPersistedMeetingRoutes({
                     const whiteboardId = String(
                         resolved.state?.whiteboardId ?? "",
                     ).trim();
-                    if (whiteboardId) {
-                        const deletion = resolveWhiteboardDeletion?.();
-                        if (typeof deletion !== "function") {
-                            throw new Error(
-                                "Whiteboard deletion capability is unavailable.",
-                            );
-                        }
-                        await deleteReferencedMeetingResource({
-                            deleteResource: () =>
-                                deletion({
-                                    whiteboardId,
-                                    actorAccountId: ownerProfile.accountId,
-                                }),
-                            resourceType: "whiteboard",
-                            resourceId: whiteboardId,
-                            meetingId: resolved.meeting.id,
-                            log,
-                        });
-                    }
-                    if (resolved.meeting.chatRoomId) {
-                        if (claims.sub !== ownerProfile.accountId) {
-                            await groupChatMembership.remove({
-                                roomId: resolved.meeting.chatRoomId,
-                                actorAccountId: ownerProfile.accountId,
-                                userAccountId: ownerProfile.accountId,
-                            });
-                        }
-                        await deleteReferencedMeetingResource({
-                            deleteResource: () =>
-                                deleteChatroom({
-                                    roomId: resolved.meeting.chatRoomId,
-                                    actorAccountId: claims.sub,
-                                }),
-                            resourceType: "chatroom",
-                            resourceId: resolved.meeting.chatRoomId,
-                            meetingId: resolved.meeting.id,
-                            log,
-                        });
-                    }
-                    await deleteResourceShares?.({
+                    await deleteMeetingResources({
+                        meeting: resolved.meeting,
+                        whiteboardId,
                         ownerAccountId: ownerProfile.accountId,
-                        resourceType: "meeting",
-                        resourceId: resolved.meeting.id,
+                        chatActorAccountId: claims.sub,
+                        resolveWhiteboardDeletion,
+                        deleteResourceShares,
+                        deleteChatroom: async (input) => {
+                            if (claims.sub !== ownerProfile.accountId) {
+                                await groupChatMembership.remove({
+                                    roomId: resolved.meeting.chatRoomId,
+                                    actorAccountId: ownerProfile.accountId,
+                                    userAccountId: ownerProfile.accountId,
+                                });
+                            }
+                            await deleteChatroom(input);
+                        },
+                        log,
                     });
                     await store.deleteMeeting(resolved.meeting.id);
                 } else {

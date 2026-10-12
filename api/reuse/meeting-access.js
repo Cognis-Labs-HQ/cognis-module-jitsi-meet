@@ -1,4 +1,4 @@
-import { hasShareCapability, resolveShareGuestId } from "./share-guest.js";
+import { resolveShareGuestId } from "./share-guest.js";
 import { resolveRequesterUsername } from "./requester.js";
 
 /**
@@ -16,37 +16,6 @@ import { resolveRequesterUsername } from "./requester.js";
 export function resolveShareGuestPresenceUsername(claims) {
     const shareGuestId = resolveShareGuestId(claims);
     return shareGuestId ? `guest:${shareGuestId}` : "";
-}
-
-export async function resolveShareGuestMeetingAccess({
-    claims,
-    meetingId,
-    getShareTokenById,
-    requiredCapability = "",
-}) {
-    const shareGuestId = resolveShareGuestId(claims);
-    if (!shareGuestId) {
-        return { isGuest: false, allowed: false, tokenRecord: null };
-    }
-    if (typeof getShareTokenById !== "function") {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const tokenRecord = await getShareTokenById(shareGuestId).catch(() => null);
-    if (!tokenRecord) {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const matchesMeeting =
-        tokenRecord.resourceType === "meeting" &&
-        tokenRecord.resourceId === meetingId;
-    if (!matchesMeeting) {
-        return { isGuest: true, allowed: false, tokenRecord: null };
-    }
-    const allowed = hasShareCapability(tokenRecord, requiredCapability);
-    return {
-        isGuest: true,
-        allowed,
-        tokenRecord: allowed ? tokenRecord : null,
-    };
 }
 
 export async function resolveRequestedParticipants(
@@ -263,4 +232,26 @@ export async function createMeetingPayload({
             !state.authCompletedAt &&
             !store.canCurrentUserInitiateAuth(state, requesterUsername),
     });
+}
+
+export function createShareGuestMeetingAccessResolver(resolveCapability) {
+    return async ({ claims, meetingId, requiredCapability = "" }) => {
+        const resolveGuestAccess = resolveCapability(
+            "share:resolveGuestAccess",
+        );
+        if (typeof resolveGuestAccess !== "function") {
+            return { isGuest: false, allowed: false, tokenRecord: null };
+        }
+        const access = await resolveGuestAccess({
+            claims,
+            resourceType: "meeting",
+            resourceId: meetingId,
+            requiredCapability,
+        });
+        return {
+            isGuest: access?.shareGuest === true,
+            allowed: access?.authorized === true,
+            tokenRecord: null,
+        };
+    };
 }

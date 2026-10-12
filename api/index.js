@@ -19,6 +19,7 @@ import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
 import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
     canAccessMeeting,
+    createShareGuestMeetingAccessResolver,
     createMeetingPayload,
     filterUsernamesForGuestVisibility,
     resolveMeetingPayloadOrReject,
@@ -32,7 +33,7 @@ import {
 import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
-import { deleteReferencedMeetingResource } from "./reuse/resource-deletion.js";
+import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
 
 const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -190,43 +191,10 @@ export function registerApiRoutes(router, ctx) {
     };
     const isWhiteboardProviderAvailable = () =>
         typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
-    const resolveShareGuestMeetingAccess = async ({
-        claims,
-        meetingId,
-        requiredCapability = "",
-    }) => {
-        const resolveGuestAccess = ctx.getCapability(
-            "share:resolveGuestAccess",
+    const resolveShareGuestMeetingAccess =
+        createShareGuestMeetingAccessResolver((capabilityId) =>
+            ctx.getCapability(capabilityId),
         );
-        if (typeof resolveGuestAccess !== "function") {
-            return { isGuest: false, allowed: false, tokenRecord: null };
-        }
-        const access = await resolveGuestAccess({
-            claims,
-            resourceType: "meeting",
-            resourceId: meetingId,
-            requiredCapability,
-        });
-        const legacyMeetingAccess =
-            access?.shareGuest === true &&
-            access?.authorized !== true &&
-            requiredCapability
-                ? await resolveGuestAccess({
-                      claims,
-                      resourceType: "meeting",
-                      resourceId: meetingId,
-                  })
-                : null;
-        return {
-            isGuest:
-                access?.shareGuest === true ||
-                legacyMeetingAccess?.shareGuest === true,
-            allowed:
-                access?.authorized === true ||
-                legacyMeetingAccess?.authorized === true,
-            tokenRecord: null,
-        };
-    };
     const resolveShareUserAccess = ctx.getCapability("share:resolveUserAccess");
     const deleteResourceShares = ctx.getCapability(
         "share:deleteResourceShares",
@@ -264,7 +232,9 @@ export function registerApiRoutes(router, ctx) {
             options,
         );
 
-    const configurationApi = registerJitsiConfigurationApi(router, ctx);
+    const configurationApi = registerJitsiConfigurationApi(router, ctx, {
+        enabled: true,
+    });
     const store = configurationApi?.store ?? null;
     if (store) {
         registerMeetingWhiteboardDelegationHook(ctx, { store });
@@ -354,25 +324,6 @@ export function registerApiRoutes(router, ctx) {
         return;
     }
 
-    const removeMeetingMemberships = async (accountId) => {
-        await dbExecutor.transaction(async (transactionDb) => {
-            for (const table of [
-                "jitsi_meeting_presence",
-                "jitsi_meeting_participants",
-            ]) {
-                await transactionDb.executeCommand({
-                    option: "DELETE",
-                    table,
-                    where: [{ column: "username", value: accountId }],
-                });
-            }
-        });
-    };
-    ctx.getCapability("auth:registerKeyringDataOwner")?.(
-        "jitsi-meet",
-        removeMeetingMemberships,
-    );
-
     ctx.flow.extend(
         "deprovision-user",
         "cleanup-dependencies",
@@ -410,44 +361,17 @@ export function registerApiRoutes(router, ctx) {
                                     "Meeting owner is unavailable for resource cleanup.",
                                 );
                             }
-                            if (meeting.whiteboardId) {
-                                const deleteWhiteboard = ctx.getCapability(
-                                    "whiteboard:deleteCanvas",
-                                );
-                                if (typeof deleteWhiteboard !== "function") {
-                                    throw new Error(
-                                        "Whiteboard deletion capability is unavailable.",
-                                    );
-                                }
-                                await deleteReferencedMeetingResource({
-                                    deleteResource: () =>
-                                        deleteWhiteboard({
-                                            whiteboardId: meeting.whiteboardId,
-                                            actorAccountId: ownerAccountId,
-                                        }),
-                                    resourceType: "whiteboard",
-                                    resourceId: meeting.whiteboardId,
-                                    meetingId: meeting.id,
-                                    log,
-                                });
-                            }
-                            if (meeting.chatRoomId) {
-                                await deleteReferencedMeetingResource({
-                                    deleteResource: () =>
-                                        deleteChatroom({
-                                            roomId: meeting.chatRoomId,
-                                            actorAccountId: ownerAccountId,
-                                        }),
-                                    resourceType: "chatroom",
-                                    resourceId: meeting.chatRoomId,
-                                    meetingId: meeting.id,
-                                    log,
-                                });
-                            }
-                            await deleteResourceShares?.({
+                            await deleteMeetingResources({
+                                meeting,
+                                whiteboardId: meeting.whiteboardId,
                                 ownerAccountId,
-                                resourceType: "meeting",
-                                resourceId: meeting.id,
+                                resolveWhiteboardDeletion: () =>
+                                    ctx.getCapability(
+                                        "whiteboard:deleteCanvas",
+                                    ),
+                                deleteChatroom,
+                                deleteResourceShares,
+                                log,
                             });
                         },
                     },

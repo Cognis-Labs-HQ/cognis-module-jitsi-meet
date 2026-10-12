@@ -1,242 +1,72 @@
 # Jitsi Meet Module
 
-The Jitsi Meet module provides Cognis-native meeting orchestration with participant selection, reusable meeting rooms, session reclaim, Messages chat integration, and an optional shared Whiteboard.
-
-The module runs without privileged access. Its bootstrap is the sole runtime entrypoint: API routes, flow hooks, capabilities, UI registrations, and provider discovery all use the lifecycle-scoped `ctx` contract and are removed when the module is disabled.
-
-Overlay controls honor their HTML `hidden` state within the module root even when host button styles set an explicit display mode, so authentication, reclaim, and alone-participant actions appear only in the matching meeting state.
-
-Jitsi provides `voip:startCall` for host surfaces that supply an eligible conversation context. Its authenticated API resolves the canonical room membership and authorizes the requester. If the room references a regular meeting, it returns a same-origin `navigate` action for that meeting. New calls and rooms already mapped to a disposable call return a host-owned `component` action for the Meetings route in overlay mode. Consumers may advertise `component`, `navigate`, or both; the provider resolves an existing room mapping before rejecting an unsupported returned action. Reused meeting access is checked through stable account identity, so a profile handle change does not block an authorized room member. Unsupported requests return `null`.
-
-Cognis owns the temporary component stage and its cleanup. Jitsi does not alter the Messages DOM or invoke the component-page broker itself. VoIP consumers may supply a meeting subject; otherwise the provider uses the localized subject “VoIP call.” Disposable component calls omit a module-owned back button and do not include any chat surface or chat identifier; the private Messages chat that spawned the call remains separate and unchanged, including when a caller is kicked from the meeting. They stay out of the Meetings page’s active and previous meeting lists and cannot be shared or extended with participants. The authenticated `jitsi-meet:getMeetingChat` capability separately returns a meeting’s attached chat ID only when the supplied claims identify an authorized participant.
-
-Component-window mounts suppress both the meeting overlay and the “Meeting Window” header, so the embedded surface shows only the meeting frame while it connects and runs.
-
-When the local participant leaves, is kicked, or the conference terminates, Jitsi completes meeting teardown and asks the host component-page capability to discard the containing component window. Full Meetings-page sessions do not issue a component discard. When a meeting is moved into PiP to present its Whiteboard, the host close control closes the Whiteboard and restores the meeting.
-
-Component metadata can set `allParticipantsRequired` to make the complete roster mandatory. While such a component meeting is joined, the first Jitsi `participantLeft` event terminates the meeting, performs normal server and client teardown, and closes the component window. VoIP calls may enable this flag. Component metadata can also set `allowNavigation`; the active-meeting unload, link, and history guards yield to host-managed navigation only while that component is actually inside a floating PiP window. A call still shown in its original component window remains protected against navigation. Disposable meetings never dispatch meeting invitations, start, join, leave, or end notifications.
-
-The provider action advertises `minSize: { width, height }` with a 400 × 225 pixel minimum, using the same PiP payload definition as Nextcloud Whiteboard so the host can enforce the floating call minimum consistently.
-
-The navbar provider metadata lets Cognis load the provider before Messages performs its initial availability check, so the video-camera action is present on the first chat render.
-
-When Cognis deletes an account, Jitsi removes that account from both the current and saved participant rosters. It updates reusable meetings for the remaining participants and deletes meetings that no longer have a reusable multi-account roster.
-
-Server-side Whiteboard verification, membership, and deletion use the public leaf capabilities published by Nextcloud Whiteboard through the module context. Browser canvas creation and these server capabilities are separate contracts: successful canvas creation does not prove that the server provider was published. Deployments using the current integration require the Nextcloud Whiteboard PR #30 bootstrap that publishes `whiteboard:fetchBoardData` and `whiteboard:membership` directly. Jitsi does not inspect the provider’s private API facade or maintain a parallel capability resolver; Whiteboard remains optional for Jitsi enablement. Mapping verification compares the canonical creator account ID exposed by the provider, and account-deletion cleanup resolves Cognis’s canonical account ID to its current profile handle before updating saved participant rosters.
-
-Periodic participant and meeting refreshes update the DOM only when their underlying data changes, preserving hydrated profile avatars without flashing initials. The meeting chat participant strip follows currently active meeting presence rather than the complete invited roster. Starting or joining a meeting immediately deactivates that account’s presence in other meetings, ended meetings ignore residual presence rows, and presence expires after missed heartbeats instead of remaining active for two minutes.
+Jitsi Meet provides Cognis meeting rooms with participant selection, Messages chat, session reclaim, scoped sharing and an optional synchronized Whiteboard. External services are resolved through ctx; the module owns its API, browser resources and storage.
 
 ## Usage Examples
 
-- Join or reclaim meetings from `/meetings` and `/meeting` without full-page navigation.
-- Select participants, share meeting access, and use the meeting's Messages chat.
+- In Administration → Modules, configure an HTTP(S) Jitsi instance URL, run the enablement test and enable Jitsi Meet. Administration → Meetings lists active and upcoming meetings.
+- Open Meetings, select participants and start or join a room. A visible profile handle is required for profile-dependent operations. Existing active membership remains discoverable through the authenticated account identity if its profile handle becomes unavailable.
+- Drop an available participant into a running meeting to request Share approval. A decline restores the participant to the available list and shows a toast.
+- Select Whiteboard to open the meeting canvas, or Close Whiteboard to close it. Screen sharing disables that control with an explanatory tooltip. Link-share guests follow the organizer’s state without a visible control.
 
-Users who are actively present in another meeting are omitted from participant discovery and cannot be dragged into an active meeting; a scheduled invitation alone does not make a user unavailable.
+Browser callers obtain the module’s VoIP integration from the host-initialized context:
 
-Available participants and active meetings refresh every five seconds, including availability indicators after SPA navigation.
+```js
+const startCall = uiCtx.capabilities.get("voip:startCall");
+const action = await startCall({
+    source: "messages",
+    room: { id: roomId, kind: "group" },
+    users: members,
+    supportedActions: ["component"],
+});
+```
 
-The participant finder passes Cognis core’s `user` result filter, and the active-meetings list appears only in the initial overlay directly above Start Meeting.
-
-Notification meeting parameters are removed from the URL as soon as they are consumed.
-
-Window focus changes without an active participant drag preserve the current overlay presentation, so an idle lobby remains startable.
-
-The active-meetings section is locked whenever a meeting is selected or joined, including notification joins, and meeting-ended notifications contain no action or email link.
-
-The Participants pane keeps available known users in a vertically scrollable 30% column and shows horizontally scrollable persistent-meeting cards in the remaining 70%; each card centers its stable name, arranges up to ten standard profile avatars around it, and uses a moving app-green border segment while that meeting is active.
-
-Cards are compact clickable controls: selecting one restores its participant set to the stage and scrolls there so Start Meeting reuses the stable meeting; holding a card for three seconds changes its green tint to red and opens a confirmation that removes the current user, permanently deleting the meeting, chat room, and mapped Whiteboard after the final member leaves.
-
-Previous Meeting cards size themselves to their title and wrapped avatar rows without creating vertical overflow.
-
-Active status is drawn only as a moving segment along the card border, while a removal hold begins blending a constant-opacity green-to-red gradient immediately.
-
-The confirmation uses destructive and neutral button treatments, and a completed departure is reported as informational feedback.
-
-Find Participants is represented by a question-mark profile avatar at the start of Available Participants.
-
-The shared Participants heading remains above both columns so the Available Participants and Previous Meetings titles are aligned.
-
-The content-height gallery suppresses vertical overflow, and its removal hold uses a reliably animated constant-opacity gradient from the first pointer-down frame.
-
-The Participants heading retains its natural inherited text height with zero outer heading margin; the pane allocates it independently while the participant layout flexes into the remaining parent space without being compressed by a forced heading size.
-
-Previous Meetings remains horizontally scrollable by pointer, touch, wheel, and keyboard while its scrollbar track is visually suppressed.
-
-A staged participant can be returned to Available Participants by clicking outside their profile link or dragging them back.
-
-If a Previous Meeting selection is changed, Start Meeting creates a fresh room instead of loading a stable meeting name for the changed participant set.
-
-The Find Participants avatar is hidden together with the empty pool when no available participant exists.
-
-The active Previous Meeting indicator uses a thicker, longer, brighter green segment with a stronger glow and faster circuit around the card.
-
-Releasing the pointer anywhere ends an unfinished participant drag and closes its stage dropzone.
-
-Previous Meetings shows only one card for each canonical participant set, preferring the active room, so repeatedly expanding the same roster does not accumulate duplicate history cards.
-
-The original participant set is recorded separately from live membership: Previous Meetings continues to represent that stable roster, and starting it reuses the same meeting ID and encrypted chat history even after participants were added to or removed from the live meeting.
-
-Selecting a meeting in Previous Meetings or Active Meetings applies the selected treatment to its matching card in both sections.
-
-Any authorized meeting participant can recreate a missing associated Messages room, and the replacement room ID is saved before chat loading resumes.
-
-Disposable single-account meetings are excluded from Previous Meetings; only persistent meetings with an original or current multi-account roster are shown there.
-
-Auto-share prompting is limited to a newly created empty stage; a stage populated from Previous Meetings or Active Meetings is treated as occupied even when it contains no participant other than the current account.
-
-While a conference is joined, Previous Meetings is inert, greyed out, uses a prohibited cursor, and does not hydrate profile previews, while active-card animation continues.
-
-Previous Meetings uses the same opacity-style blocked treatment as Active Meetings, without grayscale filtering; a transparent interaction shield owns the prohibited cursor so it remains visible across the complete card area.
-
-- During an active non-disposable meeting, drag another available user into the meeting window to add them permanently to its participant set.
-
-Cognis provisions their encrypted Messages chat access through the `social:messages:membership` capability using canonical actor and user account IDs, sends an invitation, and lets them claim the meeting password when joining.
-
-Every authenticated join re-applies the idempotent membership operation before the chat is loaded, restoring access when a participant previously left or archived that meeting chat.
-
-Participant refreshes never cover an active meeting with the lobby overlay, and an empty available-participant pool is identified explicitly.
-
-Dragging an available user while a meeting is active reveals a localized drop target with exactly the embedded window bounds.
-
-The target moves above the embed for the drag and returns below it after a drop or drag end.
-
-A persistent green inset outline and dashed target remain visible for the entire participant drag.
-
-When only one attendee is actively present, a new participant invitation is approved immediately without requesting consensus from absent participants.
-
-Successful active invitations show a toast, update the existing encrypted chat room membership through the Messages API and redraw that same chat during state polling, and update an existing persistent Whiteboard through `whiteboard:membership` with canonical actor and user account IDs.
-
-The meeting API completes the existing-room membership update before committing the meeting participant change, so clients never switch room IDs.
-
-When Jitsi reports that the local attendee was kicked, authenticated users are removed from the stored participant set and become available for a new invitation; a kicked guest’s specific Share link is revoked.
-
-All server-side username and handle canonicalization is delegated to the public `social:profile:identity` capability with the capability passed explicitly to each normalization call; the module does not maintain its own normalization rules.
-
-Chatroom cleanup uses the public `social:messages:deleteChatroom` capability with `roomId` and canonical `actorAccountId`; Messages authorizes the room creator or its sole remaining participant and transactionally removes dependent chat records.
-
-During meeting teardown, a referenced Whiteboard or chatroom that reports a standard not-found status, code, or message is treated as already deleted; the fallback is logged with structured resource metadata and cleanup proceeds to the remaining resources and meeting record.
-
-The latest Messages integration exposes deletion as a flow-backed public capability; Jitsi declares `social:messages:deleteChatroom` as required and validates that it resolves to a callable function during API registration, failing early instead of surfacing a late cleanup error.
-
-When the organizer expands an active meeting, the owner client also re-synchronizes the complete participant set through the Whiteboard UI gateway.
-
-A non-organizer opening request uses Share approval so every other active account participant receives the consensus decision instead of relying only on passive state votes. Disposable meetings and meetings containing no more than two current or invited participants bypass this consensus request and open the Whiteboard immediately.
-
-A submitted Whiteboard approval request produces an informational toast.
-
-When a meeting owner leaves before the other members, their chat membership is removed while ownership metadata is retained; the final remaining member therefore deletes the chat as its authorized sole participant.
-
-Opening a persistent meeting Whiteboard synchronizes its membership with both listed and currently present account participants before the canvas is exposed.
-
-After sending a meeting or private message, the extracted interaction binder invokes the mounted chat refresh callback so the new message appears without a scope error.
-
-Page-composer renders only bind interaction listeners; they do not invoke the chat updater during route mount, and post-send refresh uses a guaranteed wrapper that logs an unavailable chat operation instead of rejecting the SPA mount.
-
-The stage and Messages composer elements retain matching five-row defaults and minimum sizes, occupy the complete twelve-column composer row with an eight-to-four split, and use a fresh layout preference so the malformed saved layout is not restored.
-
-Whiteboard control discovery does not require every participant to expose canvas-creation methods; once the backend confirms the provider, mapped canvases can be mounted consistently for all meeting members.
-
-Whiteboard mounting no longer applies a second signed-in-user canvas-factory gate after capability discovery, so one user connecting cannot make the control disappear for another participant.
-
-- The Whiteboard action uses the confirm treatment while opening is available and switches to the cancel treatment while it reads “Close Whiteboard.” When Jitsi reports any local or remote screen-sharing participant, the shared Whiteboard closes for everyone and remains disabled until screen sharing stops. When the meeting moves into PiP for a Whiteboard, meeting overlays—including the active-participant dropzone—move into that floating surface and return to the stage when PiP closes. Each participant drag reasserts the current overlay host before showing the target, and a target moved into the floating Jitsi frame uses absolute inset bounds so it continues to cover the complete PiP window.
-- Monitor active and upcoming meetings from Administration → Meetings.
-- Embed the Meetings route as an overlay, fullscreen, or picture-in-picture component page.
-
-The advertised picture-in-picture minimum is 400 × 225 pixels, 25% larger than Jitsi Meet's 320 × 180 smallest supported mobile surface. While the meeting is floating, the third active participant increases both minimum dimensions once by 25%, to 500 × 282 pixels; additional participants do not increase it further, and the module applies the single change through the host floating-window release handle.
+The returned action describes a Meetings component; the caller launches it through the host component-page contract.
 
 ## Technical Specification
 
-- API calls require a valid Cognis access token, and meeting details are returned only to authorized participants or scoped share guests.
+### Integration and Action Flows
 
-Active-meeting discovery authorizes participant membership through the authenticated account identity even when the account has no currently resolvable profile handle, so every Cognis-active meeting containing that participant remains visible while profile-dependent meeting operations remain unavailable.
+`bootstrap.js` registers module-owned routes, UI contributions, public `jitsi-meet:getMeetingChat`, the browser `voip:startCall` provider, and hooks on existing host meeting, sharing and deprovisioning flows. The module is unprivileged and declares required component UUIDs and capabilities in its manifest. Optional Whiteboard services are discovered dynamically and do not prevent activation.
 
-Limited share mounts resolve identity only through the Share guest profile and never query account profile or participant-search endpoints.
+Enabled asynchronous store operations execute module-owned `jitsi-meet:*` flows with `initialize-store` and `execute-action` stages. Routed authorization and validation remain at the API boundary; owner handlers perform the actual operation, and internal store calls preserve transaction boundaries. Missing execution results are errors. Tests verify the complete asynchronous action catalog, real owner-stage execution and failure propagation using public-contract fakes.
 
-Guest joins retain keyring resolution for the meeting password and encrypted chat.
+The restricted `api/disabled.js` entrypoint registers configuration and enable-test endpoints without feature routes or UI. Cognis does not register disabled module flows, so this lifecycle configuration uses the same injected store directly. Uninstall removes configuration and optionally saved module data. Host-scoped route, capability, flow and hook registrations are removed by Cognis when the module is disabled.
 
-Moving the live Jitsi frame into the host-owned picture-in-picture container changes its DOM parent. Safari can recreate an embedded iframe's browsing context during that move, which makes Jitsi reconnect; Chromium and Firefox commonly preserve it. Meetings requests browsing-context preservation from `ui:makeFloatingWindow` and, if the host or browser still reconnects, automatically resubmits the resolved meeting password after a confirmed conference join. A repeated password request before a successful join is still treated as a rejected password and requests an updated value from the keyring.
+### Configuration and API Access
 
-When browser storage is available, before creating an embedded conference Meetings removes Jitsi's cached authentication session identifier while preserving its other local preferences. Cognis joins through the configured guest domain, so this prevents a Jicofo restart or session expiry from trapping subsequent joins in repeated `session-invalid` conference requests.
+All endpoints use `/api/v1/modules/jitsi-meet`. Configuration `GET` requires a user; `PUT`, `DELETE` and `/admin/enable-test` require an administrator and remain available while disabled. Configuration validates an HTTP(S) instance URL. The enablement test requires configured service liveness. The configured origin is supplied to the host CSP origin capability. Changing an existing instance clears module-owned meeting data through a database transaction.
 
-A guest without an existing Whiteboard mapping waits for synchronized meeting state without repeatedly scheduling no-op canvas preparation.
+Meeting creation, joins, presence, state, password claims, session reclaim, participant changes, chat summaries, persisted departures and Whiteboard changes require authenticated access and meeting authorization. Administration discovery requires an administrator. Profile identities and Messages, Share, notification and calendar data use host capabilities. Share guests must hold the exact resource capability required by the operation; permission denial is never retried without that capability. User shares and block relationships are checked through the host access contracts. Guest mounts do not query account-profile or participant-search endpoints.
 
-- Meeting passwords are generated per meeting record.
+### Meeting Identity and Persistence
 
-Meeting names are four-word, title-cased passphrases generated through the host `reuse:generatePassphrase` capability.
+Meeting IDs and passwords use cryptographic randomness. Names are host-generated four-word, title-cased passphrases reused as the room slug, URL and explicit Jitsi room name. Initialization never regenerates existing identities. Persistent meetings are resolved by their complete normalized original participant set and retain their room and password across membership changes and process restarts. Meeting credentials and state use module-owned storage with the host-injected database executor and scoped encryption.
 
-The same hyphen-separated name is stored as the display name and Jitsi room slug, included in the meeting URL, and always passed explicitly to `JitsiMeetExternalAPI`; the module never asks Jitsi to generate or report a room name.
+Saved meetings may share a Messages conversation. Historical `chat_room_id` references are not unique; `jitsi_chat_calls` reserves one disposable call per conversation and one conversation per call. Creation and reassignment reserve within their owning transaction, so conflicts leave no orphan rows. Room lookup prefers the reserved call, otherwise the most recently updated saved meeting. Deletion and configuration reset release reservations. Serialized schema initialization prevents concurrent configuration and lifecycle requests from racing.
 
-Schema initialization never regenerates or rewrites an existing meeting name, URL, or room slug.
+Presence expires after missed heartbeats. Joining deactivates the account’s other meeting sessions, and ended meetings ignore remaining presence. Participant-free meetings are disposable and delete their owned chat and meeting record when they end; Messages-initiated calls preserve their source conversation. A departing link-share guest stays on the Left Meeting overlay. Ending a disposable meeting also removes its meeting shares.
 
-The name is also propagated to meeting lists, Messages chats, shares, and Whiteboards.
+### Optional Whiteboard Contract
 
-Persistent meetings are resolved by their complete normalized participant set and reuse the same stored meeting ID, name, URL, room slug, password, and Messages room across process restarts, including after active membership changes.
+Nextcloud Whiteboard is a soft dependency. Browser discovery resolves `whiteboard:uiGateway` after the host UI context exists, plus component-page and floating-window capabilities. The browser canvas factory determines control availability; missing factories omit the control. Activation checks the server availability endpoint before creation. Server verification requires the published `whiteboard:fetchBoardData`, `whiteboard:membership` and `whiteboard:deleteCanvas` contracts; Nextcloud Whiteboard 2.3.146 or newer supplies the verification contract. Availability diagnostics include provider version, integrity and trust information.
 
-Participant-free meetings are disposable, always receive a new identity and single-member Messages chat, and permanently delete both the chat and meeting record when they end.
+Invited meetings use `createCanvas`; participant-free meetings use `createDisposableCanvas`. Canvas mappings must match the exact board ID, meeting title and expected creator account. Membership updates resolve the actual board owner and canonical participant account IDs. Link guests reuse only a verified existing mapping and never create or replace it. Share delegates access only while the exact meeting-to-board relationship is currently open.
 
-Guests who leave a disposable meeting through a link share remain on the “Left Meeting” overlay instead of returning to the Meetings home screen. When the organizer ends the meeting, the closed overlay remains visible and the meeting share link is terminated with the disposable meeting.
+The organizer opens immediately; other participants require a strict majority of present non-organizers through Share approval. Screen sharing prevents opening. Open state belongs to the current meeting session; a stored mapping alone never opens a new session. Parent-page keyring authorization precedes the embedded component window. Automatic opening waits for browser activation, and a failed automatic attempt is not repeated for that board. Retry delays are bounded and abortable; cancellation releases timers and listeners and prevents another spawn.
 
-The authenticated configuration `GET`, `PUT`, and `DELETE` endpoints and the enablement test are registered through the restricted disabled API entrypoint, so administrators can complete, validate, or clear Jitsi configuration before activation without starting the module's feature routes, UI contributions, flows, or capabilities. Enabled and disabled entrypoints use the same configuration registration layer for consistent validation, authentication, liveness checks, CSP origin registration, and unavailable-dependency responses.
+Concurrent canvas preparation shares its pending factory operation. A failed synchronization can reuse that uncommitted canvas across remounts, while a different provider instance has an isolated cache. A result arriving after navigation or a meeting change cannot alter the current trigger. Persistent membership expansion is confirmed initially and after membership changes.
 
-- Module-owned persistence stores meeting configuration, participants, presence, lifecycle state, Whiteboard state, and consensus votes. Fresh-install schema initialization is serialized per database executor so simultaneous lifecycle and configuration requests cannot race while creating PostgreSQL tables. Schema creation and credential backfill live in a focused store-schema module, while the main store retains meeting, state, and presence operations.
-- Session reclaim disconnects the user's previous active meeting session.
+### UI Mounts and Conference Sessions
 
-### Integration Contract
+Meetings uses the Cognis page composer, SPA router, host-initialized UI context and `ui:reuse`. Module CSS targets Jitsi-owned surfaces and controls; it does not override composer presentation. Embedded mounts accept `meetingId` in `focusState` and omit duplicated navigation. Each active mount claims `.jitsi-route-root`; abort removes its claim and module-owned observers, timers, handlers and conference work. Polling checks mount lifetime, request order and meeting identity before applying results, including ended and reclaimed states. Successful empty responses end the loading presentation, and unchanged responses preserve existing participant DOM.
 
-- Every packaged source addresses only the module-owned `/api/v1/modules/jitsi-meet` namespace; the standalone structural suite rejects cross-module API URLs before publication.
+Whiteboards mount through the host component-page broker. PiP movement uses the host floating-window toolbar; overlays and invitation dropzones follow the live meeting frame and return on release. The minimum size is 400 × 225, increasing once to 500 × 282 when a third active participant joins. Drag cancellation, Escape and window blur remove the invitation target. A joined user cannot switch to another active meeting. Concurrent conference-exit events share one teardown, which closes frames, stops chat polling and refreshes availability.
 
-- `bootstrap.js` is the sole platform entrypoint, and ctx capabilities and flows are the only cross-component integration surface.
-- Every routed, shared, and embedded Meetings mount claims `.jitsi-route-root` only while its lifecycle signal is active. An already-aborted mount never claims the persistent Cognis app root, and aborting an active mount removes the class and disposes module-owned observers, event handlers, timers, and embedded meeting work.
-- The Meetings SPA uses the Cognis router and page composer. Embedded callers pass a serializable `meetingId` in `focusState`; embedded mounts are frameless and do not duplicate host navigation.
-- Browser utilities are loaded through the required `ui:reuse` capability, while the host-owned common and page-composer styles already mounted by Cognis are reused rather than requested again by the module. Meeting-frame and overlay elements are resolved from the module DOM and are never read from the Whiteboard provider capability payload. Cognis core supplies standard control presentation, while the module loads no provider-owned stylesheets and scopes every module CSS selector beneath `.jitsi-route-root`. Dead legacy meeting styles are not shipped.
-- Nextcloud Whiteboard is declared as a soft module dependency so administrators can select it during installation without making it required.
+Before embedding, the module clears only Jitsi’s cached authentication session identifier and preserves other preferences. Denied or malformed browser storage is logged and does not prevent joining. After a DOM reparenting reconnect, a previously successful join may resubmit its resolved password; repeated rejection before a successful join still requests an updated keyring value. Starting a meeting holds the host page-loading token through preflight and the join attempt.
 
-Jitsi discovers the optional `whiteboard:uiGateway` only after Cognis has initialized the browser context and mounted the Meetings route. The gateway is deliberately not a route-level capability requirement, preventing Cognis from importing the optional Whiteboard provider before the host UI context exists during a direct page load or refresh. The browser gateway remains the control’s visibility and canvas-factory contract.
+### Cleanup and Release Verification
 
-The Meetings browser entry consumes the UI context already initialized by the Cognis shell and resolves browser utilities through `ui:reuse`; it does not import the host context implementation.
+Final persisted departure and account deprovisioning share owner-authorized external resource cleanup. Missing resources are logged and do not block cleanup; other failures propagate before the meeting record is removed. Account deletion updates original and active rosters, retains usable rooms and deletes unusable meetings. One child-first table catalog includes presence, state, participants and disposable-call reservations for record deletion.
 
-Jitsi publishes its browser-owned `voip:startCall` integration through `ctx.registerCapabilityProvider` and contributes only lifecycle-scoped hooks to existing host flows. It does not publish a redundant provider-availability capability or request privileged module access.
-
-The database executor is a hard server dependency because both disabled configuration routes and the enabled meeting runtime use the module store. Declaring `db:executor` ensures Cognis initializes that provider before registering `/config` or running the enable test; optional Whiteboard services remain dynamically resolved. Meeting Whiteboards require Nextcloud Whiteboard 2.3.146 or newer to publish `whiteboard:fetchBoardData` through its scoped bootstrap; after upgrading that provider, administrators must re-enable it so Cognis refreshes its server contributions. The Jitsi Whiteboard availability response reports the installed provider version, integrity, privilege request, and trusted-source state so a current provider with a missing capability can be identified as a Cognis runtime-publication failure.
-
-The optional integration is exposed when the base `whiteboard:uiGateway` canvas factory, component-page, and floating-window capabilities are available and canvas creation begins only when the user activates the control; the meeting API resolves the provider-declared `whiteboard:fetchBoardData`, `whiteboard:membership`, and `whiteboard:deleteCanvas` contracts, reads the mapped canvas’s actual owner, and invokes the owner-authorized membership `add` and `remove` functions with canonical account IDs before committing participant changes; the persistent `createCanvas` method from the provider contract creates normal canvases with the invited participant handles, while only participant-free meetings use `createDisposableCanvas`.
-
-Meetings never fall back from persistent to disposable creation; before accepting or delegating a mapping, they resolve the provider at request time through the lifecycle-scoped `ctx` capability surface and verify its identity, meeting title, and (for new mappings) creator, save the mapping type, replace unknown or mismatched legacy mappings, and reuse the verified persistent canvas only when a user deliberately opens it.
-
-Link-share guests receive non-interactive Whiteboard orchestration without a visible control or canvas-creation capability, follow the organizer’s synchronized open and close state, and reuse only the exact existing meeting mapping, and never invoke canvas creation or replace that mapping; their meeting-scoped Share identity authorizes synchronized state and supplies a stable identity for presence and consensus voting.
-
-The module extends the generic `resolve-share-delegated-access` flow so Share can verify an exact, currently open meeting-to-board relationship.
-
-Jitsi declares delegated Whiteboard read and write operations and the required `meeting:join` source capability; Share independently validates the original guest token.
-
-- The organizer can open the Whiteboard immediately. Other participants require a strict majority of currently present non-organizer participants. The open state is synchronized only for the current meeting session so current participants open the same canvas and move the meeting into picture-in-picture. Ending the meeting clears that state; a persistent canvas mapping never opens merely because a new meeting session starts.
-- Before a Whiteboard component opens, Meetings requests keyring access in the parent page so any unlock challenge has a popup host. Whiteboards then spawn through the component-page broker as embedded overlay components with document-owned scrolling. Meetings relies on the imported component-page and button classes instead of adding presentation classes or overriding the shared page shell.
-- The Whiteboard control is a standard `<button>` matching the adjacent Share control.
-
-It uses core `btn-confirm` presentation by default and the imported `active` and `btn-cancel` states while active, and its label changes to “Close Whiteboard”.
-
-Selecting the active control closes it for the meeting.
-
-Provider capabilities are loaded once through the host before Whiteboard preparation, and transient component-window mounting failures use a bounded exponential-backoff retry without re-registering or replacing the component page.
-
-While an unlock prompt or component mount is pending, the control remains disabled with its normal “Whiteboard” label; it changes to “Close Whiteboard” only after the component window is mounted.
-
-Stale work cancelled by meeting state or navigation changes is discarded without an error toast.
-
-Synchronized automatic opening proceeds during current browser activation; otherwise signal-scoped input listeners resume it on the next activation so the keyring request and component spawn remain browser-authorized.
-
-A failed automatic attempt is not repeated for the same board.
-
-Every actual failure writes its stage, meeting and board identifiers, error message, and full Error object to both the host logger and browser console, while the localized toast identifies the failed stage.
-
-- Active-meeting lobby rendering never reopens the preflight overlay after a meeting record has been selected. When the meeting frame has the host-owned `floating-window` state for Whiteboard picture-in-picture, meeting overlays and the participant invitation dropzone are resolved from the live DOM and reparented to that floating frame, then return to the normal stage when picture-in-picture closes. Cancelling a drag through drag end, a drop outside the target, Escape, or loss of window focus always removes the dropzone.
-- Active participant invitation dragging reuses the normal meeting overlay structure and green active-target outline instead of rendering a separate popup. Starting a new meeting acquires Cognis core’s `beginPageLoading()` token from the module-provided `ui:reuse` page-entry resource before preflight or creation work and releases it only after the Jitsi join attempt completes. Because Cognis component-page spawning requires current browser user activation, synchronized account Whiteboards defer automatic mounting until the next browser activation rather than exhausting retries with `whiteboard_component_window_unavailable`.
-- While Jitsi screen sharing locks Whiteboard access, the disabled Whiteboard control and its slot expose a localized hover title explaining the lock. A synchronized account Whiteboard that lacks current browser activation arms signal-scoped pointer and keyboard listeners and automatically continues mounting on the next user activation; closing the board or aborting the mount removes those listeners. Adding a participant to an active meeting requires Share’s `share:requestApproval` capability and proceeds only after an explicit final approval. Declines and incomplete decisions reject the addition, while runtime approval failures fail closed with structured error logging.
-- Dropping an available user into an active meeting optimistically removes that user from availability and immediately starts the server-side Share consensus request. An explicit decline restores the user to the sorted available pool and shows the inviter a localized rejection toast; other request failures perform the same rollback with the generic failure toast. While the local user is joined to any meeting, the entire Active Meetings grid is marked disabled, every meeting button is disabled, and click handling refuses meeting switches until the current meeting ends.
-- Whiteboard PiP delegates movement to Cognis’ host-owned floating-window toolbar. The module no longer supplies `.jitsi-stage-header` as a second drag handle when calling `ui:makeFloatingWindow`.
-- Conference exit events are coalesced into one teardown. The meeting frame and Whiteboard close immediately, the meeting chat polling timer and room identity are cleared before any redraw, the normal overlay is restored, participant selection is cleared, and active meetings plus available participants finish refreshing before teardown completes. Persistent Whiteboard access expansion confirms the complete current membership with the provider on its first synchronization and repeats that expansion whenever membership changes.
-
-## Conversation and Call Identity
-
-Saved meetings may share a conversation. The module declares `chat_room_id` as a normal historical reference; `jitsi_chat_calls` reserves one disposable call per conversation and one conversation per current call. Reservations, meeting creation and room changes use the injected database transaction; competing creations roll back without orphan rows. Lookup prefers the reserved call, otherwise the most recently updated saved meeting. Deletion and configuration resets release reservations. PostgreSQL reconciles this declared schema without deleting saved meetings.
+Module 1.5.238 synchronizes manifest, package and lockfile versions and verifies packaged SHA-256 hashes. Tests use module-local public-contract fakes and enforce component isolation, namespace ownership, source size, documentation structure and locale parity. Release notes use one German, English, Indonesian and Japanese changelog set per PR.

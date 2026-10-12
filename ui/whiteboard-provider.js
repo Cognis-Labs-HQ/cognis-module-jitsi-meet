@@ -1,24 +1,7 @@
+import { waitForRetry } from "./reuse/abortable-delay.js";
 import { uiCtx } from "./reuse/resources.js";
 
 const WHITEBOARD_UI_GATEWAY = "whiteboard:uiGateway";
-
-function waitForProviderRetry(signal, delayMs) {
-    return new Promise((resolve) => {
-        if (signal?.aborted) {
-            resolve();
-            return;
-        }
-        const timeoutId = setTimeout(resolve, delayMs);
-        signal?.addEventListener(
-            "abort",
-            () => {
-                clearTimeout(timeoutId);
-                resolve();
-            },
-            { once: true },
-        );
-    });
-}
 
 export async function resolveWhiteboardCapabilities(
     signal,
@@ -50,7 +33,7 @@ export async function resolveWhiteboardCapabilities(
         ) {
             return capabilities;
         }
-        if (attempt < 2) await waitForProviderRetry(signal, 150);
+        if (attempt < 2) await waitForRetry(signal, 150);
     }
     return capabilities;
 }

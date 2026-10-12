@@ -281,6 +281,7 @@ export async function mount(
     };
     const meetingHandlers = createMeetingHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,
@@ -290,6 +291,7 @@ export async function mount(
     });
     const preflightHandlers = createPreflightHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,

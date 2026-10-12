@@ -1,5 +1,4 @@
-import { logUi } from "../reuse/feedback.js";
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
     HEARTBEAT_INTERVAL_MS,
@@ -30,6 +29,7 @@ const { normalizeUsername } = await importReuseModule("value-normalizers.js");
 
 export function createPreflightHandlers({
     root,
+    signal,
     state,
     i18n,
     apiFetch,
@@ -180,7 +180,12 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: [] }));
-        if (requestSequence !== participantRefreshSequence) return;
+        if (
+            signal?.aborted ||
+            requestSequence !== participantRefreshSequence ||
+            state.meeting?.id !== (meetingId || undefined)
+        )
+            return;
         const selectedByUsername = new Map(
             state.selectedParticipants.map((entry) => [entry.username, entry]),
         );
@@ -457,7 +462,12 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: null }));
-        if (requestSequence !== stateRefreshSequence) return;
+        if (
+            signal?.aborted ||
+            requestSequence !== stateRefreshSequence ||
+            state.meeting?.id !== meetingId
+        )
+            return;
         const latestState = payload?.data?.state;
         if (!latestState) return;
         if (latestState.endedAt) {
@@ -476,7 +486,6 @@ export function createPreflightHandlers({
             });
             return;
         }
-        if (state.meeting?.id !== meetingId) return;
         const previousParticipants = Array.isArray(state.meeting.participants)
             ? state.meeting.participants
             : [];

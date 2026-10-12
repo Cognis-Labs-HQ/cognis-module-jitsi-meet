@@ -13,6 +13,21 @@ export const MEETING_TABLES = [
     "jitsi_meetings",
 ];
 
+export async function deleteMeetingRows(executor, meetingId) {
+    for (const table of MEETING_TABLES) {
+        await executor.executeCommand({
+            option: "DELETE",
+            table,
+            where: [
+                {
+                    column: table === "jitsi_meetings" ? "id" : "meeting_id",
+                    value: meetingId,
+                },
+            ],
+        });
+    }
+}
+
 export async function ensureJitsiStoreSchema({ db }) {
     await db.ensureTable({
         name: "jitsi_module_config",

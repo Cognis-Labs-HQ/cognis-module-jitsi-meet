@@ -344,6 +344,8 @@ export async function bindWhiteboardButton({
             canvasFactory,
         });
     } catch (error) {
+        button.remove();
+        if (signal?.aborted) return;
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",
             operation: "load_whiteboard_ui_providers",
@@ -351,7 +353,10 @@ export async function bindWhiteboardButton({
         });
         return;
     }
-    if (signal?.aborted) return;
+    if (signal?.aborted || slot.firstElementChild !== button) {
+        button.remove();
+        return;
+    }
     const {
         discardComponentPage,
         isKeyringUnlocked,
@@ -369,8 +374,10 @@ export async function bindWhiteboardButton({
                     ? "createCanvas"
                     : "createDisposableCanvas"
             ] !== "function")
-    )
+    ) {
+        button.remove();
         return;
+    }
 
     const trigger = {
         apiFetch,
@@ -411,6 +418,7 @@ export async function bindWhiteboardButton({
             );
             if (typeof requestPage !== "function") return null;
             return requestPage(request).catch((error) => {
+                if (signal?.aborted) return null;
                 void logUi(
                     "error",
                     "Whiteboard component page request failed.",
@@ -602,7 +610,11 @@ export async function bindWhiteboardButton({
                         return;
                     }
                     openStateConfirmed = true;
-                    confirmMeetingCanvasMapping(meetingId, whiteboardId);
+                    confirmMeetingCanvasMapping(
+                        meetingId,
+                        whiteboardId,
+                        trigger.whiteboardGateway,
+                    );
                     state.meeting.state.whiteboardId = whiteboardId;
                     state.meeting.state.whiteboardDisposable =
                         trigger.disposableCanvas;
@@ -685,6 +697,8 @@ export async function bindWhiteboardButton({
     try {
         await ensureComponentPage(trigger, state.meeting?.id);
     } catch (error) {
+        if (signal?.aborted || mountedWhiteboardButtons.get(root) !== trigger)
+            return;
         trigger.preparationFailedMeetingId = state.meeting?.id ?? "";
         await handleWhiteboardLoadError(
             trigger,

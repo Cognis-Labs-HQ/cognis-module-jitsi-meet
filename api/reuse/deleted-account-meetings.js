@@ -1,3 +1,4 @@
+import { deleteMeetingRows } from "./store-schema.js";
 import { buildParticipantKey } from "./meeting-participant-key.js";
 
 const PARTICIPANT_TABLES = [
@@ -13,27 +14,6 @@ async function selectParticipants(executor, table, meetingId) {
         where: [{ column: "meeting_id", value: meetingId }],
     });
     return (result.rows ?? []).map((row) => row.username);
-}
-
-async function deleteMeetingRows(executor, meetingId) {
-    for (const table of [
-        "jitsi_meeting_presence",
-        "jitsi_meeting_state",
-        "jitsi_meeting_original_participants",
-        "jitsi_meeting_participants",
-        "jitsi_meetings",
-    ]) {
-        await executor.executeCommand({
-            option: "DELETE",
-            table,
-            where: [
-                {
-                    column: table === "jitsi_meetings" ? "id" : "meeting_id",
-                    value: meetingId,
-                },
-            ],
-        });
-    }
 }
 
 export async function removeDeletedAccountFromMeetings(

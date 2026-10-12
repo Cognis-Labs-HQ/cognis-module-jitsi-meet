@@ -352,6 +352,12 @@ test("account deletion removes saved participants and deletes unusable meetings"
         ],
     );
     assert.equal(meetings.has("delete"), false);
+    assert.ok(
+        deletedCommands.some(
+            ({ table, where }) =>
+                table === "jitsi_chat_calls" && where[0].value === "delete",
+        ),
+    );
     assert.ok(meetings.get("keep").participant_key);
     assert.ok(
         deletedCommands.some(

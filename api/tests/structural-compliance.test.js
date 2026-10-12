@@ -19,8 +19,11 @@ function walk(directory) {
 }
 
 function sourceFiles() {
-    return SCAN_ROOTS.flatMap(walk).filter((path) =>
-        [...SOURCE_EXTENSIONS].some((extension) => path.endsWith(extension)),
+    return [resolve(ROOT, "bootstrap.js"), ...SCAN_ROOTS.flatMap(walk)].filter(
+        (path) =>
+            [...SOURCE_EXTENSIONS].some((extension) =>
+                path.endsWith(extension),
+            ),
     );
 }
 
@@ -189,5 +192,19 @@ test("source does not use Math.random for generated values", () => {
     const violations = sourceFiles()
         .filter((path) => /Math\.random\(/.test(readFileSync(path, "utf8")))
         .map((path) => relative(ROOT, path));
+    assert.deepEqual(violations, []);
+});
+
+test("feature styles target module surfaces instead of composer controls", () => {
+    const violations = sourceFiles()
+        .filter((path) => path.endsWith(".css"))
+        .flatMap((path) => {
+            const source = readFileSync(path, "utf8");
+            return /\.(?:btn-(?:confirm|cancel|neutral|animated)|page-shell|page-sidebar|widget-card|theme-select)\b/.test(
+                source,
+            )
+                ? [relative(ROOT, path)]
+                : [];
+        });
     assert.deepEqual(violations, []);
 });

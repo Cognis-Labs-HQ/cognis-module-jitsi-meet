@@ -1,123 +1,61 @@
-# Align Jitsi Meet with the Scoped Module Runtime
+# Align Jitsi Meet with Cognis Contracts
 
 **Feature Branch:** feature-align-module-with-structural-changes
 
-## Use the Lifecycle-Scoped Context
+## Use scoped ctx and executed action flows
 
-Jitsi Meet now obtains capabilities and runs or extends host flows directly through its scoped module context. Share management, account cleanup, Whiteboard integration, configuration enablement checks, and provider hooks no longer depend on the private system context, so disable and re-enable cycles remain fully tracked by Cognis.
+Bootstrap obtains external services only through the lifecycle-scoped ctx and contributes module-owned routes, providers, capabilities and hooks. Enabled store operations execute named `jitsi-meet:*` flows with `initialize-store` and `execute-action` stages; internal operations retain their existing transaction. Authorization precedes routed actions, and incomplete runners fail rather than silently bypassing work. Disabled configuration uses the restricted lifecycle entrypoint because Cognis does not register module flows while disabled.
 
-## Declare the Current Integration Contract
+## Keep meeting and conversation identities stable
 
-The manifest now keeps the module unprivileged, publishes its browser capability through the lifecycle-scoped provider catalog, uses Bootstrap as its sole runtime integration entrypoint, and synchronizes version 1.5.221 and all declared file digests. Structural tests cover the new boundary.
+Persistent meetings retain their normalized original participant set, room identity and password across membership changes and restarts. Saved meetings may share a Messages room; separate disposable-call reservations prevent competing calls without imposing uniqueness on historical chat references. Reservations and meeting changes remain transactional. Presence expires after missed heartbeats, and ended meetings exclude residual presence.
 
-## Keep Inactive Overlay Controls Hidden
+## Respect the optional Whiteboard provider
 
-The meeting lobby now enforces HTML hidden-state behavior inside the module surface, preventing host button display rules from exposing authentication, reclaim, leave, or remain controls before their matching meeting state. The release version and integrity digests are synchronized at 1.5.221.
+The optional browser canvas factory is discovered after host initialization, while the server resolves the provider-declared Whiteboard capabilities dynamically. Activation verifies availability before creating a canvas. Guests follow an existing mapping without creating one. Concurrent preparation shares a pending factory call, retries reuse uncommitted results, provider replacement isolates the cache, and cancelled window retries stop before spawning again. Membership and mapping verification use canonical account identities.
 
-## Restore Nextcloud Whiteboard Discovery
+## Reuse cleanup and reject stale UI work
 
-Jitsi now resolves the server capabilities published by the current Nextcloud Whiteboard module. The availability endpoint recognizes the enabled provider again, restoring the meeting Whiteboard button as well as board verification, membership updates, and cleanup.
+Account deletion updates saved rosters or cleans external resources before deleting unusable meetings. Final departure and account cleanup reuse owner-authorized resource deletion, and all meeting-row cleanup includes call reservations through one catalog. Shared abortable delays release their listeners on completion and cancellation. Polling checks mount lifetime, request order and meeting identity before applying results, including ended or reclaimed responses.
 
-## Load the Dedicated UI Provider
+## Preserve host presentation and conference sessions
 
-Jitsi now declares `whiteboard:uiGateway` as an optional browser capability requirement. Cognis can therefore load the dedicated provider introduced by the latest Nextcloud Whiteboard changes before mounting Meetings, without relying on the Whiteboard navbar to initialize the canvas factory.
+Meetings uses host page composer, router, profile previews, controls, overlays and floating-window behavior. Hidden-state rules target Jitsi-owned controls and surfaces. Empty meeting responses complete the initial loading state. Whiteboard mounting retains keyring authorization and synchronized screen-sharing locks. Jitsi authentication-session cleanup preserves other browser preferences and permits browsers that deny storage access to continue joining.
 
-## Use Browser Provider Discovery for Visibility
+## Publish one synchronized release contract
 
-After Cognis PR #222 made external capability-provider registration lifecycle-aware, the Meetings control now uses the loaded `whiteboard:uiGateway` directly instead of removing itself based on a separate backend availability request. The backend endpoint remains available for diagnostics.
-
-## Use the Provider-Declared Whiteboard Contracts
-
-Jitsi now resolves `whiteboard:fetchBoardData`, `whiteboard:membership`, and `whiteboard:deleteCanvas`, which are the capabilities declared by the current Nextcloud Whiteboard manifest. It no longer depends on the undeclared `whiteboard:api` implementation facade, restoring server verification and synchronized meeting Whiteboards.
-
-## Initialize the Exposed Browser Runtime
-
-Following Cognis PR #224, the Meetings browser entry imports the deployment-exposed `/static/reuse/ui-ctx.js` runtime resource so direct loads and refreshes initialize the same context as SPA navigation. Other browser utilities continue to resolve through `ui:reuse`; Jitsi now uses `ctx.registerCapabilityProvider` for `voip:startCall`, removes the redundant `meetings:isProviderAvailable` capability, and does not request privileged access.
-
-## Keep the Whiteboard Integration Optional
-
-Jitsi resolves Whiteboard verification, membership, and deletion capabilities only when the optional provider is enabled. These server capabilities no longer block Jitsi enablement, while `whiteboard:uiGateway` remains the browser-provider discovery contract.
-
-## Declare the Database Runtime Dependency
-
-Jitsi now declares `db:executor`, which its disabled configuration routes, enable test, and enabled meeting store all require. Cognis can initialize the database provider before registering `/config`, so configuration no longer falls back to HTTP 503 and enablement validation can run against the saved Jitsi URL.
-
-## Keep Server Capabilities Module-Owned
-
-The authenticated meeting-chat resolver is now published as `jitsi-meet:getMeetingChat`. Every capability contributed by Jitsi therefore remains in the module-owned namespace and passes Cognis boundary validation without privileged access.
-
-## Update Saved Meetings After Account Deletion
-
-When Cognis deletes an account, Jitsi now removes the account from both live and original participant records. Reusable meetings are re-keyed for the remaining saved roster, while meetings with fewer than two saved participants are deleted.
-
-## Defer Optional Whiteboard Provider Loading
-
-Meetings no longer declares the optional browser Whiteboard gateway as a route-level requirement. Direct loads and refreshes now let Cognis initialize its UI context before Jitsi discovers and loads the Whiteboard provider, while SPA navigation and the Whiteboard control continue to use the same gateway contract.
-
-## Resolve Whiteboard Capabilities from the Scoped Registry
-
-Aligned with the latest Nextcloud Whiteboard PR #30 registration contract. Jitsi now resolves board verification, membership, deletion, and delegated-access providers dynamically through `ctx.capabilities`, so providers contributed after Jitsi bootstrap are available to `/whiteboard/state`.
-
-## Resolve Both Public Capability Access Surfaces
-
-Jitsi now mirrors the latest Nextcloud Whiteboard PR #30 registration behavior by resolving optional server providers from the scoped registry first and the module context accessor second. This covers providers registered through either public lifecycle-scoped surface and prevents a successfully created canvas from failing mapping verification immediately afterward.
-
-## Restore the Direct Provider Contract
-
-Following Nextcloud Whiteboard PR #30, Jitsi again consumes the public `whiteboard:*` leaf capabilities directly through the module context and removes the parallel resolver. In alignment with Cognis PR #225, account cleanup resolves canonical account IDs to current profile handles before changing saved meeting rosters.
-
-## Complete the Coordinated Whiteboard Contract
-
-The browser canvas factory and server verification provider are separate contracts. Jitsi now verifies mappings with the canonical creator account ID added by the latest Nextcloud Whiteboard PR #30. Deployments must also include that PR’s direct bootstrap publication of `whiteboard:fetchBoardData` and `whiteboard:membership`; otherwise canvas creation can succeed while `/whiteboard/state` correctly reports that server verification is unavailable.
-
-## Stabilize Presence and Periodic Refreshes
-
-Periodic polling now discards superseded responses and preserves existing participant and meeting DOM when data is unchanged, preventing avatar fallback flashes and cross-meeting state overwrites. Chat avatars follow active presence rather than the invited roster. Joining a meeting deactivates the same account in other meetings, ended meetings ignore residual presence, and stale presence expires after missed heartbeats instead of two minutes.
-
-## Conversation and Call Identity
-
-Saved meetings may share a conversation. The module declares `chat_room_id` as a normal historical reference; `jitsi_chat_calls` reserves one disposable call per conversation and one conversation per current call. Reservations, meeting creation and room changes use the injected database transaction; competing creations roll back without orphan rows. Lookup prefers the reserved call, otherwise the most recently updated saved meeting. Deletion and configuration resets release reservations. PostgreSQL reconciles this declared schema without deleting saved meetings.
+Module 1.5.238 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
 
 ## Commits
 
-- [7c8e314](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
-- [6042833](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)
-- [055fd2a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/055fd2a7a760c5c29d1e5c9abe9d3956763712aa)
-- [f20e6ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
-
-- [1e557a1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
-
-- [e869c66](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
-
-- [2432bb4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
-
-- [6af5e9d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
-
-- [3e99028](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
-
-- [a94d066](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
-
-- [18feef0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
-
-- [34a9e73](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
-
-- [444c415](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
-
-- [d8c7696](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
-
-- [33a2ecd](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
-
-- [09c93f4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
-
-- [bce5f43](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
-
-- [d0ed763](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
-
-- [b864da0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
-
-- [c69fa5f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
-
-- [8e79fd7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
-
-- [de19732](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)
+- [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
+- [60428332](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/60428332b3deae87b46d0c4eb125986b28426a8b)
+- [055fd2a7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/055fd2a7a760c5c29d1e5c9abe9d3956763712aa)
+- [f20e6ae2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f20e6ae22b52b88b285b0d6388d5ca619f0bf7f0)
+- [1e557a1a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e557a1aa154d546f37276c86c77358583c8bef7)
+- [e869c668](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e869c6682d4b2ff13db0a72afd6889c9aa5f282f)
+- [2432bb48](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2432bb4857744996c6cebb5e92eba8ac72cf490a)
+- [6af5e9d4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/6af5e9d449b87a30616d01a4aa3cbd06754c3d16)
+- [3e99028a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3e99028a46b22727d6a74c79be66307e2cdf689f)
+- [a94d0660](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a94d06602a508b05c7d5ce5a389212aa7a2a3ac8)
+- [18feef04](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/18feef04c15884d664bfc838e565fd4de5505129)
+- [34a9e730](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/34a9e730d6389aa4ba0fd49e4594f3219c47c7dd)
+- [444c4155](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/444c415532dc20a285123231368cf2c30e376f1a)
+- [d8c76966](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d8c769663b694a244b402304b37047c5e3bea699)
+- [33a2ecdb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/33a2ecdb02e84101247c48c7247b527a4863077f)
+- [09c93f4d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/09c93f4d5bb52cff518455cda7494ca302cb3b7f)
+- [bce5f43f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/bce5f43fef2cc079f596771553e947adc2a77e28)
+- [d0ed7631](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d0ed763193e09ee5807ff0ffa89718f45b65ffbb)
+- [b864da0c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b864da0c1388c35000b8f21117ab7b52340f13a8)
+- [c69fa5fc](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/c69fa5fc53db518779c9ac7905cc2919d4911aae)
+- [8e79fd7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8e79fd7d77cc8857bb1482f245ea9aa56a7afeb7)
+- [de197326](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/de19732675ee9d054088787f8710adfc96c809ce)
 - [82899c91](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/82899c9148162acd33805632d5ce0d749e40ba6c)
+- [9894d9ee](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/9894d9ee1130f3aff7144bd2e17adc72795e986a)
+- [dccbd01c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dccbd01cb316ab7d02708b4d43a56fea53f7b060)
+- [1d990487](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1d990487c733d1d4e9db03b9e2ec54d0f04632d1)
+- [561ab35f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/561ab35f41d807651f2ec5c28b5ab43eda928305)
+- [30603f26](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/30603f2679ed778ee2a3467de9d18b4932445836)
+- [736abfbf](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/736abfbf2a8579b7c6961755ad26cb6446a54cac)
+- [04158e4a](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/04158e4a2da493d1413d5bbb7f580e0066cac468)
+- [e8042612](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e8042612c8e55a549db7aa32cbc8ab9e0d1cdd04)

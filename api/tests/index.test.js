@@ -125,8 +125,7 @@ test("account cleanup resolves canonical account ids to participant handles", ()
     );
     assert.match(source, /beforeDeleteMeeting: async \(meeting\)/);
     assert.match(source, /whiteboard:deleteCanvas/);
-    assert.match(source, /deleteChatroom\(/);
-    assert.match(source, /deleteResourceShares\?\.\(/);
+    assert.match(source, /deleteMeetingResources\(/);
 });
 
 test("disposable Messages calls stay out of Meetings discovery", () => {
@@ -185,14 +184,6 @@ test("jitsi API registers configured CSP origins through auth capability", () =>
         /registerConfiguredJitsiOrigin\(registerScriptOrigins, saved\)/,
     );
     assert.match(indexSource, /ctx\.getCapability\("auth:requireAuth"\)/);
-});
-
-test("jitsi resolves guest access through the Share gateway contract", () => {
-    const source = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
-    assert.match(source, /ctx\.getCapability\(\s*"share:resolveGuestAccess"/);
-    assert.match(source, /resourceType: "meeting"/);
-    assert.match(source, /const legacyMeetingAccess/);
-    assert.match(source, /legacyMeetingAccess\?\.authorized === true/);
 });
 
 test("kicked share guests can revoke only the link represented by their claims", () => {

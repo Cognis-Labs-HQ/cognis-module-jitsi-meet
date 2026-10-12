@@ -1,3 +1,4 @@
+import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -55,7 +56,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         resolve(ROOT, "ui/app/meetings-list.js"),
         "utf8",
     );
-    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const stylesheet = readModuleStyles();
     assert.doesNotMatch(apiSource, /spawnWhiteboardWindow/);
     assert.doesNotMatch(apiSource, /\/api\/v1\/modules\/nextcloud-whiteboard/);
     assert.match(
@@ -100,14 +101,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /typeof trigger\.whiteboardGateway\.createCanvas !== "function"\s*\?\s*trigger\.whiteboardGateway\.createDisposableCanvas/,
     );
     assert.doesNotMatch(buttonSource, /saveCanvasToParticipants/);
-    assert.match(
-        buttonSource,
-        /createCanvas\(\{[\s\S]*?resourceId:\s*meetingName,[\s\S]*?title:\s*meetingName,[\s\S]*?participantHandles/,
-    );
-    assert.match(
-        buttonSource,
-        /createDisposableCanvas\(\{[\s\S]*?resourceType:\s*"meeting",[\s\S]*?resourceId:\s*meetingName/,
-    );
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
     assert.match(buttonSource, /synchronizeWhiteboardParticipantAccess/);
     assert.match(

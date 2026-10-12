@@ -1,3 +1,4 @@
+import { registerJitsiActionStore } from "./action-store.js";
 import { registerMeetingConfigRoutes } from "../config-routes.js";
 import { readJson } from "./http.js";
 import { checkHttpLiveness } from "./http-liveness.js";
@@ -46,7 +47,11 @@ async function registerStoredJitsiOrigin({
     }
 }
 
-export function registerJitsiConfigurationApi(router, ctx) {
+export function registerJitsiConfigurationApi(
+    router,
+    ctx,
+    { enabled = false } = {},
+) {
     const dbExecutor = ctx.getCapability("db:executor");
     const requireAuth = ctx.getCapability("auth:requireAuth");
     const profileIdentity = ctx.getCapability("social:profile:identity");
@@ -79,12 +84,13 @@ export function registerJitsiConfigurationApi(router, ctx) {
     }
 
     const log = ctx.getCapability("logging:log") ?? ctx.log;
-    const store = resolveStore(
+    const rawStore = resolveStore(
         dbExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         profileIdentity,
     );
+    const store = enabled ? registerJitsiActionStore(ctx, rawStore) : rawStore;
     const runEnableTest = async () => {
         await store.ensureSchema();
         const config = await store.getConfig();
