@@ -1,3 +1,4 @@
+import { registerFollowWhiteboard } from "./reuse/follow-whiteboard.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
 import { synchronizeMeetingWhiteboardMembers } from "./reuse/whiteboard-membership.js";
@@ -107,6 +108,12 @@ export function registerMeetingWhiteboardRoutes({
     resolveWhiteboardMembership,
 }) {
     const serializeMeetingStateUpdate = createMeetingStateSerializer();
+    const followWhiteboard = registerFollowWhiteboard(ctx, {
+        store,
+        profileStore,
+        resolveWhiteboardMembership,
+        fetchBoardData,
+    });
     router.get(
         "/api/v1/modules/jitsi-meet/whiteboard/availability",
         async (req, res) => {
@@ -218,6 +225,19 @@ export function registerMeetingWhiteboardRoutes({
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
             }
+            if (
+                body.followExisting !== undefined &&
+                (typeof body.followExisting !== "boolean" ||
+                    (body.followExisting && body.active !== true))
+            ) {
+                sendError(
+                    res,
+                    400,
+                    "bad_request",
+                    "followExisting requires an active Whiteboard.",
+                );
+                return;
+            }
             const active = body.active;
             const whiteboardId = String(body.whiteboardId ?? "").trim();
             const whiteboardDisposable = body.disposable;
@@ -237,6 +257,40 @@ export function registerMeetingWhiteboardRoutes({
                     "bad_request",
                     "disposable is required when activating a whiteboard.",
                 );
+                return;
+            }
+            if (body.followExisting === true) {
+                try {
+                    const data = await followWhiteboard({
+                        ...resolved,
+                        whiteboardId,
+                        disposable: whiteboardDisposable,
+                    });
+                    sendJson(res, 200, { data });
+                } catch (error) {
+                    const stateChanged =
+                        error.code === "whiteboard_state_changed";
+                    ctx.log?.(
+                        stateChanged ? "info" : "error",
+                        "Meeting Whiteboard access could not be confirmed.",
+                        {
+                            operation: "follow_meeting_whiteboard",
+                            meetingId: resolved.meeting.id,
+                            whiteboardId,
+                            errorName: error.name,
+                        },
+                    );
+                    sendError(
+                        res,
+                        stateChanged ? 409 : 503,
+                        stateChanged
+                            ? error.code
+                            : "whiteboard_membership_unavailable",
+                        stateChanged
+                            ? "The meeting Whiteboard is no longer open."
+                            : "Whiteboard access could not be updated.",
+                    );
+                }
                 return;
             }
             let currentState = await store.getMeetingState(resolved.meeting.id);

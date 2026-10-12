@@ -3,6 +3,7 @@ import { uiCtx } from "./reuse/resources.js";
 import {
     resolveWhiteboardCapabilities,
     resolveWhiteboardServerContract,
+    synchronizeWhiteboardOpen,
 } from "./whiteboard-provider.js";
 import {
     confirmMeetingCanvasMapping,
@@ -572,25 +573,14 @@ export async function bindWhiteboardButton({
                         return;
                     }
                     loadStage = "synchronize";
-                    const response = synchronizeOpen
-                        ? await apiFetch(
-                              "/api/v1/modules/jitsi-meet/whiteboard/state",
-                              {
-                                  method: "POST",
-                                  headers: {
-                                      "content-type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                      meetingId: state.meeting.id,
-                                      whiteboardId,
-                                      disposable: trigger.disposableCanvas,
-                                      active: true,
-                                  }),
-                                  accessToken:
-                                      state.shareAccessToken || undefined,
-                              },
-                          )
-                        : null;
+                    const response = await synchronizeWhiteboardOpen(apiFetch, {
+                        meetingId,
+                        whiteboardId,
+                        disposable: trigger.disposableCanvas,
+                        automaticOpen,
+                        shareAccessToken: state.shareAccessToken,
+                        signal,
+                    });
                     if (response && !response.ok)
                         throw new Error("whiteboard_state_sync_failed");
                     const responseData = response
@@ -667,6 +657,11 @@ export async function bindWhiteboardButton({
                             state.meeting?.state?.whiteboardOpen !== true)
                     )
                         return;
+                    if (automaticOpen && error.name === "AbortError") {
+                        trigger.automaticOpenFailureWhiteboardId = whiteboardId;
+                        closeComponentWindow(trigger);
+                        return;
+                    }
                     if (automaticOpen) {
                         trigger.automaticOpenFailureWhiteboardId = whiteboardId;
                     }

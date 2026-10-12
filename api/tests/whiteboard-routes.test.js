@@ -1,3 +1,4 @@
+import { createFlowRuntime } from "./flow-runtime-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { registerMeetingWhiteboardRoutes } from "../whiteboard-routes.js";
@@ -38,6 +39,7 @@ function createRoutes({
     },
     whiteboardAvailable = true,
     beforeStateRead = () => {},
+    beforeMembershipAdd = () => {},
     whiteboardApproval = { approved: true },
 } = {}) {
     const handlers = new Map();
@@ -54,6 +56,7 @@ function createRoutes({
             },
         },
         ctx: {
+            ...createFlowRuntime(),
             async getModuleAssurance(moduleId) {
                 assert.equal(moduleId, "nextcloud-whiteboard");
                 return {
@@ -135,6 +138,7 @@ function createRoutes({
         },
         resolveWhiteboardMembership: () => ({
             async add(request) {
+                await beforeMembershipAdd();
                 membershipAdds.push(request);
             },
         }),
@@ -728,4 +732,129 @@ test("a mapped participant canvas reopens without another consensus vote", async
     assert.equal(response.body.data.whiteboardOpen, true);
     assert.equal(response.body.data.pendingConsensus, false);
     assert.equal(response.body.data.voteCount, 0);
+});
+
+function openWhiteboardState() {
+    return {
+        whiteboardActive: true,
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+        whiteboardOpenVotes: [],
+    };
+}
+
+async function followExistingBoard(routes, changes = {}) {
+    const response = createRecorder();
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+                followExisting: true,
+                ...changes,
+            },
+        },
+        response,
+    );
+    return response;
+}
+
+test("automatic opening grants the joining account access without another vote or state write", async () => {
+    const state = openWhiteboardState();
+    const routes = createRoutes({
+        state,
+        requesterUsername: "bob",
+        claims: { sub: "account-bob" },
+        participants: ["alice", "bob", "carol"],
+        presence: [{ username: "alice" }, { username: "bob" }],
+        board: { id: "board-1", title: "Planning", createdBy: "alice" },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body.data, {
+        whiteboardOpen: true,
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+    });
+    assert.deepEqual(routes.membershipAdds, [
+        {
+            whiteboardId: "board-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-bob",
+        },
+    ]);
+    assert.deepEqual(routes.approvalRequests, []);
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+for (const change of [
+    { whiteboardActive: false },
+    { endedAt: "2026-10-12" },
+    { screenSharingActive: true },
+    { whiteboardId: "replacement-board" },
+    { whiteboardDisposable: true },
+]) {
+    test(`automatic access rejects changed mapping ${JSON.stringify(change)}`, async () => {
+        const routes = createRoutes({
+            state: { ...openWhiteboardState(), ...change },
+        });
+        const response = await followExistingBoard(routes);
+        assert.equal(response.status, 409);
+        assert.equal(response.body.error.code, "whiteboard_state_changed");
+        assert.deepEqual(routes.membershipAdds, []);
+        assert.deepEqual(routes.stateUpdates, []);
+    });
+}
+
+test("a board closed during access approval is never reopened", async () => {
+    const state = openWhiteboardState();
+    const routes = createRoutes({
+        state,
+        beforeMembershipAdd: () => {
+            state.whiteboardActive = false;
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "whiteboard_state_changed");
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+test("provider failure prevents automatic mounting from receiving an open response", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        beforeMembershipAdd: () => {
+            throw new Error("provider unavailable");
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 503);
+    assert.equal(response.body.error.code, "whiteboard_membership_unavailable");
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+test("unauthorized meeting users cannot grant themselves Whiteboard membership", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        authorized: false,
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 403);
+    assert.deepEqual(routes.membershipAdds, []);
+});
+
+test("link guests follow the exact mapped board without an account membership grant", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        claims: { sub: "share:guest" },
+        guestAllowed: true,
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 200);
+    assert.deepEqual(routes.membershipAdds, []);
+    assert.deepEqual(routes.approvalRequests, []);
 });

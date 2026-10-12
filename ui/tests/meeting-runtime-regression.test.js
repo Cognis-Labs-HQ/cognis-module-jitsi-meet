@@ -133,12 +133,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         appSource,
         /if \(!inShareView\) \{[\s\S]*bindShareButton[\s\S]*\}\s*void bindWhiteboardButton/,
     );
-    assert.equal(
-        controlSource.match(
-            /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
-        )?.length,
-        2,
-    );
+    assert.match(controlSource, /shareAccessToken: state\.shareAccessToken/);
     assert.match(
         controlSource,
         /canvasFactory,[\s\S]*await prepareMeetingCanvas\(trigger, state\)/,

@@ -20,6 +20,8 @@ function registerJoinHandler({
     operations,
     logs = [],
     activeMeetings = [],
+    whiteboardState = {},
+    addWhiteboardMembership = async () => {},
 }) {
     const handlers = new Map();
     const meeting = {
@@ -57,7 +59,13 @@ function registerJoinHandler({
             response.writeHead(status);
             response.end(JSON.stringify({ error: { code, message } }));
         },
-        profileStore: {},
+        profileStore: {
+            getProfileByHandle: async (handle) => ({
+                accountId: `account-${handle}`,
+            }),
+        },
+        fetchBoardData: async () => ({ id: "board-1", createdBy: "alice" }),
+        resolveWhiteboardMembership: () => ({ add: addWhiteboardMembership }),
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
         resolveMeetingPayload: async () => ({
             meeting,
@@ -67,6 +75,7 @@ function registerJoinHandler({
                 firstJoinedBy: "alice",
                 firstJoinedAt: "2026-09-01T10:00:00.000Z",
                 endedAt: null,
+                ...whiteboardState,
             },
         }),
         listClassroomParticipantHandles: async () => [],
@@ -165,4 +174,104 @@ test("joining fails safely when chat membership cannot be restored", async () =>
     assert.deepEqual(operations, []);
     assert.equal(logs[0][0], "error");
     assert.equal(logs[0][2].operation, "restore_joining_participant_chat");
+});
+
+test("join grants canonical Whiteboard membership before publishing open state, even without chat", async () => {
+    const operations = [];
+    const memberships = [];
+    const handler = registerJoinHandler({
+        operations,
+        addMembership: () => assert.fail("Chat is disabled for this join"),
+        whiteboardState: {
+            whiteboardActive: true,
+            whiteboardId: "board-1",
+            whiteboardDisposable: false,
+        },
+        addWhiteboardMembership: async (input) => {
+            memberships.push(input);
+            operations.push("whiteboard");
+        },
+    });
+    const response = createResponse();
+    await handler(
+        {
+            body: {
+                meetingId: "meeting-1",
+                sessionId: "session-1",
+                includeChat: false,
+            },
+        },
+        response,
+    );
+    assert.equal(response.status, 200);
+    assert.deepEqual(memberships, [
+        {
+            whiteboardId: "board-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-bob",
+        },
+    ]);
+    assert.deepEqual(operations, ["whiteboard", "presence", "payload"]);
+});
+
+test("membership failure stops an open Whiteboard join before presence and payload", async () => {
+    const operations = [];
+    const logs = [];
+    const handler = registerJoinHandler({
+        operations,
+        logs,
+        whiteboardState: {
+            whiteboardActive: true,
+            whiteboardId: "board-1",
+            whiteboardDisposable: false,
+        },
+        addWhiteboardMembership: async () => {
+            throw new Error("provider unavailable");
+        },
+    });
+    const response = createResponse();
+    await handler(
+        {
+            body: {
+                meetingId: "meeting-1",
+                sessionId: "session-1",
+                includeChat: false,
+            },
+        },
+        response,
+    );
+    assert.equal(response.status, 503);
+    assert.equal(response.body.error.code, "whiteboard_membership_unavailable");
+    assert.deepEqual(operations, []);
+    assert.equal(
+        logs[0][2].operation,
+        "restore_joining_participant_whiteboard",
+    );
+});
+
+test("a stored but closed Whiteboard does not make an optional provider a join dependency", async () => {
+    const operations = [];
+    const handler = registerJoinHandler({
+        operations,
+        whiteboardState: {
+            whiteboardActive: false,
+            whiteboardId: "board-1",
+            whiteboardDisposable: false,
+        },
+        addWhiteboardMembership: () =>
+            assert.fail("Closed board access should not gate joining"),
+    });
+    const response = createResponse();
+    await handler(
+        {
+            body: {
+                meetingId: "meeting-1",
+                sessionId: "session-1",
+                includeChat: false,
+            },
+        },
+        response,
+    );
+    assert.equal(response.status, 200);
+    assert.deepEqual(operations, ["presence", "payload"]);
 });

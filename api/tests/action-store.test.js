@@ -1,3 +1,4 @@
+import { createFlowRuntime } from "./flow-runtime-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { JitsiMeetStore } from "../store.js";
@@ -6,8 +7,8 @@ import { registerMeetingConfigRoutes } from "../config-routes.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRuntime() {
-    const flows = new Map();
-    const executions = [];
+    const ctx = createFlowRuntime();
+    const { flows, executions } = ctx;
     const events = [];
     const databaseExecutor = {
         async ensureTable({ name }) {
@@ -33,29 +34,6 @@ function createRuntime() {
         db: databaseExecutor,
         profileIdentity: profileIdentityFake,
     });
-    const ctx = {
-        registerFlow(flow) {
-            assert.ok(flow.id.startsWith("jitsi-meet:"));
-            assert.equal(flows.has(flow.id), false);
-            flows.set(flow.id, flow);
-        },
-        flow: {
-            exists: (flowId) => flows.has(flowId),
-            async run(flowId, input, { handlers }) {
-                const flow = flows.get(flowId);
-                assert.ok(flow, `Unregistered flow ${flowId}`);
-                const stageResults = {};
-                for (const stageId of flow.stages) {
-                    executions.push(`${flowId}:${stageId}`);
-                    assert.equal(typeof handlers[stageId], "function");
-                    stageResults[stageId] = [
-                        await handlers[stageId]({ input, stageResults }),
-                    ];
-                }
-                return { flowId, stageResults };
-            },
-        },
-    };
     return {
         ctx,
         store,

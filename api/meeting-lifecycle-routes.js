@@ -548,7 +548,6 @@ export function registerMeetingLifecycleRoutes({
                 claims,
                 res,
                 listClassroomParticipantHandles,
-                profileStore,
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
@@ -575,6 +574,19 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
+            if (
+                resolved.state.whiteboardActive === true &&
+                !resolved.state.endedAt &&
+                !(await updateWhiteboardMember({
+                    operation: "add",
+                    meeting: resolved.meeting,
+                    state: resolved.state,
+                    userAccountId: claims.sub,
+                    response: res,
+                    logOperation: "restore_joining_participant_whiteboard",
+                }))
+            )
+                return;
             const otherActiveMeetings = await store.listActiveMeetings();
             for (const activeMeeting of otherActiveMeetings) {
                 if (
@@ -743,7 +755,6 @@ export function registerMeetingLifecycleRoutes({
                 claims,
                 res,
                 listClassroomParticipantHandles,
-                profileStore,
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;

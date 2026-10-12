@@ -58,3 +58,43 @@ export async function resolveWhiteboardServerContract(apiFetch, signal) {
                 : null,
     };
 }
+
+export async function synchronizeWhiteboardOpen(
+    apiFetch,
+    {
+        meetingId,
+        whiteboardId,
+        disposable,
+        automaticOpen,
+        shareAccessToken,
+        signal,
+    },
+) {
+    if (automaticOpen && shareAccessToken) return null;
+    const response = await apiFetch(
+        "/api/v1/modules/jitsi-meet/whiteboard/state",
+        {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                meetingId,
+                whiteboardId,
+                disposable,
+                active: true,
+                followExisting: automaticOpen,
+            }),
+            accessToken: shareAccessToken || undefined,
+            signal,
+        },
+    );
+    if (automaticOpen && response.status === 409) {
+        const payload = await response.json();
+        if (payload?.error?.code === "whiteboard_state_changed") {
+            throw new DOMException(
+                "The meeting Whiteboard changed.",
+                "AbortError",
+            );
+        }
+    }
+    return response;
+}
