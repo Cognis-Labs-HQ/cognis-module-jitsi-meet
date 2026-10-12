@@ -1,6 +1,4 @@
 import { waitForRetry } from "./reuse/abortable-delay.js";
-const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
-const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
 const uncommittedMeetingCanvases = new WeakMap();
 
 function getParticipantHandles(meeting) {
@@ -14,22 +12,6 @@ function getParticipantHandles(meeting) {
             ).trim(),
         )
         .filter(Boolean);
-}
-
-function currentUserOwnsMeetingWhiteboard(state) {
-    const currentUsername = String(
-        state.currentProfile?.handle ?? state.currentProfile?.username ?? "",
-    )
-        .trim()
-        .toLowerCase();
-    const organizerUsername = String(state.meeting?.createdBy ?? "")
-        .trim()
-        .toLowerCase();
-    return Boolean(
-        currentUsername &&
-        organizerUsername &&
-        currentUsername === organizerUsername,
-    );
 }
 
 const PIP_BASE_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -51,54 +33,6 @@ export function resolveMeetingPipMinimumSize(meeting) {
     };
 }
 
-export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
-    const whiteboardId = String(
-        state.meeting?.state?.whiteboardId ??
-            trigger.preparedWhiteboardId ??
-            "",
-    ).trim();
-    if (
-        !whiteboardId ||
-        state.shareAccessToken ||
-        trigger.disposableCanvas ||
-        !currentUserOwnsMeetingWhiteboard(state)
-    ) {
-        return null;
-    }
-    if (typeof trigger.whiteboardGateway?.expandCanvasAccess !== "function") {
-        return false;
-    }
-    const participantHandles = getParticipantHandles(state.meeting).sort();
-    const signature = `${whiteboardId}:${participantHandles.join(",")}`;
-    if (
-        trigger.participantAccessSignature === signature ||
-        trigger.participantAccessAttemptSignature === signature
-    ) {
-        return true;
-    }
-    trigger.participantAccessAttemptSignature = signature;
-    const result = await trigger.whiteboardGateway.expandCanvasAccess({
-        whiteboardId,
-        participantHandles,
-    });
-    const expandedParticipants = new Set(
-        (Array.isArray(result?.participants) ? result.participants : []).map(
-            (participant) => String(participant).trim().toLowerCase(),
-        ),
-    );
-    if (
-        String(result?.whiteboardId ?? "").trim() !== whiteboardId ||
-        participantHandles.some(
-            (participant) =>
-                !expandedParticipants.has(participant.toLowerCase()),
-        )
-    ) {
-        throw new Error("whiteboard_participant_access_invalid_response");
-    }
-    trigger.participantAccessSignature = signature;
-    return true;
-}
-
 export function meetingHasInvitedParticipants(meeting) {
     if (typeof meeting?.hasInvitedParticipants === "boolean") {
         return meeting.hasInvitedParticipants;
@@ -116,62 +50,28 @@ export function meetingWhiteboardShouldOpen(meeting) {
     );
 }
 
-export async function ensureComponentPage(trigger, meetingId) {
+export async function ensureComponentPage(trigger) {
     if (!trigger.componentPage) {
-        trigger.componentPage = await trigger.requestComponentPage({
-            componentUuid: WHITEBOARD_MODULE_UUID,
-            routeId: WHITEBOARD_ROUTE_ID,
-            mode: "overlay",
-            context: { meetingId },
-        });
+        trigger.componentPage =
+            await trigger.whiteboardGateway.requestCanvasPage({
+                signal: trigger.signal,
+            });
     }
-    if (!trigger.componentPage) {
+    if (!trigger.componentPage)
         throw new Error("whiteboard_component_page_unavailable");
-    }
     return trigger.componentPage;
 }
 
-function spawnComponentWindow(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
-    return trigger.spawnComponentPage({
-        componentUuid: WHITEBOARD_MODULE_UUID,
-        routeId: WHITEBOARD_ROUTE_ID,
-        mode: "overlay",
-        elementId: trigger.componentHost.id,
-        context: {
-            meetingId,
-            title: meetingName,
-            whiteboardId,
-            instantCanvas: trigger.disposableCanvas,
-            disposable: trigger.disposableCanvas,
-            frameless: true,
-            borderless: true,
-            contentScrolling: false,
-            layout: {
-                borderless: true,
-                fillParent: true,
-                scrollOwner: "document",
-            },
-        },
-        signal: trigger.signal,
-    });
-}
-
-export async function spawnComponentWindowWithRetry(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
+export async function spawnComponentWindowWithRetry(trigger, { whiteboardId }) {
     let lastError;
     const waitBeforeRetry = trigger.waitForComponentWindowRetry ?? waitForRetry;
     for (let attempt = 0; attempt < 6; attempt += 1) {
         trigger.signal?.throwIfAborted();
         try {
-            const componentWindow = await spawnComponentWindow(trigger, {
-                meetingId,
-                meetingName,
+            const componentWindow = await trigger.whiteboardGateway.openCanvas({
                 whiteboardId,
+                elementId: trigger.componentHost.id,
+                signal: trigger.signal,
             });
             if (componentWindow) return componentWindow;
             lastError = new Error("whiteboard_component_window_unavailable");

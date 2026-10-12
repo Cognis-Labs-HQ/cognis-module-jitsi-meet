@@ -15,7 +15,6 @@ export async function resolveWhiteboardCapabilities(
         isKeyringUnlocked: uiCtx.capabilities.get("keyring:isUnlocked"),
         makeFloatingWindow: uiCtx.capabilities.get("ui:makeFloatingWindow"),
         requestKeyringUnlock: uiCtx.capabilities.get("keyring:requestUnlock"),
-        spawnComponentPage: uiCtx.capabilities.get("component-pages:spawn"),
         whiteboardGateway: uiCtx.capabilities.get(WHITEBOARD_UI_GATEWAY),
     });
     let capabilities = readCapabilities();
@@ -28,7 +27,9 @@ export async function resolveWhiteboardCapabilities(
             (!canvasFactory ||
                 typeof capabilities.whiteboardGateway?.[canvasFactory] ===
                     "function") &&
-            typeof capabilities.spawnComponentPage === "function" &&
+            typeof capabilities.whiteboardGateway?.requestCanvasPage ===
+                "function" &&
+            typeof capabilities.whiteboardGateway?.openCanvas === "function" &&
             typeof capabilities.makeFloatingWindow === "function"
         ) {
             return capabilities;

@@ -78,7 +78,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /meetingWhiteboardShouldOpen\(state\.meeting\);[\s\S]*?sharedOpenRequested = true;[\s\S]*?trigger\.button\.click\(\)/,
     );
-    assert.match(buttonSource, /module\.nextcloud\.whiteboard\.canvas/);
+    assert.match(buttonSource, /whiteboardGateway\.requestCanvasPage/);
     assert.match(buttonSource, /whiteboard:uiGateway/);
     assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
     assert.match(buttonSource, /whiteboard\/availability/);
@@ -102,12 +102,6 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.doesNotMatch(buttonSource, /saveCanvasToParticipants/);
     assert.match(buttonSource, /meetingHasInvitedParticipants/);
-    assert.match(buttonSource, /synchronizeWhiteboardParticipantAccess/);
-    assert.match(
-        buttonSource,
-        /expandCanvasAccess\(\{[\s\S]*whiteboardId,[\s\S]*participantHandles/,
-    );
-    assert.match(buttonSource, /currentUserOwnsMeetingWhiteboard\(state\)/);
     assert.match(
         buttonSource,
         /approvalRequested === true[\s\S]*module\.jitsi_meet\.whiteboard\.request_sent[\s\S]*variant: "info"/,
@@ -140,14 +134,12 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /disposableCanvas = !meetingHasInvitedParticipants/,
     );
-    assert.match(buttonSource, /instantCanvas: trigger\.disposableCanvas/);
-    assert.match(buttonSource, /disposable: trigger\.disposableCanvas/);
     assert.match(
         buttonSource,
         /stateWhiteboardDisposable === trigger\.disposableCanvas/,
     );
-    assert.match(buttonSource, /component-pages:request/);
-    assert.match(buttonSource, /component-pages:spawn/);
+    assert.match(buttonSource, /whiteboardGateway\.requestCanvasPage/);
+    assert.match(buttonSource, /whiteboardGateway\.openCanvas/);
     assert.doesNotMatch(buttonSource, /jitsi-whiteboard-component-open/);
     assert.doesNotMatch(buttonSource, /spawnComponentPage\(\{\s*borderless:/);
     assert.doesNotMatch(stylesheet, /\.jitsi-whiteboard-component-open/);
@@ -253,7 +245,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /const meeting = state\.meeting;[\s\S]*?const meetingId = meeting\.id;[\s\S]*?state\.meeting\?\.id !== meetingId[\s\S]*?trigger\.preparedMeetingId !== meetingId/,
     );
-    assert.match(buttonSource, /context:\s*\{[\s\S]*?whiteboardId/);
+    assert.match(buttonSource, /whiteboardGateway\.openCanvas\(\{/);
     assert.match(buttonSource, /componentWindow\?\.discard/);
     assert.match(buttonSource, /ui:ensureProvidersLoaded/);
     assert.match(
@@ -261,13 +253,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /ensureProvidersLoaded\(\{ force: attempt > 0 \}\)/,
     );
     assert.match(buttonSource, /crypto\?\.randomUUID/);
-    assert.match(buttonSource, /mode:\s*"overlay"/);
-    assert.match(buttonSource, /frameless:\s*true/);
-    assert.match(buttonSource, /contentScrolling:\s*false/);
-    assert.match(
-        buttonSource,
-        /layout:\s*\{[\s\S]*?borderless:\s*true[\s\S]*?fillParent:\s*true[\s\S]*?scrollOwner:\s*"document"/,
-    );
+
     assert.match(buttonSource, /component-pages:discard/);
     assert.match(buttonSource, /whiteboard\/state/);
     assert.match(buttonSource, /export function closeMeetingWhiteboard/);

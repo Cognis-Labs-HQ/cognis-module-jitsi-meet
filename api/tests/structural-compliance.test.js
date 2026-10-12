@@ -208,3 +208,22 @@ test("feature styles target module surfaces instead of composer controls", () =>
         });
     assert.deepEqual(violations, []);
 });
+
+test("Whiteboard integration delegates provider presentation through its public gateway", () => {
+    const violations = [
+        "ui/whiteboard-control.js",
+        "ui/whiteboard-session.js",
+        "ui/whiteboard-provider.js",
+    ].filter((path) => {
+        const source = readFileSync(resolve(ROOT, path), "utf8");
+        return (
+            /(?:componentUuid|routeId|instantCanvas|contentScrolling|frameless|borderless)\s*:/.test(
+                source,
+            ) ||
+            /capabilities\.get\(["']component-pages:(?:spawn|request)["']\)/.test(
+                source,
+            )
+        );
+    });
+    assert.deepEqual(violations, []);
+});

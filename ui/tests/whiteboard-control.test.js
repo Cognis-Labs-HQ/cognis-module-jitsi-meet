@@ -82,7 +82,11 @@ for (const ending of ["abort", "replacement"]) {
         else mount.slot.replaceChildren(replacement);
         finishDiscovery();
         // Let the discovery loop terminate without waiting for another provider pass.
-        capabilities.set("whiteboard:uiGateway", { createCanvas() {} });
+        capabilities.set("whiteboard:uiGateway", {
+            createCanvas() {},
+            requestCanvasPage() {},
+            openCanvas() {},
+        });
         await binding;
         assert.deepEqual(
             mount.slot.children,

@@ -14,7 +14,6 @@ import {
     prepareMeetingCanvas,
     resolveMeetingPipMinimumSize,
     spawnComponentWindowWithRetry,
-    synchronizeWhiteboardParticipantAccess,
 } from "./whiteboard-session.js";
 const mountedWhiteboardButtons = new WeakMap();
 let componentStageSequence = 0;
@@ -137,8 +136,6 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             trigger.preparedMeetingId = meetingId;
             trigger.preparedWhiteboardId = "";
             trigger.preparationFailedMeetingId = "";
-            trigger.participantAccessAttemptSignature = "";
-            trigger.participantAccessSignature = "";
         }
         const stateWhiteboardId = String(
             state.meeting?.state?.whiteboardId ?? "",
@@ -180,15 +177,6 @@ export function syncMeetingWhiteboardComponent({ root, state }) {
     syncWhiteboardButtonAvailability({ root, state });
     trigger.releaseFloatingWindow?.updateMinimumSize?.(
         resolveMeetingPipMinimumSize(state.meeting),
-    );
-    void synchronizeWhiteboardParticipantAccess(trigger, state).catch((error) =>
-        logUi("error", "Whiteboard participant access expansion failed.", {
-            component: "module:jitsi-meet",
-            operation: "expand_meeting_whiteboard_access",
-            meetingId: state.meeting?.id,
-            whiteboardId: state.meeting?.state?.whiteboardId,
-            error: error instanceof Error ? error.message : String(error),
-        }),
     );
     const shouldOpen = meetingWhiteboardShouldOpen(state.meeting);
     if (!shouldOpen && trigger.componentWindowPending !== true) {
@@ -363,11 +351,11 @@ export async function bindWhiteboardButton({
         isKeyringUnlocked,
         makeFloatingWindow,
         requestKeyringUnlock,
-        spawnComponentPage,
         whiteboardGateway,
     } = capabilities;
     if (
-        typeof spawnComponentPage !== "function" ||
+        typeof whiteboardGateway?.requestCanvasPage !== "function" ||
+        typeof whiteboardGateway?.openCanvas !== "function" ||
         typeof makeFloatingWindow !== "function" ||
         (!state.shareAccessToken &&
             typeof whiteboardGateway?.[
@@ -404,37 +392,12 @@ export async function bindWhiteboardButton({
         preparedMeetingId: state.meeting?.id ?? "",
         preparationPromise: null,
         preparationFailedMeetingId: "",
-        participantAccessAttemptSignature: "",
-        participantAccessSignature: "",
         automaticOpenFailureWhiteboardId: "",
         automaticActivationCleanup: null,
         releaseFloatingWindow: null,
         sharedOpenRequested: false,
         signal,
-        spawnComponentPage,
         whiteboardGateway,
-        requestComponentPage: async (request) => {
-            const requestPage = uiCtx.capabilities.get(
-                "component-pages:request",
-            );
-            if (typeof requestPage !== "function") return null;
-            return requestPage(request).catch((error) => {
-                if (signal?.aborted) return null;
-                void logUi(
-                    "error",
-                    "Whiteboard component page request failed.",
-                    {
-                        component: "module:jitsi-meet",
-                        operation: "request_whiteboard_component_page",
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
-                    },
-                );
-                return null;
-            });
-        },
         requestKeyringUnlock,
         slot,
         whiteboardId: "",
@@ -635,8 +598,6 @@ export async function bindWhiteboardButton({
                     const componentWindow = await spawnComponentWindowWithRetry(
                         trigger,
                         {
-                            meetingId: state.meeting.id,
-                            meetingName: state.meeting.meetingName,
                             whiteboardId,
                         },
                     );

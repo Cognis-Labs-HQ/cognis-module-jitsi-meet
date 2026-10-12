@@ -87,9 +87,11 @@ test("component page discovery makes one broker request per mount", async () => 
     const componentPage = { routeId: "whiteboard" };
     const trigger = {
         componentPage: null,
-        requestComponentPage: async () => {
-            requests += 1;
-            return componentPage;
+        whiteboardGateway: {
+            requestCanvasPage: async () => {
+                requests += 1;
+                return componentPage;
+            },
         },
     };
 
@@ -112,9 +114,11 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
         disposableCanvas: false,
         componentHost: { id: "whiteboard-stage" },
         signal: new AbortController().signal,
-        spawnComponentPage(request) {
-            spawnRequests.push(request);
-            return spawnRequests.length < 5 ? null : componentWindow;
+        whiteboardGateway: {
+            openCanvas(request) {
+                spawnRequests.push(request);
+                return spawnRequests.length < 5 ? null : componentWindow;
+            },
         },
         async waitForComponentWindowRetry(signal, delayMs) {
             assert.equal(signal.aborted, false);
@@ -132,7 +136,11 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
     assert.equal(spawnRequests.length, 5);
     assert.deepEqual(retryDelays, [250, 500, 1_000, 2_000]);
     assert.equal(spawnRequests.at(-1).elementId, "whiteboard-stage");
-    assert.equal(spawnRequests.at(-1).context.whiteboardId, "mapped-board");
+    assert.deepEqual(spawnRequests.at(-1), {
+        whiteboardId: "mapped-board",
+        elementId: "whiteboard-stage",
+        signal: trigger.signal,
+    });
 });
 
 test("automatic whiteboard opening retries transient module imports", async () => {
@@ -142,12 +150,16 @@ test("automatic whiteboard opening retries transient module imports", async () =
         disposableCanvas: false,
         componentHost: { id: "whiteboard-stage" },
         signal: new AbortController().signal,
-        spawnComponentPage() {
-            requests += 1;
-            if (requests < 3) {
-                throw new Error("Failed to fetch dynamically imported module");
-            }
-            return componentWindow;
+        whiteboardGateway: {
+            openCanvas() {
+                requests += 1;
+                if (requests < 3) {
+                    throw new Error(
+                        "Failed to fetch dynamically imported module",
+                    );
+                }
+                return componentWindow;
+            },
         },
         async waitForComponentWindowRetry() {},
     };
@@ -319,9 +331,11 @@ test("an aborted component retry never spawns another window", async () => {
     const trigger = {
         signal: controller.signal,
         componentHost: { id: "stage" },
-        spawnComponentPage() {
-            spawns += 1;
-            return null;
+        whiteboardGateway: {
+            openCanvas() {
+                spawns += 1;
+                return null;
+            },
         },
         waitForComponentWindowRetry: async () => controller.abort(),
     };

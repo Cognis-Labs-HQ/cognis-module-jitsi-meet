@@ -24,11 +24,15 @@ Meetings verwendet den Page Composer, Router, Profilvorschauen, Bedienelemente, 
 
 ## Einen synchronisierten Release-Vertrag veröffentlichen
 
-Modul 1.5.239 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
+Modul 1.5.240 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
 
 ## Whiteboard-Zugriff vor automatischem Öffnen wiederherstellen
 
 Der Beitritt zu einem aktiven Meeting stellt die Mitgliedschaft des autorisierten Kontos im geöffneten persistenten Whiteboard vor Rückgabe der Beitrittsdaten wieder her, unabhängig von der Chat-Auswahl. Automatisches Öffnen führt `jitsi-meet:follow-whiteboard` aus, um die exakte offene Zuordnung zu prüfen, vom Besitzer autorisierte Mitgliedschaft zu gewähren und die Zuordnung vor dem Mount erneut zu bestätigen. Das Folgen startet keine erneute Abstimmung und ändert keinen Offen-Zustand; ein geschlossenes oder ersetztes Board bricht den Vorgang ohne Fehlermeldung ab. Link-Gäste behalten delegierten Zugriff, und geschlossene Zuordnungen machen den optionalen Provider nicht zur Beitrittsvoraussetzung.
+
+## Öffentlicher Darstellungsvertrag
+
+Jitsi verwendet die öffentlichen Gateway-Methoden `requestCanvasPage({signal})` und `openCanvas({whiteboardId, elementId, signal})`. Der Whiteboard-Provider besitzt Routen-IDs, Canvas-Layout, Transport und Sitzungssemantik. Jitsi übergibt nur die exakte Board-ID und sein eigenes Mount-Ziel und gibt das Fenster beim Abbau frei. Die Darstellung benötigt Whiteboard ab 2.3.147. Mitgliedschaftsänderungen verwenden den serverseitigen öffentlichen Mitgliedschaftsvertrag.
 
 ## Commits
 

@@ -24,11 +24,15 @@ Meetings menggunakan page composer, router, pratinjau profil, kontrol, overlay d
 
 ## Terbitkan satu kontrak rilis tersinkron
 
-Modul 1.5.239 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
+Modul 1.5.240 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
 
 ## Pulihkan akses Whiteboard sebelum pembukaan otomatis
 
 Bergabung ke rapat aktif memulihkan keanggotaan akun terotorisasi pada Whiteboard persisten yang terbuka sebelum mengembalikan data bergabung, terlepas dari pilihan chat. Pembukaan otomatis akun menjalankan `jitsi-meet:follow-whiteboard` untuk memverifikasi pemetaan terbuka yang tepat, memberikan keanggotaan terotorisasi pemilik dan mengonfirmasi pemetaan lagi sebelum mount. Mengikuti tidak memulai pemungutan persetujuan baru atau mengubah keadaan terbuka; papan tertutup atau diganti membatalkan proses tanpa pesan kesalahan. Tamu tautan mempertahankan akses terdelegasi, dan pemetaan tertutup tidak menjadikan penyedia opsional sebagai dependensi untuk bergabung.
+
+## Kontrak presentasi publik
+
+Jitsi memakai metode gateway publik `requestCanvasPage({signal})` dan `openCanvas({whiteboardId, elementId, signal})`. Provider Whiteboard memiliki ID rute, tata letak kanvas, transport dan semantik sesi. Jitsi hanya memberikan ID papan yang tepat dan target pemasangannya sendiri, lalu melepas jendela saat pembongkaran. Presentasi memerlukan Whiteboard 2.3.147 atau lebih baru. Perubahan anggota memakai kontrak keanggotaan publik milik server.
 
 ## Commit
 
