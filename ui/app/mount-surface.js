@@ -77,7 +77,9 @@ export function createMountUtilities({ root, state }) {
         ) {
             return;
         }
-        const showIndicator = state.preflightStatus !== "idle";
+        const showIndicator =
+            state.preflightStatus !== "idle" &&
+            !state.overlayPresentation?.showAlonePrompt;
         loadingEl.hidden = !showIndicator;
         indicatorEl.classList.remove(
             "jitsi-spinner",
@@ -152,13 +154,15 @@ export function createMountUtilities({ root, state }) {
         }
         if (overlay instanceof HTMLElement) {
             overlay.hidden = !visible;
+            overlay.dataset.alonePrompt = String(showAlonePrompt);
         }
         if (loadingEl instanceof HTMLElement) {
             loadingEl.hidden =
-                !loading &&
-                state.preflightStatus !== "running" &&
-                state.preflightStatus !== "passed" &&
-                state.preflightStatus !== "failed";
+                showAlonePrompt ||
+                (!loading &&
+                    state.preflightStatus !== "running" &&
+                    state.preflightStatus !== "passed" &&
+                    state.preflightStatus !== "failed");
         }
         if (indicatorEl instanceof HTMLElement) {
             if (state.preflightStatus === "failed") {
@@ -186,12 +190,13 @@ export function createMountUtilities({ root, state }) {
         }
         if (startButton instanceof HTMLButtonElement) {
             startButton.disabled = !canStart;
+            startButton.hidden = showAlonePrompt;
         }
         if (authButton instanceof HTMLElement) {
-            authButton.hidden = !showAuth;
+            authButton.hidden = showAlonePrompt || !showAuth;
         }
         if (reclaimButton instanceof HTMLElement) {
-            reclaimButton.hidden = !showReclaim;
+            reclaimButton.hidden = showAlonePrompt || !showReclaim;
         }
         if (leaveAloneButton instanceof HTMLElement) {
             leaveAloneButton.hidden = !showAlonePrompt;

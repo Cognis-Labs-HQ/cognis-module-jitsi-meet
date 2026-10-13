@@ -189,7 +189,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         readFileSync(resolve(ROOT, "ui/meeting-window.js"), "utf8"),
-        /frame\.classList\.add\("jitsi-route-root"\);\s*frame\.append\(overlay\)/,
+        /portal: false,[\s\S]*topLayer: true,[\s\S]*frame\.append\(overlay\);[\s\S]*return release;/,
     );
     assert.match(
         buttonSource,

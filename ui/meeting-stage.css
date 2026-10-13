@@ -16,6 +16,7 @@
 }
 
 .jitsi-route-root .jitsi-stage-frame {
+    color: inherit;
     position: relative;
     z-index: 2;
     grid-area: 1 / 1;
@@ -146,6 +147,16 @@
     text-transform: uppercase;
 }
 
+.jitsi-route-root
+    .jitsi-overlay[data-alone-prompt="true"]
+    :is(
+        .jitsi-overlay-title,
+        .jitsi-staged-participants,
+        .jitsi-overlay-active-meetings
+    ) {
+    display: none;
+}
+
 .jitsi-route-root .jitsi-overlay-actions {
     display: flex;
     gap: 0.5rem;
@@ -204,7 +215,7 @@
     content: "✕";
 }
 
-.jitsi-stage-frame.jitsi-route-root > .jitsi-overlay {
+.jitsi-route-root .jitsi-stage-frame > .jitsi-overlay {
     position: absolute;
     inset: 0;
 }

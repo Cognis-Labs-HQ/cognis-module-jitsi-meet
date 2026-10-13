@@ -4,6 +4,7 @@ import test from "node:test";
 class Element {
     isConnected = true;
     hidden = false;
+    dataset = {};
     classList = { contains: () => false, add() {}, remove() {} };
     controls = new Map();
     querySelector(selector) {
@@ -84,6 +85,13 @@ test("overlay updates stay on the floating meeting and update its controls", () 
         overlay.querySelector("#jitsi-loading-text").textContent,
         "Ready",
     );
+    assert.equal(overlay.querySelector("#jitsi-start-btn").hidden, true);
+    assert.equal(overlay.querySelector("#jitsi-loading").hidden, true);
+    utilities.updateOverlay({ message: "Select participants", canStart: true });
+    assert.equal(overlay.querySelector("#jitsi-start-btn").hidden, false);
+    assert.equal(overlay.querySelector("#jitsi-loading").hidden, false);
+    assert.equal(overlay.querySelector("#jitsi-leave-alone-btn").hidden, true);
+    assert.equal(overlay.querySelector("#jitsi-remain-alone-btn").hidden, true);
     overlay.isConnected = false;
     utilities.updateOverlay({ message: "Meeting ended" });
     assert.equal(overlay.parentElement, frameWrap);

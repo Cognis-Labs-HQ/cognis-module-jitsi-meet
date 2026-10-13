@@ -50,6 +50,10 @@ Jitsi begrenzt seinen eingebetteten Komponentenhost auf den Besprechungsbereich 
 
 Statusänderungen finden das Overlay im aktiven Fenster, statt es aus dem Portal zurück auf die Hauptseite zu ziehen. Schaltflächen, Meldungen und Vorabprüfungen werden dort aktualisiert und gebunden; schwebende Frames bleiben beim Composer-Aktualisieren gültige laufende Einbettungen. Der PiP-Frame behält den Modul-Stilbereich und das Overlay bedeckt ihn durch absolute Positionierung. Beim Schließen werden ursprünglicher Stilbereich und Platzierung wiederhergestellt. Verhaltenstests prüfen Statusänderungen außerhalb der Seitenwurzel; Chromium prüft die Overlay-Abmessungen.
 
+## Ursprüngliche Overlay-Darstellung wiederherstellen
+
+PiP nutzt die vorhandenen Floating-Window-Optionen: Die Besprechung bleibt in ihrer ursprünglichen DOM-Abstammung und erscheint in der obersten Browserebene. Theme und Typografie werden ohne neuen Route-Stilbereich vererbt; das native Popover übernimmt die Vordergrundfarbe des Frames. Der Allein-Hinweis zeigt seine Meldung sowie Verlassen/Bleiben, ohne Anfangstitel, Teilnehmerauswahl, Startknopf oder Vorabprüfungsstatus. Browsertests vergleichen Normal- und PiP-Darstellung, prüfen fehlendes vertikales Scrollen bei der bestehenden Mindestgröße und die Rückkehr zu den Anfangssteuerelementen. Der ursprüngliche Floating-Window-Handle behält seine Mindestgrößenaktualisierung.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

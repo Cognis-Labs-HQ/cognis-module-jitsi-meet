@@ -4,12 +4,11 @@ export function floatMeetingWindow(
     makeFloatingWindow,
     options,
 ) {
-    const hadRouteScope = frame.classList.contains("jitsi-route-root");
-    const release = makeFloatingWindow(frame, options);
-    frame.classList.add("jitsi-route-root");
+    const release = makeFloatingWindow(frame, {
+        ...options,
+        portal: false,
+        topLayer: true,
+    });
     frame.append(overlay);
-    return () => {
-        release?.();
-        if (!hadRouteScope) frame.classList.remove("jitsi-route-root");
-    };
+    return release;
 }

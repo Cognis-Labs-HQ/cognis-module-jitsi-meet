@@ -50,6 +50,10 @@ Jitsi membatasi wadah komponen tertanam pada viewport rapat dan meregangkan elem
 
 Pembaruan status mencari overlay pada jendela aktif, bukan memindahkannya dari portal kembali ke halaman utama. Tombol, pesan, dan indikator pemeriksaan awal diperbarui dan diikat di overlay tersebut; frame mengambang tetap dikenali sebagai rapat aktif saat composer diperbarui. Frame PiP mempertahankan lingkup gaya modul dan overlay menutupinya dengan posisi absolut. Menutup PiP memulihkan lingkup dan posisi asal. Uji perilaku memeriksa status di luar akar halaman; Chromium memeriksa batas overlay mengambang.
 
+## Pulihkan tampilan overlay semula
+
+PiP memakai opsi floating-window yang ada agar rapat tetap dalam susunan DOM asal sambil tampil di lapisan teratas browser. Tema dan tipografi tetap diwarisi tanpa menambahkan lingkup rute baru; popover asli mewarisi warna teks frame. Pesan peserta tunggal hanya menampilkan pesannya serta Keluar/Tetap, tanpa judul awal, pemilihan peserta, tombol Mulai atau status pemeriksaan awal. Uji browser membandingkan tampilan biasa dan PiP, memastikan tidak ada pengguliran vertikal pada ukuran minimum yang ada, dan memeriksa pemulihan kontrol awal. Pegangan floating-window asli tetap mendukung pembaruan ukuran minimum.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
