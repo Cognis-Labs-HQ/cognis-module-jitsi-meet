@@ -49,9 +49,9 @@ Presence expires after missed heartbeats. Joining deactivates the account’s ot
 
 ### Optional Whiteboard Contract
 
-Nextcloud Whiteboard is a soft dependency. Browser discovery resolves `whiteboard:uiGateway` after the host UI context exists, plus component-page and floating-window capabilities. The browser canvas factory determines control availability; missing factories omit the control. Activation checks the server availability endpoint before creation. Server verification requires the published `whiteboard:fetchBoardData`, `whiteboard:membership` and `whiteboard:deleteCanvas` contracts; Nextcloud Whiteboard 2.3.146 or newer supplies the verification contract. Availability diagnostics include provider version, integrity and trust information.
+Nextcloud Whiteboard is a soft dependency. Browser discovery resolves `whiteboard:uiGateway` after the host UI context exists, alongside the floating-window capability. The browser canvas factory determines control availability; missing factories omit the control. Activation checks the server availability endpoint before creation. Server verification requires the published `whiteboard:fetchBoardData`, `whiteboard:membership` and `whiteboard:deleteCanvas` contracts. Availability diagnostics include provider version, integrity and trust information.
 
-Jitsi uses the public gateway methods `requestCanvasPage({signal})` and `openCanvas({whiteboardId, elementId, signal})`. The Whiteboard provider owns its route IDs, canvas layout, transport and session semantics. Jitsi supplies only the exact board ID and its own mount target; it releases the returned window on teardown. Presentation requires Whiteboard 2.3.147 or newer. Membership changes use the server-owned public membership contract. Jitsi bounds its embedded component host to the meeting viewport and stretches the mounted root into a definite grid row. This keeps contained provider surfaces visible without letting their intrinsic size expand the meeting window.
+Jitsi uses the public gateway methods `requestCanvasPage({signal})` and `openCanvas({whiteboardId, elementId, signal})`. The Whiteboard provider owns its route IDs, canvas layout, transport and session semantics. Jitsi supplies only the exact board ID and its own mount target; it releases the returned window on teardown. Membership changes use the server-owned public membership contract. Jitsi bounds its embedded component host to the meeting viewport and stretches the mounted root into a definite grid row. This keeps contained provider surfaces visible without letting their intrinsic size expand the meeting window.
 
 An enabled Whiteboard provider with an incomplete public UI contract leaves a disabled control with an explanatory tooltip and logs the missing capability methods. A failed provider load is also explained. An absent optional provider omits the control. Avatar availability is independent of Whiteboard readiness; a profile availability 404 does not disable it.
 
@@ -75,9 +75,11 @@ Before embedding, the module clears only Jitsi’s cached authentication session
 
 ### Cleanup and Release Verification
 
+If the deleted account organized a retained meeting, ownership passes to the first surviving participant in normalized handle order, including when the organizer previously left its rosters; other organizers and chat-room identities remain unchanged.
+
 Final persisted departure and account deprovisioning share owner-authorized external resource cleanup. Missing resources are logged and do not block cleanup; other failures propagate before the meeting record is removed. Account deletion updates original and active rosters, retains usable rooms and deletes unusable meetings. One child-first table catalog includes presence, state, participants and disposable-call reservations for record deletion.
 
-Module 1.5.242 synchronizes manifest, package and lockfile versions and verifies packaged SHA-256 hashes. Tests use module-local public-contract fakes and enforce component isolation, namespace ownership, source size, documentation structure and locale parity. Release notes use one German, English, Indonesian and Japanese changelog set per PR.
+The module synchronizes manifest, package and lockfile versions and verifies packaged SHA-256 hashes. Tests use module-local public-contract fakes and enforce component isolation, namespace ownership, source size, documentation structure and locale parity. Release notes use one German, English, Indonesian and Japanese changelog set per PR.
 
 Provider versions in availability responses are diagnostics: `testedProvider` names the tested release while `provider.version` reports the installed release from host assurance. Availability is gated by the public capability, not an undocumented minimum-version comparison. Integrators may implement the same neutral contract without using Nextcloud.
 

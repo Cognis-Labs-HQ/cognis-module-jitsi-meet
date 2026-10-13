@@ -30,13 +30,13 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
-        "component-pages:spawn",
         "component-pages:discard",
         "ui:makeFloatingWindow",
         "ui:navbarLinks",
         "auth:registerKeyringDataOwner",
     ]);
     for (const optionalCapability of [
+        "component-pages:spawn",
         "whiteboard:uiGateway",
         "whiteboard:fetchBoardData",
         "whiteboard:membership",

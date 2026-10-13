@@ -24,7 +24,7 @@ Meetings uses host page composer, router, profile previews, controls, overlays a
 
 ## Publish one synchronized release contract
 
-Module 1.5.242 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
+Module 1.5.248 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
 
 ## Restore Whiteboard access before automatic opening
 
@@ -70,6 +70,10 @@ Place route handlers in domain directories, styles and reusable markup in their 
 
 Document current public interfaces in all four languages. Distinguish checkout-local npm scripts from modules-prefixed operational commands. Replace the misleading provider-minimum label with tested-release diagnostics; availability remains capability-based. Use Chromium/CDP regression checks without Playwright.
 
+## Retain valid meeting owners and optional presentation
+
+Remove the obsolete raw component-page spawn requirement; the optional Whiteboard gateway owns page creation. Account deletion transfers retained meetings to a surviving organizer without changing their chat-room identity. Guides describe public contracts without release numbers; the synchronized release is 1.5.248.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -108,10 +112,8 @@ Document current public interfaces in all four languages. Distinguish checkout-l
 - [65f51269](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/65f5126935c0e9f0ed63e89def8110589b88edde)
 - [b1311b8d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1311b8d637806ae49c5b96067c4627cd6f182e5)
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
-
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
-
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)
 - [1b064f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1b064f20fef5a6c239a7772a24913b370c445332)

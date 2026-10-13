@@ -153,7 +153,8 @@ test("an enabled provider with an incomplete presentation contract keeps an expl
     assert.deepEqual(mount.slot.children, []);
 });
 
-test("the complete provider enables the meeting control without profile availability requests", async () => {
+test("the gateway enables the control without raw page spawning or profile availability requests", async () => {
+    capabilities.delete("component-pages:spawn");
     const pages = [];
     publishGateway({
         createCanvas() {},

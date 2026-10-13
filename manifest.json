@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.247",
+    "version": "1.5.248",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -68,7 +68,6 @@
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
-        "component-pages:spawn",
         "component-pages:discard",
         "ui:makeFloatingWindow",
         "ui:navbarLinks",
@@ -118,7 +117,7 @@
         },
         {
             "path": "AGENTS.md",
-            "sha256": "fc1daf1debdd19c540bef74f99957fa0f69b0cf6c1ef582daefde60a9aee35ad"
+            "sha256": "eec43da1940067c32a92225b8cb05033dc3801dff49bcd889cb13910b252c4ca"
         },
         {
             "path": "LICENSE",
@@ -190,7 +189,7 @@
         },
         {
             "path": "api/reuse/deleted-account-meetings.js",
-            "sha256": "e694c0cb2a6c9c1eb165d55d1f62e5bcde15044d68ace2b348c3c0556a512697"
+            "sha256": "e92d694c988478de29070814f06757c1eeec7de699d8ec1b4d6ee1282ca970af"
         },
         {
             "path": "api/reuse/flow-helpers.js",
@@ -337,8 +336,12 @@
             "sha256": "079cbae939b15ec5ec023c90700840ad8733a8f8c32e26ad61d370dae54f8785"
         },
         {
+            "path": "api/tests/deleted-account-meetings.test.js",
+            "sha256": "3cb28d92b485d7f1d93be397e33495143d9166bae9c538ab84b537df28621f0c"
+        },
+        {
             "path": "api/tests/documentation-convention.test.js",
-            "sha256": "c46b168cdc0b265b1a60b27f0a2666b8ad81ae9d453352effdbee42174748420"
+            "sha256": "1eb2152997037e6b263b5446a3d58a0c995a1e15ce7394e16524a017bad7e7e4"
         },
         {
             "path": "api/tests/flow-runtime-fake.js",
@@ -346,7 +349,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "8faae34f9a2c8b27ae958b346a8da743e3153c965d6de6bf3fbf340f85771209"
+            "sha256": "9f0396d30cfbd4ff6fc748b56b2cf7838bbdcdd510bb657351efa5ac1c4e9a7b"
         },
         {
             "path": "api/tests/meeting-access.test.js",
@@ -398,7 +401,7 @@
         },
         {
             "path": "api/tests/store.test.js",
-            "sha256": "5d71c7f2644122bab1052df851f0767dd38668f8a50e67ec3d25b108e2a8d57f"
+            "sha256": "e358859e3db4b62a70c19c4599ba616d3fd3fd005a278b3aa3d7693e4dab24e7"
         },
         {
             "path": "api/tests/structural-compliance.test.js",
@@ -446,27 +449,27 @@
         },
         {
             "path": "docs/index.de.md",
-            "sha256": "4deb1024afb051cb94a75c41611d6889f2dbc78176520cd0ea91d198be6ee251"
+            "sha256": "62c0b83190db0dc3d53e1dc687798598bde0db86084a3d0125f1b0b4f7f89124"
         },
         {
             "path": "docs/index.en.md",
-            "sha256": "77a025ee68ee9f1ccd8bcfe67207d2b202241208f41a011a816f9b1c52074b34"
+            "sha256": "c2ee8f988eedaadfe206b117a21ad5213b95bf9da09d7cda30a4c386e5729597"
         },
         {
             "path": "docs/index.id.md",
-            "sha256": "bba826420bfdc8e352f8bdde706c37f829ce2ec8fc22773a84d3fcb86738880b"
+            "sha256": "03fc8361091b3b95f07b63ee1c00179442ac04163f97ebf38cc852b025ab0800"
         },
         {
             "path": "docs/index.ja.md",
-            "sha256": "677e53a54aa38e817c93f1148e1bceb5c293e64d5c60d0af5c48d7493059b67c"
+            "sha256": "7657782892caf6e3b2398c1e10cf8b85d7f0ad7b0f37dd7743e4b9e1f15b4987"
         },
         {
             "path": "package-lock.json",
-            "sha256": "5d51a7e4e1da84ef8b2a6f23ed25f3d99c99ed549c7d06e0b7bad25954a04e50"
+            "sha256": "349efa85662519bf321307f1e87aa57f257c5fc8d51a16d18036e40009b10d40"
         },
         {
             "path": "package.json",
-            "sha256": "87e0849c83e82e7f306ec285ea3204854bb5f242959354cf714e90343b85bf34"
+            "sha256": "ce5dca835c1be83c4dc0719ecf77e33d5e5f919b02c1f917fe6863ae70a4af82"
         },
         {
             "path": "routes.json",
@@ -690,7 +693,7 @@
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",
-            "sha256": "c97b7dede1cc579a09ee13ff34e70c900d973bbd929e1b432fc5cc3ef9957213"
+            "sha256": "9c1c9286ad3396444391d9746b2055a84ecd74628336b6bd8c5fd4f3da0ddc22"
         },
         {
             "path": "ui/tests/whiteboard-follow.test.js",

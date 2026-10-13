@@ -31,6 +31,14 @@ export async function removeDeletedAccountFromMeetings(
 
     return db.transaction(async (executor) => {
         const affectedMeetingIds = new Set();
+        const ownedMeetings = await executor.executeCommand({
+            option: "SELECT",
+            table: "jitsi_meetings",
+            columns: ["id"],
+            where: [{ column: "created_by", value: normalizedUsername }],
+        });
+        for (const row of ownedMeetings.rows ?? [])
+            affectedMeetingIds.add(row.id);
         for (const table of PARTICIPANT_TABLES) {
             const result = await executor.executeCommand({
                 option: "SELECT",
@@ -111,7 +119,7 @@ export async function removeDeletedAccountFromMeetings(
             const meetingResult = await executor.executeCommand({
                 option: "SELECT",
                 table: "jitsi_meetings",
-                columns: ["classroom_id"],
+                columns: ["classroom_id", "created_by"],
                 where: [{ column: "id", value: meetingId }],
                 limit: 1,
             });
@@ -121,6 +129,10 @@ export async function removeDeletedAccountFromMeetings(
                 option: "UPDATE",
                 table: "jitsi_meetings",
                 set: {
+                    ...(normalizeHandleKey(meeting.created_by) ===
+                    normalizedUsername
+                        ? { created_by: savedParticipants[0] }
+                        : {}),
                     participant_key: buildParticipantKey(
                         normalizeHandleKeys,
                         savedParticipants,

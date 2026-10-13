@@ -24,7 +24,7 @@ Meetings はホストの Page Composer、Router、プロフィールプレビュ
 
 ## 同期した単一のリリース契約を公開
 
-モジュール 1.5.242 はパッケージバージョンと SHA-256 インベントリを同期します。標準ドキュメントは、現在の対応動作をドイツ語、英語、インドネシア語、日本語で説明します。この PR は実装リンクを統合した単一の変更履歴セットを使用します。動作テストは、アクション Flow の実行、権限拒否、再試行中止、同時のキャンバス準備、古い応答を検証し、構造的な分離テストを補います。
+モジュール 1.5.248 はパッケージバージョンと SHA-256 インベントリを同期します。標準ドキュメントは、現在の対応動作をドイツ語、英語、インドネシア語、日本語で説明します。この PR は実装リンクを統合した単一の変更履歴セットを使用します。動作テストは、アクション Flow の実行、権限拒否、再試行中止、同時のキャンバス準備、古い応答を検証し、構造的な分離テストを補います。
 
 ## 自動で開く前に Whiteboard アクセスを復元
 
@@ -70,6 +70,10 @@ Jitsi は埋め込みコンポーネントのコンテナーを会議の表示�
 
 公開インターフェースを四言語で記述します。チェックアウト内の npm スクリプトと modules 接頭辞の操作コマンドを区別します。誤解を招く最小バージョン表示を検証済みリリースの診断情報に置き換え、可用性は機能で判定します。Playwright を使わず Chromium/CDP で検証します。
 
+## 有効な会議所有者と任意の表示を維持する
+
+古いコンポーネントページ生成要件を削除し、任意の Whiteboard Gateway がページ生成を所有します。アカウント削除時はチャットルームの識別情報を変えず、保持する会議を残存主催者へ移します。ガイドはリリース番号なしで公開契約を説明します。同期したリリースは 1.5.248 です。
+
 ## コミット
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -108,10 +112,8 @@ Jitsi は埋め込みコンポーネントのコンテナーを会議の表示�
 - [65f51269](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/65f5126935c0e9f0ed63e89def8110589b88edde)
 - [b1311b8d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1311b8d637806ae49c5b96067c4627cd6f182e5)
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
-
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
-
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)
 - [1b064f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1b064f20fef5a6c239a7772a24913b370c445332)

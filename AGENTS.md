@@ -89,6 +89,8 @@ Declare hard dependencies sparingly and prefer capability requirements or soft d
 
 Tests must run in this standalone repository with local fakes for host capabilities. Test public route, capability, flow, lifecycle, authorization, localization, and manifest contracts rather than Cognis or sibling implementations. Every behavior change requires tests, safe logging, and synchronized documentation. Keep localized documentation variants structurally and semantically synchronized.
 
+Avoid release version numbers in documentation except changelogs. Describe required public contracts and refer to manifests for current release metadata; preserve protocol identifiers and pinned source revisions.
+
 Run all of the following before committing:
 
 ```sh

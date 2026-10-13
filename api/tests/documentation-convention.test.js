@@ -24,6 +24,16 @@ function headingLevels(path) {
         .map((line) => line.match(/^#+/)[0].length);
 }
 
+test("guides describe contracts without embedding release numbers", () => {
+    for (const path of markdownFiles(resolve(ROOT, "docs"))) {
+        assert.doesNotMatch(
+            readFileSync(path, "utf8"),
+            /\b\d+\.\d+\.\d+\b/,
+            relative(ROOT, path),
+        );
+    }
+});
+
 test("documentation follows the hidden heading convention", () => {
     const expected = headingLevels(TEMPLATE).slice(0, 3);
     const violations = markdownFiles(resolve(ROOT, "docs")).flatMap((path) => {
@@ -85,7 +95,10 @@ test("current release documentation has matching localized structure and provena
         ].map((match) => match[1]);
         assert.ok(commits.length > 0);
         assert.equal(commits.length, new Set(commits).size);
-        assert.equal((source.match(/1\.5\.242/g) ?? []).length, 1);
+        const { version } = JSON.parse(
+            readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
+        );
+        assert.ok(source.includes(` ${version} `));
         const standardHeadings = headingLevels(
             resolve(ROOT, `docs/index.${language}.md`),
         );

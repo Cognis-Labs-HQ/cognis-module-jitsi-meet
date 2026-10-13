@@ -24,7 +24,7 @@ Meetings menggunakan page composer, router, pratinjau profil, kontrol, overlay d
 
 ## Terbitkan satu kontrak rilis tersinkron
 
-Modul 1.5.242 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
+Modul 1.5.248 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
 
 ## Pulihkan akses Whiteboard sebelum pembukaan otomatis
 
@@ -70,6 +70,10 @@ Pindahkan handler rute ke direktori domain, style dan markup ke direktori UI ter
 
 Dokumentasikan antarmuka publik dalam empat bahasa. Bedakan skrip npm lokal pada checkout dari perintah operasional berprefiks modules. Ganti label versi minimum yang menyesatkan dengan diagnostik rilis yang diuji; ketersediaan tetap berbasis kapabilitas. Gunakan Chromium/CDP tanpa Playwright.
 
+## Pertahankan pemilik rapat yang valid dan presentasi opsional
+
+Hapus persyaratan lama untuk membuat halaman komponen secara langsung; gateway Whiteboard opsional memiliki pembuatan halaman. Penghapusan akun mengalihkan rapat yang dipertahankan ke pengelola tersisa tanpa mengubah identitas ruang chat. Panduan menjelaskan kontrak publik tanpa nomor rilis; rilis yang disinkronkan adalah 1.5.248.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -108,10 +112,8 @@ Dokumentasikan antarmuka publik dalam empat bahasa. Bedakan skrip npm lokal pada
 - [65f51269](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/65f5126935c0e9f0ed63e89def8110589b88edde)
 - [b1311b8d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b1311b8d637806ae49c5b96067c4627cd6f182e5)
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
-
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
-
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)
 - [1b064f2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1b064f20fef5a6c239a7772a24913b370c445332)
