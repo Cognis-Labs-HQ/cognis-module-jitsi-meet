@@ -5,7 +5,7 @@ import {
     canAccessMeeting,
     resolveMeetingPayloadOrReject,
 } from "../reuse/meeting-access.js";
-import { registerMeetingRoutes } from "../meetings-routes.js";
+import { registerMeetingRoutes } from "../routes/meetings/index.js";
 import { JitsiMeetStore } from "../store.js";
 
 function createProfileStoreWithoutHandle() {

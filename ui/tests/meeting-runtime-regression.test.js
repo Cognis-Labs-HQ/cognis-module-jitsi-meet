@@ -1,3 +1,4 @@
+import { readJitsiApiBundle } from "./reuse/source-bundle.js";
 import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -20,15 +21,6 @@ function readJitsiUiBundle() {
         .sort()
         .map((entry) => readFileSync(join(appDir, entry), "utf8"));
     return [...rootSources, ...appSources].join("\n");
-}
-
-function readJitsiApiBundle() {
-    const apiDir = resolve(ROOT, "api");
-    return readdirSync(apiDir)
-        .filter((entry) => entry.endsWith(".js"))
-        .sort()
-        .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
-        .join("\n");
 }
 
 test("Jitsi toolbar hides participant, performance, and background controls", () => {
@@ -204,7 +196,10 @@ test("jitsi API resets ended meetings and reports meetingClosed from presence up
 
 test("meetings UI prompts a participant who becomes alone before leaving", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const constantsSource = readFileSync(
         resolve(ROOT, "ui/constants.js"),
         "utf8",
@@ -404,11 +399,11 @@ test("administration meetings section labels active and upcoming tables", () => 
     );
 
     const adminRoutesSource = readFileSync(
-        resolve(ROOT, "api/admin-meetings-routes.js"),
+        resolve(ROOT, "api/routes/admin-meetings/index.js"),
         "utf8",
     );
     const lifecycleRoutesSource = readFileSync(
-        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        resolve(ROOT, "api/routes/meeting-lifecycle/index.js"),
         "utf8",
     );
     assert.match(
@@ -436,7 +431,10 @@ test("administration meetings section labels active and upcoming tables", () => 
 
 test("meetings UI renders active meetings panel and deep-link join support", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const embedSource = readFileSync(
         resolve(ROOT, "ui/meeting-embed.js"),
         "utf8",
@@ -526,7 +524,7 @@ test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => 
 test("jitsi API exposes user active meetings endpoint", () => {
     const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const meetingsRoutesSource = readFileSync(
-        resolve(ROOT, "api/meetings-routes.js"),
+        resolve(ROOT, "api/routes/meetings/index.js"),
         "utf8",
     );
     assert.match(indexSource, /registerMeetingRoutes\(/);
@@ -629,9 +627,15 @@ test("meeting routes and standalone shell load only module-owned layout styles",
     const shellSource = readFileSync(resolve(ROOT, "ui/index.html"), "utf8");
     assert.doesNotMatch(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.doesNotMatch(shellSource, /\/static\/styles\/reuse\/layout\.css/);
-    assert.match(apiSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.match(
+        apiSource,
+        /\/static\/modules\/jitsi-meet\/styles\/jitsi-meet\.css/,
+    );
     assert.doesNotMatch(apiSource, /\/static\/styles\/page-builder\.css/);
-    assert.match(shellSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.match(
+        shellSource,
+        /\/static\/modules\/jitsi-meet\/styles\/jitsi-meet\.css/,
+    );
     assert.doesNotMatch(appSource, /ensureStylesheetLoaded/);
     assert.doesNotMatch(uiResourcesSource, /stylesheetUrls/);
     assert.doesNotMatch(appSource, /loadCommonStyles/);
@@ -676,7 +680,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
         "utf8",
     );
     const lifecycleSource = readFileSync(
-        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        resolve(ROOT, "api/routes/meeting-lifecycle/index.js"),
         "utf8",
     );
     assert.match(providerSource, /voip:startCall/);

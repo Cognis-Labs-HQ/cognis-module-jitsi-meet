@@ -511,8 +511,7 @@ export async function bindWhiteboardButton({
                                 meetingId,
                                 requiredCapability:
                                     serverContract.requiredCapability,
-                                requiredProvider:
-                                    serverContract.requiredProvider,
+                                testedProvider: serverContract.testedProvider,
                                 installedProviderVersion:
                                     serverContract.provider?.version,
                                 providerIntegrity:

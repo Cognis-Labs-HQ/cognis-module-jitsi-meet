@@ -66,8 +66,8 @@ export async function resolveWhiteboardServerContract(apiFetch, signal) {
         requiredCapability: String(
             payload?.data?.requiredCapability ?? "whiteboard:fetchBoardData",
         ),
-        requiredProvider: String(
-            payload?.data?.requiredProvider ?? "nextcloud-whiteboard@2.3.146+",
+        testedProvider: String(
+            payload?.data?.testedProvider ?? "nextcloud-whiteboard@2.3.151",
         ),
         provider:
             payload?.data?.provider && typeof payload.data.provider === "object"

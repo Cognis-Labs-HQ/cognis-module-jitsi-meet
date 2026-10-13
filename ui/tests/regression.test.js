@@ -1,3 +1,4 @@
+import { readJitsiApiBundle } from "./reuse/source-bundle.js";
 import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -21,31 +22,12 @@ function readJitsiUiBundle() {
     return [...rootSources, ...appSources].join("\n");
 }
 
-function readJitsiApiBundle() {
-    const apiDir = resolve(ROOT, "api");
-    return readdirSync(apiDir)
-        .filter((entry) => entry.endsWith(".js"))
-        .sort()
-        .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
-        .join("\n");
-}
-
-test("navbar mounts the ping request only on Meetings routes and aborts it on navigation", () => {
+test("navbar availability checks use the scoped host contribution", () => {
     const source = readFileSync(resolve(ROOT, "ui/navbar.js"), "utf8");
-
     assert.match(source, /MEETINGS_PATHS\.has\(window\.location\.pathname\)/);
-    assert.match(
-        source,
-        /if \(!MEETINGS_PATHS[\s\S]*unmountMeetingPing\(\)[\s\S]*return;/,
-    );
-    assert.match(
-        source,
-        /apiFetch\("\/api\/v1\/modules\/jitsi-meet\/ping",\s*\{[\s\S]*signal: controller\.signal/,
-    );
-    assert.match(
-        source,
-        /window\.addEventListener\("popstate", syncMeetingLink\)/,
-    );
+    assert.match(source, /ui:navbarLinks/);
+    assert.match(source, /signal: ctx\.signal/);
+    assert.match(source, /pingController\?\.abort\(\)/);
 });
 
 test("meeting chat polling respects cancelled keyring access", () => {
@@ -309,7 +291,10 @@ test("active and previous meeting cards share selected meeting state", () => {
 });
 
 test("active meetings render inside the initial overlay above its start action", () => {
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const meetingsSource = readFileSync(
         resolve(ROOT, "ui/app/meetings-list.js"),
         "utf8",
@@ -332,7 +317,10 @@ test("active meetings render inside the initial overlay above its start action",
 });
 
 test("persisted meetings fill the scrollable participant workspace", () => {
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const meetingsSource = readFileSync(
         resolve(ROOT, "ui/app/meetings-list.js"),
         "utf8",
@@ -775,7 +763,10 @@ test("meetings UI recovers a live session after composer edit rerenders the ifra
 });
 
 test("reclaim session button uses success outline styling", () => {
-    const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const source = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const cssSource = readModuleStyles();
     assert.match(source, /id="jitsi-reclaim-btn" class="btn-confirm"/);
     assert.match(
@@ -797,7 +788,10 @@ test("meeting controls honor their hidden state inside the module root", () => {
 });
 
 test("find participants is the first available-participant avatar", () => {
-    const source = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const source = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     assert.match(
         source,
         /id="jitsi-available-participants"[\s\S]*id="jitsi-find-participants-btn" class="jitsi-find-participants-avatar"[\s\S]*<svg[\s\S]*<path/,
@@ -840,7 +834,10 @@ test("meetings mini chat sends on Enter and hides explicit send button", () => {
 
 test("meetings mini chat supports participant private-chat switching and return-to-meeting action", () => {
     const appSource = readJitsiUiBundle();
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const cssSource = readModuleStyles();
     const stringsSource = readFileSync(
         resolve(ROOT, "ui/languages/en/strings.xml"),

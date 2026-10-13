@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { JitsiMeetStore } from "../store.js";
 import { registerJitsiActionStore } from "../reuse/action-store.js";
-import { registerMeetingConfigRoutes } from "../config-routes.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRuntime() {
@@ -59,8 +59,8 @@ test("every supported asynchronous store action has an executed scoped flow", as
     const config = await actions.getConfig();
     assert.equal(config.instanceUrl, "https://meet.example");
     assert.deepEqual(executions, [
-        "jitsi-meet:get-config:initialize-store",
-        "jitsi-meet:get-config:execute-action",
+        "jitsi-meet:getConfig:initialize-store",
+        "jitsi-meet:getConfig:execute-action",
     ]);
     assert.equal(events.at(-1), "SELECT");
     assert.ok(events.some((event) => event === "schema:jitsi_chat_calls"));
@@ -88,7 +88,7 @@ test("configuration routes execute the same staged operation after authorization
     const response = {};
     await handlers.get("put")({}, response);
     assert.equal(response.status, 200);
-    assert.ok(executions.includes("jitsi-meet:save-config:execute-action"));
+    assert.ok(executions.includes("jitsi-meet:saveConfig:execute-action"));
     executions.length = 0;
     // Authentication denial must precede any action runner or persistence.
     const unauthorizedHandlers = new Map();

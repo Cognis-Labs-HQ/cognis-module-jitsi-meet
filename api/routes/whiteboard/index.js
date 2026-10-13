@@ -1,7 +1,7 @@
-import { registerFollowWhiteboard } from "./reuse/follow-whiteboard.js";
-import { resolveRequesterUsername } from "./reuse/requester.js";
-import { verifyMeetingWhiteboard } from "./whiteboard-verification.js";
-import { synchronizeMeetingWhiteboardMembers } from "./reuse/whiteboard-membership.js";
+import { registerFollowWhiteboard } from "../../reuse/follow-whiteboard.js";
+import { resolveRequesterUsername } from "../../reuse/requester.js";
+import { verifyMeetingWhiteboard } from "../../whiteboard-verification.js";
+import { synchronizeMeetingWhiteboardMembers } from "../../reuse/whiteboard-membership.js";
 
 function createMeetingStateSerializer() {
     const pendingUpdates = new Map();
@@ -141,7 +141,7 @@ export function registerMeetingWhiteboardRoutes({
                 data: {
                     available: isWhiteboardProviderAvailable?.() === true,
                     requiredCapability: "whiteboard:fetchBoardData",
-                    requiredProvider: "nextcloud-whiteboard@2.3.146+",
+                    testedProvider: "nextcloud-whiteboard@2.3.151",
                     provider: providerAssurance
                         ? {
                               version: providerAssurance.version ?? null,

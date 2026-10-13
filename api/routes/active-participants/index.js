@@ -1,5 +1,5 @@
-import { rollbackMeetingChatMembership } from "./reuse/chat-membership.js";
-import { requestParticipantAdditionDecision } from "./reuse/participant-approval.js";
+import { rollbackMeetingChatMembership } from "../../reuse/chat-membership.js";
+import { requestParticipantAdditionDecision } from "../../reuse/participant-approval.js";
 
 export function registerActiveMeetingParticipantRoute({
     router,
@@ -143,6 +143,7 @@ export function registerActiveMeetingParticipantRoute({
                     title: buildMeetingChatTitle(resolved.meeting.meetingName),
                     createdByAccountId: claims.sub,
                     allowSingleMember: true,
+                    reuseExisting: false,
                 }).catch((error) => {
                     log?.(
                         "error",

@@ -8,11 +8,13 @@ const TEMPLATE = resolve(ROOT, ".github/DOCUMENTATION_TEMPLATE.en.md");
 const LANGUAGES = ["de", "en", "id", "ja"];
 
 function markdownFiles(directory) {
-    return readdirSync(directory).flatMap((name) => {
-        const path = resolve(directory, name);
-        if (statSync(path).isDirectory()) return markdownFiles(path);
-        return name.endsWith(".md") ? [path] : [];
-    });
+    return readdirSync(directory)
+        .filter((name) => name !== "changelog")
+        .flatMap((name) => {
+            const path = resolve(directory, name);
+            if (statSync(path).isDirectory()) return markdownFiles(path);
+            return name.endsWith(".md") ? [path] : [];
+        });
 }
 
 function headingLevels(path) {
@@ -53,7 +55,7 @@ test("pull request release notes follow Cognis changelog structure", () => {
         "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/";
     for (const language of LANGUAGES) {
         const changelog = readFileSync(
-            resolve(ROOT, `changelog/${branch}.${language}.md`),
+            resolve(ROOT, `docs/changelog/${branch}.${language}.md`),
             "utf8",
         );
         assert.match(changelog, /^# [^#]/);
@@ -72,7 +74,7 @@ test("current release documentation has matching localized structure and provena
     let expectedCommits;
     let expectedStandardHeadings;
     for (const language of LANGUAGES) {
-        const path = resolve(ROOT, `changelog/${branch}.${language}.md`);
+        const path = resolve(ROOT, `docs/changelog/${branch}.${language}.md`);
         const source = readFileSync(path, "utf8");
         assert.match(source, new RegExp(`\\*\\*[^\\n]+:\\*\\* ${branch}`));
         const headings = headingLevels(path);
@@ -85,7 +87,7 @@ test("current release documentation has matching localized structure and provena
         assert.equal(commits.length, new Set(commits).size);
         assert.equal((source.match(/1\.5\.242/g) ?? []).length, 1);
         const standardHeadings = headingLevels(
-            resolve(ROOT, `docs/standard.${language}.md`),
+            resolve(ROOT, `docs/index.${language}.md`),
         );
         expectedHeadings ??= headings;
         expectedCommits ??= commits;

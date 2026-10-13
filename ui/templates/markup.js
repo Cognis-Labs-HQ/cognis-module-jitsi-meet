@@ -1,4 +1,4 @@
-import { importReuseModule } from "./reuse/resources.js";
+import { importReuseModule } from "../reuse/resources.js";
 
 const { escapeHtml } = await importReuseModule("escape-html.js");
 

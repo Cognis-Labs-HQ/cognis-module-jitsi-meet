@@ -1,4 +1,4 @@
-import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
+import { deleteMeetingResources } from "../../reuse/meeting-resource-cleanup.js";
 
 export function registerPersistedMeetingRoutes({
     router,

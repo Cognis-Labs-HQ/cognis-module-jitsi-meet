@@ -1,6 +1,6 @@
 import { updateMeetingWhiteboardMembership } from "./whiteboard-membership.js";
 
-const FLOW_ID = "jitsi-meet:follow-whiteboard";
+const FLOW_ID = "jitsi-meet:followWhiteboard";
 
 export function registerFollowWhiteboard(ctx, dependencies) {
     const { store } = dependencies;

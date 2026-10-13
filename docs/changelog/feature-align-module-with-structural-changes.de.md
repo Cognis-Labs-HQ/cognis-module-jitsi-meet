@@ -58,6 +58,18 @@ PiP nutzt die vorhandenen Floating-Window-Optionen: Die Besprechung bleibt in ih
 
 Die ursprüngliche Überschrift, der deaktivierte Startknopf und die Vorabprüfungsanzeige werden im Allein-Hinweis des Hauptfensters wiederhergestellt. Die kompakte Darstellung gilt nur für PiP, damit bei der Mindestgröße kein vertikales Scrollen entsteht. Browsertests prüfen die Steuerelemente vor dem Schweben und ihre Wiederherstellung beim Freigeben.
 
+## Eindeutige Meeting-Konversationen
+
+Eindeutige Chatraum-IDs wiederherstellen. Getrennte Räume für gespeicherte Meetings anfordern und vorhandene Räume nach Teilnehmeränderungen über ihre ID auflösen; gelöschte Räume werden über Messages ersetzt. Transaktionale Anrufreservierungen und Rücknahme bei Konflikten bleiben erhalten.
+
+## Vorlagenstruktur und Bereinigung
+
+Routenhandler in Domänenverzeichnisse, Styles und Markup in eigene UI-Verzeichnisse sowie Release-Notizen nach docs/changelog verschieben. Vorlagenregeln und Aktionsflows in Camel Case übernehmen. Browseranbieter, Health und Keyring bereinigen; Keyring-Reset löscht Zustellbelege und behält Meetings und Canvases.
+
+## Entwicklerverträge und Befehle
+
+Aktuelle öffentliche Schnittstellen in vier Sprachen dokumentieren. Checkout-lokale npm-Skripte von Betriebsbefehlen mit modules-Präfix unterscheiden. Die irreführende Mindestversionsangabe durch getestete Release-Diagnosen ersetzen; Verfügbarkeit bleibt fähigkeitsbasiert. Chromium/CDP ohne Playwright verwenden.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,9 +110,7 @@ Die ursprüngliche Überschrift, der deaktivierte Startknopf und die Vorabprüfu
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
 
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
-
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
 
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
-
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)

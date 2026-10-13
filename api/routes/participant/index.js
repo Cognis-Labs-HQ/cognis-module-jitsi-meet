@@ -1,4 +1,4 @@
-import { resolveRequesterUsername } from "./reuse/requester.js";
+import { resolveRequesterUsername } from "../../reuse/requester.js";
 
 export function registerMeetingParticipantRoutes({
     router,

@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
-import { chromium } from "playwright";
+import { openChromium } from "./reuse/chromium.js";
 
 globalThis[Symbol.for("cognis.uiCtx")] = {
     capabilities: {
         get: () => ({ importModule: async () => ({ escapeHtml: String }) }),
     },
 };
-const { buildStageMarkup } = await import("../markup.js");
+const { buildStageMarkup } = await import("../templates/markup.js");
 const resources = await readFile(
     new URL("../languages/en/strings.xml", import.meta.url),
     "utf8",
@@ -45,16 +45,13 @@ const server = createServer(async (request, response) => {
 });
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch({
-    executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
-    headless: true,
-});
+const browser = await openChromium();
 try {
     const page = await browser.newPage();
     const styles = (
         await Promise.all(
             ["meeting-stage.css", "jitsi-meet.css"].map((file) =>
-                readFile(new URL(`../${file}`, import.meta.url), "utf8"),
+                readFile(new URL(`../styles/${file}`, import.meta.url), "utf8"),
             ),
         )
     )

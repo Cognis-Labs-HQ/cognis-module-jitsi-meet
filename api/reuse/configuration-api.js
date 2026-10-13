@@ -1,5 +1,5 @@
 import { registerJitsiActionStore } from "./action-store.js";
-import { registerMeetingConfigRoutes } from "../config-routes.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
 import { readJson } from "./http.js";
 import { checkHttpLiveness } from "./http-liveness.js";
 import { resolveStore } from "./store-runtime.js";
@@ -116,7 +116,7 @@ export function registerJitsiConfigurationApi(
     };
     const contributeHealth = ctx.getCapability("system:health:contribute");
     if (typeof contributeHealth === "function") {
-        contributeHealth("module:jitsi-meet", async () => {
+        const removeHealth = contributeHealth("module:jitsi-meet", async () => {
             const result = await runEnableTest();
             return {
                 componentId: "jitsi-meet",
@@ -127,6 +127,7 @@ export function registerJitsiConfigurationApi(
                 data: result.data,
             };
         });
+        ctx.registerDisposer(removeHealth);
     }
     router.post(
         "/api/v1/modules/jitsi-meet/admin/enable-test",

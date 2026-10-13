@@ -333,6 +333,17 @@ export class JitsiMeetStore {
         return meeting;
     }
 
+    async resetKeyringDelivery(username) {
+        const normalizedUsername = this.normalizeHandleKey(username);
+        if (!normalizedUsername) return;
+        await this.db.executeCommand({
+            option: "UPDATE",
+            table: "jitsi_meeting_participants",
+            set: { password_delivered_at: null },
+            where: [{ column: "username", value: normalizedUsername }],
+        });
+    }
+
     async setMeetingChatRoomId(meetingId, chatRoomId) {
         const normalizedChatRoomId = String(chatRoomId ?? "").trim();
         if (!normalizedChatRoomId) return this.getMeetingById(meetingId);
@@ -358,6 +369,7 @@ export class JitsiMeetStore {
                 "A valid Jitsi instance URL is required before creating meetings.",
             );
         }
+        chatRoomId = String(chatRoomId ?? "").trim() || null;
         const participantUsernames = this.normalizeHandleKeys(usernames);
         const normalizedClassroomId =
             typeof classroomId === "string" && classroomId.trim().length > 0

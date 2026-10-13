@@ -1,7 +1,7 @@
 import { createFlowRuntime } from "./flow-runtime-fake.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingWhiteboardRoutes } from "../whiteboard-routes.js";
+import { registerMeetingWhiteboardRoutes } from "../routes/whiteboard/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRecorder() {
@@ -40,6 +40,7 @@ function createRoutes({
     whiteboardAvailable = true,
     beforeStateRead = () => {},
     beforeMembershipAdd = () => {},
+    providerVersion = "2.3.151",
     whiteboardApproval = { approved: true },
 } = {}) {
     const handlers = new Map();
@@ -60,7 +61,7 @@ function createRoutes({
             async getModuleAssurance(moduleId) {
                 assert.equal(moduleId, "nextcloud-whiteboard");
                 return {
-                    version: "2.3.146",
+                    version: providerVersion,
                     integrity: "verified",
                     requested: true,
                     trustedSource: true,
@@ -160,11 +161,11 @@ test("backend publishes consistent Whiteboard availability", async () => {
             "whiteboard:fetchBoardData",
         );
         assert.equal(
-            response.body.data.requiredProvider,
-            "nextcloud-whiteboard@2.3.146+",
+            response.body.data.testedProvider,
+            "nextcloud-whiteboard@2.3.151",
         );
         assert.deepEqual(response.body.data.provider, {
-            version: "2.3.146",
+            version: "2.3.151",
             integrity: "verified",
             privileged: true,
             trustedSource: true,
@@ -857,4 +858,20 @@ test("link guests follow the exact mapped board without an account membership gr
     assert.equal(response.status, 200);
     assert.deepEqual(routes.membershipAdds, []);
     assert.deepEqual(routes.approvalRequests, []);
+});
+
+test("Whiteboard diagnostics report the installed release without promising version enforcement", async () => {
+    for (const version of ["2.3.145", "2.3.151", "3.0.0"]) {
+        const routes = createRoutes({ providerVersion: version });
+        const response = createRecorder();
+        await routes.handlers.get(
+            "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
+        )({}, response);
+        assert.equal(response.body.data.provider.version, version);
+        assert.equal(response.body.data.available, true);
+        assert.equal(
+            response.body.data.testedProvider,
+            "nextcloud-whiteboard@2.3.151",
+        );
+    }
 });

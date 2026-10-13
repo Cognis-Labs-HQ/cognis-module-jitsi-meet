@@ -58,6 +58,18 @@ PiP memakai opsi floating-window yang ada agar rapat tetap dalam susunan DOM asa
 
 Pulihkan judul asal, tombol Mulai nonaktif dan indikator pemeriksaan awal pada pesan peserta tunggal di jendela utama. Batasi tampilan ringkas hanya untuk PiP agar ukuran minimumnya tetap tanpa pengguliran vertikal. Uji browser memeriksa kontrol berukuran penuh sebelum mengambang dan pemulihannya saat dilepas.
 
+## Percakapan rapat unik
+
+Pulihkan ID ruang chat yang unik. Minta ruang terpisah untuk rapat tersimpan dan cari ruang tersimpan berdasarkan ID setelah perubahan peserta; ruang terhapus diganti melalui Messages. Pertahankan pencadangan panggilan transaksional dan rollback konflik.
+
+## Struktur templat dan pembersihan
+
+Pindahkan handler rute ke direktori domain, style dan markup ke direktori UI tersendiri, serta catatan rilis ke docs/changelog. Gunakan panduan templat dan alur aksi camel case. Selesaikan pembersihan penyedia browser, health dan keyring; reset keyring menghapus tanda pengiriman sambil mempertahankan rapat dan kanvas.
+
+## Kontrak developer dan perintah
+
+Dokumentasikan antarmuka publik dalam empat bahasa. Bedakan skrip npm lokal pada checkout dari perintah operasional berprefiks modules. Ganti label versi minimum yang menyesatkan dengan diagnostik rilis yang diuji; ketersediaan tetap berbasis kapabilitas. Gunakan Chromium/CDP tanpa Playwright.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,9 +110,7 @@ Pulihkan judul asal, tombol Mulai nonaktif dan indikator pemeriksaan awal pada p
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
 
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
-
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
 
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
-
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerPersistedMeetingRoutes } from "../persisted-meeting-routes.js";
+import { registerPersistedMeetingRoutes } from "../routes/persisted-meeting/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createHarness({

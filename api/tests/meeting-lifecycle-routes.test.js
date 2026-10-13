@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
     deleteDisposableMeeting,
     registerMeetingLifecycleRoutes,
-} from "../meeting-lifecycle-routes.js";
+} from "../routes/meeting-lifecycle/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRecorder() {
@@ -313,6 +313,8 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     );
     assert.equal(recreateResponse.status, 200);
     assert.equal(chatRequests.length, 2);
+    assert.equal(chatRequests[0].reuseExisting, false);
+    assert.equal(chatRequests[1].roomId, "missing-chat");
     assert.equal(recreateResponse.body.data.chatRoomId, "chat-1");
 });
 

@@ -1,9 +1,9 @@
 import path from "node:path";
-import { registerMeetingRoutes } from "./meetings-routes.js";
-import { registerMeetingPingRoute } from "./config-routes.js";
-import { registerMeetingParticipantRoutes } from "./participant-routes.js";
-import { registerMeetingLifecycleRoutes } from "./meeting-lifecycle-routes.js";
-import { registerAdminMeetingRoutes } from "./admin-meetings-routes.js";
+import { registerMeetingRoutes } from "./routes/meetings/index.js";
+import { registerMeetingPingRoute } from "./routes/config/index.js";
+import { registerMeetingParticipantRoutes } from "./routes/participant/index.js";
+import { registerMeetingLifecycleRoutes } from "./routes/meeting-lifecycle/index.js";
+import { registerAdminMeetingRoutes } from "./routes/admin-meetings/index.js";
 import { hasMinRole, readJson } from "./reuse/http.js";
 import { checkHttpLiveness } from "./reuse/http-liveness.js";
 import { normalizeHttpUrl, resolveExternalBaseUrl } from "./reuse/url-parts.js";
@@ -12,10 +12,10 @@ import {
     registerJitsiUiResourcesRoute,
     resolveMessagesUiResources,
 } from "./ui-resources.js";
-import { registerMeetingShareRoutes } from "./share-routes.js";
+import { registerMeetingShareRoutes } from "./routes/share/index.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
 import { resolveShareGuestId } from "./reuse/share-guest.js";
-import { registerMeetingWhiteboardRoutes } from "./whiteboard-routes.js";
+import { registerMeetingWhiteboardRoutes } from "./routes/whiteboard/index.js";
 import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
     canAccessMeeting,
@@ -30,7 +30,7 @@ import {
     listPersistedMeetings,
     selectDistinctParticipantMeetings,
 } from "./reuse/persisted-meetings.js";
-import { registerPersistedMeetingRoutes } from "./persisted-meeting-routes.js";
+import { registerPersistedMeetingRoutes } from "./routes/persisted-meeting/index.js";
 import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
 import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
@@ -87,7 +87,9 @@ export function registerUi(ctx) {
         scriptUrl: "/static/modules/jitsi-meet/voip-provider.js",
         providesCapabilities: ["voip:startCall"],
     });
-    const meetingsStylesheets = ["/static/modules/jitsi-meet/jitsi-meet.css"];
+    const meetingsStylesheets = [
+        "/static/modules/jitsi-meet/styles/jitsi-meet.css",
+    ];
     for (const route of [
         {
             id: "module.jitsi.meet.meetings",
@@ -322,6 +324,24 @@ export function registerApiRoutes(router, ctx) {
             });
         }
         return;
+    }
+
+    const registerKeyringOwner = ctx.getCapability(
+        "auth:registerKeyringDataOwner",
+    );
+    if (typeof registerKeyringOwner === "function") {
+        ctx.registerDisposer(
+            registerKeyringOwner("module:jitsi-meet", async (accountId) => {
+                const participantHandle =
+                    await profileIdentity.resolveAccountHandle(accountId);
+                await store.resetKeyringDelivery(participantHandle);
+                ctx.log?.("info", "Meeting password delivery receipts reset.", {
+                    component: "jitsi-meet-module",
+                    operation: "reset_keyring_delivery",
+                    accountId,
+                });
+            }),
+        );
     }
 
     ctx.flow.extend(

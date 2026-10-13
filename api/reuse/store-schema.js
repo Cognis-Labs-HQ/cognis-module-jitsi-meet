@@ -68,7 +68,7 @@ export async function ensureJitsiStoreSchema({ db }) {
                 default: "",
             },
             { name: "room_slug", type: "text", notNull: true },
-            { name: "chat_room_id", type: "text" },
+            { name: "chat_room_id", type: "text", unique: true },
             {
                 name: "disposable",
                 type: "integer",

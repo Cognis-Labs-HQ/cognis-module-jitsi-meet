@@ -11,6 +11,7 @@ const ACTION_METHODS = [
     "addMeetingParticipant",
     "removeMeetingParticipant",
     "removeDeletedAccountFromMeetings",
+    "resetKeyringDelivery",
     "findMeetingByParticipants",
     "setMeetingChatRoomId",
     "createMeeting",
@@ -33,7 +34,7 @@ const ACTION_METHODS = [
 export function registerJitsiActionStore(ctx, store) {
     const actions = Object.create(store);
     for (const method of ACTION_METHODS) {
-        const flowId = `jitsi-meet:${method.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
+        const flowId = `jitsi-meet:${method}`;
         ctx.registerFlow({
             id: flowId,
             description: `Execute Jitsi Meet ${method}.`,

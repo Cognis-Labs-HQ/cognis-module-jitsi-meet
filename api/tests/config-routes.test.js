@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingConfigRoutes } from "../config-routes.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
 
 function createResponse() {
     return {

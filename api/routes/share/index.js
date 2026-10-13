@@ -1,6 +1,6 @@
-import { readJson } from "./reuse/http.js";
-import { resolveRequesterUsername } from "./reuse/requester.js";
-import { resolveStore } from "./reuse/store-runtime.js";
+import { readJson } from "../../reuse/http.js";
+import { resolveRequesterUsername } from "../../reuse/requester.js";
+import { resolveStore } from "../../reuse/store-runtime.js";
 
 function sendJson(res, status, payload) {
     res.writeHead(status, { "content-type": "application/json" });

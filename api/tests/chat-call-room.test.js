@@ -21,7 +21,7 @@ function database() {
                 participant_key: id,
                 meeting_url: `https://meet.example.test/${id}`,
                 meeting_password: "",
-                chat_room_id: "shared-room",
+                chat_room_id: `${id}-room`,
             })),
         ],
     ]);
@@ -135,7 +135,7 @@ async function scenario() {
     return { databaseExecutor, store };
 }
 
-test("config remains readable with multiple saved meetings for one conversation", async () => {
+test("config remains readable with unique saved meeting conversations", async () => {
     const { databaseExecutor, store } = await scenario();
     assert.equal(
         (await store.getConfig()).instanceUrl,
@@ -147,7 +147,7 @@ test("config remains readable with multiple saved meetings for one conversation"
     );
     assert.equal(
         databaseExecutor.rows("jitsi_meetings")[0].chat_room_id,
-        "shared-room",
+        "one-room",
     );
 });
 
@@ -180,7 +180,7 @@ test("current call reservations prevent competing calls and failed relinks roll 
     assert.equal(
         databaseExecutor.rows("jitsi_meetings").find((row) => row.id === "two")
             .chat_room_id,
-        "shared-room",
+        "two-room",
     );
 });
 
@@ -230,5 +230,24 @@ test("a rejected concurrent call creation leaves no orphan meeting rows", async 
     assert.deepEqual(
         databaseExecutor.rows("jitsi_meetings").map((row) => row.id),
         ["one", "two"],
+    );
+});
+
+test("saved meeting room reassignment enforces uniqueness atomically", async () => {
+    const { databaseExecutor, store } = await scenario();
+    await assert.rejects(
+        store.setMeetingChatRoomId("two", "one-room"),
+        /unique_conflict/,
+    );
+    assert.equal(
+        databaseExecutor.rows("jitsi_meetings").find((row) => row.id === "two")
+            .chat_room_id,
+        "two-room",
+    );
+    await store.setMeetingChatRoomId("two", "new-room");
+    assert.equal(
+        databaseExecutor.rows("jitsi_meetings").find((row) => row.id === "two")
+            .chat_room_id,
+        "new-room",
     );
 });

@@ -58,6 +58,18 @@ Jitsi は埋め込みコンポーネントのコンテナーを会議の表示�
 
 メインウィンドウの一人だけの状態で、元の見出し、無効な開始ボタン、事前確認表示を復元します。コンパクト表示を PiP のみに限定し、最小サイズで縦スクロールが発生しないようにします。ブラウザーテストはフローティング前の操作と解除時の復元を確認します。
 
+## 一意のミーティング会話
+
+チャットルーム ID の一意性を復元します。保存ミーティングには個別ルームを要求し、参加者変更後も保存済み ID で解決し、削除済みルームは Messages で置き換えます。通話予約のトランザクションと競合時の復元を維持します。
+
+## テンプレート構造と後始末
+
+ルートハンドラーをドメイン別、スタイルとマークアップを専用 UI ディレクトリ、リリース文書を docs/changelog に配置します。テンプレート指針とキャメルケースの操作フローを採用します。ブラウザープロバイダー、Health、Keyring の解除を実装し、Keyring リセットでは配送記録のみを消してミーティングとキャンバスを保持します。
+
+## 開発契約とコマンドの範囲
+
+公開インターフェースを四言語で記述します。チェックアウト内の npm スクリプトと modules 接頭辞の操作コマンドを区別します。誤解を招く最小バージョン表示を検証済みリリースの診断情報に置き換え、可用性は機能で判定します。Playwright を使わず Chromium/CDP で検証します。
+
 ## コミット
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
@@ -98,9 +110,7 @@ Jitsi は埋め込みコンポーネントのコンテナーを会議の表示�
 - [8d709449](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8d70944999fb802c5b776d1760d370d45696c427)
 
 - [1e6f727](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/1e6f7271ff3b1fece3c748f71b10d502c7351aa8)
-
 - [a1bceaa](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a1bceaa85535892a60cc3f3203d265a87e0b136e)
 
 - [f129d7d](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f129d7d1fea5518b657e7bd88991c3c5e96ee029)
-
 - [ed255e0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ed255e0ff54d332cd92dc1781d11a3009be14f68)

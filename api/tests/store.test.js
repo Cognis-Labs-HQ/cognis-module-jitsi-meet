@@ -961,3 +961,25 @@ test("morphed meetings reuse their original participant-set chat history", async
     assert.equal(reusedMeeting.reused, true);
     assert.equal(mockDb.insertedMeetingRows.length, 1);
 });
+
+test("keyring reset clears delivery receipts and preserves the meeting", async () => {
+    const commands = [];
+    const store = new JitsiMeetStore({
+        profileIdentity: profileIdentityFake,
+        db: {
+            async executeCommand(command) {
+                commands.push(command);
+                return { rows: [] };
+            },
+        },
+    });
+    await store.resetKeyringDelivery("Alice");
+    assert.deepEqual(commands, [
+        {
+            option: "UPDATE",
+            table: "jitsi_meeting_participants",
+            set: { password_delivered_at: null },
+            where: [{ column: "username", value: "alice" }],
+        },
+    ]);
+});

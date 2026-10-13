@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingLifecycleRoutes } from "../meeting-lifecycle-routes.js";
+import { registerMeetingLifecycleRoutes } from "../routes/meeting-lifecycle/index.js";
 
 function createResponse() {
     return {

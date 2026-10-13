@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Readable } from "node:stream";
-import { registerMeetingShareRoutes } from "../share-routes.js";
+import { registerMeetingShareRoutes } from "../routes/share/index.js";
 import { registerShareFlowHooks } from "../share-hooks.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 

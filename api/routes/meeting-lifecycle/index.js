@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { registerActiveMeetingParticipantRoute } from "./active-meeting-participant-route.js";
-import { registerMeetingChatSummaryRoute } from "./meeting-chat-summary-route.js";
-import { restoreMeetingChatMembership } from "./reuse/chat-membership.js";
-import { readForceNewMeeting } from "./reuse/meeting-creation.js";
-import { createMeetingWhiteboardMembershipUpdater } from "./reuse/whiteboard-membership.js";
-export { deleteDisposableMeeting } from "./disposable-meeting.js";
-import { deleteDisposableMeeting } from "./disposable-meeting.js";
+import { registerActiveMeetingParticipantRoute } from "../active-participants/index.js";
+import { registerMeetingChatSummaryRoute } from "../chat-summary/index.js";
+import { restoreMeetingChatMembership } from "../../reuse/chat-membership.js";
+import { readForceNewMeeting } from "../../reuse/meeting-creation.js";
+import { createMeetingWhiteboardMembershipUpdater } from "../../reuse/whiteboard-membership.js";
+export { deleteDisposableMeeting } from "../../disposable-meeting.js";
+import { deleteDisposableMeeting } from "../../disposable-meeting.js";
 export function registerMeetingLifecycleRoutes({
     router,
     store,
@@ -234,13 +234,20 @@ export function registerMeetingLifecycleRoutes({
                 forceNew,
             });
             const participants = await store.listParticipants(meeting.id);
-            let chatRoom = null;
+            let chatRoom = meeting.chatRoomId
+                ? {
+                      roomId: meeting.chatRoomId,
+                      url: `/messages/${encodeURIComponent(meeting.chatRoomId)}`,
+                  }
+                : null;
             if (typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
                     usernames: participants,
                     title: buildMeetingChatTitle(meeting.meetingName),
                     createdByAccountId: claims.sub,
                     allowSingleMember: true,
+                    reuseExisting: false,
+                    roomId: meeting.chatRoomId,
                 }).catch((error) => {
                     log?.("error", "Jitsi meeting chat creation failed.", {
                         component: "jitsi-meet-module",

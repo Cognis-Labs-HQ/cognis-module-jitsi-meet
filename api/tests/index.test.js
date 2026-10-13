@@ -1,3 +1,4 @@
+import { readJitsiApiBundle } from "../../ui/tests/reuse/source-bundle.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -32,6 +33,8 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "component-pages:spawn",
         "component-pages:discard",
         "ui:makeFloatingWindow",
+        "ui:navbarLinks",
+        "auth:registerKeyringDataOwner",
     ]);
     for (const optionalCapability of [
         "whiteboard:uiGateway",
@@ -55,15 +58,6 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "062a74f5-5699-52fb-98a3-63ec6538bdfc",
     ]);
 });
-
-function readJitsiApiBundle() {
-    const apiDir = resolve(ROOT, "api");
-    return readdirSync(apiDir)
-        .filter((entry) => entry.endsWith(".js"))
-        .sort()
-        .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
-        .join("\n");
-}
 
 test("active participant additions require a final Share approval decision", () => {
     const source = readJitsiApiBundle();
@@ -130,7 +124,7 @@ test("account cleanup resolves canonical account ids to participant handles", ()
 
 test("disposable Messages calls stay out of Meetings discovery", () => {
     const source = readFileSync(
-        resolve(ROOT, "api/meetings-routes.js"),
+        resolve(ROOT, "api/routes/meetings/index.js"),
         "utf8",
     );
     assert.match(source, /if \(!meeting \|\| meeting\.disposable\) continue;/);
@@ -170,7 +164,7 @@ test("jitsi contributes only module-owned capability identifiers", () => {
 test("jitsi API registers configured CSP origins through auth capability", () => {
     const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const configRoutesSource = readFileSync(
-        resolve(ROOT, "api/config-routes.js"),
+        resolve(ROOT, "api/routes/config/index.js"),
         "utf8",
     );
     const configurationSource = readFileSync(
@@ -202,7 +196,7 @@ test("kicked share guests can revoke only the link represented by their claims",
 
 test("meeting state polling publishes current membership for participant refreshes", () => {
     const source = readFileSync(
-        resolve(ROOT, "api/meetings-routes.js"),
+        resolve(ROOT, "api/routes/meetings/index.js"),
         "utf8",
     );
     assert.match(
@@ -303,7 +297,7 @@ test("jitsi meeting creation resolves hidden participants only for admins", () =
 test("jitsi meetings API exposes current events query endpoint", () => {
     const apiSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const routesSource = readFileSync(
-        resolve(ROOT, "api/meetings-routes.js"),
+        resolve(ROOT, "api/routes/meetings/index.js"),
         "utf8",
     );
 
