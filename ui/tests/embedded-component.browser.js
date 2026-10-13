@@ -172,6 +172,22 @@ try {
                 ];
             };
             const beforeStyle = styleValues();
+            const fullSizeAppearance = () => {
+                const title = overlay.querySelector(".jitsi-overlay-title");
+                const readiness = overlay.querySelector("#jitsi-loading");
+                const start = overlay.querySelector("#jitsi-start-btn");
+                return {
+                    title: title.getBoundingClientRect().height > 0,
+                    readiness: readiness.getBoundingClientRect().height > 0,
+                    startDisabled: start.disabled,
+                    buttons: visibleButtons(),
+                };
+            };
+            utilities.updateOverlay({
+                message: aloneMessage,
+                showAlonePrompt: true,
+            });
+            const fullSizeAlone = fullSizeAppearance();
             frame.hidden = false;
             let suppliedOptions;
             const release = floatMeetingWindow(
@@ -221,12 +237,15 @@ try {
                 typeof release.updateMinimumSize === "function";
             release();
             parent.append(overlay);
+            const restoredAlone = fullSizeAppearance();
             utilities.updateOverlay({
                 message: "Select participants",
                 canStart: true,
             });
             return {
                 initialButtons,
+                fullSizeAlone,
+                restoredAlone,
                 aloneButtons,
                 restoredButtons: visibleButtons(),
                 beforeStyle,
@@ -245,6 +264,17 @@ try {
         },
     );
     assert.deepEqual(result.initialButtons, ["jitsi-start-btn"]);
+    assert.deepEqual(result.fullSizeAlone, {
+        title: true,
+        readiness: true,
+        startDisabled: true,
+        buttons: [
+            "jitsi-start-btn",
+            "jitsi-leave-alone-btn",
+            "jitsi-remain-alone-btn",
+        ],
+    });
+    assert.deepEqual(result.restoredAlone, result.fullSizeAlone);
     assert.deepEqual(result.aloneButtons, [
         "jitsi-leave-alone-btn",
         "jitsi-remain-alone-btn",

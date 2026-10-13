@@ -54,6 +54,10 @@ Meeting status updates resolve the overlay from its active window rather than pu
 
 PiP uses the existing floating-window options to keep the meeting in its original DOM ancestry while displaying it in the browser top layer. This preserves inherited theme and typography without adding a new route scope. The native popover inherits the frame foreground. The alone prompt displays its message and Leave/Remain actions, without the initial title, participant selection, Start button or preflight status. Browser tests compare normal and PiP appearance, confirm zero vertical overflow at the existing minimum size, and verify that returning to the initial state restores its controls. The original floating-window handle retains minimum-size updates.
 
+## Preserve the full-size alone prompt
+
+Restore the original heading, disabled Start button and preflight indicator in the main-window alone prompt. Restrict the compact presentation to PiP so its minimum size remains free of vertical scrolling. Browser checks verify the full-size controls before floating and their restoration on release.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

@@ -54,6 +54,10 @@ Statusänderungen finden das Overlay im aktiven Fenster, statt es aus dem Portal
 
 PiP nutzt die vorhandenen Floating-Window-Optionen: Die Besprechung bleibt in ihrer ursprünglichen DOM-Abstammung und erscheint in der obersten Browserebene. Theme und Typografie werden ohne neuen Route-Stilbereich vererbt; das native Popover übernimmt die Vordergrundfarbe des Frames. Der Allein-Hinweis zeigt seine Meldung sowie Verlassen/Bleiben, ohne Anfangstitel, Teilnehmerauswahl, Startknopf oder Vorabprüfungsstatus. Browsertests vergleichen Normal- und PiP-Darstellung, prüfen fehlendes vertikales Scrollen bei der bestehenden Mindestgröße und die Rückkehr zu den Anfangssteuerelementen. Der ursprüngliche Floating-Window-Handle behält seine Mindestgrößenaktualisierung.
 
+## Allein-Hinweis in voller Größe beibehalten
+
+Die ursprüngliche Überschrift, der deaktivierte Startknopf und die Vorabprüfungsanzeige werden im Allein-Hinweis des Hauptfensters wiederhergestellt. Die kompakte Darstellung gilt nur für PiP, damit bei der Mindestgröße kein vertikales Scrollen entsteht. Browsertests prüfen die Steuerelemente vor dem Schweben und ihre Wiederherstellung beim Freigeben.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

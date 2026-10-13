@@ -149,11 +149,14 @@
 
 .jitsi-route-root
     .jitsi-overlay[data-alone-prompt="true"]
-    :is(
-        .jitsi-overlay-title,
-        .jitsi-staged-participants,
-        .jitsi-overlay-active-meetings
-    ) {
+    :is(.jitsi-staged-participants, .jitsi-overlay-active-meetings) {
+    display: none;
+}
+
+.jitsi-route-root
+    .jitsi-stage-frame.floating-window
+    .jitsi-overlay[data-alone-prompt="true"]
+    :is(.jitsi-overlay-title, #jitsi-start-btn, #jitsi-loading) {
     display: none;
 }
 

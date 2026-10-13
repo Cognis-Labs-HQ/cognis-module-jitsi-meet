@@ -77,9 +77,7 @@ export function createMountUtilities({ root, state }) {
         ) {
             return;
         }
-        const showIndicator =
-            state.preflightStatus !== "idle" &&
-            !state.overlayPresentation?.showAlonePrompt;
+        const showIndicator = state.preflightStatus !== "idle";
         loadingEl.hidden = !showIndicator;
         indicatorEl.classList.remove(
             "jitsi-spinner",
@@ -158,11 +156,10 @@ export function createMountUtilities({ root, state }) {
         }
         if (loadingEl instanceof HTMLElement) {
             loadingEl.hidden =
-                showAlonePrompt ||
-                (!loading &&
-                    state.preflightStatus !== "running" &&
-                    state.preflightStatus !== "passed" &&
-                    state.preflightStatus !== "failed");
+                !loading &&
+                state.preflightStatus !== "running" &&
+                state.preflightStatus !== "passed" &&
+                state.preflightStatus !== "failed";
         }
         if (indicatorEl instanceof HTMLElement) {
             if (state.preflightStatus === "failed") {
@@ -190,7 +187,6 @@ export function createMountUtilities({ root, state }) {
         }
         if (startButton instanceof HTMLButtonElement) {
             startButton.disabled = !canStart;
-            startButton.hidden = showAlonePrompt;
         }
         if (authButton instanceof HTMLElement) {
             authButton.hidden = showAlonePrompt || !showAuth;

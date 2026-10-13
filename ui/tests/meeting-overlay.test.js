@@ -85,8 +85,8 @@ test("overlay updates stay on the floating meeting and update its controls", () 
         overlay.querySelector("#jitsi-loading-text").textContent,
         "Ready",
     );
-    assert.equal(overlay.querySelector("#jitsi-start-btn").hidden, true);
-    assert.equal(overlay.querySelector("#jitsi-loading").hidden, true);
+    assert.equal(overlay.querySelector("#jitsi-start-btn").disabled, true);
+    assert.equal(overlay.querySelector("#jitsi-loading").hidden, false);
     utilities.updateOverlay({ message: "Select participants", canStart: true });
     assert.equal(overlay.querySelector("#jitsi-start-btn").hidden, false);
     assert.equal(overlay.querySelector("#jitsi-loading").hidden, false);

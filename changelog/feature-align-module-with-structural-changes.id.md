@@ -54,6 +54,10 @@ Pembaruan status mencari overlay pada jendela aktif, bukan memindahkannya dari p
 
 PiP memakai opsi floating-window yang ada agar rapat tetap dalam susunan DOM asal sambil tampil di lapisan teratas browser. Tema dan tipografi tetap diwarisi tanpa menambahkan lingkup rute baru; popover asli mewarisi warna teks frame. Pesan peserta tunggal hanya menampilkan pesannya serta Keluar/Tetap, tanpa judul awal, pemilihan peserta, tombol Mulai atau status pemeriksaan awal. Uji browser membandingkan tampilan biasa dan PiP, memastikan tidak ada pengguliran vertikal pada ukuran minimum yang ada, dan memeriksa pemulihan kontrol awal. Pegangan floating-window asli tetap mendukung pembaruan ukuran minimum.
 
+## Pertahankan pesan peserta tunggal berukuran penuh
+
+Pulihkan judul asal, tombol Mulai nonaktif dan indikator pemeriksaan awal pada pesan peserta tunggal di jendela utama. Batasi tampilan ringkas hanya untuk PiP agar ukuran minimumnya tetap tanpa pengguliran vertikal. Uji browser memeriksa kontrol berukuran penuh sebelum mengambang dan pemulihannya saat dilepas.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
