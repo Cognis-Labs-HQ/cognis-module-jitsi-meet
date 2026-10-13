@@ -46,6 +46,10 @@ Meeting selection stays locked while loading, resolving a keyring, awaiting auth
 
 Jitsi bounds its embedded component host to the meeting viewport and stretches the mounted root into a definite grid row. This keeps contained provider surfaces visible without letting their intrinsic size expand the meeting window. Chromium regression coverage uses the actual meeting markup in standards mode, checking opening and resizing. The integration remains independent of Whiteboard rendering internals.
 
+## Keep live meeting overlays in PiP
+
+Meeting status updates resolve the overlay from its active window rather than pulling a portal-mounted overlay back into the main page. Buttons, messages and preflight indicators are updated and rebound inside that overlay; floating frames remain valid live embeds during composer refreshes. The PiP frame retains the module style scope, and the overlay covers the frame with absolute positioning. Closing PiP restores the original scope and placement. Behavioral tests cover status updates outside the page root and Chromium checks the floating overlay bounds.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

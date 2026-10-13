@@ -203,3 +203,8 @@
 .jitsi-route-root .jitsi-cross::after {
     content: "✕";
 }
+
+.jitsi-stage-frame.jitsi-route-root > .jitsi-overlay {
+    position: absolute;
+    inset: 0;
+}

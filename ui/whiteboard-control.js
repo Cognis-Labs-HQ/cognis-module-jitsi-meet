@@ -1,3 +1,4 @@
+import { floatMeetingWindow } from "./meeting-window.js";
 import { logUi, showToast } from "./reuse/feedback.js";
 import { uiCtx } from "./reuse/resources.js";
 import {
@@ -255,12 +256,17 @@ export function closeMeetingWhiteboard(root) {
 
 export function placeMeetingOverlayForActiveWindow(root) {
     const trigger = mountedWhiteboardButtons.get(root);
-    const overlay =
-        root.querySelector("#jitsi-overlay") ?? trigger?.overlay ?? null;
-    const meetingFrame =
-        root.querySelector(".jitsi-stage-frame") ??
-        trigger?.meetingFrame ??
-        null;
+    const floating =
+        Boolean(trigger?.releaseFloatingWindow) ||
+        trigger?.meetingFrame?.classList.contains("floating-window");
+    const overlay = floating
+        ? trigger.overlay
+        : (root.querySelector("#jitsi-overlay") ?? trigger?.overlay ?? null);
+    const meetingFrame = floating
+        ? trigger.meetingFrame
+        : (root.querySelector(".jitsi-stage-frame") ??
+          trigger?.meetingFrame ??
+          null);
     const frameWrap =
         root.querySelector(".jitsi-stage-frame-wrap") ??
         trigger?.frameWrap ??
@@ -590,8 +596,10 @@ export async function bindWhiteboardButton({
                     const minimumSize = resolveMeetingPipMinimumSize(
                         state.meeting,
                     );
-                    trigger.releaseFloatingWindow = makeFloatingWindow(
+                    trigger.releaseFloatingWindow = floatMeetingWindow(
                         meetingFrame,
+                        overlay,
+                        makeFloatingWindow,
                         {
                             minWidth: minimumSize.width,
                             minHeight: minimumSize.height,
@@ -606,7 +614,6 @@ export async function bindWhiteboardButton({
                             },
                         },
                     );
-                    placeMeetingOverlay(trigger, { floating: true });
                     loadStage = "mount";
                     const componentWindow = await spawnComponentWindowWithRetry(
                         trigger,

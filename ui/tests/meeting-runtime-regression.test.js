@@ -148,7 +148,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
-        /const meetingFrame =[\s\S]*makeFloatingWindow\([\s\S]*await spawnComponentWindowWithRetry\(/,
+        /const meetingFrame =[\s\S]*floatMeetingWindow\([\s\S]*makeFloatingWindow,[\s\S]*await spawnComponentWindowWithRetry\(/,
     );
     assert.match(
         controlSource,

@@ -1,3 +1,4 @@
+import { resolveMeetingSurface } from "./reuse/meeting-surface.js";
 import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
 import {
@@ -12,7 +13,9 @@ export function createMountUtilities({ root, state }) {
 
     function isMeetingEmbedMissing() {
         if (!state.meeting?.id || !state.jitsiApi) return false;
-        const frame = root.querySelector("#jitsi-meeting-frame");
+        const frame = resolveMeetingSurface(root, state).query(
+            "#jitsi-meeting-frame",
+        );
         return !(frame instanceof HTMLElement) || frame.childElementCount === 0;
     }
 
@@ -63,9 +66,10 @@ export function createMountUtilities({ root, state }) {
     }
 
     function updatePreflightIndicator() {
-        const loadingEl = root.querySelector("#jitsi-loading");
-        const indicatorEl = root.querySelector("#jitsi-loading-indicator");
-        const loadingTextEl = root.querySelector("#jitsi-loading-text");
+        const { query } = resolveMeetingSurface(root, state);
+        const loadingEl = query("#jitsi-loading");
+        const indicatorEl = query("#jitsi-loading-indicator");
+        const loadingTextEl = query("#jitsi-loading-text");
         if (
             !(loadingEl instanceof HTMLElement) ||
             !(indicatorEl instanceof HTMLElement) ||
@@ -132,28 +136,16 @@ export function createMountUtilities({ root, state }) {
         if (frameWrap instanceof HTMLElement) {
             state.meetingFrameWrap = frameWrap;
         }
-        let overlay = root.querySelector("#jitsi-overlay");
-        if (!(overlay instanceof HTMLElement)) {
-            if (
-                frameWrap instanceof HTMLElement &&
-                state.meetingOverlay instanceof HTMLElement
-            ) {
-                frameWrap.append(state.meetingOverlay);
-                overlay = state.meetingOverlay;
-            }
-        }
-        if (overlay instanceof HTMLElement) {
-            state.meetingOverlay = overlay;
-        }
-        const startButton = root.querySelector("#jitsi-start-btn");
-        const authButton = root.querySelector("#jitsi-auth-btn");
-        const reclaimButton = root.querySelector("#jitsi-reclaim-btn");
-        const leaveAloneButton = root.querySelector("#jitsi-leave-alone-btn");
-        const remainAloneButton = root.querySelector("#jitsi-remain-alone-btn");
-        const messageEl = root.querySelector("#jitsi-overlay-message");
-        const loadingEl = root.querySelector("#jitsi-loading");
-        const indicatorEl = root.querySelector("#jitsi-loading-indicator");
-        const loadingTextEl = root.querySelector("#jitsi-loading-text");
+        const { overlay, query } = resolveMeetingSurface(root, state);
+        const startButton = query("#jitsi-start-btn");
+        const authButton = query("#jitsi-auth-btn");
+        const reclaimButton = query("#jitsi-reclaim-btn");
+        const leaveAloneButton = query("#jitsi-leave-alone-btn");
+        const remainAloneButton = query("#jitsi-remain-alone-btn");
+        const messageEl = query("#jitsi-overlay-message");
+        const loadingEl = query("#jitsi-loading");
+        const indicatorEl = query("#jitsi-loading-indicator");
+        const loadingTextEl = query("#jitsi-loading-text");
 
         if (messageEl instanceof HTMLElement && typeof message === "string") {
             messageEl.textContent = message;

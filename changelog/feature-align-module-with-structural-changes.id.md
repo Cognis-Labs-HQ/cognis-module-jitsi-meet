@@ -46,6 +46,10 @@ Pemilihan rapat terkunci saat memuat, menyelesaikan keyring, menunggu autentikas
 
 Jitsi membatasi wadah komponen tertanam pada viewport rapat dan meregangkan elemen akar ke baris kisi dengan ukuran pasti. Permukaan penyedia yang terisolasi tetap terlihat tanpa ukuran intrinsiknya memperbesar jendela rapat. Uji regresi Chromium memakai markup rapat sebenarnya dalam mode standar untuk memeriksa pembukaan dan perubahan ukuran. Integrasi tetap tidak bergantung pada rincian internal tampilan Whiteboard.
 
+## Pertahankan overlay rapat aktif di PiP
+
+Pembaruan status mencari overlay pada jendela aktif, bukan memindahkannya dari portal kembali ke halaman utama. Tombol, pesan, dan indikator pemeriksaan awal diperbarui dan diikat di overlay tersebut; frame mengambang tetap dikenali sebagai rapat aktif saat composer diperbarui. Frame PiP mempertahankan lingkup gaya modul dan overlay menutupinya dengan posisi absolut. Menutup PiP memulihkan lingkup dan posisi asal. Uji perilaku memeriksa status di luar akar halaman; Chromium memeriksa batas overlay mengambang.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

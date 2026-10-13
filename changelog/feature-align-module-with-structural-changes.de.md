@@ -46,6 +46,10 @@ Die Meeting-Auswahl bleibt beim Laden, während der Keyring-Auflösung, bei auss
 
 Jitsi begrenzt seinen eingebetteten Komponentenhost auf den Besprechungsbereich und streckt die eingebundene Wurzel in eine eindeutig bemessene Rasterzeile. Dadurch bleiben gekapselte Anbieterflächen sichtbar, ohne dass ihre intrinsische Größe das Besprechungsfenster vergrößert. Ein Chromium-Regressionstest prüft Öffnen und Größenänderungen mit dem tatsächlichen Besprechungs-Markup im Standardmodus. Die Integration bleibt unabhängig von Whiteboard-internen Darstellungsdetails.
 
+## Aktive Besprechungs-Overlays im PiP behalten
+
+Statusänderungen finden das Overlay im aktiven Fenster, statt es aus dem Portal zurück auf die Hauptseite zu ziehen. Schaltflächen, Meldungen und Vorabprüfungen werden dort aktualisiert und gebunden; schwebende Frames bleiben beim Composer-Aktualisieren gültige laufende Einbettungen. Der PiP-Frame behält den Modul-Stilbereich und das Overlay bedeckt ihn durch absolute Positionierung. Beim Schließen werden ursprünglicher Stilbereich und Platzierung wiederhergestellt. Verhaltenstests prüfen Statusänderungen außerhalb der Seitenwurzel; Chromium prüft die Overlay-Abmessungen.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

@@ -71,6 +71,54 @@ try {
         );
         assert.equal(sizes.canvas, sizes.host - 60);
     }
+    const windowSource = await readFile(
+        new URL("../meeting-window.js", import.meta.url),
+        "utf8",
+    );
+    await page.addScriptTag({
+        content:
+            windowSource.replace("export function", "function") +
+            "\nwindow.floatMeetingWindow = floatMeetingWindow;",
+    });
+    const floating = await page.evaluate(() => {
+        const frame = document.querySelector("#jitsi-meeting-frame");
+        const overlay = document.querySelector("#jitsi-overlay");
+        const parent = frame.parentElement;
+        frame.hidden = false;
+        overlay.hidden = false;
+        const release = window.floatMeetingWindow(
+            frame,
+            overlay,
+            (element) => {
+                document.body.append(element);
+                element.style.cssText =
+                    "position:fixed;left:10px;top:10px;width:300px;height:180px";
+                return () => {
+                    parent.append(element);
+                    element.style.cssText = "";
+                };
+            },
+            {},
+        );
+        const frameRect = frame.getBoundingClientRect();
+        const overlayRect = overlay.getBoundingClientRect();
+        const matches = ["left", "top", "width", "height"].every(
+            (key) => frameRect[key] === overlayRect[key],
+        );
+        release();
+        return {
+            matches,
+            restored:
+                frame.parentElement === parent &&
+                !frame.classList.contains("jitsi-route-root"),
+        };
+    });
+    assert.equal(
+        floating.matches,
+        true,
+        "The overlay must cover the meeting after it leaves the route root",
+    );
+    assert.equal(floating.restored, true);
     console.log(
         "The actual meeting markup bounds its component mount across opening and resizing.",
     );

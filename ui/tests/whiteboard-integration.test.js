@@ -171,11 +171,11 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /synchronizeWhiteboardOpen\(apiFetch,[\s\S]*?makeFloatingWindow\(\s*meetingFrame,\s*\{[\s\S]*?await spawnComponentWindowWithRetry/,
+        /synchronizeWhiteboardOpen\(apiFetch,[\s\S]*?floatMeetingWindow\(\s*meetingFrame,\s*overlay,\s*makeFloatingWindow,\s*\{[\s\S]*?await spawnComponentWindowWithRetry/,
     );
     assert.match(
         buttonSource,
-        /makeFloatingWindow\(\s*meetingFrame,\s*\{[\s\S]*?preserveBrowsingContext: true,/,
+        /floatMeetingWindow\(\s*meetingFrame,\s*overlay,\s*makeFloatingWindow,\s*\{[\s\S]*?preserveBrowsingContext: true,/,
     );
     assert.doesNotMatch(buttonSource, /handle:\s*pipHandle/);
     assert.doesNotMatch(buttonSource, /jitsi-stage-header/);
@@ -188,12 +188,12 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /Failed to fetch dynamically imported module[\s\S]*?break;/,
     );
     assert.match(
-        buttonSource,
-        /placeMeetingOverlay\(trigger, \{ floating: true \}\)/,
+        readFileSync(resolve(ROOT, "ui/meeting-window.js"), "utf8"),
+        /frame\.classList\.add\("jitsi-route-root"\);\s*frame\.append\(overlay\)/,
     );
     assert.match(
         buttonSource,
-        /placeMeetingOverlayForActiveWindow[\s\S]*?classList\.contains\("floating-window"\)[\s\S]*?Boolean\(trigger\?\.releaseFloatingWindow\)[\s\S]*?meetingFrameIsFloating/,
+        /placeMeetingOverlayForActiveWindow[\s\S]*?Boolean\(trigger\?\.releaseFloatingWindow\)[\s\S]*?classList\.contains\("floating-window"\)[\s\S]*?const overlay = floating[\s\S]*?trigger\.overlay/,
     );
     assert.match(
         buttonSource,
@@ -281,8 +281,8 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         2,
     );
     assert.match(
-        appSource,
-        /state\.meetingOverlay instanceof HTMLElement[\s\S]*?frameWrap\.append\(state\.meetingOverlay\)/,
+        readFileSync(resolve(ROOT, "ui/app/reuse/meeting-surface.js"), "utf8"),
+        /if \(!overlay\.isConnected\)[\s\S]*?frameWrap\?\.append\(overlay\)/,
     );
     assert.match(
         appSource,
