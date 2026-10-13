@@ -42,6 +42,10 @@ Ein aktivierter Whiteboard-Provider mit unvollständigem öffentlichen UI-Vertra
 
 Die Meeting-Auswahl bleibt beim Laden, während der Keyring-Auflösung, bei ausstehender Authentifizierung oder Sitzungsübernahme und während einer eingebetteten Konferenz gesperrt. Beitrittsanfragen teilen ihre ausstehende Operation; Abbruch und veraltete Antworten ersetzen das aktuelle Ziel nicht. Die aktive Suche enthält autorisierte eingeladene Meetings mit aktueller Präsenz auch bei ausstehender Authentifizierung. Beim Neustart eines persistenten Meetings wird seine gespeicherte Canvas über den öffentlichen, vom Besitzer autorisierten Mitgliedschaftsvertrag wiederhergestellt. Eine nicht verfügbare oder gelöschte optionale Canvas wird protokolliert und verhindert den Meeting-Beitritt nicht.
 
+## Komponentenbereich der Besprechung begrenzen
+
+Jitsi begrenzt seinen eingebetteten Komponentenhost auf den Besprechungsbereich und streckt die eingebundene Wurzel in eine eindeutig bemessene Rasterzeile. Dadurch bleiben gekapselte Anbieterflächen sichtbar, ohne dass ihre intrinsische Größe das Besprechungsfenster vergrößert. Ein Chromium-Regressionstest prüft Öffnen und Größenänderungen mit dem tatsächlichen Besprechungs-Markup im Standardmodus. Die Integration bleibt unabhängig von Whiteboard-internen Darstellungsdetails.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

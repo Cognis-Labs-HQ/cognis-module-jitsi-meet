@@ -19,3 +19,5 @@ Jalankan `npm install`, lalu `npm test`. Pengujian dan kode runtime hanya memaka
 ## Keamanan
 
 Gunakan penerapan Jitsi HTTPS yang tepercaya. Akses API rapat diautentikasi, catatan rapat dibatasi untuk peserta, kata sandi dibuat untuk setiap rapat, dan akses tamu dibatasi oleh kapabilitas berbagi bercakupan. Tinjau repositori dan digest berkas yang dideklarasikan sebelum mengaktifkannya.
+
+Jalankan uji regresi browser dalam mode standar dengan `npx playwright install chromium`, lalu `npm run test:browser`.

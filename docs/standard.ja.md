@@ -51,7 +51,7 @@ Heartbeat が途切れるとプレゼンスは期限切れになります。参�
 
 Nextcloud Whiteboard はソフト依存関係です。ブラウザーはホスト UI コンテキストの初期化後に `whiteboard:uiGateway` と Component Page、Floating Window の Capability を検出します。キャンバスファクトリーがコントロールの可用性を決め、存在しなければコントロールを表示しません。有効化操作は作成前にサーバーの可用性エンドポイントを確認します。サーバー検証には公開された `whiteboard:fetchBoardData`、`whiteboard:membership`、`whiteboard:deleteCanvas` 契約が必要です。Nextcloud Whiteboard 2.3.146 以降が検証契約を提供します。可用性診断には Provider のバージョン、整合性、信頼情報を含めます。
 
-Jitsi は公開 Gateway メソッド `requestCanvasPage({signal})` と `openCanvas({whiteboardId, elementId, signal})` を使用します。Whiteboard Provider がルート ID、キャンバス配置、通信とセッションの意味を所有します。Jitsi は正確な Board ID と自身のマウント先だけを指定し、終了時にウィンドウを解放します。表示には Whiteboard 2.3.147 以降が必要です。メンバー変更はサーバーが所有する公開メンバーシップ契約を使用します。
+Jitsi は公開 Gateway メソッド `requestCanvasPage({signal})` と `openCanvas({whiteboardId, elementId, signal})` を使用します。Whiteboard Provider がルート ID、キャンバス配置、通信とセッションの意味を所有します。Jitsi は正確な Board ID と自身のマウント先だけを指定し、終了時にウィンドウを解放します。表示には Whiteboard 2.3.147 以降が必要です。メンバー変更はサーバーが所有する公開メンバーシップ契約を使用します。 Jitsi は埋め込みコンポーネントのコンテナーを会議の表示領域に制限し、マウントしたルートを明確な大きさのグリッド行に伸ばします。サイズを封じ込めたプロバイダーの表示を維持し、固有サイズが会議ウィンドウを拡大しないようにします。
 
 有効な Whiteboard Provider の公開 UI 契約が不完全な場合、説明のツールチップ付きの無効なボタンを表示し、不足する Capability メソッドを記録します。Provider の読み込み失敗も説明します。任意 Provider が存在しない場合はボタンを表示しません。Avatar の在席情報は Whiteboard の準備状態とは独立しており、プロフィール在席情報の 404 はボタンを無効化しません。
 

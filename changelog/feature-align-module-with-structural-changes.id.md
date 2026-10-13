@@ -42,6 +42,10 @@ Provider Whiteboard yang aktif dengan kontrak UI publik tidak lengkap tetap mena
 
 Pemilihan rapat terkunci saat memuat, menyelesaikan keyring, menunggu autentikasi atau pengambilalihan sesi, dan selama konferensi tertanam. Permintaan bergabung berbagi operasi tertunda; pembatalan dan respons usang tidak mengganti tujuan saat ini. Pencarian aktif menyertakan rapat undangan yang diizinkan dengan kehadiran terkini meskipun autentikasi tertunda. Memulai kembali rapat persisten memulihkan kanvas tersimpan melalui kontrak keanggotaan publik yang diizinkan pemilik. Kanvas opsional yang tidak tersedia atau dihapus dicatat dan tidak mencegah pengguna bergabung.
 
+## Batasi wadah komponen rapat
+
+Jitsi membatasi wadah komponen tertanam pada viewport rapat dan meregangkan elemen akar ke baris kisi dengan ukuran pasti. Permukaan penyedia yang terisolasi tetap terlihat tanpa ukuran intrinsiknya memperbesar jendela rapat. Uji regresi Chromium memakai markup rapat sebenarnya dalam mode standar untuk memeriksa pembukaan dan perubahan ukuran. Integrasi tetap tidak bergantung pada rincian internal tampilan Whiteboard.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

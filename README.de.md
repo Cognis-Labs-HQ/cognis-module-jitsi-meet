@@ -19,3 +19,5 @@ Führe `npm install` und anschließend `npm test` aus. Tests und Laufzeitcode ve
 ## Sicherheit
 
 Verwende eine vertrauenswürdige Jitsi-Bereitstellung mit HTTPS. Der Zugriff auf die Besprechungs-API ist authentifiziert, Besprechungsdatensätze sind auf Teilnehmer beschränkt, Passwörter werden pro Besprechung erzeugt und Gastzugriffe sind durch bereichsgebundene Freigabefähigkeiten eingeschränkt. Prüfe das Repository und die deklarierten Datei-Digests vor der Aktivierung.
+
+Führen Sie den Browser-Regressionstest im Standardmodus mit `npx playwright install chromium` und anschließend `npm run test:browser` aus.

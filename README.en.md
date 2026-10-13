@@ -19,3 +19,5 @@ Run `npm install` followed by `npm test`. Tests and runtime code use only reposi
 ## Security
 
 Use a trusted HTTPS Jitsi deployment. Meeting API access is authenticated, meeting records are participant-gated, passwords are generated per meeting, and guest access is restricted by scoped share capabilities. Review the repository and its declared file digests before enabling it.
+
+Run the standards-mode browser regression with `npx playwright install chromium` followed by `npm run test:browser`.
