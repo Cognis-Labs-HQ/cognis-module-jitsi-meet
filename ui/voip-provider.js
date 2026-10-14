@@ -1,4 +1,4 @@
-import { importReuseModule, uiCtx } from "./reuse/resources.js";
+import { importReuseModule } from "./reuse/resources.js";
 import { JITSI_PIP_MINIMUM_SIZE } from "./constants.js";
 
 const { apiFetch } = await importReuseModule("api-client.js");
@@ -84,6 +84,19 @@ export async function resolveVoipCallAction(input = {}) {
     };
 }
 
-if (typeof uiCtx.capabilities.get(CAPABILITY) !== "function") {
-    uiCtx.capabilities.contribute(CAPABILITY, resolveVoipCallAction);
+export function mountProvider(ctx) {
+    const flowId = "jitsi-meet:startCall";
+    ctx.registerFlow(flowId, ["resolveAction"]);
+    ctx.extendFlow(
+        flowId,
+        "resolveAction",
+        { id: "jitsi-meet:resolveCall" },
+        async (stage) => {
+            stage.data.action = await resolveVoipCallAction(stage.input);
+        },
+    );
+    ctx.capabilities.contribute(CAPABILITY, async (input) => {
+        const result = await ctx.runFlow(flowId, input);
+        return result.data.action;
+    });
 }

@@ -31,3 +31,15 @@ test("aborting an active Meetings mount releases the persistent route root", () 
     controller.abort();
     assert.equal(root.classList.contains("jitsi-route-root"), false);
 });
+
+test("a superseded mount cannot remove the current route-root marker", () => {
+    const root = createRoot();
+    const previous = new AbortController();
+    const current = new AbortController();
+    claimRouteRoot(root, previous.signal);
+    claimRouteRoot(root, current.signal);
+    previous.abort();
+    assert.equal(root.classList.contains("jitsi-route-root"), true);
+    current.abort();
+    assert.equal(root.classList.contains("jitsi-route-root"), false);
+});

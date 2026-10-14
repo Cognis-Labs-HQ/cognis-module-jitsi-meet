@@ -17,7 +17,7 @@ function queryString(params) {
 
 export function registerCommands({ register, apiGet }) {
     register(
-        "jitsi-meet:ping",
+        "modules:jitsi-meet:ping",
         async ({ apiBaseUrl, getApiToken }) => {
             return apiGet(
                 apiBaseUrl,
@@ -26,13 +26,13 @@ export function registerCommands({ register, apiGet }) {
             );
         },
         {
-            usage: "cognisctl jitsi-meet:ping",
+            usage: "cognisctl modules:jitsi-meet:ping",
             description: "Check whether the Jitsi Meet module is ready.",
         },
     );
 
     register(
-        "jitsi-meet:meetings",
+        "modules:jitsi-meet:meetings",
         async ({ apiBaseUrl, getApiToken }) => {
             return apiGet(
                 apiBaseUrl,
@@ -41,13 +41,13 @@ export function registerCommands({ register, apiGet }) {
             );
         },
         {
-            usage: "cognisctl jitsi-meet:meetings",
+            usage: "cognisctl modules:jitsi-meet:meetings",
             description: "List all active Jitsi Meet meetings.",
         },
     );
 
     register(
-        "jitsi-meet:meetings:upcoming",
+        "modules:jitsi-meet:meetings:upcoming",
         async ({ apiBaseUrl, getApiToken }) => {
             return apiGet(
                 apiBaseUrl,
@@ -56,15 +56,16 @@ export function registerCommands({ register, apiGet }) {
             );
         },
         {
-            usage: "cognisctl jitsi-meet:meetings:upcoming",
+            usage: "cognisctl modules:jitsi-meet:meetings:upcoming",
             description: "List upcoming Jitsi Meet meetings.",
         },
     );
 
     register(
-        "jitsi-meet:participants",
+        "modules:jitsi-meet:participants",
         async ({ args, apiBaseUrl, getApiToken }) => {
-            const usage = "cognisctl jitsi-meet:participants <meeting-id>";
+            const usage =
+                "cognisctl modules:jitsi-meet:participants <meeting-id>";
             requireArgs(args, ["meeting-id"], usage);
             return apiGet(
                 apiBaseUrl,
@@ -73,7 +74,7 @@ export function registerCommands({ register, apiGet }) {
             );
         },
         {
-            usage: "cognisctl jitsi-meet:participants <meeting-id>",
+            usage: "cognisctl modules:jitsi-meet:participants <meeting-id>",
             description: "List participants for a Jitsi Meet meeting.",
         },
     );

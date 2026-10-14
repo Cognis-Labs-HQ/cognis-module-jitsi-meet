@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingParticipantRoutes } from "../participant-routes.js";
+import { registerMeetingParticipantRoutes } from "../routes/participant/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 test("meeting participant search preserves follow filtering and omits the current user", async () => {

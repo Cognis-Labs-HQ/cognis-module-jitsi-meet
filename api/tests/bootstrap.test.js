@@ -19,9 +19,15 @@ function createScopedRuntime() {
             async () => ({ authorized: true, memberAccountIds: [] }),
         ],
         ["social:messages:deleteChatroom", async () => {}],
+        [
+            "social:messages:sourceBinding",
+            { bind: async () => {}, release: async () => {} },
+        ],
     ]);
     const flows = new Set([
         "bootstrap-platform",
+        "construct-meetings-ui",
+        "create-meeting",
         "mint-share-token",
         "resolve-share-token",
     ]);
@@ -51,6 +57,9 @@ function createScopedRuntime() {
             moduleRoot: "/external-modules/jitsi-meet",
             getCapability: (capabilityId) => capabilities.get(capabilityId),
             contributePublicCapability(capabilityId, value) {
+                if (!capabilityId.startsWith("jitsi-meet:")) {
+                    throw new Error("module_privileged_access_required");
+                }
                 capabilities.set(capabilityId, value);
                 scope.capabilities.push(capabilityId);
             },
@@ -81,6 +90,8 @@ function createScopedRuntime() {
                 registerUiContribution("static", { prefix, directory }),
             registerNavbarPlugin: (plugin) =>
                 registerUiContribution("navbar", plugin),
+            registerCapabilityProvider: (provider) =>
+                registerUiContribution("capability-provider", provider),
             registerSpaRoute: (route) => registerUiContribution("spa", route),
             registerAdminSection: (section) =>
                 registerUiContribution("admin", section),
@@ -106,12 +117,8 @@ function createScopedRuntime() {
     return {
         enable,
         snapshot: () => ({
-            contributedCapability: capabilities.has(
-                "meetings:isProviderAvailable",
-            ),
-            meetingChatCapability: capabilities.has("meeting:getMeetingChat"),
-            createdFlows: ["construct-meetings-ui", "create-meeting"].filter(
-                (flowId) => flows.has(flowId),
+            meetingChatCapability: capabilities.has(
+                "jitsi-meet:getMeetingChat",
             ),
             hookCount: hooks.length,
             routeCount: routes.length,
@@ -135,11 +142,6 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
 
     const firstDispose = runtime.enable();
     const firstEnabledSnapshot = runtime.snapshot();
-    assert.equal(firstEnabledSnapshot.contributedCapability, true);
-    assert.deepEqual(firstEnabledSnapshot.createdFlows, [
-        "construct-meetings-ui",
-        "create-meeting",
-    ]);
     assert.ok(firstEnabledSnapshot.routeCount > 0);
     assert.deepEqual(
         firstEnabledSnapshot.routes.find(
@@ -180,7 +182,15 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
         ({ type }) => type === "navbar",
     ).contribution;
     assert.deepEqual(navbarContribution.access, { minRole: "user" });
-    assert.deepEqual(navbarContribution.providesCapabilities, [
+    assert.equal(navbarContribution.providesCapabilities, undefined);
+    const capabilityProvider = firstEnabledSnapshot.uiContributions.find(
+        ({ type }) => type === "capability-provider",
+    ).contribution;
+    assert.equal(
+        capabilityProvider.scriptUrl,
+        "/static/modules/jitsi-meet/voip-provider.js",
+    );
+    assert.deepEqual(capabilityProvider.providesCapabilities, [
         "voip:startCall",
     ]);
     assert.ok(firstEnabledSnapshot.hookCount > 0);
@@ -197,8 +207,8 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
 test("disabled API registration mounts only pre-enable configuration routes", () => {
     const routes = [];
     const requestedCapabilities = [];
-    const systemCtx = { contributePublicCapability() {} };
     const ctx = {
+        contributePublicCapability() {},
         getCapability(capabilityId) {
             requestedCapabilities.push(capabilityId);
             const capabilities = new Map([
@@ -216,7 +226,6 @@ test("disabled API registration mounts only pre-enable configuration routes", ()
                     },
                 ],
                 ["social:profile:identity", profileIdentityFake],
-                ["system:ctx", systemCtx],
             ]);
             return capabilities.get(capabilityId);
         },
@@ -291,6 +300,7 @@ test("jitsi uninstall cleanup honors the content deletion choice", async () => {
             .filter(({ option }) => option === "DELETE")
             .map(({ table }) => table),
         [
+            "jitsi_chat_calls",
             "jitsi_meeting_presence",
             "jitsi_meeting_state",
             "jitsi_meeting_original_participants",

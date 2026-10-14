@@ -1,3 +1,5 @@
+import { readJitsiApiBundle } from "./reuse/source-bundle.js";
+import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -21,15 +23,6 @@ function readJitsiUiBundle() {
     return [...rootSources, ...appSources].join("\n");
 }
 
-function readJitsiApiBundle() {
-    const apiDir = resolve(ROOT, "api");
-    return readdirSync(apiDir)
-        .filter((entry) => entry.endsWith(".js"))
-        .sort()
-        .map((entry) => readFileSync(join(apiDir, entry), "utf8"))
-        .join("\n");
-}
-
 test("Jitsi toolbar hides participant, performance, and background controls", () => {
     const constantsSource = readFileSync(
         resolve(ROOT, "ui/constants.js"),
@@ -38,20 +31,6 @@ test("Jitsi toolbar hides participant, performance, and background controls", ()
     assert.doesNotMatch(constantsSource, /"participants-pane"/);
     assert.doesNotMatch(constantsSource, /"videoquality"/);
     assert.doesNotMatch(constantsSource, /"select-background"/);
-});
-
-test("meeting state polling ignores responses after meeting teardown", () => {
-    const source = readFileSync(
-        resolve(ROOT, "ui/app/participants.js"),
-        "utf8",
-    );
-
-    assert.match(source, /const meetingId = state\.meeting\?\.id/);
-    assert.match(source, /if \(state\.meeting\?\.id !== meetingId\) return/);
-    assert.match(
-        source,
-        /meetings\/state[\s\S]*accessToken:\s*state\.shareAccessToken/,
-    );
 });
 
 test("interactive handlers import their extracted meeting embed dependencies", () => {
@@ -146,16 +125,14 @@ test("share guests bind remote whiteboard orchestration without resharing contro
         appSource,
         /if \(!inShareView\) \{[\s\S]*bindShareButton[\s\S]*\}\s*void bindWhiteboardButton/,
     );
-    assert.equal(
-        controlSource.match(
-            /accessToken:\s*state\.shareAccessToken \|\| undefined/g,
-        )?.length,
-        3,
-    );
-    assert.match(controlSource, /requireCanvasFactory:\s*false/);
-    assert.doesNotMatch(
+    assert.match(controlSource, /shareAccessToken: state\.shareAccessToken/);
+    assert.match(
         controlSource,
-        /!state\.shareAccessToken &&\s*typeof whiteboardGateway\?\.createDisposableCanvas/,
+        /canvasFactory,[\s\S]*await prepareMeetingCanvas\(trigger, state, \{[\s\S]*?refreshReference: true,/,
+    );
+    assert.match(
+        controlSource,
+        /state\.meeting\?\.disposable === true[\s\S]*"createDisposableCanvas"[\s\S]*"createCanvas"/,
     );
     assert.match(
         controlSource,
@@ -163,7 +140,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
-        /const meetingFrame =[\s\S]*makeFloatingWindow\([\s\S]*await spawnComponentWindowWithRetry\(/,
+        /const meetingFrame =[\s\S]*floatMeetingWindow\([\s\S]*makeFloatingWindow,[\s\S]*await spawnComponentWindowWithRetry\(/,
     );
     assert.match(
         controlSource,
@@ -219,7 +196,10 @@ test("jitsi API resets ended meetings and reports meetingClosed from presence up
 
 test("meetings UI prompts a participant who becomes alone before leaving", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const constantsSource = readFileSync(
         resolve(ROOT, "ui/constants.js"),
         "utf8",
@@ -245,7 +225,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     assert.match(source, /alonePromptDismissedMeetingId/);
     assert.match(
         source,
-        /const joinPayload = await joinResponse\.json\(\);\n\s*state\.meeting = joinPayload\?\.data \?\? state\.meeting;\n\s*utils\.deferAloneParticipantPrompt\(\);/,
+        /const joinPayload = await joinResponse\.json\(\);\n\s*if \(!isCurrent\(\)\) return;\n\s*state\.meeting = joinPayload\?\.data \?\? state\.meeting;\n\s*utils\.deferAloneParticipantPrompt\(\);/,
     );
     assert.match(
         source,
@@ -273,7 +253,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     );
     assert.match(
         source,
-        /if \(latestState\.authRequired && !latestState\.authCompletedAt\) \{[\s\S]*return;[\s\S]*\}/,
+        /!state\.jitsiConferenceJoined &&[\s\S]*latestState\.authRequired &&[\s\S]*!latestState\.authCompletedAt[\s\S]*return;/,
     );
     assert.match(
         source,
@@ -325,7 +305,7 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     assert.match(preflightSource, /function shouldTrackMeetingPresence\(\)/);
     assert.match(
         preflightSource,
-        /function ensureMeetingTracking\(\) \{\n\s*if \(!shouldTrackMeetingPresence\(\)\) return;/,
+        /function ensureMeetingTracking[\s\S]*!shouldTrackMeetingPresence\(\) && !pendingAuthentication/,
     );
 });
 
@@ -359,10 +339,7 @@ test("meetings mini chat supports the Messages reaction floating menu", () => {
 });
 
 test("meetings speech bubbles use the same contrast-oriented color tokens as Messages", () => {
-    const variantsCssSource = readFileSync(
-        resolve(ROOT, "ui/jitsi-meet.css"),
-        "utf8",
-    );
+    const variantsCssSource = readModuleStyles();
     assert.match(
         variantsCssSource,
         /\.jitsi-chat-message[\s\S]*background:\s*var\(--color-surface-elevated\);/,
@@ -422,28 +399,24 @@ test("administration meetings section labels active and upcoming tables", () => 
     );
 
     const adminRoutesSource = readFileSync(
-        resolve(ROOT, "api/admin-meetings-routes.js"),
+        resolve(ROOT, "api/routes/admin-meetings/index.js"),
         "utf8",
     );
     const lifecycleRoutesSource = readFileSync(
-        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        resolve(ROOT, "api/routes/meeting-lifecycle/index.js"),
         "utf8",
     );
-    assert.match(
-        source,
-        /module\.jitsi_meet\.admin\.meetings\.active_table_heading/,
+    const template = readFileSync(
+        resolve(ROOT, "ui/templates/admin-meetings.js"),
+        "utf8",
     );
-    assert.match(
-        source,
-        /module\.jitsi_meet\.admin\.meetings\.upcoming_table_heading/,
-    );
-    assert.match(source, /createdByDisplayName/);
-    assert.match(source, /row\.scheduledAt \?\? row\.createdAt/);
-    assert.match(source, /<col style="width: 1%" \/>/);
-    assert.match(source, /<col style="width: 24\.75%" \/>/);
-    assert.match(source, /white-space: nowrap/);
-    assert.match(source, /admin\.meetings\.meeting_url/);
-    assert.match(source, /admin\.meetings\.schedule_date/);
+    assert.match(source, /createMeetingAdminTemplates/);
+    assert.match(template, /meetings\.active_table_heading/);
+    assert.match(template, /meetings\.upcoming_table_heading/);
+    assert.match(template, /createdByDisplayName/);
+    assert.match(template, /date\(row\.scheduledAt\)/);
+    assert.match(template, /jitsi-admin-issue-pill/);
+    assert.match(template, /meetings\.schedule_date/);
     assert.match(stringsSource, /Active Meetings/);
     assert.match(stringsSource, /Upcoming Meetings/);
     assert.match(stringsSource, /Meeting URL/);
@@ -454,7 +427,10 @@ test("administration meetings section labels active and upcoming tables", () => 
 
 test("meetings UI renders active meetings panel and deep-link join support", () => {
     const source = readJitsiUiBundle();
-    const markupSource = readFileSync(resolve(ROOT, "ui/markup.js"), "utf8");
+    const markupSource = readFileSync(
+        resolve(ROOT, "ui/templates/markup.js"),
+        "utf8",
+    );
     const embedSource = readFileSync(
         resolve(ROOT, "ui/meeting-embed.js"),
         "utf8",
@@ -511,7 +487,7 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
 
 test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => {
     const appSource = readJitsiUiBundle();
-    const cssSource = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const cssSource = readModuleStyles();
     assert.doesNotMatch(appSource, /jitsi-theme-sync/);
     assert.doesNotMatch(appSource, /applyJitsiWindowTheme/);
     assert.match(appSource, /const syncJitsiTheme = \(event\) =>/);
@@ -544,7 +520,7 @@ test("meetings UI keeps Jitsi theme and active-meeting table responsive", () => 
 test("jitsi API exposes user active meetings endpoint", () => {
     const indexSource = readFileSync(resolve(ROOT, "api/index.js"), "utf8");
     const meetingsRoutesSource = readFileSync(
-        resolve(ROOT, "api/meetings-routes.js"),
+        resolve(ROOT, "api/routes/meetings/index.js"),
         "utf8",
     );
     assert.match(indexSource, /registerMeetingRoutes\(/);
@@ -556,10 +532,7 @@ test("jitsi API exposes user active meetings endpoint", () => {
         meetingsRoutesSource,
         /const activeMeetings = await store\.listActiveMeetings\(\)/,
     );
-    assert.match(
-        meetingsRoutesSource,
-        /if \(state\.authRequired && !state\.authCompletedAt\) continue;/,
-    );
+    assert.match(meetingsRoutesSource, /authRequired: state\.authRequired/);
 });
 
 test("jitsi opts into composer DOM parking for its stateful iframe", () => {
@@ -650,9 +623,15 @@ test("meeting routes and standalone shell load only module-owned layout styles",
     const shellSource = readFileSync(resolve(ROOT, "ui/index.html"), "utf8");
     assert.doesNotMatch(apiSource, /\/static\/styles\/reuse\/layout\.css/);
     assert.doesNotMatch(shellSource, /\/static\/styles\/reuse\/layout\.css/);
-    assert.match(apiSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.match(
+        apiSource,
+        /\/static\/modules\/jitsi-meet\/styles\/jitsi-meet\.css/,
+    );
     assert.doesNotMatch(apiSource, /\/static\/styles\/page-builder\.css/);
-    assert.match(shellSource, /\/static\/modules\/jitsi-meet\/jitsi-meet\.css/);
+    assert.match(
+        shellSource,
+        /\/static\/modules\/jitsi-meet\/styles\/jitsi-meet\.css/,
+    );
     assert.doesNotMatch(appSource, /ensureStylesheetLoaded/);
     assert.doesNotMatch(uiResourcesSource, /stylesheetUrls/);
     assert.doesNotMatch(appSource, /loadCommonStyles/);
@@ -669,7 +648,7 @@ test("profile avatar rendering is centralized behind the host capability", () =>
 });
 
 test("module CSS does not style host profile adapter structures", () => {
-    const source = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const source = readModuleStyles();
     assert.doesNotMatch(
         source,
         /\.(?:avatar-button|availability-|profile-capability-)/,
@@ -697,7 +676,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
         "utf8",
     );
     const lifecycleSource = readFileSync(
-        resolve(ROOT, "api/meeting-lifecycle-routes.js"),
+        resolve(ROOT, "api/routes/meeting-lifecycle/index.js"),
         "utf8",
     );
     assert.match(providerSource, /voip:startCall/);
@@ -744,7 +723,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
 
 test("component-window meetings suppress the meeting overlay", () => {
     const appSource = readFileSync(resolve(ROOT, "ui/app/index.js"), "utf8");
-    const stylesheet = readFileSync(resolve(ROOT, "ui/jitsi-meet.css"), "utf8");
+    const stylesheet = readModuleStyles();
     assert.match(appSource, /focusState !== null/);
     assert.match(appSource, /suppressMeetingOverlay = "true"/);
     assert.match(
@@ -845,5 +824,20 @@ test("required-participant component calls end when a participant leaves", () =>
     assert.match(
         roomSource,
         /handleRequiredParticipantLeft[\s\S]*?handleMeetingTerminated/,
+    );
+});
+
+test("initial empty meeting responses replace both loading presentations", () => {
+    const source = readFileSync(
+        resolve(ROOT, "ui/app/meetings-list.js"),
+        "utf8",
+    );
+    assert.match(
+        source,
+        /if \(resolveRequested \|\| activeMeetingsChanged\) renderActiveMeetings\(\)/,
+    );
+    assert.match(
+        source,
+        /if \(resolveRequested \|\| persistedMeetingsChanged\)[\s\S]*renderPersistedMeetings\(\)/,
     );
 });

@@ -359,7 +359,7 @@ export function registerShareFlowHooks(ctx) {
                     mountScriptUrl: "/static/modules/jitsi-meet/app/index.js",
                     stringsBaseUrl: ["/static/modules/jitsi-meet/languages"],
                     stylesheetUrls: [
-                        "/static/modules/jitsi-meet/jitsi-meet.css",
+                        "/static/modules/jitsi-meet/styles/jitsi-meet.css",
                     ],
                 };
             },

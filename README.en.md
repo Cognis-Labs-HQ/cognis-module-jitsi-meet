@@ -19,3 +19,5 @@ Run `npm install` followed by `npm test`. Tests and runtime code use only reposi
 ## Security
 
 Use a trusted HTTPS Jitsi deployment. Meeting API access is authenticated, meeting records are participant-gated, passwords are generated per meeting, and guest access is restricted by scoped share capabilities. Review the repository and its declared file digests before enabling it.
+
+Run local scripts in this checkout or use `npm --prefix <checkout> test`. They are not global Cognis commands. Installed operations use `cognisctl modules:jitsi-meet:ping`. The standards-mode browser regression uses an installed Chromium binary: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. See [integration contracts](docs/index.en.md) and the template-derived AGENTS.md.

@@ -1,0 +1,170 @@
+import { createFlowRuntime } from "./flow-runtime-fake.js";
+import test from "node:test";
+import assert from "node:assert/strict";
+import { JitsiMeetStore } from "../store.js";
+import { registerJitsiActionStore } from "../reuse/action-store.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
+import { profileIdentityFake } from "./profile-identity-fake.js";
+
+function createRuntime() {
+    const ctx = createFlowRuntime();
+    const { flows, executions } = ctx;
+    const events = [];
+    const databaseExecutor = {
+        async ensureTable({ name }) {
+            events.push(`schema:${name}`);
+        },
+        async executeCommand(command) {
+            events.push(command.option);
+            return {
+                rows:
+                    command.option === "SELECT"
+                        ? [
+                              {
+                                  instance_url: "https://meet.example",
+                                  updated_at: "2026-10-12",
+                              },
+                          ]
+                        : [],
+            };
+        },
+        transaction: async (operation) => operation(databaseExecutor),
+    };
+    const store = new JitsiMeetStore({
+        db: databaseExecutor,
+        profileIdentity: profileIdentityFake,
+    });
+    return {
+        ctx,
+        store,
+        flows,
+        executions,
+        events,
+        actions: registerJitsiActionStore(ctx, store),
+    };
+}
+
+test("every supported asynchronous store action has an executed scoped flow", async () => {
+    const { store, actions, flows, executions, events } = createRuntime();
+    const methods = Object.getOwnPropertyNames(JitsiMeetStore.prototype).filter(
+        (method) =>
+            method !== "ensureSchema" &&
+            JitsiMeetStore.prototype[method].constructor.name ===
+                "AsyncFunction",
+    );
+    assert.equal(flows.size, methods.length);
+    for (const method of methods)
+        assert.ok(Object.hasOwn(actions, method), method);
+    assert.notEqual(actions.getConfig, store.getConfig);
+    const config = await actions.getConfig();
+    assert.equal(config.instanceUrl, "https://meet.example");
+    assert.deepEqual(executions, [
+        "jitsi-meet:getConfig:initialize-store",
+        "jitsi-meet:getConfig:execute-action",
+    ]);
+    assert.equal(events.at(-1), "SELECT");
+    assert.deepEqual(
+        events.filter((event) => event.startsWith("schema:")),
+        ["schema:jitsi_module_config"],
+    );
+    await actions.listParticipants("meeting");
+    assert.ok(events.includes("schema:jitsi_chat_calls"));
+});
+
+test("configuration routes execute the same staged operation after authorization", async () => {
+    const { actions, executions } = createRuntime();
+    const handlers = new Map();
+    registerMeetingConfigRoutes({
+        router: Object.fromEntries(
+            ["get", "put", "delete"].map((method) => [
+                method,
+                (path, handler) => handlers.set(method, handler),
+            ]),
+        ),
+        store: actions,
+        requireAuth: () => ({ sub: "admin", role: "admin" }),
+        readJson: async () => ({ instanceUrl: "https://meet.example" }),
+        normalizeHttpUrl: (value) => value,
+        registerConfiguredJitsiOrigin: () => {},
+        sendJson: (response, status, payload) =>
+            Object.assign(response, { status, payload }),
+        sendError: () => assert.fail("Valid configuration was rejected"),
+    });
+    const response = {};
+    await handlers.get("put")({}, response);
+    assert.equal(response.status, 200);
+    assert.ok(executions.includes("jitsi-meet:saveConfig:execute-action"));
+    executions.length = 0;
+    // Authentication denial must precede any action runner or persistence.
+    const unauthorizedHandlers = new Map();
+    registerMeetingConfigRoutes({
+        router: Object.fromEntries(
+            ["get", "put", "delete"].map((method) => [
+                method,
+                (path, handler) => unauthorizedHandlers.set(method, handler),
+            ]),
+        ),
+        store: actions,
+        requireAuth: () => null,
+    });
+    await unauthorizedHandlers.get("put")({}, {});
+    assert.deepEqual(executions, []);
+});
+
+test("schema failure prevents the action and disposed flows reject future execution", async () => {
+    const { store, actions, flows, events } = createRuntime();
+    store.ensureConfigurationSchema = async () => {
+        throw new Error("schema unavailable");
+    };
+    await assert.rejects(
+        actions.saveConfig({ instanceUrl: "https://meet.example" }),
+        /schema unavailable/,
+    );
+    assert.deepEqual(events, []);
+    flows.clear();
+    await assert.rejects(actions.getConfig(), /Unregistered flow/);
+});
+
+test("an incomplete runner cannot silently bypass a Jitsi action", async () => {
+    const { actions, ctx } = createRuntime();
+    ctx.flow.run = async () => ({ stageResults: {} });
+    await assert.rejects(actions.getConfig(), /Jitsi action did not execute/);
+});
+
+test("disable during initialization prevents an already-started flow from persisting", async () => {
+    const { store, actions, flows, events } = createRuntime();
+    let finishInitialization;
+    store.ensureConfigurationSchema = () =>
+        new Promise((resolve) => {
+            finishInitialization = resolve;
+        });
+    const saving = actions.saveConfig({ instanceUrl: "https://meet.example" });
+    flows.clear();
+    finishInitialization();
+    await assert.rejects(saving, /Jitsi action is no longer active/);
+    assert.deepEqual(events, []);
+});
+
+test("configuration remains available when meeting uniqueness prevents initialization", async () => {
+    const runtime = createRuntime();
+    const ensureTable = runtime.store.db.ensureTable;
+    runtime.store.db.ensureTable = async (definition) => {
+        if (definition.name === "jitsi_meetings")
+            throw Object.assign(new Error("duplicate chat room"), {
+                code: "23505",
+            });
+        return ensureTable(definition);
+    };
+    assert.equal(
+        (await runtime.actions.getConfig()).instanceUrl,
+        "https://meet.example",
+    );
+    await assert.rejects(
+        runtime.actions.listActiveMeetings(),
+        /duplicate chat room/,
+    );
+    assert.equal(
+        (await runtime.actions.getConfig()).instanceUrl,
+        "https://meet.example",
+    );
+});

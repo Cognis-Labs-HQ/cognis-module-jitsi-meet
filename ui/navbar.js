@@ -1,78 +1,60 @@
 import { importReuseModule } from "./reuse/resources.js";
+import { logUi } from "./reuse/feedback.js";
 
 const [{ apiFetch }, { createI18n }] = await Promise.all([
     importReuseModule("api-client.js"),
     importReuseModule("i18n.js"),
 ]);
-import { logUi } from "./reuse/feedback.js";
-import "./voip-provider.js";
-
 const i18n = await createI18n({
     componentStringBaseUrls: ["/static/modules/jitsi-meet/languages"],
 });
-const LISTENER_BOUND_KEY = "__jitsiMeetNavbarListenersBound";
 const MEETINGS_PATHS = new Set(["/meeting", "/meetings"]);
-let pingController = null;
 
-function unmountMeetingPing() {
-    pingController?.abort();
-    pingController = null;
-}
-
-async function syncMeetingLink() {
-    const topnav = document.querySelector(".topnav");
-    if (!(topnav instanceof HTMLElement)) return;
-
-    let link = topnav.querySelector("[data-meeting-link]");
-    if (!(link instanceof HTMLAnchorElement)) {
-        link = document.createElement("a");
-        link.setAttribute("data-meeting-link", "true");
-        topnav.appendChild(link);
-    }
-    link.href = "/meetings";
-
-    link.textContent = i18n.t("ui.reuse.meetings");
-    if (!MEETINGS_PATHS.has(window.location.pathname)) {
-        unmountMeetingPing();
-        link.removeAttribute("hidden");
-        return;
-    }
-
-    unmountMeetingPing();
-    const controller = new AbortController();
-    pingController = controller;
-    try {
-        const response = await apiFetch("/api/v1/modules/jitsi-meet/ping", {
-            signal: controller.signal,
-        });
-        if (controller.signal.aborted) return;
-        if (!response.ok) {
-            link.setAttribute("hidden", "");
+export function mountProvider(ctx) {
+    const navbar = ctx.capabilities.get("ui:navbarLinks");
+    if (typeof navbar?.contribute !== "function")
+        throw new Error("Required UI capability unavailable: ui:navbarLinks");
+    const link = {
+        href: "/meetings",
+        label: i18n.t("ui.reuse.meetings"),
+        visible: true,
+    };
+    const release = navbar.contribute("jitsi-meet:meetings", link);
+    let pingController;
+    const syncMeetingLink = async () => {
+        pingController?.abort();
+        if (ctx.signal.aborted) return;
+        link.visible = true;
+        if (!MEETINGS_PATHS.has(window.location.pathname)) {
+            navbar.render();
             return;
         }
-        const payload = await response.json();
-        if (payload?.data?.ready !== true) {
-            link.setAttribute("hidden", "");
-            return;
+        const controller = new AbortController();
+        pingController = controller;
+        try {
+            const response = await apiFetch("/api/v1/modules/jitsi-meet/ping", {
+                signal: controller.signal,
+            });
+            const payload = response.ok ? await response.json() : null;
+            if (controller.signal.aborted || ctx.signal.aborted) return;
+            link.visible = payload?.data?.ready === true;
+            navbar.render();
+        } catch (error) {
+            if (controller.signal.aborted || ctx.signal.aborted) return;
+            logUi("error", "Meetings availability check failed.", {
+                component: "module:jitsi-meet",
+                operation: "check_meetings_availability",
+                error: error instanceof Error ? error.message : String(error),
+            });
+            link.visible = false;
+            navbar.render();
         }
-        link.removeAttribute("hidden");
-    } catch (error) {
-        if (controller.signal.aborted) return;
-        logUi("error", "Meetings availability check failed.", {
-            component: "module:jitsi-meet",
-            operation: "check_meetings_availability",
-            error: error instanceof Error ? error.message : String(error),
-        });
-        link.setAttribute("hidden", "");
-    } finally {
-        if (pingController === controller) pingController = null;
-    }
-}
-
-syncMeetingLink();
-if (!globalThis[LISTENER_BOUND_KEY]) {
-    window.addEventListener("focus", syncMeetingLink);
-    window.addEventListener("popstate", syncMeetingLink);
-    window.addEventListener("cognis:navbar-refresh", syncMeetingLink);
-    globalThis[LISTENER_BOUND_KEY] = true;
+    };
+    for (const event of ["focus", "popstate", "cognis:navbar-refresh"])
+        window.addEventListener(event, syncMeetingLink, { signal: ctx.signal });
+    void syncMeetingLink();
+    return () => {
+        pingController?.abort();
+        release();
+    };
 }

@@ -7,6 +7,7 @@ export async function deleteDisposableMeeting({
     deleteResourceShares,
     deleteChatroom,
     preserveChatroom = false,
+    releaseChatSource,
     log,
 }) {
     await deleteResourceShares?.({
@@ -42,6 +43,16 @@ export async function deleteDisposableMeeting({
             });
             throw error;
         }
+    }
+    if (meeting.chatRoomId && preserveChatroom) {
+        if (typeof releaseChatSource !== "function")
+            throw new Error("Messages source release is unavailable.");
+        await releaseChatSource({
+            roomId: meeting.chatRoomId,
+            actorAccountId: ownerAccountId,
+            sourceType: "meeting",
+            sourceId: meeting.id,
+        });
     }
     await store.deleteMeeting(meeting.id);
     log?.("info", "Disposable meeting data deleted.", {

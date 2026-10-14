@@ -5,7 +5,7 @@ import {
     canAccessMeeting,
     resolveMeetingPayloadOrReject,
 } from "../reuse/meeting-access.js";
-import { registerMeetingRoutes } from "../meetings-routes.js";
+import { registerMeetingRoutes } from "../routes/meetings/index.js";
 import { JitsiMeetStore } from "../store.js";
 
 function createProfileStoreWithoutHandle() {
@@ -89,6 +89,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
     const sendJsonCalls = [];
     const logCalls = [];
     const accessChecks = [];
+    let authPending = false;
     const profileStore = {
         async getProfile() {
             return null;
@@ -140,7 +141,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
                 return ["previous-handle"];
             },
             async getMeetingState() {
-                return { endedAt: null, authRequired: false };
+                return { endedAt: null, authRequired: authPending };
             },
         },
         profileStore,
@@ -201,6 +202,10 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
     assert.equal(logCalls.length, 1);
     assert.equal(logCalls[0][0], "error");
     assert.equal(logCalls[0][2].operation, "list_active_meetings");
+    authPending = true;
+    await activeRoute.handler({}, {});
+    assert.equal(sendJsonCalls[1].payload.data.length, 1);
+    assert.equal(sendJsonCalls[1].payload.data[0].state.authRequired, true);
 });
 
 test("LDAP participants retain meeting access when their profile handle changes", async () => {
@@ -345,4 +350,64 @@ test("jitsi meetings active endpoint passes account identity to access checks", 
         "ldap:Students:student-42",
     );
     assert.equal(accessChecks[0].profileStore, profileStore);
+});
+
+test("Share guest permission denial never retries without the required capability", async () => {
+    const { createShareGuestMeetingAccessResolver } =
+        await import("../reuse/meeting-access.js");
+    const requests = [];
+    const resolveAccess = createShareGuestMeetingAccessResolver(
+        (capabilityId) => {
+            assert.equal(capabilityId, "share:resolveGuestAccess");
+            return async (request) => {
+                requests.push(request);
+                return {
+                    shareGuest: true,
+                    authorized: !request.requiredCapability,
+                };
+            };
+        },
+    );
+    const claims = { sub: "guest", shareId: "share-1" };
+    assert.deepEqual(
+        await resolveAccess({
+            claims,
+            meetingId: "meeting-1",
+            requiredCapability: "meeting:join",
+        }),
+        {
+            isGuest: true,
+            allowed: false,
+            tokenRecord: null,
+        },
+    );
+    assert.deepEqual(requests, [
+        {
+            claims,
+            resourceType: "meeting",
+            resourceId: "meeting-1",
+            requiredCapability: "meeting:join",
+        },
+    ]);
+});
+
+test("Share guest resolver uses the current public provider and fails closed when absent", async () => {
+    const { createShareGuestMeetingAccessResolver } =
+        await import("../reuse/meeting-access.js");
+    let provider;
+    const resolveAccess = createShareGuestMeetingAccessResolver(() => provider);
+    const input = {
+        claims: { sub: "guest" },
+        meetingId: "meeting-1",
+        requiredCapability: "meeting:join",
+    };
+    assert.equal((await resolveAccess(input)).allowed, false);
+    provider = async () => ({ shareGuest: true, authorized: true });
+    assert.deepEqual(await resolveAccess(input), {
+        isGuest: true,
+        allowed: true,
+        tokenRecord: null,
+    });
+    provider = undefined;
+    assert.equal((await resolveAccess(input)).allowed, false);
 });

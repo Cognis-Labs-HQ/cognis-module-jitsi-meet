@@ -2,7 +2,7 @@ import {
     buildChatMarkup,
     buildParticipantsMarkup,
     buildStageMarkup,
-} from "./markup.js";
+} from "./templates/markup.js";
 
 export function createMeetingPageElements(
     i18n,

@@ -19,3 +19,5 @@ Jalankan `npm install`, lalu `npm test`. Pengujian dan kode runtime hanya memaka
 ## Keamanan
 
 Gunakan penerapan Jitsi HTTPS yang tepercaya. Akses API rapat diautentikasi, catatan rapat dibatasi untuk peserta, kata sandi dibuat untuk setiap rapat, dan akses tamu dibatasi oleh kapabilitas berbagi bercakupan. Tinjau repositori dan digest berkas yang dideklarasikan sebelum mengaktifkannya.
+
+Jalankan skrip lokal di checkout atau gunakan `npm --prefix <checkout> test`; ini bukan perintah Cognis global. Operasi terpasang memakai `cognisctl modules:jitsi-meet:ping`. Uji browser memakai Chromium terpasang: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Lihat [kontrak integrasi](docs/index.id.md) dan AGENTS.md turunan templat.

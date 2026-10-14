@@ -1,5 +1,5 @@
-const WHITEBOARD_MODULE_UUID = "5bb6105d-14d2-5d9d-a284-b2969fb4e35d";
-const WHITEBOARD_ROUTE_ID = "module.nextcloud.whiteboard.canvas";
+import { waitForRetry } from "./reuse/abortable-delay.js";
+const uncommittedMeetingCanvases = new WeakMap();
 
 function getParticipantHandles(meeting) {
     return (meeting?.participants ?? [])
@@ -12,22 +12,6 @@ function getParticipantHandles(meeting) {
             ).trim(),
         )
         .filter(Boolean);
-}
-
-function currentUserOwnsMeetingWhiteboard(state) {
-    const currentUsername = String(
-        state.currentProfile?.handle ?? state.currentProfile?.username ?? "",
-    )
-        .trim()
-        .toLowerCase();
-    const organizerUsername = String(state.meeting?.createdBy ?? "")
-        .trim()
-        .toLowerCase();
-    return Boolean(
-        currentUsername &&
-        organizerUsername &&
-        currentUsername === organizerUsername,
-    );
 }
 
 const PIP_BASE_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
@@ -49,64 +33,6 @@ export function resolveMeetingPipMinimumSize(meeting) {
     };
 }
 
-export async function synchronizeWhiteboardParticipantAccess(trigger, state) {
-    const whiteboardId = String(
-        state.meeting?.state?.whiteboardId ??
-            trigger.preparedWhiteboardId ??
-            "",
-    ).trim();
-    if (
-        !whiteboardId ||
-        state.shareAccessToken ||
-        trigger.disposableCanvas ||
-        !currentUserOwnsMeetingWhiteboard(state)
-    ) {
-        return null;
-    }
-    if (typeof trigger.whiteboardGateway?.expandCanvasAccess !== "function") {
-        return false;
-    }
-    const participantHandles = getParticipantHandles(state.meeting).sort();
-    const signature = `${whiteboardId}:${participantHandles.join(",")}`;
-    if (
-        trigger.participantAccessSignature === signature ||
-        trigger.participantAccessAttemptSignature === signature
-    ) {
-        return true;
-    }
-    trigger.participantAccessAttemptSignature = signature;
-    const result = await trigger.whiteboardGateway.expandCanvasAccess({
-        whiteboardId,
-        participantHandles,
-    });
-    const expandedParticipants = new Set(
-        (Array.isArray(result?.participants) ? result.participants : []).map(
-            (participant) => String(participant).trim().toLowerCase(),
-        ),
-    );
-    if (
-        String(result?.whiteboardId ?? "").trim() !== whiteboardId ||
-        participantHandles.some(
-            (participant) =>
-                !expandedParticipants.has(participant.toLowerCase()),
-        )
-    ) {
-        throw new Error("whiteboard_participant_access_invalid_response");
-    }
-    trigger.participantAccessSignature = signature;
-    return true;
-}
-
-export function meetingHasInvitedParticipants(meeting) {
-    if (typeof meeting?.hasInvitedParticipants === "boolean") {
-        return meeting.hasInvitedParticipants;
-    }
-    const organizerHandle = String(meeting?.createdBy ?? "").trim();
-    return getParticipantHandles(meeting).some(
-        (handle) => !organizerHandle || handle !== organizerHandle,
-    );
-}
-
 export function meetingWhiteboardShouldOpen(meeting) {
     return (
         meeting?.state?.whiteboardOpen === true &&
@@ -114,80 +40,28 @@ export function meetingWhiteboardShouldOpen(meeting) {
     );
 }
 
-function waitForProviderRetry(signal, delayMs) {
-    return new Promise((resolve) => {
-        if (signal?.aborted) {
-            resolve();
-            return;
-        }
-        const timeoutId = setTimeout(resolve, delayMs);
-        signal?.addEventListener(
-            "abort",
-            () => {
-                clearTimeout(timeoutId);
-                resolve();
-            },
-            { once: true },
-        );
-    });
-}
-
-export async function ensureComponentPage(trigger, meetingId) {
+export async function ensureComponentPage(trigger) {
     if (!trigger.componentPage) {
-        trigger.componentPage = await trigger.requestComponentPage({
-            componentUuid: WHITEBOARD_MODULE_UUID,
-            routeId: WHITEBOARD_ROUTE_ID,
-            mode: "overlay",
-            context: { meetingId },
-        });
+        trigger.componentPage =
+            await trigger.whiteboardGateway.requestCanvasPage({
+                signal: trigger.signal,
+            });
     }
-    if (!trigger.componentPage) {
+    if (!trigger.componentPage)
         throw new Error("whiteboard_component_page_unavailable");
-    }
     return trigger.componentPage;
 }
 
-function spawnComponentWindow(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
-    return trigger.spawnComponentPage({
-        componentUuid: WHITEBOARD_MODULE_UUID,
-        routeId: WHITEBOARD_ROUTE_ID,
-        mode: "overlay",
-        elementId: trigger.componentHost.id,
-        context: {
-            meetingId,
-            title: meetingName,
-            whiteboardId,
-            instantCanvas: trigger.disposableCanvas,
-            disposable: trigger.disposableCanvas,
-            frameless: true,
-            borderless: true,
-            contentScrolling: false,
-            layout: {
-                borderless: true,
-                fillParent: true,
-                scrollOwner: "document",
-            },
-        },
-        signal: trigger.signal,
-    });
-}
-
-export async function spawnComponentWindowWithRetry(
-    trigger,
-    { meetingId, meetingName, whiteboardId },
-) {
+export async function spawnComponentWindowWithRetry(trigger, { whiteboardId }) {
     let lastError;
-    const waitBeforeRetry =
-        trigger.waitForComponentWindowRetry ?? waitForProviderRetry;
+    const waitBeforeRetry = trigger.waitForComponentWindowRetry ?? waitForRetry;
     for (let attempt = 0; attempt < 6; attempt += 1) {
+        trigger.signal?.throwIfAborted();
         try {
-            const componentWindow = await spawnComponentWindow(trigger, {
-                meetingId,
-                meetingName,
+            const componentWindow = await trigger.whiteboardGateway.openCanvas({
                 whiteboardId,
+                elementId: trigger.componentHost.id,
+                signal: trigger.signal,
             });
             if (componentWindow) return componentWindow;
             lastError = new Error("whiteboard_component_window_unavailable");
@@ -235,15 +109,22 @@ export function meetingCanvasNeedsPreparation(trigger, state) {
     );
 }
 
-export function prepareMeetingCanvas(trigger, state) {
+export function prepareMeetingCanvas(
+    trigger,
+    state,
+    { refreshReference = false } = {},
+) {
     if (
-        trigger.preparedWhiteboardId ||
+        (!refreshReference && trigger.preparedWhiteboardId) ||
         !state.meeting?.id ||
         !state.meeting?.roomSlug
     ) {
         return Promise.resolve();
     }
-    if (trigger.preparationFailedMeetingId === state.meeting.id) {
+    if (
+        !refreshReference &&
+        trigger.preparationFailedMeetingId === state.meeting.id
+    ) {
         return Promise.resolve();
     }
     if (trigger.preparationPromise) return trigger.preparationPromise;
@@ -266,50 +147,88 @@ export function prepareMeetingCanvas(trigger, state) {
         return Promise.resolve();
     }
     const participantHandles = getParticipantHandles(meeting);
-    trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
+    trigger.disposableCanvas = meeting.disposable === true;
     const disposableCanvas = trigger.disposableCanvas;
-    if (
-        !disposableCanvas &&
-        typeof trigger.whiteboardGateway.createCanvas !== "function"
-    ) {
-        throw new Error("whiteboard_persistent_canvas_unavailable");
+    const applyPreparedCanvas = (whiteboardId) => {
+        if (
+            trigger.signal?.aborted ||
+            state.meeting?.id !== meetingId ||
+            trigger.preparedMeetingId !== meetingId
+        )
+            return;
+        trigger.preparedWhiteboardId = whiteboardId;
+        trigger.preparationFailedMeetingId = "";
+    };
+    let providerCanvases = uncommittedMeetingCanvases.get(
+        trigger.whiteboardGateway,
+    );
+    if (!providerCanvases) {
+        providerCanvases = new Map();
+        uncommittedMeetingCanvases.set(
+            trigger.whiteboardGateway,
+            providerCanvases,
+        );
     }
-    const preparationPromise = (
-        disposableCanvas
-            ? trigger.whiteboardGateway.createDisposableCanvas({
-                  resourceType: "meeting",
-                  resourceId: meetingName,
-                  title: meetingName,
-                  participantHandles,
-              })
-            : trigger.whiteboardGateway.createCanvas({
-                  resourceType: "meeting",
-                  resourceId: meetingName,
-                  title: meetingName,
-                  participantHandles,
-              })
-    )
-        .then((canvas) => {
-            if (
-                state.meeting?.id !== meetingId ||
-                trigger.preparedMeetingId !== meetingId
-            ) {
-                return;
-            }
-            trigger.preparedWhiteboardId = String(
-                canvas?.whiteboardId ?? canvas?.id ?? "",
-            ).trim();
-            if (!trigger.preparedWhiteboardId) {
-                throw new Error("whiteboard_id_missing");
-            }
-            trigger.preparationFailedMeetingId = "";
-            trigger.preparedMeetingId = meetingId;
-        })
+    if (refreshReference) {
+        trigger.preparedWhiteboardId = "";
+        providerCanvases.delete(meetingId);
+    }
+    let cachedCanvas = providerCanvases.get(meetingId);
+    if (cachedCanvas?.disposable !== disposableCanvas) {
+        if (
+            !disposableCanvas &&
+            typeof trigger.whiteboardGateway.createCanvas !== "function"
+        ) {
+            throw new Error("whiteboard_persistent_canvas_unavailable");
+        }
+        cachedCanvas = {
+            disposable: disposableCanvas,
+        };
+        providerCanvases.set(meetingId, cachedCanvas);
+        cachedCanvas.promise = Promise.resolve()
+            .then(() => {
+                trigger.signal?.throwIfAborted();
+                const createCanvas = disposableCanvas
+                    ? trigger.whiteboardGateway.createDisposableCanvas
+                    : trigger.whiteboardGateway.createCanvas;
+                return createCanvas.call(trigger.whiteboardGateway, {
+                    resourceType: "meeting",
+                    resourceId: meetingId,
+                    title: meetingName,
+                    participantHandles,
+                });
+            })
+            .then((canvas) => {
+                const whiteboardId = String(
+                    canvas?.whiteboardId ?? canvas?.id ?? "",
+                ).trim();
+                if (!whiteboardId) throw new Error("whiteboard_id_missing");
+                cachedCanvas.whiteboardId = whiteboardId;
+                return whiteboardId;
+            })
+            .catch((error) => {
+                if (providerCanvases.get(meetingId) === cachedCanvas)
+                    providerCanvases.delete(meetingId);
+                throw error;
+            });
+    }
+    const preparationPromise = cachedCanvas.promise
+        .then(applyPreparedCanvas)
         .finally(() => {
-            if (trigger.preparationPromise === preparationPromise) {
+            if (trigger.preparationPromise === preparationPromise)
                 trigger.preparationPromise = null;
-            }
         });
     trigger.preparationPromise = preparationPromise;
     return preparationPromise;
+}
+
+export function confirmMeetingCanvasMapping(
+    meetingId,
+    whiteboardId,
+    whiteboardGateway,
+) {
+    const providerCanvases = uncommittedMeetingCanvases.get(whiteboardGateway);
+    if (providerCanvases?.get(meetingId)?.whiteboardId === whiteboardId) {
+        providerCanvases.delete(meetingId);
+    }
 }

@@ -19,3 +19,5 @@ Führe `npm install` und anschließend `npm test` aus. Tests und Laufzeitcode ve
 ## Sicherheit
 
 Verwende eine vertrauenswürdige Jitsi-Bereitstellung mit HTTPS. Der Zugriff auf die Besprechungs-API ist authentifiziert, Besprechungsdatensätze sind auf Teilnehmer beschränkt, Passwörter werden pro Besprechung erzeugt und Gastzugriffe sind durch bereichsgebundene Freigabefähigkeiten eingeschränkt. Prüfe das Repository und die deklarierten Datei-Digests vor der Aktivierung.
+
+Lokale Skripte im Checkout oder mit `npm --prefix <checkout> test` ausführen; sie sind keine globalen Cognis-Befehle. Installierte Operationen nutzen `cognisctl modules:jitsi-meet:ping`. Der Browsertest verwendet ein installiertes Chromium: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Siehe [Integrationsverträge](docs/index.de.md) und die vorlagenbasierte AGENTS.md.

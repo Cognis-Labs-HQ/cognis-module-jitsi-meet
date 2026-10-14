@@ -1,3 +1,5 @@
+import { resolveMeetingSurface } from "./reuse/meeting-surface.js";
+import { isMeetingSelectionLocked } from "./reuse/meeting-transition.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import { buildMeetingJoinUrl, resolveThemeMode } from "../meeting-embed.js";
 import { messagesClient } from "../reuse/gateway-clients.js";
@@ -63,24 +65,17 @@ export function createInteractiveHandlersBinder({
         const bindSignal = bindController.signal;
         recoverMeetingSessionAfterComposerRender();
         const container = root;
-        const findButton = container.querySelector(
-            "#jitsi-find-participants-btn",
-        );
-        const startButton = container.querySelector("#jitsi-start-btn");
-        const authButton = container.querySelector("#jitsi-auth-btn");
-        const reclaimButton = container.querySelector("#jitsi-reclaim-btn");
-        const chatForm = container.querySelector("#jitsi-chat-form");
-        const chatInput = container.querySelector("#jitsi-chat-input");
-        const chatThread = container.querySelector("#jitsi-chat-thread");
-        const chatParticipantStrip = container.querySelector(
-            "#jitsi-chat-participant-strip",
-        );
-        const chatReturnButton = container.querySelector(
-            "#jitsi-chat-return-btn",
-        );
-        const activeMeetingsEl = container.querySelector(
-            "#jitsi-active-meetings",
-        );
+        const { query } = resolveMeetingSurface(root, state);
+        const findButton = query("#jitsi-find-participants-btn");
+        const startButton = query("#jitsi-start-btn");
+        const authButton = query("#jitsi-auth-btn");
+        const reclaimButton = query("#jitsi-reclaim-btn");
+        const chatForm = query("#jitsi-chat-form");
+        const chatInput = query("#jitsi-chat-input");
+        const chatThread = query("#jitsi-chat-thread");
+        const chatParticipantStrip = query("#jitsi-chat-participant-strip");
+        const chatReturnButton = query("#jitsi-chat-return-btn");
+        const activeMeetingsEl = query("#jitsi-active-meetings");
         if (findButton instanceof HTMLButtonElement) {
             findButton.addEventListener(
                 "click",
@@ -167,10 +162,8 @@ export function createInteractiveHandlersBinder({
             },
             { signal: bindSignal },
         );
-        const overlay = container.querySelector("#jitsi-overlay");
-        const availablePool = container.querySelector(
-            "#jitsi-available-participants",
-        );
+        const overlay = query("#jitsi-overlay");
+        const availablePool = query("#jitsi-available-participants");
         preflightHandlers.bindParticipantReturnClick(bindSignal);
         const clearActiveParticipantDrag = () => {
             if (state.dragUsername === null) return;
@@ -249,7 +242,7 @@ export function createInteractiveHandlersBinder({
             activeMeetingsEl.addEventListener(
                 "click",
                 (event) => {
-                    if (state.meeting?.id || isMeetingActive()) return;
+                    if (isMeetingSelectionLocked(state)) return;
                     const button = event.target.closest(
                         ".jitsi-active-meeting-item[data-meeting-id]",
                     );
@@ -543,12 +536,8 @@ export function createInteractiveHandlersBinder({
                 { signal: bindSignal },
             );
         }
-        const leaveAloneButton = container.querySelector(
-            "#jitsi-leave-alone-btn",
-        );
-        const remainAloneButton = container.querySelector(
-            "#jitsi-remain-alone-btn",
-        );
+        const leaveAloneButton = query("#jitsi-leave-alone-btn");
+        const remainAloneButton = query("#jitsi-remain-alone-btn");
         if (leaveAloneButton instanceof HTMLButtonElement) {
             leaveAloneButton.addEventListener(
                 "click",

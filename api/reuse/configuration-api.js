@@ -1,4 +1,5 @@
-import { registerMeetingConfigRoutes } from "../config-routes.js";
+import { registerJitsiActionStore } from "./action-store.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
 import { readJson } from "./http.js";
 import { checkHttpLiveness } from "./http-liveness.js";
 import { resolveStore } from "./store-runtime.js";
@@ -32,7 +33,7 @@ async function registerStoredJitsiOrigin({
     log,
 }) {
     try {
-        await store.ensureSchema();
+        await store.ensureConfigurationSchema();
         registerConfiguredJitsiOrigin(
             registerScriptOrigins,
             await store.getConfig(),
@@ -46,7 +47,11 @@ async function registerStoredJitsiOrigin({
     }
 }
 
-export function registerJitsiConfigurationApi(router, ctx) {
+export function registerJitsiConfigurationApi(
+    router,
+    ctx,
+    { enabled = false } = {},
+) {
     const dbExecutor = ctx.getCapability("db:executor");
     const requireAuth = ctx.getCapability("auth:requireAuth");
     const profileIdentity = ctx.getCapability("social:profile:identity");
@@ -79,14 +84,15 @@ export function registerJitsiConfigurationApi(router, ctx) {
     }
 
     const log = ctx.getCapability("logging:log") ?? ctx.log;
-    const store = resolveStore(
+    const rawStore = resolveStore(
         dbExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         profileIdentity,
     );
+    const store = enabled ? registerJitsiActionStore(ctx, rawStore) : rawStore;
     const runEnableTest = async () => {
-        await store.ensureSchema();
+        await store.ensureConfigurationSchema();
         const config = await store.getConfig();
         if (!config.instanceUrl) {
             return {
@@ -108,13 +114,9 @@ export function registerJitsiConfigurationApi(router, ctx) {
             data: { ...liveness, instanceUrl: config.instanceUrl },
         };
     };
-    ctx.getCapability("system:ctx")?.contributePublicCapability?.(
-        "module:jitsi-meet:enableTest",
-        runEnableTest,
-    );
     const contributeHealth = ctx.getCapability("system:health:contribute");
     if (typeof contributeHealth === "function") {
-        contributeHealth("module:jitsi-meet", async () => {
+        const removeHealth = contributeHealth("module:jitsi-meet", async () => {
             const result = await runEnableTest();
             return {
                 componentId: "jitsi-meet",
@@ -125,6 +127,7 @@ export function registerJitsiConfigurationApi(router, ctx) {
                 data: result.data,
             };
         });
+        ctx.registerDisposer(removeHealth);
     }
     router.post(
         "/api/v1/modules/jitsi-meet/admin/enable-test",

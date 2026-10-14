@@ -281,6 +281,7 @@ export async function mount(
     };
     const meetingHandlers = createMeetingHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,
@@ -290,6 +291,7 @@ export async function mount(
     });
     const preflightHandlers = createPreflightHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,
@@ -298,6 +300,7 @@ export async function mount(
     });
     const embedHandlers = createEmbedHandlers({
         root,
+        signal,
         state,
         i18n,
         apiFetch,
@@ -464,12 +467,10 @@ export async function mount(
         await loadActiveMeetings({ resolveRequested: true });
         startActiveMeetingsPolling();
     }
+    if (signal?.aborted) return;
     await runPreflightCheck();
 }
-await mountWhenDirect(async (root) => {
-    const mountController = new AbortController();
-    await mount(root, { signal: mountController.signal });
-}).catch((error) => {
+await mountWhenDirect(mount).catch((error) => {
     void logUi("error", "Jitsi Meet page mount failed.", {
         component: "module:jitsi-meet",
         operation: "mount_meetings_page",

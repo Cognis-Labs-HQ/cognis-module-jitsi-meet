@@ -1,130 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingWhiteboardRoutes } from "../whiteboard-routes.js";
-import { profileIdentityFake } from "./profile-identity-fake.js";
-
-function createRecorder() {
-    return {
-        status: 0,
-        body: null,
-        writeHead(status) {
-            this.status = status;
-        },
-        end(body) {
-            this.body = JSON.parse(body);
-        },
-    };
-}
-
-function createRoutes({
-    authorized = true,
-    requesterUsername = "alice",
-    organizerUsername = "alice",
-    meetingDisposable = false,
-    participants = ["alice"],
-    presence = [],
-    state = { whiteboardOpenVotes: [] },
-    claims = { sub: "account-alice" },
-    guestAllowed = false,
-    board = {
-        id: "board-1",
-        title: "Planning",
-        createdBy: requesterUsername,
-    },
-    whiteboardAvailable = true,
-    beforeStateRead = () => {},
-    whiteboardApproval = { approved: true },
-} = {}) {
-    const handlers = new Map();
-    const stateUpdates = [];
-    const approvalRequests = [];
-    const membershipAdds = [];
-    registerMeetingWhiteboardRoutes({
-        router: {
-            get(path, handler) {
-                handlers.set(`GET ${path}`, handler);
-            },
-            post(path, handler) {
-                handlers.set(`POST ${path}`, handler);
-            },
-        },
-        ctx: { log() {} },
-        store: {
-            async ensureSchema() {},
-            async getMeetingById(id) {
-                return {
-                    id,
-                    meetingName: "Planning",
-                    createdBy: organizerUsername,
-                    disposable: meetingDisposable,
-                };
-            },
-            async getMeetingState() {
-                beforeStateRead();
-                return state;
-            },
-            async listPresence() {
-                return presence;
-            },
-            async listParticipants() {
-                return participants;
-            },
-            filterCurrentPresenceEntries(entries) {
-                return entries;
-            },
-            async updateMeetingState(meetingId, update) {
-                stateUpdates.push({ meetingId, update });
-                Object.assign(state, update);
-            },
-        },
-        profileStore: {
-            async getProfileByHandle(handle) {
-                return { accountId: `account-${handle}` };
-            },
-            async getProfile(accountId) {
-                return {
-                    handle:
-                        accountId === claims.sub
-                            ? requesterUsername
-                            : String(accountId).replace(/^account-/, ""),
-                };
-            },
-        },
-        profileIdentity: profileIdentityFake,
-        requireAuth: (req) => req.claims ?? claims,
-        readJson: async (req) => req.body,
-        sendJson(res, status, body) {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
-        },
-        sendError(res, status, code, message) {
-            res.writeHead(status);
-            res.end(JSON.stringify({ error: { code, message } }));
-        },
-        canAccessMeeting: async () => authorized,
-        resolveShareGuestMeetingAccess: async () => ({
-            isGuest: String(claims.sub).startsWith("share:"),
-            allowed: guestAllowed,
-        }),
-        resolveShareGuestPresenceUsername: () =>
-            String(claims.sub).startsWith("share:")
-                ? `guest:${String(claims.sub).split(":")[1]}`
-                : "",
-        listClassroomParticipantHandles: async () => [],
-        fetchBoardData: async () => board,
-        isWhiteboardProviderAvailable: () => whiteboardAvailable,
-        requestWhiteboardOpenApproval: async (request) => {
-            approvalRequests.push(request);
-            return whiteboardApproval;
-        },
-        resolveWhiteboardMembership: () => ({
-            async add(request) {
-                membershipAdds.push(request);
-            },
-        }),
-    });
-    return { approvalRequests, handlers, membershipAdds, stateUpdates };
-}
+import {
+    createRecorder,
+    createRoutes,
+} from "./reuse/whiteboard-route-fixture.js";
 
 test("backend publishes consistent Whiteboard availability", async () => {
     for (const available of [true, false]) {
@@ -135,6 +14,21 @@ test("backend publishes consistent Whiteboard availability", async () => {
         )({}, response);
         assert.equal(response.status, 200);
         assert.equal(response.body.data.available, available);
+        assert.equal(
+            response.body.data.requiredCapability,
+            "whiteboard:fetchBoardData",
+        );
+        assert.equal(
+            response.body.data.testedProvider,
+            "nextcloud-whiteboard@2.3.151",
+        );
+        assert.deepEqual(response.body.data.provider, {
+            version: "2.3.151",
+            integrity: "verified",
+            privileged: true,
+            trustedSource: true,
+        });
+        assert.equal(response.headers["cache-control"], "no-store");
     }
 });
 
@@ -427,8 +321,18 @@ test("Whiteboard activation rechecks screen sharing after verification", async (
 
 test("meeting participants cannot map an unrelated provider whiteboard", async () => {
     for (const board of [
-        { id: "board-1", title: "Other meeting", createdBy: "alice" },
-        { id: "board-1", title: "Planning", createdBy: "mallory" },
+        {
+            id: "board-1",
+            title: "Other meeting",
+            createdBy: "alice",
+            createdByAccountId: "account-alice",
+        },
+        {
+            id: "board-1",
+            title: "Planning",
+            createdBy: "alice",
+            createdByAccountId: "account-mallory",
+        },
         null,
     ]) {
         const routes = createRoutes({ board });
@@ -687,4 +591,190 @@ test("a mapped participant canvas reopens without another consensus vote", async
     assert.equal(response.body.data.whiteboardOpen, true);
     assert.equal(response.body.data.pendingConsensus, false);
     assert.equal(response.body.data.voteCount, 0);
+});
+
+function openWhiteboardState() {
+    return {
+        whiteboardActive: true,
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+        whiteboardOpenVotes: [],
+    };
+}
+
+async function followExistingBoard(routes, changes = {}) {
+    const response = createRecorder();
+    await routes.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(
+        {
+            body: {
+                meetingId: "meeting-1",
+                whiteboardId: "board-1",
+                disposable: false,
+                active: true,
+                followExisting: true,
+                ...changes,
+            },
+        },
+        response,
+    );
+    return response;
+}
+
+test("automatic opening grants the joining account access without another vote or state write", async () => {
+    const state = openWhiteboardState();
+    const routes = createRoutes({
+        state,
+        requesterUsername: "bob",
+        claims: { sub: "account-bob" },
+        participants: ["alice", "bob", "carol"],
+        presence: [{ username: "alice" }, { username: "bob" }],
+        board: { id: "board-1", title: "Planning", createdBy: "alice" },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 200);
+    assert.deepEqual(response.body.data, {
+        whiteboardOpen: true,
+        whiteboardId: "board-1",
+        whiteboardDisposable: false,
+    });
+    assert.deepEqual(routes.membershipAdds, [
+        {
+            whiteboardId: "board-1",
+            actorAccountId: "account-alice",
+            userAccountId: "account-bob",
+        },
+    ]);
+    assert.deepEqual(routes.approvalRequests, []);
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+for (const change of [
+    { whiteboardActive: false },
+    { endedAt: "2026-10-12" },
+    { screenSharingActive: true },
+    { whiteboardId: "replacement-board" },
+    { whiteboardDisposable: true },
+]) {
+    test(`automatic access rejects changed mapping ${JSON.stringify(change)}`, async () => {
+        const routes = createRoutes({
+            state: { ...openWhiteboardState(), ...change },
+        });
+        const response = await followExistingBoard(routes);
+        assert.equal(response.status, 409);
+        assert.equal(response.body.error.code, "whiteboard_state_changed");
+        assert.deepEqual(routes.membershipAdds, []);
+        assert.deepEqual(routes.stateUpdates, []);
+    });
+}
+
+test("a board closed during access approval is never reopened", async () => {
+    const state = openWhiteboardState();
+    const routes = createRoutes({
+        state,
+        beforeMembershipAdd: () => {
+            state.whiteboardActive = false;
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "whiteboard_state_changed");
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+test("provider failure prevents automatic mounting from receiving an open response", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        beforeMembershipAdd: () => {
+            throw new Error("provider unavailable");
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 503);
+    assert.equal(response.body.error.code, "whiteboard_membership_unavailable");
+    assert.deepEqual(routes.stateUpdates, []);
+});
+
+test("unauthorized meeting users cannot grant themselves Whiteboard membership", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        authorized: false,
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 403);
+    assert.deepEqual(routes.membershipAdds, []);
+});
+
+test("link guests follow the exact mapped board without an account membership grant", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        claims: { sub: "share:guest" },
+        guestAllowed: true,
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 200);
+    assert.deepEqual(routes.membershipAdds, []);
+    assert.deepEqual(routes.approvalRequests, []);
+});
+
+test("Whiteboard diagnostics report the installed release without promising version enforcement", async () => {
+    for (const version of ["2.3.145", "2.3.151", "3.0.0"]) {
+        const routes = createRoutes({ providerVersion: version });
+        const response = createRecorder();
+        await routes.handlers.get(
+            "GET /api/v1/modules/jitsi-meet/whiteboard/availability",
+        )({}, response);
+        assert.equal(response.body.data.provider.version, version);
+        assert.equal(response.body.data.available, true);
+        assert.equal(
+            response.body.data.testedProvider,
+            "nextcloud-whiteboard@2.3.151",
+        );
+    }
+});
+
+test("a canvas bound to another meeting cannot replace the meeting mapping", async () => {
+    const harness = createRoutes({
+        sourceBinding: {
+            bind: async () => {
+                throw Object.assign(new Error("Already bound"), {
+                    status: 409,
+                    code: "source_conflict",
+                });
+            },
+        },
+    });
+    const response = createRecorder();
+    const request = {
+        body: {
+            meetingId: "meeting-1",
+            whiteboardId: "board-1",
+            active: true,
+            disposable: false,
+        },
+    };
+    await harness.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(request, response);
+    assert.equal(response.status, 409);
+    assert.deepEqual(harness.stateUpdates, []);
+});
+
+test("following an open canvas cannot bind it to a competing meeting", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        sourceBinding: {
+            bind: async () => {
+                throw Object.assign(new Error("Already bound"), {
+                    status: 409,
+                    code: "source_conflict",
+                });
+            },
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "source_conflict");
+    assert.deepEqual(routes.membershipAdds, []);
 });

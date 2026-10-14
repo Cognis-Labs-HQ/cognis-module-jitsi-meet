@@ -19,3 +19,5 @@ Cognis の **モジュール → モジュールソース**からこのリポジ
 ## セキュリティ
 
 信頼できる HTTPS の Jitsi 環境を使用してください。会議 API へのアクセスには認証が必要で、会議レコードは参加者に限定され、会議ごとにパスワードが生成されます。ゲストアクセスはスコープ付き共有ケイパビリティによって制限されます。有効化する前に、リポジトリと宣言されたファイルダイジェストを確認してください。
+
+ローカルスクリプトはチェックアウト内、または `npm --prefix <checkout> test` で実行し、Cognis のグローバルコマンドとは区別します。導入済み操作は `cognisctl modules:jitsi-meet:ping` です。ブラウザー検証は導入済み Chromium を使います: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`。[統合契約](docs/index.ja.md) とテンプレート由来の AGENTS.md を参照してください。

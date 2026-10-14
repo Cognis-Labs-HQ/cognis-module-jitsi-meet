@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
     deleteDisposableMeeting,
     registerMeetingLifecycleRoutes,
-} from "../meeting-lifecycle-routes.js";
+} from "../routes/meeting-lifecycle/index.js";
 import { profileIdentityFake } from "./profile-identity-fake.js";
 
 function createRecorder() {
@@ -76,6 +76,8 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
         meeting: { id: "meeting-1", chatRoomId: "pm-room-1" },
         ownerAccountId: "account-1",
         preserveChatroom: true,
+        releaseChatSource: async (input) =>
+            operations.push(["release_source", input]),
         deleteResourceShares: async (input) => {
             operations.push(["delete_shares", input]);
         },
@@ -101,6 +103,15 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
                 resourceId: "meeting-1",
             },
         ],
+        [
+            "release_source",
+            {
+                roomId: "pm-room-1",
+                actorAccountId: "account-1",
+                sourceType: "meeting",
+                sourceId: "meeting-1",
+            },
+        ],
         ["delete_meeting", "meeting-1"],
         [
             "log",
@@ -119,6 +130,7 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
 });
 
 test("VoIP call creation derives participants from authorized room membership", async () => {
+    const groupRequests = [];
     const handlers = new Map();
     const createdMeetings = [];
     const requestedMemberships = [];
@@ -166,6 +178,10 @@ test("VoIP call creation derives participants from authorized room membership", 
                 memberAccountIds: ["account-alice", "account-bob"],
             };
         },
+        resolveGroupChat: async (input) => {
+            groupRequests.push(input);
+            return { roomId: input.roomId };
+        },
         resolveRequesterUsername: async () => requesterUsername,
         normalizeHandleKey: (handle) => handle,
         createMeetingPayload: async (input) => {
@@ -199,6 +215,10 @@ test("VoIP call creation derives participants from authorized room membership", 
     assert.equal(createdMeetings[0].chatRoomId, "room-1");
     assert.equal(payloadRequests[0].includeChatRoom, false);
 
+    assert.deepEqual(groupRequests[0].source, {
+        sourceType: "meeting",
+        sourceId: "meeting-1",
+    });
     mappedMeeting = { id: "meeting-2", disposable: true };
     requesterUsername = "alice-renamed";
     const reusedResponse = createRecorder();
@@ -289,7 +309,7 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     });
     const createResponse = createRecorder();
     await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
-        { body: { participants: [], forceNew: true } },
+        { body: { participants: [] } },
         createResponse,
     );
     assert.equal(createResponse.status, 200);
@@ -303,16 +323,18 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
     );
     assert.equal(createResponse.body.data.chatRoomId, "chat-1");
     assert.equal(createResponse.body.data.chatUrl, "/messages/chat-1");
-    assert.equal(meetingCreationRequests[0].forceNew, true);
+    assert.equal(Object.hasOwn(meetingCreationRequests[0], "forceNew"), false);
 
     meeting.chatRoomId = "missing-chat";
     const recreateResponse = createRecorder();
     await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
-        { body: { participants: [], forceNew: false } },
+        { body: { participants: [] } },
         recreateResponse,
     );
     assert.equal(recreateResponse.status, 200);
     assert.equal(chatRequests.length, 2);
+    assert.equal(chatRequests[0].reuseExisting, false);
+    assert.equal(chatRequests[1].roomId, "missing-chat");
     assert.equal(recreateResponse.body.data.chatRoomId, "chat-1");
 });
 
@@ -667,4 +689,122 @@ test("a kicked guest invalidates the share link used to join", async () => {
         },
         { inactive: ["meeting-1", "guest:guest-1"] },
     ]);
+});
+
+for (const providerAvailable of [true, false]) {
+    test(`repeated persistent meetings restore their saved canvas with optional provider available=${providerAvailable}`, async () => {
+        const handlers = new Map();
+        const meeting = { id: "repeat", createdBy: "alice", disposable: false };
+        let state = {
+            firstJoinedBy: "alice",
+            endedAt: "2026-10-12",
+            whiteboardId: "saved-canvas",
+            whiteboardDisposable: false,
+            whiteboardActive: false,
+        };
+        const memberships = [];
+        registerMeetingLifecycleRoutes({
+            router: { post: (path, handler) => handlers.set(path, handler) },
+            store: {
+                ensureSchema: async () => {},
+                listActiveMeetings: async () => [],
+                getActiveSessionsForUser: async () => [],
+                upsertPresence: async () => {},
+                updateMeetingState: async (_id, updates) =>
+                    (state = { ...state, ...updates }),
+                claimMeetingPassword: async () => "",
+            },
+            profileStore: {
+                getProfileByHandle: async () => ({
+                    accountId: "owner-account",
+                }),
+            },
+            requireAuth: () => ({ sub: "invited-account" }),
+            resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
+            readJson: async () => ({
+                meetingId: "repeat",
+                sessionId: "session",
+                includeChat: false,
+            }),
+            resolveMeetingPayload: async () => ({
+                meeting,
+                state,
+                participants: ["alice", "bob"],
+                requesterUsername: "bob",
+            }),
+            fetchBoardData: async () => {
+                if (!providerAvailable) throw new Error("provider unavailable");
+                return { id: "saved-canvas", createdBy: "alice" };
+            },
+            resolveWhiteboardMembership: () => ({
+                add: async (input) => memberships.push(input),
+            }),
+            createMeetingPayload: async (input) => ({
+                ...input.meeting,
+                state: input.state,
+            }),
+            sendJson: (res, status, payload) => {
+                res.writeHead(status);
+                res.end(JSON.stringify(payload));
+            },
+            sendError: () =>
+                assert.fail(
+                    "An unavailable optional canvas cannot prevent joining",
+                ),
+            resolveModeratorUsernames: async () => ["alice"],
+            dispatchMeetingNotifications: async () => {},
+            log() {},
+        });
+        for (let iteration = 0; iteration < 2; iteration += 1) {
+            const response = createRecorder();
+            await handlers.get("/api/v1/modules/jitsi-meet/meetings/join")(
+                {},
+                response,
+            );
+            assert.equal(response.status, 200);
+            assert.equal(state.whiteboardActive, providerAvailable);
+            assert.equal(state.whiteboardId, "saved-canvas");
+            state = {
+                ...state,
+                endedAt: "2026-10-12",
+                whiteboardActive: false,
+            };
+        }
+        assert.equal(memberships.length, providerAvailable ? 2 : 0);
+        if (providerAvailable)
+            assert.equal(
+                memberships[0].whiteboardId,
+                memberships[1].whiteboardId,
+            );
+    });
+}
+
+test("general meeting creation rejects disposable calls before provisioning a chat", async () => {
+    const handlers = new Map();
+    let created = 0;
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            ensureSchema: async () => {},
+            createMeeting: async () => created++,
+        },
+        requireAuth: () => ({ sub: "alice" }),
+        readJson: async (request) => request.body,
+        sendError: (response, status, code) => {
+            response.status = status;
+            response.code = code;
+        },
+        resolveRequesterUsername: () =>
+            assert.fail(
+                "Disposable creation must be rejected before provisioning",
+            ),
+    });
+    const response = {};
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
+        { body: { disposable: true, participants: ["alice", "bob"] } },
+        response,
+    );
+    assert.equal(response.status, 400);
+    assert.equal(response.code, "bad_request");
+    assert.equal(created, 0);
 });

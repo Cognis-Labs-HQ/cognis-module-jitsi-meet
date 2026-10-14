@@ -1,5 +1,4 @@
-import { logUi } from "../reuse/feedback.js";
-import { showToast } from "../reuse/feedback.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
     HEARTBEAT_INTERVAL_MS,
@@ -30,18 +29,21 @@ const { normalizeUsername } = await importReuseModule("value-normalizers.js");
 
 export function createPreflightHandlers({
     root,
+    signal,
     state,
     i18n,
     apiFetch,
     callbacks,
     utils,
 }) {
+    let participantRefreshSequence = 0;
+    let stateRefreshSequence = 0;
     if (!(state.pendingParticipantUsernames instanceof Set)) {
         state.pendingParticipantUsernames = new Set();
     }
 
     async function runPreflightCheck({ showErrors = false } = {}) {
-        if (state.preflightStatus === "running") {
+        if (signal?.aborted || state.preflightStatus === "running") {
             return false;
         }
         utils.setPreflightStatus(
@@ -54,6 +56,7 @@ export function createPreflightHandlers({
                 method: "POST",
             },
         );
+        if (signal?.aborted) return false;
         if (!response.ok) {
             state.preflightNeedsConfig = response.status === 409;
             const message =
@@ -68,6 +71,7 @@ export function createPreflightHandlers({
             return false;
         }
         const payload = await response.json().catch(() => ({ data: null }));
+        if (signal?.aborted) return false;
         state.preflightNeedsConfig = false;
         const isAlive = payload?.data?.alive === true;
         if (!isAlive) {
@@ -167,7 +171,8 @@ export function createPreflightHandlers({
     }
 
     async function refreshAvailableParticipants() {
-        if (state.shareAccessToken) return;
+        if (signal?.aborted || state.shareAccessToken) return;
+        const requestSequence = ++participantRefreshSequence;
         const meetingId = String(state.meeting?.id ?? "").trim();
         const query = meetingId
             ? `?meetingId=${encodeURIComponent(meetingId)}`
@@ -177,10 +182,16 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: [] }));
+        if (
+            signal?.aborted ||
+            requestSequence !== participantRefreshSequence ||
+            state.meeting?.id !== (meetingId || undefined)
+        )
+            return;
         const selectedByUsername = new Map(
             state.selectedParticipants.map((entry) => [entry.username, entry]),
         );
-        state.allParticipants = (
+        const refreshedParticipants = (
             Array.isArray(payload?.data) ? payload.data : []
         )
             .map((entry) => ({
@@ -193,6 +204,20 @@ export function createPreflightHandlers({
             }))
             .filter((entry) => entry.username)
             .sort((left, right) => left.username.localeCompare(right.username));
+        const participantSignature = (entries) =>
+            entries
+                .map(
+                    ({ username, displayName, avatarKey }) =>
+                        `${username}\u0000${displayName}\u0000${avatarKey ?? ""}`,
+                )
+                .join("\u0001");
+        if (
+            participantSignature(refreshedParticipants) ===
+            participantSignature(state.allParticipants)
+        ) {
+            return;
+        }
+        state.allParticipants = refreshedParticipants;
         state.selectedParticipants = state.selectedParticipants.map(
             (entry) =>
                 state.allParticipants.find(
@@ -361,6 +386,8 @@ export function createPreflightHandlers({
                     state.meeting = payload.data;
                     await callbacks.updateCognisChat();
                     await callbacks.syncMeetingWhiteboardComponent?.();
+                    if (signal?.aborted || state.meeting?.id !== meetingId)
+                        return;
                 }
                 showToast(
                     i18n
@@ -420,6 +447,7 @@ export function createPreflightHandlers({
     async function loadMeetingState() {
         const meetingId = state.meeting?.id;
         if (!meetingId) return;
+        const requestSequence = ++stateRefreshSequence;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/state",
             {
@@ -438,6 +466,12 @@ export function createPreflightHandlers({
         );
         if (!response.ok) return;
         const payload = await response.json().catch(() => ({ data: null }));
+        if (
+            signal?.aborted ||
+            requestSequence !== stateRefreshSequence ||
+            state.meeting?.id !== meetingId
+        )
+            return;
         const latestState = payload?.data?.state;
         if (!latestState) return;
         if (latestState.endedAt) {
@@ -456,7 +490,15 @@ export function createPreflightHandlers({
             });
             return;
         }
-        if (state.meeting?.id !== meetingId) return;
+        const previousParticipants = Array.isArray(state.meeting.participants)
+            ? state.meeting.participants
+            : [];
+        const previousActiveParticipants = Array.isArray(
+            state.meeting.activeParticipants,
+        )
+            ? state.meeting.activeParticipants
+            : [];
+        const previousChatRoomId = state.meeting.chatRoomId;
         state.meeting.state = latestState;
         if (Array.isArray(payload?.data?.activeParticipants)) {
             state.meeting.activeParticipants = payload.data.activeParticipants;
@@ -485,14 +527,35 @@ export function createPreflightHandlers({
                 (entry) => !participantUsernames.has(entry.username),
             );
             state.meeting.participants = payload.data.participants;
+            const membershipChanged =
+                previousParticipants.join("\u0000") !==
+                    payload.data.participants.join("\u0000") ||
+                previousActiveParticipants.join("\u0000") !==
+                    (state.meeting.activeParticipants ?? []).join("\u0000") ||
+                previousChatRoomId !== payload.data.chatRoomId;
             if (typeof payload.data.chatRoomId === "string") {
                 state.meeting.chatRoomId = payload.data.chatRoomId;
             }
-            renderParticipants();
-            await callbacks.updateCognisChat();
+            if (membershipChanged) {
+                renderParticipants();
+                await callbacks.updateCognisChat();
+            }
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
-        if (latestState.authRequired && !latestState.authCompletedAt) {
+        if (
+            state.meeting.waitingForAuthentication &&
+            latestState.authCompletedAt
+        ) {
+            state.meeting.waitingForAuthentication = false;
+            const joined = await callbacks.joinMeeting();
+            if (joined?.trackingAllowed) ensureMeetingTracking();
+            return;
+        }
+        if (
+            !state.jitsiConferenceJoined &&
+            latestState.authRequired &&
+            !latestState.authCompletedAt
+        ) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_waiting"),
                 showAuth: true,
@@ -500,7 +563,7 @@ export function createPreflightHandlers({
             });
             return;
         }
-        if (latestState.authCompletedAt) {
+        if (!state.jitsiConferenceJoined && latestState.authCompletedAt) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_completed"),
                 canStart: false,
@@ -546,6 +609,7 @@ export function createPreflightHandlers({
 
     function shouldTrackMeetingPresence() {
         if (!state.meeting?.id) return false;
+        if (state.jitsiConferenceJoined) return true;
         if (state.meeting.waitingForAuthentication) return false;
         return (
             state.meeting.state?.authCompletedAt ||
@@ -553,8 +617,9 @@ export function createPreflightHandlers({
         );
     }
 
-    function ensureMeetingTracking() {
-        if (!shouldTrackMeetingPresence()) return;
+    function ensureMeetingTracking({ pendingAuthentication = false } = {}) {
+        if (!state.meeting?.id || state.meeting.requiresReclaim) return;
+        if (!shouldTrackMeetingPresence() && !pendingAuthentication) return;
         if (state.heartbeatTimer === null) {
             state.heartbeatTimer = setInterval(() => {
                 void keepPresenceAlive(true);

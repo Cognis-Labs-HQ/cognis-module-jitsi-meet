@@ -1,0 +1,94 @@
+.jitsi-admin-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.jitsi-admin-filter-button {
+    border-radius: 999px;
+}
+
+.jitsi-admin-filter-button[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.jitsi-admin-filter-button:hover {
+    transform: none;
+}
+
+.jitsi-admin-panels {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+}
+
+.jitsi-admin-heading {
+    margin: 0 0 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.jitsi-admin-table-scroll {
+    overflow-x: auto;
+}
+
+.jitsi-admin-table {
+    width: 100%;
+    min-width: 44rem;
+    border-collapse: collapse;
+}
+
+.jitsi-admin-table-heading {
+    text-align: left;
+    background: var(--surface-soft);
+    padding: 0.75rem;
+}
+
+.jitsi-admin-table-cell {
+    padding: 1rem 0.75rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+}
+
+.jitsi-admin-meeting-cell {
+    width: 34%;
+}
+
+.jitsi-admin-meeting-link {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.jitsi-admin-record-id,
+.jitsi-admin-active-users {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+}
+
+.jitsi-admin-references {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.jitsi-admin-issue-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    min-width: 12rem;
+    max-width: 22rem;
+}
+
+.jitsi-admin-issue-pill {
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+}

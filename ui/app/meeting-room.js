@@ -1,5 +1,10 @@
-import { showToast } from "../reuse/feedback.js";
+import {
+    claimMeetingTransition,
+    isMeetingSelectionLocked,
+} from "./reuse/meeting-transition.js";
+import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
+import { clearJitsiAuthenticationSession } from "../reuse/jitsi-storage.js";
 import {
     loadJitsiExternalApi,
     resolveJitsiDefaultBackground,
@@ -16,6 +21,7 @@ const [{ escapeHtml }, { openPopup }, { resolveUrlHost }] = await Promise.all([
 
 export function createEmbedHandlers({
     root,
+    signal,
     state,
     i18n,
     apiFetch,
@@ -24,6 +30,12 @@ export function createEmbedHandlers({
 }) {
     async function openMeetingEmbed() {
         if (!state.meeting?.meetingUrl) return;
+        const meetingId = state.meeting.id;
+        const transitionToken = state.meetingTransition;
+        const isCurrent = () =>
+            !signal?.aborted &&
+            state.meeting?.id === meetingId &&
+            state.meetingTransition === transitionToken;
         const frame = root.querySelector("#jitsi-meeting-frame");
         if (!(frame instanceof HTMLElement)) return;
 
@@ -32,6 +44,7 @@ export function createEmbedHandlers({
             state.meeting.instanceUrl || state.meeting.meetingUrl,
         );
 
+        if (!isCurrent()) return;
         const meetingHost = resolveUrlHost(
             state.meeting.instanceUrl || state.meeting.meetingUrl,
         );
@@ -47,6 +60,40 @@ export function createEmbedHandlers({
                 variant: "error",
             });
             return;
+        }
+
+        let jitsiStorage = null;
+        try {
+            jitsiStorage = window.localStorage;
+        } catch (error) {
+            await logUi(
+                "error",
+                "Jitsi session cleanup continued without browser storage.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "access_jitsi_authentication_session_storage",
+                    meetingId: state.meeting.id,
+                    errorName: error?.name,
+                },
+            );
+        }
+        const sessionCleanup = clearJitsiAuthenticationSession(jitsiStorage);
+        if (sessionCleanup.unavailable && jitsiStorage) {
+            await logUi(
+                "error",
+                "Jitsi session cleanup continued without browser storage.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "read_jitsi_authentication_session_storage",
+                    meetingId: state.meeting.id,
+                },
+            );
+        } else if (sessionCleanup.malformed) {
+            await logUi("error", "Invalid Jitsi local storage was ignored.", {
+                component: "module:jitsi-meet",
+                operation: "clear_stale_jitsi_authentication_session",
+                meetingId: state.meeting.id,
+            });
         }
 
         const createKeyringScope = uiCtx.capabilities.get(
@@ -78,6 +125,7 @@ export function createEmbedHandlers({
                 },
             })) || suppliedMeetingPassword,
         ).trim();
+        if (!isCurrent()) return;
         if (
             meetingKeyring &&
             suppliedMeetingPassword &&
@@ -92,6 +140,7 @@ export function createEmbedHandlers({
                     body: JSON.stringify({ meetingId: state.meeting.id }),
                 },
             );
+            if (!isCurrent()) return;
             if (!acknowledgeResponse.ok) {
                 showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                     variant: "error",
@@ -332,6 +381,7 @@ export function createEmbedHandlers({
             applyPrivilegedMeetingSettings();
             utils.syncShareButtonAvailability();
             void callbacks.keepPresenceAlive(true);
+            callbacks.ensureMeetingTracking();
             if (state.promptShareOnJoin) {
                 state.promptShareOnJoin = false;
                 void callbacks.openMeetingSharePopup?.();
@@ -411,7 +461,13 @@ export function createEmbedHandlers({
         });
     }
 
-    async function joinMeeting() {
+    async function performJoinMeeting() {
+        const meetingId = state.meeting?.id;
+        const transitionToken = state.meetingTransition;
+        const isCurrent = () =>
+            !signal?.aborted &&
+            state.meeting?.id === meetingId &&
+            state.meetingTransition === transitionToken;
         if (!state.meeting?.id) return;
         const joinResponse = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/join",
@@ -429,6 +485,7 @@ export function createEmbedHandlers({
                 suppressAccessDeniedEvent: true,
             },
         );
+        if (!isCurrent()) return;
         if (!joinResponse.ok) {
             showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
                 variant: "error",
@@ -437,10 +494,12 @@ export function createEmbedHandlers({
         }
 
         const joinPayload = await joinResponse.json();
+        if (!isCurrent()) return;
         state.meeting = joinPayload?.data ?? state.meeting;
         utils.deferAloneParticipantPrompt();
         await callbacks.updateCognisChat();
 
+        if (!isCurrent()) return;
         if (state.meeting.requiresReclaim) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.reclaim_prompt"),
@@ -451,6 +510,7 @@ export function createEmbedHandlers({
         }
 
         if (state.meeting.waitingForAuthentication) {
+            callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_waiting_other"),
                 visible: true,
@@ -462,6 +522,7 @@ export function createEmbedHandlers({
             state.meeting.state?.authRequired &&
             !state.meeting.state?.authCompletedAt
         ) {
+            callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
                 message: i18n.t(
                     "module.jitsi_meet.overlay.auth_required_description",
@@ -476,29 +537,39 @@ export function createEmbedHandlers({
         return { trackingAllowed: true };
     }
 
+    async function joinMeeting() {
+        if (state.joinMeetingPromise) return state.joinMeetingPromise;
+        const transition = state.meetingTransition
+            ? null
+            : claimMeetingTransition(state, signal);
+        const pending = performJoinMeeting().finally(() => {
+            if (state.joinMeetingPromise === pending)
+                state.joinMeetingPromise = null;
+            transition?.release();
+        });
+        state.joinMeetingPromise = pending;
+        return pending;
+    }
+
     async function prepareMeetingStart() {
-        const finishPageLoading = callbacks.beginPageLoading();
+        if (isMeetingSelectionLocked(state)) return;
+        const transition = claimMeetingTransition(state, signal);
+        if (!transition) return;
+        let finishPageLoading;
         try {
+            finishPageLoading = callbacks.beginPageLoading();
             if (!state.preflightPassed) {
                 const passed = await callbacks.runPreflightCheck({
                     showErrors: true,
                 });
-                if (!passed) return;
+                if (!passed || !transition.isCurrent()) return;
             }
 
             const selected = utils.selectedUsernames();
-            const sortedSelected = [...selected].sort();
-            const persistedSelection = state.persistedMeetingSelectionUsernames;
-            const forceNewMeeting =
-                Array.isArray(persistedSelection) &&
-                (persistedSelection.length !== sortedSelected.length ||
-                    persistedSelection.some(
-                        (username, index) => username !== sortedSelected[index],
-                    ));
-
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.creating"),
                 loading: true,
+                canStart: false,
                 visible: true,
             });
 
@@ -511,11 +582,11 @@ export function createEmbedHandlers({
                     },
                     body: JSON.stringify({
                         participants: selected,
-                        forceNew: forceNewMeeting,
                     }),
                 },
             );
 
+            if (!transition.isCurrent()) return;
             if (!createResponse.ok) {
                 const message =
                     createResponse.status === 409
@@ -534,6 +605,7 @@ export function createEmbedHandlers({
             const createPayload = await createResponse
                 .json()
                 .catch(() => ({ data: null }));
+            if (!transition.isCurrent()) return;
             state.meeting = createPayload?.data;
             state.promptShareOnJoin =
                 Boolean(state.meeting?.id) &&
@@ -556,7 +628,8 @@ export function createEmbedHandlers({
             }
             void callbacks.loadActiveMeetings({ resolveRequested: false });
         } finally {
-            finishPageLoading();
+            transition.release();
+            finishPageLoading?.();
         }
     }
 

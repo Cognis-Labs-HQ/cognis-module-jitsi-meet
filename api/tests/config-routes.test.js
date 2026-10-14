@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { registerMeetingConfigRoutes } from "../config-routes.js";
+import { registerMeetingConfigRoutes } from "../routes/config/index.js";
 
 function createResponse() {
     return {
@@ -36,7 +36,8 @@ test("config endpoint polls and persists the module-owned configuration", async 
             },
         },
         store: {
-            ensureSchema: async () => operations.push("ensure_schema"),
+            ensureConfigurationSchema: async () =>
+                operations.push("ensure_schema"),
             getConfig: async () => config,
             saveConfig: async (values) => {
                 config = values;

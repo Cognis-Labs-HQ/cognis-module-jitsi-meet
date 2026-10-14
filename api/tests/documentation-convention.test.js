@@ -8,11 +8,13 @@ const TEMPLATE = resolve(ROOT, ".github/DOCUMENTATION_TEMPLATE.en.md");
 const LANGUAGES = ["de", "en", "id", "ja"];
 
 function markdownFiles(directory) {
-    return readdirSync(directory).flatMap((name) => {
-        const path = resolve(directory, name);
-        if (statSync(path).isDirectory()) return markdownFiles(path);
-        return name.endsWith(".md") ? [path] : [];
-    });
+    return readdirSync(directory)
+        .filter((name) => name !== "changelog")
+        .flatMap((name) => {
+            const path = resolve(directory, name);
+            if (statSync(path).isDirectory()) return markdownFiles(path);
+            return name.endsWith(".md") ? [path] : [];
+        });
 }
 
 function headingLevels(path) {
@@ -21,6 +23,16 @@ function headingLevels(path) {
         .filter((line) => /^#{1,6} /.test(line))
         .map((line) => line.match(/^#+/)[0].length);
 }
+
+test("guides describe contracts without embedding release numbers", () => {
+    for (const path of markdownFiles(resolve(ROOT, "docs"))) {
+        assert.doesNotMatch(
+            readFileSync(path, "utf8"),
+            /\b\d+\.\d+\.\d+\b/,
+            relative(ROOT, path),
+        );
+    }
+});
 
 test("documentation follows the hidden heading convention", () => {
     const expected = headingLevels(TEMPLATE).slice(0, 3);
@@ -53,7 +65,7 @@ test("pull request release notes follow Cognis changelog structure", () => {
         "https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/";
     for (const language of LANGUAGES) {
         const changelog = readFileSync(
-            resolve(ROOT, `changelog/${branch}.${language}.md`),
+            resolve(ROOT, `docs/changelog/${branch}.${language}.md`),
             "utf8",
         );
         assert.match(changelog, /^# [^#]/);
@@ -63,5 +75,38 @@ test("pull request release notes follow Cognis changelog structure", () => {
             (changelog.match(new RegExp(commitUrl, "g")) ?? []).length,
             5,
         );
+    }
+});
+
+test("current release documentation has matching localized structure and provenance", () => {
+    const branch = "feature-align-module-with-structural-changes";
+    let expectedHeadings;
+    let expectedCommits;
+    let expectedStandardHeadings;
+    for (const language of LANGUAGES) {
+        const path = resolve(ROOT, `docs/changelog/${branch}.${language}.md`);
+        const source = readFileSync(path, "utf8");
+        assert.match(source, new RegExp(`\\*\\*[^\\n]+:\\*\\* ${branch}`));
+        const headings = headingLevels(path);
+        const commits = [
+            ...source.matchAll(
+                /https:\/\/github\.com\/Cognis-Labs-HQ\/cognis-module-jitsi-meet\/commit\/([a-f0-9]{40})/g,
+            ),
+        ].map((match) => match[1]);
+        assert.ok(commits.length > 0);
+        assert.equal(commits.length, new Set(commits).size);
+        const { version } = JSON.parse(
+            readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
+        );
+        assert.ok(source.includes(` ${version} `));
+        const standardHeadings = headingLevels(
+            resolve(ROOT, `docs/index.${language}.md`),
+        );
+        expectedHeadings ??= headings;
+        expectedCommits ??= commits;
+        expectedStandardHeadings ??= standardHeadings;
+        assert.deepEqual(headings, expectedHeadings);
+        assert.deepEqual(commits, expectedCommits);
+        assert.deepEqual(standardHeadings, expectedStandardHeadings);
     }
 });
