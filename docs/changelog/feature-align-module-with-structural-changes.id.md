@@ -177,3 +177,4 @@ Rilis 1.5.257 — Pembukaan kanvas secara eksplisit memperbarui referensi penyed
 - [0d2dd75](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d2dd75cdd8dbefe85e7850a7f95c87f0353f140)
 - [e03210b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e03210b2a65f161c16a266cf85645235084690cf)
 - [56838ae](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/56838ae4539bfae71e10088830e698248c3471cb)
+- [a040064](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a040064d599dd686f662cb34a17d29192c5222b0)
