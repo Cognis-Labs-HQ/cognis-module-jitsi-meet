@@ -188,3 +188,4 @@ Ausgabe 1.5.257 — Explizites Öffnen aktualisiert die allgemeine Anbieter-Verk
 - [a040064](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/a040064d599dd686f662cb34a17d29192c5222b0)
 - [dca2b28](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/dca2b2890b9d1d63268eb086061e38def6da856a)
 - [71b382c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/71b382c07cfc5aa07b906af86ba64d83f2ee11e9)
+- [b774cb7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b774cb7f86ea80f5a0f62ab2a6cf976b2dd124f7)
