@@ -10,7 +10,6 @@ import {
     confirmMeetingCanvasMapping,
     ensureComponentPage,
     ensureWhiteboardKeyringUnlocked,
-    meetingHasInvitedParticipants,
     meetingWhiteboardShouldOpen,
     prepareMeetingCanvas,
     resolveMeetingPipMinimumSize,
@@ -139,9 +138,7 @@ async function handleWhiteboardLoadError(
 export function syncWhiteboardButtonAvailability({ root, state }) {
     const trigger = mountedWhiteboardButtons.get(root);
     if (trigger?.button) {
-        trigger.disposableCanvas = !meetingHasInvitedParticipants(
-            state.meeting,
-        );
+        trigger.disposableCanvas = state.meeting?.disposable === true;
         const meetingId = state.meeting?.id ?? "";
         if (trigger.preparedMeetingId !== meetingId) {
             trigger.preparedMeetingId = meetingId;
@@ -343,9 +340,9 @@ export async function bindWhiteboardButton({
     try {
         const canvasFactory = state.shareAccessToken
             ? null
-            : meetingHasInvitedParticipants(state.meeting)
-              ? "createCanvas"
-              : "createDisposableCanvas";
+            : state.meeting?.disposable === true
+              ? "createDisposableCanvas"
+              : "createCanvas";
         capabilities = await resolveWhiteboardCapabilities(signal, {
             canvasFactory,
         });
@@ -396,7 +393,7 @@ export async function bindWhiteboardButton({
         componentWindow: null,
         componentWindowPending: false,
         discardComponentPage,
-        disposableCanvas: !meetingHasInvitedParticipants(state.meeting),
+        disposableCanvas: state.meeting?.disposable === true,
         frameWrap,
         i18n,
         isKeyringUnlocked,
@@ -405,7 +402,7 @@ export async function bindWhiteboardButton({
         meetingFrame,
         preparedWhiteboardId:
             state.meeting?.state?.whiteboardDisposable ===
-            !meetingHasInvitedParticipants(state.meeting)
+            (state.meeting?.disposable === true)
                 ? String(state.meeting?.state?.whiteboardId ?? "").trim()
                 : "",
         preparedMeetingId: state.meeting?.id ?? "",

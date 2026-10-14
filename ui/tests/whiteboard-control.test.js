@@ -183,6 +183,27 @@ test("the gateway enables the control without raw page spawning or profile avail
     assert.deepEqual(mount.slot.children, []);
 });
 
+test("a solo persistent meeting requires the persistent canvas factory", async () => {
+    publishGateway({
+        createCanvas() {},
+        requestCanvasPage() {
+            return { ready: true };
+        },
+        openCanvas() {},
+    });
+    const mount = createMount();
+    mount.state.meeting.disposable = false;
+    mount.state.meeting.participants = ["alice"];
+    const controller = new AbortController();
+    await bindWhiteboardButton({ ...mount, signal: controller.signal });
+    assert.equal(mount.slot.firstElementChild.disabled, false);
+    mount.state.meeting.participants = [];
+    syncWhiteboardButtonAvailability(mount);
+    assert.equal(mount.slot.firstElementChild.disabled, false);
+    controller.abort();
+    assert.deepEqual(mount.slot.children, []);
+});
+
 test("failed provider discovery leaves a disabled control and releases it on departure", async () => {
     capabilities.set("ui:ensureProvidersLoaded", async () => {
         throw new Error("discovery unavailable");

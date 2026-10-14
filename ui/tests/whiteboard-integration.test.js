@@ -86,7 +86,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /provider_unavailable/);
     assert.match(
         buttonSource,
-        /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,
+        /state\.meeting\?\.disposable === true[\s\S]*"createDisposableCanvas"[\s\S]*"createCanvas"/,
     );
     assert.match(buttonSource, /keyring:requestUnlock/);
     assert.match(buttonSource, /keyring:isUnlocked/);
@@ -101,7 +101,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         /typeof trigger\.whiteboardGateway\.createCanvas !== "function"\s*\?\s*trigger\.whiteboardGateway\.createDisposableCanvas/,
     );
     assert.doesNotMatch(buttonSource, /saveCanvasToParticipants/);
-    assert.match(buttonSource, /meetingHasInvitedParticipants/);
+    assert.match(buttonSource, /state\.meeting\?\.disposable === true/);
     assert.match(
         buttonSource,
         /approvalRequested === true[\s\S]*module\.jitsi_meet\.whiteboard\.request_sent[\s\S]*variant: "info"/,
@@ -132,7 +132,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /disposableCanvas = !meetingHasInvitedParticipants/,
+        /disposableCanvas = state\.meeting\?\.disposable === true/,
     );
     assert.match(
         buttonSource,

@@ -102,6 +102,10 @@ Daftar rapat berbagi satu panel dengan jarak antara bagian Aktif dan Mendatang. 
 
 Rilis 1.5.252 — tata letak administrasi dan penyaringan jadwal.
 
+## Persistensi kanvas mengikuti jenis rapat
+
+Rilis 1.5.253 — Rapat persisten memakai `createCanvas`; hanya rapat yang secara eksplisit ditandai sementara memakai `createDisposableCanvas`. Jumlah peserta dan perubahan daftar undangan tidak mengubah persistensi kanvas. Pemetaan kanvas tersimpan yang sesuai dipakai kembali saat rapat dibuka lagi.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

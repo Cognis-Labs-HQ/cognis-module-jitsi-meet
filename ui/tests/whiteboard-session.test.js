@@ -390,7 +390,52 @@ test("concurrent preparation uses one canvas factory call and provider replaceme
     assert.equal(creations, 2);
 });
 
-test("a participant-free meeting uses its disposable factory", async () => {
+for (const participants of [[], ["alice"], ["alice", "bob"]]) {
+    for (const disposable of [false, true]) {
+        test(`canvas persistence follows meeting disposal (${disposable}) with ${participants.length} participants`, async () => {
+            const requests = [];
+            const trigger = {
+                preparedMeetingId: "meeting",
+                whiteboardGateway: {
+                    async createCanvas(input) {
+                        requests.push({ disposable: false, input });
+                        return { whiteboardId: "persistent-board" };
+                    },
+                    async createDisposableCanvas(input) {
+                        requests.push({ disposable: true, input });
+                        return { whiteboardId: "disposable-board" };
+                    },
+                },
+            };
+            const state = {
+                meeting: {
+                    id: "meeting",
+                    roomSlug: "Planning",
+                    meetingName: "Planning",
+                    createdBy: "alice",
+                    participants,
+                    disposable,
+                },
+            };
+            await prepareMeetingCanvas(trigger, state);
+            assert.equal(requests.length, 1);
+            assert.equal(requests[0].disposable, disposable);
+            assert.deepEqual(
+                requests[0].input.participantHandles,
+                participants,
+            );
+            assert.equal(trigger.disposableCanvas, disposable);
+            assert.equal(
+                trigger.preparedWhiteboardId,
+                disposable ? "disposable-board" : "persistent-board",
+            );
+            await prepareMeetingCanvas(trigger, state);
+            assert.equal(requests.length, 1);
+        });
+    }
+}
+
+test("an explicitly disposable meeting uses its disposable factory", async () => {
     const requests = [];
     const trigger = {
         preparedMeetingId: "disposable-meeting",
@@ -409,6 +454,7 @@ test("a participant-free meeting uses its disposable factory", async () => {
     await prepareMeetingCanvas(trigger, {
         meeting: {
             id: "disposable-meeting",
+            disposable: true,
             roomSlug: "Solo",
             meetingName: "Solo",
             createdBy: "alice",

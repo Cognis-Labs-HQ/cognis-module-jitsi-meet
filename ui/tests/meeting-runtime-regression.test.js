@@ -132,7 +132,7 @@ test("share guests bind remote whiteboard orchestration without resharing contro
     );
     assert.match(
         controlSource,
-        /meetingHasInvitedParticipants\(state\.meeting\)[\s\S]*"createCanvas"[\s\S]*"createDisposableCanvas"/,
+        /state\.meeting\?\.disposable === true[\s\S]*"createDisposableCanvas"[\s\S]*"createCanvas"/,
     );
     assert.match(
         controlSource,

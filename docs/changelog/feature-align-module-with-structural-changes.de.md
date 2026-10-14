@@ -102,6 +102,10 @@ Die Meeting-Listen teilen sich ein Panel mit Abstand zwischen den Bereichen für
 
 Ausgabe 1.5.252 — Verwaltungslayout und Terminfilterung.
 
+## Canvas-Persistenz nach Meeting-Typ
+
+Ausgabe 1.5.253 — Dauerhafte Meetings verwenden `createCanvas`; nur ausdrücklich als kurzlebig markierte Meetings verwenden `createDisposableCanvas`. Teilnehmerzahlen und geänderte Einladungslisten ändern die Persistenz nicht. Gespeicherte passende Canvas-Zuordnungen werden beim erneuten Öffnen verwendet.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

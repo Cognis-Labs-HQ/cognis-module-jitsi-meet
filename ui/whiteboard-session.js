@@ -33,16 +33,6 @@ export function resolveMeetingPipMinimumSize(meeting) {
     };
 }
 
-export function meetingHasInvitedParticipants(meeting) {
-    if (typeof meeting?.hasInvitedParticipants === "boolean") {
-        return meeting.hasInvitedParticipants;
-    }
-    const organizerHandle = String(meeting?.createdBy ?? "").trim();
-    return getParticipantHandles(meeting).some(
-        (handle) => !organizerHandle || handle !== organizerHandle,
-    );
-}
-
 export function meetingWhiteboardShouldOpen(meeting) {
     return (
         meeting?.state?.whiteboardOpen === true &&
@@ -150,7 +140,7 @@ export function prepareMeetingCanvas(trigger, state) {
         return Promise.resolve();
     }
     const participantHandles = getParticipantHandles(meeting);
-    trigger.disposableCanvas = !meetingHasInvitedParticipants(meeting);
+    trigger.disposableCanvas = meeting.disposable === true;
     const disposableCanvas = trigger.disposableCanvas;
     const applyPreparedCanvas = (whiteboardId) => {
         if (
