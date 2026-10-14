@@ -104,3 +104,7 @@ Configuration and enablement initialize only the configuration table, so meeting
 ## Readable meeting administration
 
 Meeting lists share one panel with space between Active and Upcoming sections. Meeting names, IDs and expandable chat/canvas references stay together; compact issue pills leave room for participants, activity and actions. Filter buttons use the host neutral control without positional hover movement. Upcoming lists only inactive, unended meetings with a valid future schedule; elapsed, missing and invalid schedules remain available in All meetings.
+
+## Stable meeting canvas identifiers
+
+Jitsi supplies the meeting UUID as `resourceId` and `meeting` as `resourceType`; the display name is only the title. Reopening the same meeting requests the same generic provider reference, even after its name changes. Whiteboard owns persistence, access checks and concurrent reference resolution without knowledge of Jitsi internals.

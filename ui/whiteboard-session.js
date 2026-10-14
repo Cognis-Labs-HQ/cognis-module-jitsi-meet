@@ -182,7 +182,7 @@ export function prepareMeetingCanvas(trigger, state) {
                     : trigger.whiteboardGateway.createCanvas;
                 return createCanvas.call(trigger.whiteboardGateway, {
                     resourceType: "meeting",
-                    resourceId: meetingName,
+                    resourceId: meetingId,
                     title: meetingName,
                     participantHandles,
                 });

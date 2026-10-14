@@ -104,3 +104,7 @@ Konfigurasi dan pengaktifan hanya menginisialisasi tabel konfigurasi, sehingga k
 ## Administrasi rapat yang mudah dibaca
 
 Daftar rapat berbagi satu panel dengan jarak antara bagian Aktif dan Mendatang. Nama, ID, serta referensi obrolan dan kanvas yang dapat dibuka tetap bersama; pil masalah yang ringkas memberi ruang untuk peserta, aktivitas, dan tindakan. Filter memakai kontrol netral host tanpa bergerak saat diarahkan penunjuk. Daftar Mendatang hanya memuat rapat tidak aktif yang belum berakhir dengan jadwal mendatang yang valid. Jadwal lampau, kosong, dan tidak valid tetap tersedia di Semua rapat.
+
+## Pengenal kanvas rapat yang stabil
+
+Jitsi mengirim UUID rapat sebagai `resourceId` dan `meeting` sebagai `resourceType`; nama tampilan hanya menjadi judul. Membuka rapat yang sama meminta referensi penyedia generik yang sama, meskipun namanya berubah. Whiteboard mengelola persistensi, pemeriksaan akses, dan penyelesaian referensi bersamaan tanpa mengetahui mekanisme internal Jitsi.

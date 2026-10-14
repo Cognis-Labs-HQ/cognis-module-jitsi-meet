@@ -265,7 +265,7 @@ test("canvas preparation discards a completion after the meeting changes", async
     assert.deepEqual(requests, [
         {
             resourceType: "meeting",
-            resourceId: "Original Meeting Name",
+            resourceId: "meeting-a",
             title: "Original Meeting Name",
             participantHandles: ["alice", "bob"],
         },
@@ -382,7 +382,7 @@ test("concurrent preparation uses one canvas factory call and provider replaceme
     assert.equal(first.preparedWhiteboardId, second.preparedWhiteboardId);
     assert.deepEqual(requests[0], {
         resourceType: "meeting",
-        resourceId: "Room",
+        resourceId: "concurrent-meeting",
         title: "Room",
         participantHandles: ["alice", "bob"],
     });
@@ -466,7 +466,7 @@ test("an explicitly disposable meeting uses its disposable factory", async () =>
     assert.deepEqual(requests, [
         {
             resourceType: "meeting",
-            resourceId: "Solo",
+            resourceId: "disposable-meeting",
             title: "Solo",
             participantHandles: ["alice"],
         },

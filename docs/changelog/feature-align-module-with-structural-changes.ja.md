@@ -106,6 +106,10 @@ Marketplace のメタデータに短い操作概要と具体的な機能説明�
 
 リリース 1.5.253 — 永続ミーティングには `createCanvas` を使用し、明示的に一時ミーティングと指定された場合だけ `createDisposableCanvas` を使用します。参加者数や招待リストの変更でキャンバスの保持設定は変わりません。ミーティングを再度開くと、対応する保存済みキャンバスを再利用します。
 
+## 安定したミーティングのキャンバス識別子
+
+リリース 1.5.254 — Jitsi はミーティングの UUID を `resourceId`、`meeting` を `resourceType` として渡し、表示名はタイトルとしてだけ使います。同じミーティングを再度開くと、名前が変わっても同じ汎用参照を要求します。Whiteboard は Jitsi の内部実装を知らずに、保持、アクセス確認、同時リクエストの参照解決を管理します。
+
 ## コミット
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

@@ -106,6 +106,10 @@ Rilis 1.5.252 — tata letak administrasi dan penyaringan jadwal.
 
 Rilis 1.5.253 — Rapat persisten memakai `createCanvas`; hanya rapat yang secara eksplisit ditandai sementara memakai `createDisposableCanvas`. Jumlah peserta dan perubahan daftar undangan tidak mengubah persistensi kanvas. Pemetaan kanvas tersimpan yang sesuai dipakai kembali saat rapat dibuka lagi.
 
+## Pengenal kanvas rapat yang stabil
+
+Rilis 1.5.254 — Jitsi mengirim UUID rapat sebagai `resourceId` dan `meeting` sebagai `resourceType`; nama tampilan hanya menjadi judul. Membuka rapat yang sama meminta referensi penyedia generik yang sama, meskipun namanya berubah. Whiteboard mengelola persistensi, pemeriksaan akses, dan penyelesaian referensi bersamaan tanpa mengetahui mekanisme internal Jitsi.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

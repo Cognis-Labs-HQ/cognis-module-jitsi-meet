@@ -104,3 +104,7 @@ Konfiguration und Aktivierung initialisieren ausschließlich die Konfigurationst
 ## Übersichtliche Meeting-Verwaltung
 
 Die Meeting-Listen teilen sich ein Panel mit Abstand zwischen den Bereichen für aktive und bevorstehende Meetings. Namen, IDs und aufklappbare Chat- und Zeichenflächen-Verknüpfungen bleiben zusammen; kompakte Problem-Pills schaffen Platz für Teilnehmer, Aktivität und Aktionen. Filter verwenden neutrale Host-Steuerelemente ohne Positionsänderung beim Überfahren. Bevorstehende Meetings sind inaktiv, nicht beendet und haben einen gültigen zukünftigen Termin. Vergangene, fehlende und ungültige Termine bleiben unter Alle Meetings zugänglich.
+
+## Stabile Canvas-Kennungen für Meetings
+
+Jitsi übergibt die Meeting-UUID als `resourceId` und `meeting` als `resourceType`; der Anzeigename dient nur als Titel. Erneutes Öffnen fordert dieselbe allgemeine Anbieter-Verknüpfung an, auch nach einer Namensänderung. Whiteboard verwaltet Persistenz, Zugriff und gleichzeitige Auflösung ohne Kenntnis der Jitsi-Interna.

@@ -106,6 +106,10 @@ Release 1.5.252 — administration layout and schedule filtering.
 
 Release 1.5.253 — Persistent meetings use `createCanvas`; only meetings explicitly marked disposable use `createDisposableCanvas`. Participant counts and changing invitation lists do not change canvas persistence. Saved matching canvas mappings are reused when reopening a meeting.
 
+## Stable meeting canvas identifiers
+
+Release 1.5.254 — Jitsi supplies the meeting UUID as `resourceId` and `meeting` as `resourceType`; the display name is only the title. Reopening the same meeting requests the same generic provider reference, even after its name changes. Whiteboard owns persistence, access checks and concurrent reference resolution without knowledge of Jitsi internals.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
