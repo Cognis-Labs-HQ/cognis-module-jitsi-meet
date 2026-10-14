@@ -126,8 +126,8 @@
   <string name="module.jitsi_meet.keyring_prompt">会議パスワードを入力してください。</string>
   <string name="module.jitsi_meet.keyring_invalid">保存された会議パスワードが無効です。現在のパスワードを入力してください。</string>
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
-  <string name="module.jitsi_meet.summary">Cognis に統合された安全なビデオミーティング。</string>
-  <string name="module.jitsi_meet.description">Cognis から Jitsi ミーティングを作成、参加、管理、共有できます。</string>
+  <string name="module.jitsi_meet.summary">Jitsi Meet を使い、Cognis でビデオ会議を開催します。</string>
+  <string name="module.jitsi_meet.description">会議チャットと任意のホワイトボードを使い、ビデオ会議の作成、参加、司会、共有を行います。</string>
   <string name="module.jitsi_meet.whiteboard.open">ホワイトボード</string>
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard を閉じる</string>
   <string name="module.jitsi_meet.whiteboard.description">このミーティング用の同期ホワイトボードを開きます。</string>

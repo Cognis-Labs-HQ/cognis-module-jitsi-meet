@@ -126,8 +126,8 @@
   <string name="module.jitsi_meet.keyring_prompt">Enter the meeting password.</string>
   <string name="module.jitsi_meet.keyring_invalid">The stored meeting password is invalid. Enter the current password.</string>
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
-  <string name="module.jitsi_meet.summary">Secure video meetings integrated with Cognis.</string>
-  <string name="module.jitsi_meet.description">Create, join, moderate, and share Jitsi meetings from Cognis.</string>
+  <string name="module.jitsi_meet.summary">Host video meetings in Cognis with Jitsi Meet.</string>
+  <string name="module.jitsi_meet.description">Create, join, moderate, and share video meetings with meeting chat and optional whiteboards.</string>
   <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.close">Close Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.description">Open a synchronized whiteboard for this meeting.</string>

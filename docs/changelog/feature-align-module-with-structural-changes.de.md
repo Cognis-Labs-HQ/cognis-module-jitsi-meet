@@ -24,7 +24,7 @@ Meetings verwendet den Page Composer, Router, Profilvorschauen, Bedienelemente, 
 
 ## Einen synchronisierten Release-Vertrag veröffentlichen
 
-Modul 1.5.249 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
+Modul 1.5.250 synchronisiert Paketversionen und SHA-256-Inventar. Die Standarddokumentation beschreibt das aktuelle Verhalten auf Deutsch, Englisch, Indonesisch und Japanisch. Dieser PR verwendet einen Changelog-Satz mit zusammengeführten Implementierungslinks. Verhaltenstests prüfen ausgeführte Aktions-Flows, verweigerte Berechtigungen, abgebrochene Wiederholungen, gleichzeitige Canvas-Vorbereitung und veraltete Antworten zusätzlich zu strukturellen Isolationstests.
 
 ## Whiteboard-Zugriff vor automatischem Öffnen wiederherstellen
 
@@ -72,11 +72,15 @@ Aktuelle öffentliche Schnittstellen in vier Sprachen dokumentieren. Checkout-lo
 
 ## Gültige Eigentümer und optionale Darstellung erhalten
 
-Die veraltete Anforderung zum direkten Erstellen von Komponentenseiten entfällt; das optionale Whiteboard-Gateway erstellt die Seite. Nach einer Kontolöschung gehen erhaltene Besprechungen an einen verbleibenden Organisator über, ohne die Chatraum-Identität zu ändern. Leitfäden beschreiben öffentliche Verträge ohne Versionsnummern; der synchronisierte Stand ist 1.5.249.
+Die veraltete Anforderung zum direkten Erstellen von Komponentenseiten entfällt; das optionale Whiteboard-Gateway erstellt die Seite. Nach einer Kontolöschung gehen erhaltene Besprechungen an einen verbleibenden Organisator über, ohne die Chatraum-Identität zu ändern. Leitfäden beschreiben öffentliche Verträge ohne Versionsnummern; der synchronisierte Stand ist 1.5.250.
 
 ## Cognis- und Anbieterbild
 
 Das Marketplace-Banner erhält eine Kombination aus Cognis und Anbieter, deren Marken im mittigen sichtbaren Bereich bleiben. Das vorhandene Icon wird beibehalten.
+
+## Einheitliche Marketplace-Texte
+
+Verwenden Sie kurze Aktionszusammenfassungen und konkrete Funktionsbeschreibungen in den Marketplace-Metadaten mit inhaltlich abgestimmten Übersetzungen.
 
 ## Commits
 

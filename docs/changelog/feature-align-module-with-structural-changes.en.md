@@ -24,7 +24,7 @@ Meetings uses host page composer, router, profile previews, controls, overlays a
 
 ## Publish one synchronized release contract
 
-Module 1.5.249 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
+Module 1.5.250 synchronizes package versions and SHA-256 inventory. Standard documentation describes current supported behavior in German, English, Indonesian and Japanese. This PR uses one changelog set with consolidated implementation links. Behavioral tests cover scoped action execution, permission denial, cancelled retries, concurrent canvases and stale responses alongside structural isolation checks.
 
 ## Restore Whiteboard access before automatic opening
 
@@ -72,11 +72,15 @@ Document current public interfaces in all four languages. Distinguish checkout-l
 
 ## Retain valid meeting owners and optional presentation
 
-Remove the obsolete raw component-page spawn requirement; the optional Whiteboard gateway owns page creation. Account deletion transfers retained meetings to a surviving organizer without changing their chat-room identity. Guides describe public contracts without release numbers; the synchronized release is 1.5.249.
+Remove the obsolete raw component-page spawn requirement; the optional Whiteboard gateway owns page creation. Account deletion transfers retained meetings to a surviving organizer without changing their chat-room identity. Guides describe public contracts without release numbers; the synchronized release is 1.5.250.
 
 ## Cognis and provider artwork
 
 Replace the marketplace banner with a Cognis + provider composition, keeping its branding within the central visible band and preserving the existing icon.
+
+## Consistent marketplace descriptions
+
+Use short action summaries and concrete feature descriptions across marketplace metadata, keeping localized meanings aligned.
 
 ## Commits
 

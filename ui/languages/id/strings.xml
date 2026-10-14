@@ -126,8 +126,8 @@
   <string name="module.jitsi_meet.keyring_prompt">Masukkan kata sandi rapat.</string>
   <string name="module.jitsi_meet.keyring_invalid">Kata sandi rapat yang tersimpan tidak valid. Masukkan kata sandi saat ini.</string>
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
-  <string name="module.jitsi_meet.summary">Rapat video aman yang terintegrasi dengan Cognis.</string>
-  <string name="module.jitsi_meet.description">Buat, ikuti, moderasi, dan bagikan rapat Jitsi dari Cognis.</string>
+  <string name="module.jitsi_meet.summary">Adakan rapat video di Cognis dengan Jitsi Meet.</string>
+  <string name="module.jitsi_meet.description">Buat, ikuti, moderasi dan bagikan rapat video dengan chat rapat serta papan tulis opsional.</string>
   <string name="module.jitsi_meet.whiteboard.open">Papan tulis</string>
   <string name="module.jitsi_meet.whiteboard.close">Tutup Papan Tulis</string>
   <string name="module.jitsi_meet.whiteboard.description">Buka papan tulis tersinkron untuk rapat ini.</string>

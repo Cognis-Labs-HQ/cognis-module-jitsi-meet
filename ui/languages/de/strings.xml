@@ -126,8 +126,8 @@
   <string name="module.jitsi_meet.keyring_prompt">Gib das Besprechungspasswort ein.</string>
   <string name="module.jitsi_meet.keyring_invalid">Das gespeicherte Besprechungspasswort ist ungültig. Gib das aktuelle Passwort ein.</string>
   <string name="module.jitsi_meet.name">Jitsi Meet</string>
-  <string name="module.jitsi_meet.summary">Sichere, in Cognis integrierte Videobesprechungen.</string>
-  <string name="module.jitsi_meet.description">Jitsi-Besprechungen in Cognis erstellen, ihnen beitreten, sie moderieren und teilen.</string>
+  <string name="module.jitsi_meet.summary">Veranstalten Sie Videobesprechungen in Cognis mit Jitsi Meet.</string>
+  <string name="module.jitsi_meet.description">Erstellen, betreten, moderieren und teilen Sie Videobesprechungen mit Besprechungschat und optionalen Whiteboards.</string>
   <string name="module.jitsi_meet.whiteboard.open">Whiteboard</string>
   <string name="module.jitsi_meet.whiteboard.close">Whiteboard schließen</string>
   <string name="module.jitsi_meet.whiteboard.description">Ein synchronisiertes Whiteboard für diese Besprechung öffnen.</string>
