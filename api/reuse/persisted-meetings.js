@@ -8,7 +8,6 @@ export async function listPersistedMeetings({
         option: "SELECT",
         table: "jitsi_meetings",
         orderBy: [{ column: "updated_at", direction: "DESC" }],
-        limit: 200,
     });
     const meetings = [];
     for (const row of result.rows ?? []) {

@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { registerActiveMeetingParticipantRoute } from "../active-participants/index.js";
 import { registerMeetingChatSummaryRoute } from "../chat-summary/index.js";
 import { restoreMeetingChatMembership } from "../../reuse/chat-membership.js";
-import { readForceNewMeeting } from "../../reuse/meeting-creation.js";
 import { createMeetingWhiteboardMembershipUpdater } from "../../reuse/whiteboard-membership.js";
 export { deleteDisposableMeeting } from "../../disposable-meeting.js";
 import { deleteDisposableMeeting } from "../../disposable-meeting.js";
@@ -145,9 +144,8 @@ export function registerMeetingLifecycleRoutes({
                     createdBy: requesterUsername,
                     chatRoomId: roomId,
                     disposable: true,
-                    forceNew: true,
                 });
-                createdMeeting = true;
+                createdMeeting = !meeting.reused;
             } catch (error) {
                 meeting = await store.getMeetingByChatRoomId(roomId);
                 if (!meeting) throw error;
@@ -200,8 +198,6 @@ export function registerMeetingLifecycleRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
-            const forceNew = readForceNewMeeting(body, res, sendError);
-            if (forceNew === null) return;
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
                 claims.sub,
@@ -239,15 +235,37 @@ export function registerMeetingLifecycleRoutes({
                 );
                 return;
             }
-            let meeting = await store.createMeeting({
-                instanceUrl: config.instanceUrl,
-                usernames: normalizedInput.participantUsernames,
-                classroomId: normalizedInput.classroomId,
-                createdBy: requesterUsername,
-                chatRoomId: null,
-                scheduledAt: body.scheduledAt,
-                forceNew,
-            });
+            let meeting;
+            try {
+                meeting = await store.createMeeting({
+                    instanceUrl: config.instanceUrl,
+                    usernames: normalizedInput.participantUsernames,
+                    classroomId: normalizedInput.classroomId,
+                    createdBy: requesterUsername,
+                    chatRoomId: null,
+                    scheduledAt: body.scheduledAt,
+                });
+            } catch (error) {
+                if (
+                    ![
+                        "duplicate_meetings",
+                        "meeting_invalid",
+                        "source_conflict",
+                    ].includes(error.code)
+                )
+                    throw error;
+                log?.(
+                    "error",
+                    "Meeting creation requires existing-record recovery.",
+                    {
+                        component: "jitsi-meet-module",
+                        operation: "create_meeting",
+                        errorCode: error.code,
+                    },
+                );
+                sendError(res, error.status, error.code, error.message);
+                return;
+            }
             const participants = await store.listParticipants(meeting.id);
             let chatRoom = meeting.chatRoomId
                 ? {

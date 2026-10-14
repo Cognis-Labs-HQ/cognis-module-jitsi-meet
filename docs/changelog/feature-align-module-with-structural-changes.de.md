@@ -114,6 +114,10 @@ Ausgabe 1.5.254 — Jitsi übergibt die Meeting-UUID als `resourceId` und `meeti
 
 Ausgabe 1.5.255 — Der Hinweis folgt einer bestätigten lokalen Jitsi-Konferenz und der aktuellen Anwesenheit statt der Zahl der Einladungen oder Mitgliedschaften. Die bestehende Wartezeit nach Beitritt oder Anmeldung sowie das Ausblenden durch Bleiben gelten weiter. Der Hinweis kehrt zurück, wenn eine weitere Person beitritt und später geht. Während einer ausstehenden Anmeldung erscheint er nicht. Nach bestätigtem Jitsi-Beitritt kann ein veralteter Anmeldestatus den aktuellen Hinweis nicht ersetzen. Darstellung und Position im Hauptfenster und PiP bleiben unverändert.
 
+## Eine Meeting-Identität pro Teilnehmergruppe
+
+Ausgabe 1.5.256 — Die Erstellung verwendet ein Datenbank-Meeting mit derselben normalisierten aktuellen oder ursprünglichen Teilnehmergruppe unabhängig vom Kontext erneut. Es gibt keine forceNew-Option. Ein stabiler Teilnehmerschlüssel und atomisches Einfügen mit Konfliktbehandlung sorgen dafür, dass gleichzeitige Anfragen dieselbe ID erhalten. Mitgliedschaftsänderungen erhalten den Erstellungsschlüssel; Suche und Erkennung haben keine feste Datensatzgrenze mehr. Bei historischen Treffern wird das einzige aktive Meeting bevorzugt; mehrere aktive Treffer benötigen Administrator-Reparatur. Wiederverwendung stellt angeforderte Mitgliedschaften wieder her und ersetzt keine vorhandene Chat-Zuordnung. Während der Anmeldung bleiben Anwesenheit und Abfragen für dasselbe Meeting aktiv; nach Abschluss wird dieselbe ID betreten. Bestätigter Jitsi-Beitritt startet fortlaufende Anwesenheit auch bei veraltetem Anmeldestatus. Die Meeting-Liste bleibt während Beitritt und Konferenz gesperrt, mit Nicht-erlaubt-Cursor und inaktiven Karten.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

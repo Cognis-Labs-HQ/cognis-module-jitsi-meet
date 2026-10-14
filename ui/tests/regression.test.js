@@ -89,10 +89,7 @@ test("staged participants return to availability by click or drag without reusin
         indexSource,
         /availablePool\.addEventListener\([\s\S]*"drop"[\s\S]*applyDrop\(username, "available"\)/,
     );
-    assert.match(
-        roomSource,
-        /persistedMeetingSelectionUsernames[\s\S]*forceNewMeeting[\s\S]*forceNew: forceNewMeeting/,
-    );
+    assert.doesNotMatch(roomSource, /forceNewMeeting|forceNew:/);
 });
 
 test("meeting share joins use the scoped guest access token", () => {
@@ -246,10 +243,8 @@ test("active meetings lock previous meeting interaction and profile hydration", 
         source,
         /const persistedMeetingsLocked = isMeetingSelectionLocked\(state\)/,
     );
-    assert.match(
-        source,
-        /persistedMeetingsEl\.inert = persistedMeetingsLocked/,
-    );
+    assert.doesNotMatch(source, /persistedMeetingsEl\.inert/);
+    assert.match(source, /card\.inert = persistedMeetingsLocked/);
     assert.match(
         source,
         /if \(persistedMeetingsLocked\) return;\s*void hydrateProfileAvatars/,

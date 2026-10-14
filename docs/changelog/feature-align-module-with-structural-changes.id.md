@@ -114,6 +114,10 @@ Rilis 1.5.254 — Jitsi mengirim UUID rapat sebagai `resourceId` dan `meeting` s
 
 Rilis 1.5.255 — Pesan sendirian mengikuti konfirmasi masuk konferensi Jitsi lokal dan kehadiran terkini, bukan jumlah undangan atau keanggotaan. Masa tunggu setelah masuk atau autentikasi dan penutupan melalui Tetap berlaku seperti sebelumnya. Pesan muncul lagi setelah peserta lain masuk lalu keluar. Autentikasi yang masih menunggu tidak menampilkan pesan sendirian. Setelah Jitsi mengonfirmasi masuk, status autentikasi lama tidak dapat menggantikan pesan aktif. Tampilan dan posisi pada jendela utama dan PiP tetap sama.
 
+## Satu identitas rapat per kelompok peserta
+
+Rilis 1.5.256 — Pembuatan memakai kembali rapat basis data dengan kelompok peserta terkini atau asli yang sama setelah normalisasi, terlepas dari konteks pemanggil. Opsi forceNew dihapus. Kunci peserta stabil dan penyisipan atomik dengan pengabaian konflik membuat permintaan bersamaan menerima ID yang sama. Perubahan keanggotaan mempertahankan kunci awal; pencarian dan penemuan tidak lagi berhenti pada jumlah catatan tetap. Kecocokan historis memilih satu rapat aktif; beberapa rapat aktif yang cocok memerlukan pemulihan administrator. Penggunaan kembali memulihkan anggota yang diminta dan tidak mengganti hubungan obrolan yang ada. Peserta yang menunggu autentikasi mempertahankan kehadiran dan memeriksa rapat yang sama; setelah autentikasi selesai mereka masuk ke ID tersebut. Konfirmasi masuk Jitsi memulai pelacakan kehadiran berkala meskipun penanda autentikasi lama masih ada. Daftar Rapat tetap terkunci selama masuk dan konferensi, dengan kursor tidak diizinkan dan kartu noninteraktif.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

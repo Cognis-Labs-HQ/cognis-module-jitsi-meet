@@ -368,6 +368,7 @@
 }
 
 .jitsi-route-root .jitsi-persisted-meetings-disabled {
+    cursor: not-allowed;
     position: relative;
     opacity: 0.55;
 }

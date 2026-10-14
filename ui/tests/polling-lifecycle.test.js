@@ -313,3 +313,119 @@ for (const auth of [
         assert.equal(presentations[0].showAuth, false);
     });
 }
+
+test("confirmed entry resumes heartbeat and state polling despite stale authentication flags", (context) => {
+    const originalInterval = globalThis.setInterval;
+    const scheduled = [];
+    globalThis.setInterval = (callback, delay) => {
+        scheduled.push({ callback, delay });
+        return scheduled.length;
+    };
+    context.after(() => {
+        globalThis.setInterval = originalInterval;
+    });
+    const state = {
+        meeting: {
+            id: "same-meeting",
+            waitingForAuthentication: true,
+            state: { authRequired: true },
+        },
+        jitsiConferenceJoined: true,
+        heartbeatTimer: null,
+        stateRefreshTimer: null,
+    };
+    const handlers = createPreflightHandlers({
+        root: {},
+        state,
+        callbacks: {},
+        utils: {},
+    });
+    handlers.ensureMeetingTracking();
+    handlers.ensureMeetingTracking();
+    assert.equal(scheduled.length, 2);
+    assert.notEqual(state.heartbeatTimer, null);
+    assert.notEqual(state.stateRefreshTimer, null);
+});
+
+test("an available-meeting join cannot accept a different ID or start a replacement", async () => {
+    let joins = 0;
+    const requests = [];
+    const state = {
+        meeting: null,
+        activeMeetings: [],
+        persistedMeetings: [],
+        allParticipants: [],
+        selectedParticipants: [],
+    };
+    const handlers = createMeetingHandlers({
+        root: { querySelector: () => null },
+        state,
+        allowParticipantlessJoin: true,
+        i18n: { t: (key) => key },
+        utils: { isMeetingActive: () => false, updateOverlay() {} },
+        callbacks: {
+            joinMeeting: async () => {
+                joins += 1;
+            },
+        },
+        apiFetch: async (url, init) => {
+            requests.push({ url, input: JSON.parse(init.body) });
+            return {
+                ok: true,
+                json: async () => ({ data: { id: "different-meeting" } }),
+            };
+        },
+    });
+    await handlers.joinMeetingById("selected-meeting");
+    assert.equal(joins, 0);
+    assert.equal(state.meeting, null);
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].input.meetingId, "selected-meeting");
+    assert.ok(!requests[0].url.endsWith("/create"));
+});
+
+test("authorized authentication wait keeps its existing meeting alive and joins that ID on completion", async (context) => {
+    const originalInterval = globalThis.setInterval;
+    const timers = [];
+    globalThis.setInterval = (callback) => {
+        timers.push(callback);
+        return timers.length;
+    };
+    context.after(() => {
+        globalThis.setInterval = originalInterval;
+    });
+    const state = {
+        meeting: {
+            id: "existing",
+            waitingForAuthentication: true,
+            state: { authRequired: true },
+        },
+        heartbeatTimer: null,
+        stateRefreshTimer: null,
+    };
+    const joined = [];
+    const handlers = createPreflightHandlers({
+        root: {},
+        state,
+        i18n: { t: (key) => key },
+        utils: {},
+        apiFetch: async () => ({
+            ok: true,
+            json: async () => ({
+                data: { state: { authCompletedAt: "2026-10-14T00:00:00Z" } },
+            }),
+        }),
+        callbacks: {
+            joinMeeting: async () => {
+                joined.push(state.meeting.id);
+                return { trackingAllowed: true };
+            },
+        },
+    });
+    handlers.ensureMeetingTracking({ pendingAuthentication: true });
+    assert.equal(timers.length, 2);
+    await handlers.loadMeetingState();
+    assert.deepEqual(joined, ["existing"]);
+    assert.equal(state.meeting.waitingForAuthentication, false);
+    assert.equal(timers.length, 2);
+});

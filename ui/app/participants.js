@@ -384,6 +384,8 @@ export function createPreflightHandlers({
                     state.meeting = payload.data;
                     await callbacks.updateCognisChat();
                     await callbacks.syncMeetingWhiteboardComponent?.();
+                    if (signal?.aborted || state.meeting?.id !== meetingId)
+                        return;
                 }
                 showToast(
                     i18n
@@ -539,6 +541,15 @@ export function createPreflightHandlers({
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
         if (
+            state.meeting.waitingForAuthentication &&
+            latestState.authCompletedAt
+        ) {
+            state.meeting.waitingForAuthentication = false;
+            const joined = await callbacks.joinMeeting();
+            if (joined?.trackingAllowed) ensureMeetingTracking();
+            return;
+        }
+        if (
             !state.jitsiConferenceJoined &&
             latestState.authRequired &&
             !latestState.authCompletedAt
@@ -596,6 +607,7 @@ export function createPreflightHandlers({
 
     function shouldTrackMeetingPresence() {
         if (!state.meeting?.id) return false;
+        if (state.jitsiConferenceJoined) return true;
         if (state.meeting.waitingForAuthentication) return false;
         return (
             state.meeting.state?.authCompletedAt ||
@@ -603,8 +615,9 @@ export function createPreflightHandlers({
         );
     }
 
-    function ensureMeetingTracking() {
-        if (!shouldTrackMeetingPresence()) return;
+    function ensureMeetingTracking({ pendingAuthentication = false } = {}) {
+        if (!state.meeting?.id || state.meeting.requiresReclaim) return;
+        if (!shouldTrackMeetingPresence() && !pendingAuthentication) return;
         if (state.heartbeatTimer === null) {
             state.heartbeatTimer = setInterval(() => {
                 void keepPresenceAlive(true);

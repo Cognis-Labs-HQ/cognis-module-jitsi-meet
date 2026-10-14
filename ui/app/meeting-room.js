@@ -381,6 +381,7 @@ export function createEmbedHandlers({
             applyPrivilegedMeetingSettings();
             utils.syncShareButtonAvailability();
             void callbacks.keepPresenceAlive(true);
+            callbacks.ensureMeetingTracking();
             if (state.promptShareOnJoin) {
                 state.promptShareOnJoin = false;
                 void callbacks.openMeetingSharePopup?.();
@@ -509,6 +510,7 @@ export function createEmbedHandlers({
         }
 
         if (state.meeting.waitingForAuthentication) {
+            callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_waiting_other"),
                 visible: true,
@@ -520,6 +522,7 @@ export function createEmbedHandlers({
             state.meeting.state?.authRequired &&
             !state.meeting.state?.authCompletedAt
         ) {
+            callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
                 message: i18n.t(
                     "module.jitsi_meet.overlay.auth_required_description",
@@ -563,15 +566,6 @@ export function createEmbedHandlers({
             }
 
             const selected = utils.selectedUsernames();
-            const sortedSelected = [...selected].sort();
-            const persistedSelection = state.persistedMeetingSelectionUsernames;
-            const forceNewMeeting =
-                Array.isArray(persistedSelection) &&
-                (persistedSelection.length !== sortedSelected.length ||
-                    persistedSelection.some(
-                        (username, index) => username !== sortedSelected[index],
-                    ));
-
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.creating"),
                 loading: true,
@@ -588,7 +582,6 @@ export function createEmbedHandlers({
                     },
                     body: JSON.stringify({
                         participants: selected,
-                        forceNew: forceNewMeeting,
                     }),
                 },
             );

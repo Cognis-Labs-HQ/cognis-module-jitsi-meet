@@ -305,7 +305,7 @@ test("meeting presence waits for a confirmed join before allowing tracking", () 
     assert.match(preflightSource, /function shouldTrackMeetingPresence\(\)/);
     assert.match(
         preflightSource,
-        /function ensureMeetingTracking\(\) \{\n\s*if \(!shouldTrackMeetingPresence\(\)\) return;/,
+        /function ensureMeetingTracking[\s\S]*!shouldTrackMeetingPresence\(\) && !pendingAuthentication/,
     );
 });
 

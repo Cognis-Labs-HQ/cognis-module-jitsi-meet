@@ -136,7 +136,7 @@ export function createMeetingHandlers({
             "aria-disabled",
             String(persistedMeetingsLocked),
         );
-        persistedMeetingsEl.inert = persistedMeetingsLocked;
+
         if (!state.persistedMeetings.length) {
             persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_none"))}</p>`;
             return;
@@ -145,6 +145,7 @@ export function createMeetingHandlers({
             ...state.persistedMeetings.map((meeting) => {
                 const card = document.createElement("article");
                 card.className = "jitsi-persisted-meeting-card";
+                card.inert = persistedMeetingsLocked;
                 if (meeting.active) {
                     card.classList.add("jitsi-persisted-meeting-card-active");
                 }
@@ -433,7 +434,8 @@ export function createMeetingHandlers({
                 .catch(() => ({ data: null }));
             if (!transition.isCurrent()) return;
             if (
-                !meetingPayload?.data?.id ||
+                normalizeMeetingId(meetingPayload?.data?.id) !==
+                    normalizedMeetingId ||
                 (autoStart && meetingPayload?.data?.state?.endedAt)
             ) {
                 state.meeting = null;

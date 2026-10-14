@@ -57,8 +57,8 @@
   <string name="module.jitsi_meet.participants.search">Find Participants</string>
   <string name="module.jitsi_meet.participants.available">Available Participants</string>
   <string name="module.jitsi_meet.participants.active_meetings">Active Meetings</string>
-  <string name="module.jitsi_meet.participants.persisted_meetings">Previous Meetings</string>
-  <string name="module.jitsi_meet.participants.persisted_none">No previous meetings.</string>
+  <string name="module.jitsi_meet.participants.persisted_meetings">Meeting List</string>
+  <string name="module.jitsi_meet.participants.persisted_none">No meetings.</string>
   <string name="module.jitsi_meet.participants.previous_select">Select this meeting</string>
   <string name="module.jitsi_meet.participants.previous_remove_title">Remove meeting</string>
   <string name="module.jitsi_meet.participants.previous_remove_body">Remove this meeting?</string>

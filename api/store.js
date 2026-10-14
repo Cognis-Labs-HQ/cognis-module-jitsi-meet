@@ -204,10 +204,6 @@ export class JitsiMeetStore {
         });
         const normalizedUsername = this.normalizeHandleKey(username);
         if (!normalizedUsername) return this.getMeetingById(meetingId);
-        const participants = this.normalizeHandleKeys([
-            ...(await this.listParticipants(meetingId)),
-            normalizedUsername,
-        ]);
         const meeting = await this.getMeetingById(meetingId);
         if (!meeting) return null;
         const updatedAt = new Date().toISOString();
@@ -227,12 +223,6 @@ export class JitsiMeetStore {
                 option: "UPDATE",
                 table: "jitsi_meetings",
                 set: {
-                    participant_key: buildParticipantKey(
-                        this.normalizeHandleKeys,
-                        participants,
-                        meeting.classroomId,
-                        meetingId,
-                    ),
                     ...(chatRoomId ? { chat_room_id: chatRoomId } : {}),
                     updated_at: updatedAt,
                 },
@@ -251,9 +241,6 @@ export class JitsiMeetStore {
         const normalizedUsername = this.normalizeHandleKey(username);
         const meeting = await this.getMeetingById(meetingId);
         if (!meeting || !normalizedUsername) return meeting;
-        const participants = (await this.listParticipants(meetingId)).filter(
-            (participant) => participant !== normalizedUsername,
-        );
         await this.db.transaction(async (executor) => {
             await executor.executeCommand({
                 option: "DELETE",
@@ -267,12 +254,6 @@ export class JitsiMeetStore {
                 option: "UPDATE",
                 table: "jitsi_meetings",
                 set: {
-                    participant_key: buildParticipantKey(
-                        this.normalizeHandleKeys,
-                        participants,
-                        meeting.classroomId,
-                        meetingId,
-                    ),
                     updated_at: new Date().toISOString(),
                 },
                 where: [{ column: "id", value: meetingId }],
@@ -285,57 +266,51 @@ export class JitsiMeetStore {
         return removeDeletedAccountFromMeetings(this, username, options);
     }
 
-    async findMeetingByParticipants(usernames, classroomId = null) {
-        const normalizedUsernames = this.normalizeHandleKeys(usernames);
-        if (normalizedUsernames.length <= 1) return null;
-        const normalizedClassroomId = classroomId
-            ? String(classroomId).trim() || null
-            : null;
-        const participantKey = buildParticipantKey(
-            this.normalizeHandleKeys,
-            normalizedUsernames,
-            normalizedClassroomId,
-        );
+    async findMeetingByParticipants(usernames) {
+        const expected = this.normalizeHandleKeys(usernames);
+        if (!expected.length) return null;
         const result = await this.db.executeCommand({
             option: "SELECT",
             table: "jitsi_meetings",
-            where: [{ column: "participant_key", value: participantKey }],
-            limit: 1,
+            orderBy: [{ column: "updated_at", direction: "DESC" }],
         });
-        let row = result.rows?.[0];
-        if (!row) {
-            const candidates = await this.db.executeCommand({
-                option: "SELECT",
-                table: "jitsi_meetings",
-                orderBy: [{ column: "updated_at", direction: "DESC" }],
-                limit: 200,
-            });
-            for (const candidate of candidates.rows ?? []) {
-                const candidateClassroomId = candidate.classroom_id
-                    ? String(candidate.classroom_id)
-                    : null;
-                if (candidateClassroomId !== normalizedClassroomId) continue;
-                const candidateMatches =
-                    await originals.meetingMatchesParticipantSet({
-                        meetingId: String(candidate.id),
-                        expectedUsernames: normalizedUsernames,
-                        listParticipants: (id) => this.listParticipants(id),
-                        listOriginalParticipants: (id) =>
-                            this.listOriginalParticipants(id),
-                        normalizeHandleKeys: (handles) =>
-                            this.normalizeHandleKeys(handles),
-                    });
-                if (candidateMatches) {
-                    row = candidate;
-                    break;
-                }
-            }
+        const matches = [];
+        for (const row of result.rows ?? []) {
+            if (
+                await originals.meetingMatchesParticipantSet({
+                    meetingId: String(row.id),
+                    expectedUsernames: expected,
+                    listParticipants: (id) => this.listParticipants(id),
+                    listOriginalParticipants: (id) =>
+                        this.listOriginalParticipants(id),
+                    normalizeHandleKeys: (handles) =>
+                        this.normalizeHandleKeys(handles),
+                })
+            )
+                matches.push(row);
         }
-        if (!row) return null;
-        const meeting = await this.getMeetingById(String(row.id));
-        if (!meeting?.meetingUrl || !meeting.meetingPassword) {
-            return null;
-        }
+        if (!matches.length) return null;
+        const active =
+            matches.length > 1
+                ? (await this.listActiveMeetings()).filter((meeting) =>
+                      matches.some((row) => row.id === meeting.id),
+                  )
+                : [];
+        if (active.length > 1)
+            throw Object.assign(
+                new Error(
+                    "Multiple active meetings have the same participants. Resolve them in Administration.",
+                ),
+                { code: "duplicate_meetings", status: 409 },
+            );
+        const meeting = await this.getMeetingById(
+            active[0]?.id ?? String(matches[0].id),
+        );
+        if (!meeting?.meetingUrl || !meeting.meetingPassword)
+            throw Object.assign(
+                new Error("The existing meeting needs administrator repair."),
+                { code: "meeting_invalid", status: 409 },
+            );
         return meeting;
     }
 
@@ -366,7 +341,6 @@ export class JitsiMeetStore {
         createdBy,
         chatRoomId,
         scheduledAt,
-        forceNew = false,
         disposable = false,
     }) {
         const normalizedInstanceUrl = normalizeHttpUrl(instanceUrl);
@@ -381,23 +355,28 @@ export class JitsiMeetStore {
             typeof classroomId === "string" && classroomId.trim().length > 0
                 ? classroomId.trim()
                 : null;
-        const existing = forceNew
-            ? null
-            : await this.findMeetingByParticipants(
-                  participantUsernames,
-                  normalizedClassroomId,
-              );
+        const existing =
+            await this.findMeetingByParticipants(participantUsernames);
         if (existing) {
             const normalizedChatRoomId = chatRoomId ?? null;
             if (
                 normalizedChatRoomId &&
                 existing.chatRoomId !== normalizedChatRoomId
             ) {
+                if (existing.chatRoomId)
+                    throw Object.assign(
+                        new Error(
+                            "Meeting already belongs to another chat room.",
+                        ),
+                        { code: "source_conflict", status: 409 },
+                    );
                 await this.setMeetingChatRoomId(
                     existing.id,
                     normalizedChatRoomId,
                 );
             }
+            for (const username of participantUsernames)
+                await this.addMeetingParticipant(existing.id, username);
             return {
                 ...(existing ?? {}),
                 chatRoomId: normalizedChatRoomId ?? existing.chatRoomId,
@@ -421,8 +400,7 @@ export class JitsiMeetStore {
         const participantKey = buildParticipantKey(
             this.normalizeHandleKeys,
             participantUsernames,
-            normalizedClassroomId,
-            forceNew || disposable ? meetingId : null,
+            null,
         );
         const createdAt = new Date().toISOString();
         const normalizedScheduledAt = Number.isFinite(
@@ -430,6 +408,7 @@ export class JitsiMeetStore {
         )
             ? new Date(scheduledAt).toISOString()
             : createdAt;
+        let resolvedMeetingId = meetingId;
         await this.db.transaction(async (executor) => {
             const meetingValues = {
                 id: meetingId,
@@ -451,7 +430,20 @@ export class JitsiMeetStore {
                 option: "INSERT",
                 table: "jitsi_meetings",
                 values: meetingValues,
+                conflict: { action: "ignore", target: ["participant_key"] },
             });
+            const winner = await executor.executeCommand({
+                option: "SELECT",
+                table: "jitsi_meetings",
+                columns: ["id"],
+                where: [{ column: "participant_key", value: participantKey }],
+            });
+            resolvedMeetingId = winner.rows?.[0]?.id;
+            if (!resolvedMeetingId)
+                throw new Error(
+                    "Meeting participant identity could not be resolved.",
+                );
+            if (resolvedMeetingId !== meetingId) return;
             await reserveChatCallRoom(executor, {
                 id: meetingId,
                 disposable,
@@ -497,10 +489,19 @@ export class JitsiMeetStore {
             });
         });
 
-        const createdMeeting = await this.getMeetingById(meetingId);
+        const createdMeeting = await this.getMeetingById(resolvedMeetingId);
+        if (
+            chatRoomId &&
+            createdMeeting.chatRoomId &&
+            createdMeeting.chatRoomId !== chatRoomId
+        )
+            throw Object.assign(
+                new Error("Meeting already belongs to another chat room."),
+                { code: "source_conflict", status: 409 },
+            );
         return {
             ...(createdMeeting ?? {}),
-            reused: false,
+            reused: resolvedMeetingId !== meetingId,
         };
     }
 
@@ -781,7 +782,6 @@ export class JitsiMeetStore {
             option: "SELECT",
             table: "jitsi_meetings",
             orderBy: [{ column: "updated_at", direction: "DESC" }],
-            limit: 200,
         });
         const rows = meetingsResult.rows ?? [];
         const mappedMeetings = await Promise.all(
@@ -873,6 +873,7 @@ export class JitsiMeetStore {
             classroomId: meeting.classroomId,
             ...(includeChatRoom ? { chatRoomId: meeting.chatRoomId } : {}),
             createdBy: meeting.createdBy,
+            disposable: meeting.disposable,
             hasInvitedParticipants: participants.some(
                 (username) => username !== meeting.createdBy,
             ),
