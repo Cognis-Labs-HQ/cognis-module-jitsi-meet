@@ -110,6 +110,10 @@ Ausgabe 1.5.253 — Dauerhafte Meetings verwenden `createCanvas`; nur ausdrückl
 
 Ausgabe 1.5.254 — Jitsi übergibt die Meeting-UUID als `resourceId` und `meeting` als `resourceType`; der Anzeigename dient nur als Titel. Erneutes Öffnen fordert dieselbe allgemeine Anbieter-Verknüpfung an, auch nach einer Namensänderung. Whiteboard verwaltet Persistenz, Zugriff und gleichzeitige Auflösung ohne Kenntnis der Jitsi-Interna.
 
+## Allein-im-Meeting-Hinweis nach bestätigtem Beitritt
+
+Ausgabe 1.5.255 — Der Hinweis folgt einer bestätigten lokalen Jitsi-Konferenz und der aktuellen Anwesenheit statt der Zahl der Einladungen oder Mitgliedschaften. Die bestehende Wartezeit nach Beitritt oder Anmeldung sowie das Ausblenden durch Bleiben gelten weiter. Der Hinweis kehrt zurück, wenn eine weitere Person beitritt und später geht. Während einer ausstehenden Anmeldung erscheint er nicht. Nach bestätigtem Jitsi-Beitritt kann ein veralteter Anmeldestatus den aktuellen Hinweis nicht ersetzen. Darstellung und Position im Hauptfenster und PiP bleiben unverändert.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

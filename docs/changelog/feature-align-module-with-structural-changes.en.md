@@ -110,6 +110,10 @@ Release 1.5.253 — Persistent meetings use `createCanvas`; only meetings explic
 
 Release 1.5.254 — Jitsi supplies the meeting UUID as `resourceId` and `meeting` as `resourceType`; the display name is only the title. Reopening the same meeting requests the same generic provider reference, even after its name changes. Whiteboard owns persistence, access checks and concurrent reference resolution without knowledge of Jitsi internals.
 
+## Alone-in-meeting prompt after confirmed entry
+
+Release 1.5.255 — The alone-in-meeting prompt follows a confirmed local Jitsi conference and current presence, rather than the invitation or membership count. It still observes the existing join/authentication grace period and Remain dismissal, and returns after another participant joins and later leaves. Pending authentication does not show an alone prompt. Once Jitsi confirms entry, stale authentication status cannot replace the live prompt. Full-window and PiP appearance and placement remain unchanged.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

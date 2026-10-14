@@ -253,7 +253,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     );
     assert.match(
         source,
-        /if \(latestState\.authRequired && !latestState\.authCompletedAt\) \{[\s\S]*return;[\s\S]*\}/,
+        /!state\.jitsiConferenceJoined &&[\s\S]*latestState\.authRequired &&[\s\S]*!latestState\.authCompletedAt[\s\S]*return;/,
     );
     assert.match(
         source,

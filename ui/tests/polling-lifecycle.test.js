@@ -209,3 +209,107 @@ test("failed meeting discovery stops polling and preserves previous results", as
         ),
     );
 });
+
+function alonePromptFixture({
+    joined = true,
+    participants = ["alice"],
+    profile = { handle: "alice" },
+} = {}) {
+    const state = {
+        meeting: { id: "meeting", participants, state: {} },
+        currentProfile: profile,
+        jitsiConferenceJoined: joined,
+        alonePromptBlockedUntil: 0,
+        alonePromptMeetingId: "",
+        alonePromptDismissedMeetingId: "",
+    };
+    const presentations = [];
+    const utils = {
+        isMeetingActive: () => true,
+        updateOverlay: (input) => presentations.push(input),
+    };
+    const handlers = createMeetingHandlers({
+        root: {},
+        state,
+        callbacks: {},
+        utils,
+        i18n: { t: (key) => key },
+    });
+    return { state, utils, handlers, presentations };
+}
+
+for (const participants of [[], ["alice"], ["alice", "bob"]]) {
+    test(`confirmed lone participant gets the prompt with ${participants.length} membership records`, () => {
+        const { handlers, presentations } = alonePromptFixture({
+            participants,
+        });
+        assert.equal(
+            handlers.updateAloneParticipantPrompt(["Alice", "alice"]),
+            true,
+        );
+        assert.equal(presentations.at(-1).visible, true);
+        assert.equal(presentations.at(-1).showAlonePrompt, true);
+        assert.equal(presentations.at(-1).showAuth, false);
+        assert.equal(presentations.at(-1).canStart, false);
+    });
+}
+
+test("alone prompt respects confirmed entry, the grace period, dismissal and returning participants", () => {
+    const { state, handlers, presentations } = alonePromptFixture({
+        joined: false,
+    });
+    assert.equal(handlers.updateAloneParticipantPrompt(["alice"]), false);
+    assert.equal(presentations.length, 0);
+    state.jitsiConferenceJoined = true;
+    state.alonePromptBlockedUntil = Date.now() + 60000;
+    assert.equal(handlers.updateAloneParticipantPrompt(["alice"]), false);
+    state.alonePromptBlockedUntil = 0;
+    assert.equal(handlers.updateAloneParticipantPrompt(["alice"]), true);
+    state.alonePromptDismissedMeetingId = "meeting";
+    assert.equal(handlers.updateAloneParticipantPrompt(["alice"]), false);
+    assert.equal(presentations.at(-1).visible, false);
+    handlers.updateAloneParticipantPrompt(["alice", "bob"]);
+    assert.equal(state.alonePromptDismissedMeetingId, "");
+    assert.equal(handlers.updateAloneParticipantPrompt(["alice"]), true);
+    assert.equal(
+        handlers.updateAloneParticipantPrompt(["alice", "bob"]),
+        false,
+    );
+    assert.equal(presentations.at(-1).visible, false);
+});
+
+test("alone prompt uses the local username fallback and never prompts for another account", () => {
+    const { handlers } = alonePromptFixture({ profile: { username: "alice" } });
+    assert.equal(handlers.shouldPromptLocalUserAlone(["bob"]), false);
+    assert.equal(handlers.shouldPromptLocalUserAlone([]), false);
+    assert.equal(handlers.shouldPromptLocalUserAlone(["alice"]), true);
+});
+
+for (const auth of [
+    { authRequired: true },
+    { authCompletedAt: "2026-10-14T00:00:00Z" },
+]) {
+    test(`confirmed conference polling keeps the alone prompt ahead of stale auth state ${JSON.stringify(auth)}`, async () => {
+        const { state, handlers, presentations, utils } = alonePromptFixture();
+        const polling = createPreflightHandlers({
+            root: {},
+            state,
+            utils,
+            i18n: { t: (key) => key },
+            apiFetch: async () => ({
+                ok: true,
+                json: async () => ({
+                    data: { state: auth, activeParticipants: ["alice"] },
+                }),
+            }),
+            callbacks: {
+                updateAloneParticipantPrompt:
+                    handlers.updateAloneParticipantPrompt,
+            },
+        });
+        await polling.loadMeetingState();
+        assert.equal(presentations.length, 1);
+        assert.equal(presentations[0].showAlonePrompt, true);
+        assert.equal(presentations[0].showAuth, false);
+    });
+}

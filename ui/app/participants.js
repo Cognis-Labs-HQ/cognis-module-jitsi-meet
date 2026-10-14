@@ -538,7 +538,11 @@ export function createPreflightHandlers({
             }
         }
         await callbacks.syncMeetingWhiteboardComponent?.();
-        if (latestState.authRequired && !latestState.authCompletedAt) {
+        if (
+            !state.jitsiConferenceJoined &&
+            latestState.authRequired &&
+            !latestState.authCompletedAt
+        ) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_waiting"),
                 showAuth: true,
@@ -546,7 +550,7 @@ export function createPreflightHandlers({
             });
             return;
         }
-        if (latestState.authCompletedAt) {
+        if (!state.jitsiConferenceJoined && latestState.authCompletedAt) {
             utils.updateOverlay({
                 message: i18n.t("module.jitsi_meet.overlay.auth_completed"),
                 canStart: false,

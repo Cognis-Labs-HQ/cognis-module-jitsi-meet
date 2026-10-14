@@ -108,3 +108,7 @@ Meeting lists share one panel with space between Active and Upcoming sections. M
 ## Stable meeting canvas identifiers
 
 Jitsi supplies the meeting UUID as `resourceId` and `meeting` as `resourceType`; the display name is only the title. Reopening the same meeting requests the same generic provider reference, even after its name changes. Whiteboard owns persistence, access checks and concurrent reference resolution without knowledge of Jitsi internals.
+
+## Alone-in-meeting prompt after confirmed entry
+
+The alone-in-meeting prompt follows a confirmed local Jitsi conference and current presence, rather than the invitation or membership count. It still observes the existing join/authentication grace period and Remain dismissal, and returns after another participant joins and later leaves. Pending authentication does not show an alone prompt. Once Jitsi confirms entry, stale authentication status cannot replace the live prompt. Full-window and PiP appearance and placement remain unchanged.

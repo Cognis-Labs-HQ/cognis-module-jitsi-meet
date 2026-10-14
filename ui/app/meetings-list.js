@@ -772,6 +772,7 @@ export function createMeetingHandlers({
     function shouldPromptLocalUserAlone(activeParticipants) {
         if (
             !utils.isMeetingActive() ||
+            !state.jitsiConferenceJoined ||
             !state.meeting?.id ||
             state.alonePromptDismissedMeetingId === state.meeting.id ||
             Date.now() < state.alonePromptBlockedUntil
@@ -779,7 +780,9 @@ export function createMeetingHandlers({
             return false;
         }
         const localUsername = normalizeUsername(
-            state.currentProfile?.handle ?? "",
+            state.currentProfile?.handle ??
+                state.currentProfile?.username ??
+                "",
         );
         if (!localUsername) return false;
         const uniqueActiveParticipants = Array.from(
@@ -789,13 +792,7 @@ export function createMeetingHandlers({
                     .filter(Boolean),
             ),
         );
-        const invitedParticipants = Array.isArray(state.meeting?.participants)
-            ? state.meeting.participants
-                  .map((entry) => normalizeUsername(entry))
-                  .filter(Boolean)
-            : [];
         return (
-            invitedParticipants.length > 1 &&
             uniqueActiveParticipants.length === 1 &&
             uniqueActiveParticipants[0] === localUsername
         );

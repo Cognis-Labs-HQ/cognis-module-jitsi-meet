@@ -110,6 +110,10 @@ Rilis 1.5.253 — Rapat persisten memakai `createCanvas`; hanya rapat yang secar
 
 Rilis 1.5.254 — Jitsi mengirim UUID rapat sebagai `resourceId` dan `meeting` sebagai `resourceType`; nama tampilan hanya menjadi judul. Membuka rapat yang sama meminta referensi penyedia generik yang sama, meskipun namanya berubah. Whiteboard mengelola persistensi, pemeriksaan akses, dan penyelesaian referensi bersamaan tanpa mengetahui mekanisme internal Jitsi.
 
+## Pesan sendirian setelah masuk rapat dikonfirmasi
+
+Rilis 1.5.255 — Pesan sendirian mengikuti konfirmasi masuk konferensi Jitsi lokal dan kehadiran terkini, bukan jumlah undangan atau keanggotaan. Masa tunggu setelah masuk atau autentikasi dan penutupan melalui Tetap berlaku seperti sebelumnya. Pesan muncul lagi setelah peserta lain masuk lalu keluar. Autentikasi yang masih menunggu tidak menampilkan pesan sendirian. Setelah Jitsi mengonfirmasi masuk, status autentikasi lama tidak dapat menggantikan pesan aktif. Tampilan dan posisi pada jendela utama dan PiP tetap sama.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)
