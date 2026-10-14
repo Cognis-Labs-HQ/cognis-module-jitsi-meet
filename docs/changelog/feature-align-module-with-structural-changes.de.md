@@ -142,3 +142,4 @@ Konfiguration und Aktivierung initialisieren ausschließlich die Konfigurationst
 - [daabd62](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/daabd620f48c797c05df6171576fb2e33c1d8849)
 - [f47348f](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/f47348f871886d8fa72ca0e8fa1c0e6a126357ed)
 - [202c527](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/202c527a84226b8beea541a3902136d8be2a9384)
+- [adb2cb2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/adb2cb2af083776f91d58ce963cf565fe96ffb3b)
