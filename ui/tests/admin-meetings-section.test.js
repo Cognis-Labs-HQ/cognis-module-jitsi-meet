@@ -52,6 +52,7 @@ globalThis.document = {
 let rows = [
     { id: "meeting", chatRoomId: "chat", participantCount: 1, active: true },
 ];
+const upcomingResponses = [];
 const reuse = {
     "timestamp.js": { formatDateTime: String },
     "popup.js": { openPopup: () => assert.fail("No popup expected") },
@@ -66,7 +67,10 @@ globalThis[Symbol.for("cognis.uiCtx")] = {
                 : id === "jitsi-meet:administration"
                   ? {
                         listAdminMeetings: async () => rows,
-                        listUpcomingAdminMeetings: async () => rows,
+                        listUpcomingAdminMeetings: async () =>
+                            upcomingResponses.length
+                                ? upcomingResponses.shift()
+                                : rows,
                     }
                   : () => assert.fail("No feedback expected"),
     },
@@ -119,4 +123,42 @@ test("polling preserves expanded References in both meeting tables and releases 
     assert.equal(timers.size, 0);
     assert.equal(activeRoot.onclick, null);
     assert.equal(upcomingRoot.onkeydown, null);
+});
+
+test("an older upcoming-meeting poll cannot overwrite newer schedules", async (context) => {
+    const originalInterval = globalThis.setInterval;
+    const originalClear = globalThis.clearInterval;
+    const polls = [];
+    globalThis.setInterval = (callback) => {
+        polls.push(callback);
+        return polls.length;
+    };
+    globalThis.clearInterval = () => {};
+    context.after(() => {
+        globalThis.setInterval = originalInterval;
+        globalThis.clearInterval = originalClear;
+    });
+    const section = createAdminSection({ i18n, escapeHtml: String });
+    section.subComposerOptions.onRender();
+    await settle();
+    let resolveOld;
+    let resolveNew;
+    upcomingResponses.push(
+        new Promise((resolve) => {
+            resolveOld = resolve;
+        }),
+        new Promise((resolve) => {
+            resolveNew = resolve;
+        }),
+    );
+    polls[1]();
+    polls[1]();
+    resolveNew([{ ...rows[0], id: "latest" }]);
+    await settle();
+    const markup = upcomingRoot.table.innerHTML;
+    assert.match(markup, /latest/);
+    resolveOld([{ ...rows[0], id: "superseded" }]);
+    await settle();
+    assert.equal(upcomingRoot.table.innerHTML, markup);
+    section.subComposerOptions.onUnmount();
 });

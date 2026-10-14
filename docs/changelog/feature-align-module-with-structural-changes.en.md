@@ -4,6 +4,10 @@ Release 1.5.258 — Direct-load Meetings pages abort their mount when the host c
 
 **Feature Branch:** feature-align-module-with-structural-changes
 
+## Approval, resource ownership and polling
+
+Release 1.5.260 — Canvas source claims occur only after approval and inside the serialized state update. Membership or persistence failures release newly claimed canvases while preserving existing mapped claims. General meeting creation cannot provision disposable calls; recovery of conversation calls uses the existing conversation’s VoIP route. Superseded upcoming polls are ignored. Direct pages consume the host lifecycle signal instead of creating independent controllers.
+
 ## Administration filters and references
 
 Release 1.5.259 — References use the host’s collapsible section composer, matching Components. Expanded references survive meeting and upcoming-meeting polling, with keyboard-accessible disclosure controls. Filters are Active Meetings, All Meetings and Troubled Meetings, each with a distinct empty message.

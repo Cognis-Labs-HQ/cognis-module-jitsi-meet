@@ -21,7 +21,7 @@ import { createMountUtilities } from "./mount-surface.js";
 import { bindShareButton, openMeetingSharePopup } from "../share-button.js";
 import { handleProfileAvatarError } from "./profile-avatars.js";
 import { createMeetingSearchGroups } from "./meeting-search.js";
-import { claimRouteRoot, createDirectMountController } from "./route-root.js";
+import { claimRouteRoot } from "./route-root.js";
 import {
     bindWhiteboardButton,
     syncMeetingWhiteboardComponent,
@@ -470,15 +470,7 @@ export async function mount(
     if (signal?.aborted) return;
     await runPreflightCheck();
 }
-await mountWhenDirect(async (root) => {
-    const mountController = createDirectMountController();
-    try {
-        await mount(root, { signal: mountController.signal });
-    } catch (error) {
-        mountController.abort();
-        throw error;
-    }
-}).catch((error) => {
+await mountWhenDirect(mount).catch((error) => {
     void logUi("error", "Jitsi Meet page mount failed.", {
         component: "module:jitsi-meet",
         operation: "mount_meetings_page",

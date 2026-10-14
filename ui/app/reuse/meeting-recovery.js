@@ -28,18 +28,24 @@ export async function recoverDeletedMeeting({
             ),
     );
     if (!record) return null;
+    if (record.disposable && !record.chatRoomId) return null;
     const participants = readParticipants(record);
     signal?.throwIfAborted();
     const response = await apiFetch(
-        "/api/v1/modules/jitsi-meet/meetings/create",
+        record.disposable
+            ? "/api/v1/modules/jitsi-meet/meetings/voip-call"
+            : "/api/v1/modules/jitsi-meet/meetings/create",
         {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({
-                participants,
-                classroomId: record.classroomId,
-                disposable: record.disposable === true,
-            }),
+            body: JSON.stringify(
+                record.disposable
+                    ? { roomId: record.chatRoomId }
+                    : {
+                          participants,
+                          classroomId: record.classroomId,
+                      },
+            ),
             signal,
         },
     );

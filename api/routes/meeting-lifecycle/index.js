@@ -198,15 +198,12 @@ export function registerMeetingLifecycleRoutes({
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const body = await readJson(req);
-            if (
-                body.disposable !== undefined &&
-                typeof body.disposable !== "boolean"
-            ) {
+            if (body.disposable !== undefined && body.disposable !== false) {
                 sendError(
                     res,
                     400,
                     "bad_request",
-                    "disposable must be a boolean.",
+                    "Disposable meetings must be created through a conversation call.",
                 );
                 return;
             }
@@ -255,7 +252,7 @@ export function registerMeetingLifecycleRoutes({
                     classroomId: normalizedInput.classroomId,
                     createdBy: requesterUsername,
                     chatRoomId: null,
-                    disposable: body.disposable === true,
+                    disposable: false,
                     scheduledAt: body.scheduledAt,
                 });
             } catch (error) {

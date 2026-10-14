@@ -6,13 +6,18 @@ export async function bindMeetingCanvasSource(
     whiteboardId,
 ) {
     const binding = ctx.getCapability("whiteboard:sourceBinding");
-    if (typeof binding?.bind !== "function")
+    if (
+        typeof binding?.bind !== "function" ||
+        typeof binding?.release !== "function"
+    )
         throw new Error("Whiteboard source binding is unavailable.");
     const board = await fetchBoardData(whiteboardId);
-    await binding.bind({
+    const input = {
         whiteboardId,
         sourceType: "meeting",
         sourceId: meetingId,
         actorAccountId: board?.createdByAccountId,
-    });
+    };
+    await binding.bind(input);
+    return () => binding.release(input);
 }

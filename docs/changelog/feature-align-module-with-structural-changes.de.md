@@ -4,6 +4,10 @@ Ausgabe 1.5.258 — Direkt geladene Meetings-Seiten brechen ihren Mount ab, wenn
 
 **Feature-Branch:** feature-align-module-with-structural-changes
 
+## Zustimmung, Ressourcenbesitz und Abfragen
+
+Ausgabe 1.5.260 — Quellzuordnungen von Zeichenflächen erfolgen erst nach Zustimmung innerhalb der serialisierten Zustandsänderung. Fehler beim Teilnehmerabgleich oder Speichern geben neue Zuordnungen frei und erhalten bestehende Verknüpfungen. Allgemeine Meeting-Erstellung erzeugt keine kurzlebigen Anrufe; deren Wiederherstellung nutzt die VoIP-Route des vorhandenen Gesprächs. Überholte Abfragen bevorstehender Meetings werden verworfen. Direkte Seiten verwenden das Lebenszyklussignal des Hosts statt unabhängiger Controller.
+
 ## Verwaltungsfilter und Verweise
 
 Ausgabe 1.5.259 — Verweise verwenden den aufklappbaren Abschnittskomponisten des Hosts wie Components. Geöffnete Verweise bleiben bei Aktualisierungen von Meetings und bevorstehenden Meetings erhalten; die Steuerelemente sind per Tastatur bedienbar. Die Filter heißen Aktive Meetings, Alle Meetings und Problematische Meetings und haben jeweils eine eigene Leermeldung.

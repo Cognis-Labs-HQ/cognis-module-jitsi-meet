@@ -1,19 +1,16 @@
-export function createDirectMountController(target = window) {
-    const controller = new AbortController();
-    for (const event of ["cognis:route-will-change", "pagehide"]) {
-        target.addEventListener(event, () => controller.abort(), {
-            signal: controller.signal,
-        });
-    }
-    return controller;
-}
+const owners = new WeakMap();
 
 export function claimRouteRoot(root, signal) {
     if (signal?.aborted) return false;
+    owners.set(root, signal);
     root.classList.add("jitsi-route-root");
     signal?.addEventListener(
         "abort",
-        () => root.classList.remove("jitsi-route-root"),
+        () => {
+            if (owners.get(root) !== signal) return;
+            owners.delete(root);
+            root.classList.remove("jitsi-route-root");
+        },
         { once: true },
     );
     return true;

@@ -51,6 +51,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
     let upcomingPanelRoot = null;
     let upcomingRefreshTimer = null;
     let refreshSequence = 0;
+    let upcomingRefreshSequence = 0;
 
     async function loadMeetings() {
         const rows = await gateway.listAdminMeetings();
@@ -120,8 +121,13 @@ export function createAdminSection({ i18n, escapeHtml }) {
             return;
         }
         const currentRoot = upcomingPanelRoot;
+        const sequence = ++upcomingRefreshSequence;
         const rows = await loadUpcomingMeetings();
-        if (upcomingPanelRoot !== currentRoot || !currentRoot.isConnected)
+        if (
+            upcomingPanelRoot !== currentRoot ||
+            sequence !== upcomingRefreshSequence ||
+            !currentRoot.isConnected
+        )
             return;
         const tbody = upcomingPanelRoot.querySelector("tbody");
         if (!(tbody instanceof HTMLElement)) return;

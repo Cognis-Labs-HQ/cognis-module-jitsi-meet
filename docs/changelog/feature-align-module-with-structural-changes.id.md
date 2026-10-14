@@ -4,6 +4,10 @@ Rilis 1.5.258 — Halaman Meetings yang dimuat langsung membatalkan mount saat h
 
 **Cabang Fitur:** feature-align-module-with-structural-changes
 
+## Persetujuan, kepemilikan sumber daya, dan polling
+
+Rilis 1.5.260 — Klaim sumber kanvas hanya dilakukan setelah persetujuan, di dalam pembaruan status berseri. Kegagalan sinkronisasi anggota atau penyimpanan melepas klaim baru dan mempertahankan klaim yang sudah dipetakan. Pembuatan rapat umum tidak membuat panggilan sementara; pemulihan panggilan percakapan memakai rute VoIP percakapan yang ada. Polling rapat mendatang yang sudah tergantikan diabaikan. Halaman langsung memakai sinyal siklus hidup host, bukan controller mandiri.
+
 ## Filter administrasi dan referensi
 
 Rilis 1.5.259 — Referensi menggunakan komposer bagian yang dapat dibuka dari host, sama seperti Components. Referensi yang terbuka tetap terbuka selama polling rapat dan rapat mendatang, dengan kontrol yang dapat digunakan melalui papan ketik. Filter Rapat Aktif, Semua Rapat, dan Rapat Bermasalah masing-masing memiliki pesan kosong tersendiri.

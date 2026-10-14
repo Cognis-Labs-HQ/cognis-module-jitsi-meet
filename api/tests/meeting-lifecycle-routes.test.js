@@ -778,3 +778,33 @@ for (const providerAvailable of [true, false]) {
             );
     });
 }
+
+test("general meeting creation rejects disposable calls before provisioning a chat", async () => {
+    const handlers = new Map();
+    let created = 0;
+    registerMeetingLifecycleRoutes({
+        router: { post: (path, handler) => handlers.set(path, handler) },
+        store: {
+            ensureSchema: async () => {},
+            createMeeting: async () => created++,
+        },
+        requireAuth: () => ({ sub: "alice" }),
+        readJson: async (request) => request.body,
+        sendError: (response, status, code) => {
+            response.status = status;
+            response.code = code;
+        },
+        resolveRequesterUsername: () =>
+            assert.fail(
+                "Disposable creation must be rejected before provisioning",
+            ),
+    });
+    const response = {};
+    await handlers.get("/api/v1/modules/jitsi-meet/meetings/create")(
+        { body: { disposable: true, participants: ["alice", "bob"] } },
+        response,
+    );
+    assert.equal(response.status, 400);
+    assert.equal(response.code, "bad_request");
+    assert.equal(created, 0);
+});

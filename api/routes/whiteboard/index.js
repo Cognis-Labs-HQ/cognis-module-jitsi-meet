@@ -1,3 +1,4 @@
+import { commitMeetingCanvasState } from "../../whiteboard/activation.js";
 import { bindMeetingCanvasSource } from "../../reuse/whiteboard-source-binding.js";
 import { registerFollowWhiteboard } from "../../reuse/follow-whiteboard.js";
 import { resolveRequesterUsername } from "../../reuse/requester.js";
@@ -377,78 +378,6 @@ export function registerMeetingWhiteboardRoutes({
                     return;
                 }
             }
-            if (active) {
-                try {
-                    await bindMeetingCanvasSource(
-                        ctx,
-                        fetchBoardData,
-                        resolved.meeting.id,
-                        whiteboardId,
-                    );
-                } catch (error) {
-                    ctx.log?.("error", "Whiteboard source binding failed.", {
-                        operation: "bind_meeting_canvas",
-                        meetingId: resolved.meeting.id,
-                        whiteboardId,
-                        errorName: error?.name,
-                    });
-                    sendError(
-                        res,
-                        error?.status === 409 ? 409 : 503,
-                        error?.code === "source_conflict"
-                            ? "source_conflict"
-                            : "source_binding_unavailable",
-                        "Whiteboard cannot be bound to this meeting.",
-                    );
-                    return;
-                }
-            }
-            if (active && whiteboardDisposable === false) {
-                try {
-                    const presentUsernames = store
-                        .filterCurrentPresenceEntries(
-                            await store.listPresence(resolved.meeting.id),
-                        )
-                        .map((entry) => entry.username);
-                    await synchronizeMeetingWhiteboardMembers({
-                        state: {
-                            whiteboardId,
-                            whiteboardDisposable: false,
-                        },
-                        usernames: [
-                            ...(await store.listParticipants(
-                                resolved.meeting.id,
-                            )),
-                            ...presentUsernames,
-                        ],
-                        profileStore,
-                        resolveWhiteboardMembership,
-                        fetchBoardData,
-                    });
-                } catch (error) {
-                    ctx.log?.(
-                        "error",
-                        "Meeting Whiteboard membership synchronization failed.",
-                        {
-                            component: "jitsi-meet-module",
-                            operation: "synchronize_meeting_whiteboard_members",
-                            meetingId: resolved.meeting.id,
-                            whiteboardId,
-                            error:
-                                error instanceof Error
-                                    ? error.message
-                                    : String(error),
-                        },
-                    );
-                    sendError(
-                        res,
-                        503,
-                        "whiteboard_membership_unavailable",
-                        "Whiteboard access could not be synchronized.",
-                    );
-                    return;
-                }
-            }
             const meetingParticipantUsernames = new Set(
                 await store.listParticipants(resolved.meeting.id),
             );
@@ -498,90 +427,160 @@ export function registerMeetingWhiteboardRoutes({
                 );
                 return;
             }
-            const result = await serializeMeetingStateUpdate(
-                resolved.meeting.id,
-                async () => {
-                    currentState = await store.getMeetingState(
-                        resolved.meeting.id,
-                    );
-                    if (active && currentState.screenSharingActive) {
-                        return { screenSharingActive: true };
-                    }
-                    let whiteboardOpen = false;
-                    let whiteboardOpenVotes = [];
-                    let votesRequired = 0;
-                    const mappedParticipantCanvas =
-                        active &&
-                        currentState.whiteboardId === whiteboardId &&
-                        currentState.whiteboardDisposable === false &&
-                        (currentState.whiteboardOpenVotes ?? []).length === 0 &&
-                        (
-                            await store.listParticipants(resolved.meeting.id)
-                        ).some(
-                            (username) =>
-                                username !== resolved.meeting.createdBy,
+            let result;
+            try {
+                result = await serializeMeetingStateUpdate(
+                    resolved.meeting.id,
+                    async () => {
+                        currentState = await store.getMeetingState(
+                            resolved.meeting.id,
                         );
-                    if (
-                        active &&
-                        resolved.requesterUsername ===
-                            resolved.meeting.createdBy
-                    ) {
-                        whiteboardOpen = true;
-                    } else if (active && consensusBypassed) {
-                        whiteboardOpen = true;
-                    } else if (mappedParticipantCanvas) {
-                        whiteboardOpen = true;
-                    } else if (active && consensusApproved === true) {
-                        whiteboardOpen = true;
-                    } else if (active) {
-                        const currentParticipants = Array.from(
-                            new Set(
-                                store
-                                    .filterCurrentPresenceEntries(
-                                        await store.listPresence(
-                                            resolved.meeting.id,
+                        if (active && currentState.screenSharingActive) {
+                            return { screenSharingActive: true };
+                        }
+                        let whiteboardOpen = false;
+                        let whiteboardOpenVotes = [];
+                        let votesRequired = 0;
+                        const mappedParticipantCanvas =
+                            active &&
+                            currentState.whiteboardId === whiteboardId &&
+                            currentState.whiteboardDisposable === false &&
+                            (currentState.whiteboardOpenVotes ?? []).length ===
+                                0 &&
+                            (
+                                await store.listParticipants(
+                                    resolved.meeting.id,
+                                )
+                            ).some(
+                                (username) =>
+                                    username !== resolved.meeting.createdBy,
+                            );
+                        if (
+                            active &&
+                            resolved.requesterUsername ===
+                                resolved.meeting.createdBy
+                        ) {
+                            whiteboardOpen = true;
+                        } else if (active && consensusBypassed) {
+                            whiteboardOpen = true;
+                        } else if (mappedParticipantCanvas) {
+                            whiteboardOpen = true;
+                        } else if (active && consensusApproved === true) {
+                            whiteboardOpen = true;
+                        } else if (active) {
+                            const currentParticipants = Array.from(
+                                new Set(
+                                    store
+                                        .filterCurrentPresenceEntries(
+                                            await store.listPresence(
+                                                resolved.meeting.id,
+                                            ),
+                                        )
+                                        .map((entry) => entry.username)
+                                        .filter(
+                                            (username) =>
+                                                username !==
+                                                resolved.meeting.createdBy,
                                         ),
-                                    )
-                                    .map((entry) => entry.username)
-                                    .filter(
-                                        (username) =>
-                                            username !==
-                                            resolved.meeting.createdBy,
-                                    ),
-                            ),
-                        );
-                        const eligibleVoters = new Set(currentParticipants);
-                        eligibleVoters.add(resolved.requesterUsername);
-                        whiteboardOpenVotes = Array.from(
-                            new Set([
-                                ...(currentState.whiteboardOpenVotes ?? []),
-                                resolved.requesterUsername,
-                            ]),
-                        ).filter((username) => eligibleVoters.has(username));
-                        votesRequired = Math.floor(eligibleVoters.size / 2) + 1;
-                        whiteboardOpen =
-                            whiteboardOpenVotes.length >= votesRequired;
-                    }
-                    await store.updateMeetingState(resolved.meeting.id, {
-                        ...(whiteboardId ? { whiteboardId } : {}),
-                        ...(whiteboardId &&
-                        typeof whiteboardDisposable === "boolean"
-                            ? { whiteboardDisposable }
-                            : {}),
-                        whiteboardActive: active && whiteboardOpen,
-                        whiteboardOpenVotes:
-                            active && !whiteboardOpen
-                                ? whiteboardOpenVotes
-                                : [],
-                    });
-                    return {
-                        screenSharingActive: false,
-                        whiteboardOpen,
-                        whiteboardOpenVotes,
-                        votesRequired,
-                    };
-                },
-            );
+                                ),
+                            );
+                            const eligibleVoters = new Set(currentParticipants);
+                            eligibleVoters.add(resolved.requesterUsername);
+                            whiteboardOpenVotes = Array.from(
+                                new Set([
+                                    ...(currentState.whiteboardOpenVotes ?? []),
+                                    resolved.requesterUsername,
+                                ]),
+                            ).filter((username) =>
+                                eligibleVoters.has(username),
+                            );
+                            votesRequired =
+                                Math.floor(eligibleVoters.size / 2) + 1;
+                            whiteboardOpen =
+                                whiteboardOpenVotes.length >= votesRequired;
+                        }
+                        await commitMeetingCanvasState({
+                            store,
+                            meetingId: resolved.meeting.id,
+                            previousState: currentState,
+                            nextState: {
+                                ...(whiteboardId ? { whiteboardId } : {}),
+                                ...(whiteboardId &&
+                                typeof whiteboardDisposable === "boolean"
+                                    ? { whiteboardDisposable }
+                                    : {}),
+                                whiteboardActive: active && whiteboardOpen,
+                                whiteboardOpenVotes:
+                                    active && !whiteboardOpen
+                                        ? whiteboardOpenVotes
+                                        : [],
+                            },
+                            bindCanvas: () =>
+                                bindMeetingCanvasSource(
+                                    ctx,
+                                    fetchBoardData,
+                                    resolved.meeting.id,
+                                    whiteboardId,
+                                ),
+                            synchronizeMembers:
+                                whiteboardDisposable === false
+                                    ? async () => {
+                                          const presentUsernames = store
+                                              .filterCurrentPresenceEntries(
+                                                  await store.listPresence(
+                                                      resolved.meeting.id,
+                                                  ),
+                                              )
+                                              .map((entry) => entry.username);
+                                          await synchronizeMeetingWhiteboardMembers(
+                                              {
+                                                  state: {
+                                                      whiteboardId,
+                                                      whiteboardDisposable: false,
+                                                  },
+                                                  usernames: [
+                                                      ...(await store.listParticipants(
+                                                          resolved.meeting.id,
+                                                      )),
+                                                      ...presentUsernames,
+                                                  ],
+                                                  profileStore,
+                                                  resolveWhiteboardMembership,
+                                                  fetchBoardData,
+                                              },
+                                          );
+                                      }
+                                    : undefined,
+                            log: ctx.log,
+                        });
+                        return {
+                            screenSharingActive: false,
+                            whiteboardOpen,
+                            whiteboardOpenVotes,
+                            votesRequired,
+                        };
+                    },
+                );
+            } catch (error) {
+                ctx.log?.("error", "Meeting canvas activation failed.", {
+                    operation: "activate_meeting_canvas",
+                    meetingId: resolved.meeting.id,
+                    whiteboardId,
+                    stage: error?.whiteboardStage,
+                    errorName: error?.name,
+                });
+                sendError(
+                    res,
+                    error?.status === 409 ? 409 : 503,
+                    error?.code === "source_conflict"
+                        ? "source_conflict"
+                        : error?.whiteboardStage === "membership"
+                          ? "whiteboard_membership_unavailable"
+                          : "source_binding_unavailable",
+                    "Whiteboard activation could not be completed.",
+                );
+                return;
+            }
             if (result.screenSharingActive) {
                 sendError(
                     res,

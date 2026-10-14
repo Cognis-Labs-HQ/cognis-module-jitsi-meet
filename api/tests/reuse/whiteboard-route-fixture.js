@@ -39,9 +39,10 @@ export function createRoutes({
     whiteboardAvailable = true,
     beforeStateRead = () => {},
     beforeMembershipAdd = () => {},
+    beforeStateUpdate = () => {},
     providerVersion = "2.3.151",
     whiteboardApproval = { approved: true },
-    sourceBinding = { bind: async () => {} },
+    sourceBinding = { bind: async () => {}, release: async () => {} },
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
@@ -59,7 +60,9 @@ export function createRoutes({
         ctx: {
             ...createFlowRuntime(),
             getCapability: (id) =>
-                id === "whiteboard:sourceBinding" ? sourceBinding : undefined,
+                id === "whiteboard:sourceBinding"
+                    ? { release: async () => {}, ...sourceBinding }
+                    : undefined,
             async getModuleAssurance(moduleId) {
                 assert.equal(moduleId, "nextcloud-whiteboard");
                 return {
@@ -95,6 +98,7 @@ export function createRoutes({
                 return entries;
             },
             async updateMeetingState(meetingId, update) {
+                await beforeStateUpdate(meetingId, update);
                 stateUpdates.push({ meetingId, update });
                 Object.assign(state, update);
             },

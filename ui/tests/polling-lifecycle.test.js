@@ -479,7 +479,6 @@ test("an explicit deleted meeting selection recreates its known participant set 
     assert.deepEqual(joined, ["replacement"]);
     assert.deepEqual(calls[1].input, {
         participants: ["alice", "bob"],
-        disposable: false,
     });
     assert.equal(calls.length, 2);
 });
@@ -518,10 +517,7 @@ for (const status of [403, 503]) {
 
 for (const outcome of ["failure", "success", "abort-rejection"]) {
     test(`leaving a direct Meetings page cancels polling and ignores late ${outcome}`, async (context) => {
-        const { createDirectMountController } =
-            await import("../app/route-root.js");
-        const target = new EventTarget();
-        const controller = createDirectMountController(target);
+        const controller = new AbortController();
         const originalInterval = globalThis.setInterval;
         const originalClear = globalThis.clearInterval;
         let scheduled = 0;
@@ -565,7 +561,7 @@ for (const outcome of ["failure", "success", "abort-rejection"]) {
             resolveRequested: false,
         });
         const feedbackCount = feedback.length;
-        target.dispatchEvent(new Event("cognis:route-will-change"));
+        controller.abort();
         if (outcome === "abort-rejection")
             reject(new DOMException("Aborted", "AbortError"));
         else
@@ -609,4 +605,36 @@ test("a preflight failure arriving after page disposal cannot show feedback", as
     assert.equal(await handlers.runPreflightCheck({ showErrors: true }), false);
     assert.equal(presentations.length, 1);
     assert.equal(feedback.length, feedbackCount);
+});
+
+test("deleted conversation calls recover through the existing Messages conversation", async () => {
+    const { recoverDeletedMeeting } =
+        await import("../app/reuse/meeting-recovery.js");
+    const calls = [];
+    const options = {
+        meetingId: "deleted-call",
+        currentUsername: "alice",
+        apiFetch: async (url, input) => {
+            calls.push([url, JSON.parse(input.body)]);
+            return Response.json({ data: { id: "restored-call" } });
+        },
+        records: [
+            {
+                id: "deleted-call",
+                disposable: true,
+                chatRoomId: "conversation",
+                participants: ["alice", "bob"],
+            },
+        ],
+    };
+    await recoverDeletedMeeting(options);
+    assert.deepEqual(calls, [
+        [
+            "/api/v1/modules/jitsi-meet/meetings/voip-call",
+            { roomId: "conversation" },
+        ],
+    ]);
+    options.records[0].chatRoomId = null;
+    assert.equal(await recoverDeletedMeeting(options), null);
+    assert.equal(calls.length, 1);
 });
