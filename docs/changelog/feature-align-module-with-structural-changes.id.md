@@ -4,6 +4,10 @@ Rilis 1.5.258 — Halaman Meetings yang dimuat langsung membatalkan mount saat h
 
 **Cabang Fitur:** feature-align-module-with-structural-changes
 
+## Filter administrasi dan referensi
+
+Rilis 1.5.259 — Referensi menggunakan komposer bagian yang dapat dibuka dari host, sama seperti Components. Referensi yang terbuka tetap terbuka selama polling rapat dan rapat mendatang, dengan kontrol yang dapat digunakan melalui papan ketik. Filter Rapat Aktif, Semua Rapat, dan Rapat Bermasalah masing-masing memiliki pesan kosong tersendiri.
+
 ## Gunakan ctx terbatas dan alur tindakan yang dijalankan
 
 Bootstrap memperoleh layanan eksternal hanya melalui ctx yang dibatasi siklus hidup dan mendaftarkan rute, penyedia, kapabilitas serta kait milik modul. Operasi penyimpanan modul aktif menjalankan alur bernama `jitsi-meet:*` dengan tahap `initialize-store` dan `execute-action`; operasi internal mempertahankan transaksi yang ada. Otorisasi mendahului tindakan rute, dan pelaksana yang tidak lengkap gagal alih-alih melewati pekerjaan secara diam-diam. Konfigurasi saat nonaktif menggunakan titik masuk siklus hidup terbatas karena Cognis tidak mendaftarkan alur modul yang nonaktif.

@@ -3,6 +3,9 @@ import { importReuseModule, uiCtx } from "./reuse/resources.js";
 const { formatDateTime } = await importReuseModule("timestamp.js");
 const { openPopup } = await importReuseModule("popup.js");
 const { ensurePageStylesheet } = await importReuseModule("page-styles.js");
+const { createCollapsibleSectionComposer } = await importReuseModule(
+    "collapsible-section-composer.js",
+);
 import { logUi, showToast } from "./reuse/feedback.js";
 import { createMeetingAdminTemplates } from "./templates/admin-meetings.js";
 
@@ -47,6 +50,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
     let refreshTimer = null;
     let upcomingPanelRoot = null;
     let upcomingRefreshTimer = null;
+    let refreshSequence = 0;
 
     async function loadMeetings() {
         const rows = await gateway.listAdminMeetings();
@@ -59,7 +63,22 @@ export function createAdminSection({ i18n, escapeHtml }) {
     }
 
     const { renderRows, renderUpcomingRows, renderPanel } =
-        createMeetingAdminTemplates({ i18n, escapeHtml, formatDateTime });
+        createMeetingAdminTemplates({
+            i18n,
+            escapeHtml,
+            formatDateTime,
+            createCollapsibleSectionComposer,
+        });
+
+    function updateRows(tbody, render) {
+        const openReferences = new Set(
+            [...tbody.querySelectorAll("[data-meeting-reference][open]")].map(
+                (details) => details.dataset.meetingReference,
+            ),
+        );
+        const markup = render(openReferences);
+        if (tbody.innerHTML !== markup) tbody.innerHTML = markup;
+    }
 
     async function refresh() {
         if (!(panelRoot instanceof HTMLElement) || !panelRoot.isConnected) {
@@ -68,15 +87,25 @@ export function createAdminSection({ i18n, escapeHtml }) {
             return;
         }
         const currentRoot = panelRoot;
+        const sequence = ++refreshSequence;
         const rows = await loadMeetings();
-        if (panelRoot !== currentRoot || !currentRoot.isConnected) return;
+        if (
+            panelRoot !== currentRoot ||
+            sequence !== refreshSequence ||
+            !currentRoot.isConnected
+        )
+            return;
         const tbody = panelRoot.querySelector("tbody");
         if (!(tbody instanceof HTMLElement)) return;
-        tbody.innerHTML = renderRows(
-            rows.filter(
-                (row) =>
-                    filter === "all" ||
-                    (filter === "issues" ? row.issues?.length : row.active),
+        updateRows(tbody, (openReferences) =>
+            renderRows(
+                rows.filter(
+                    (row) =>
+                        filter === "all" ||
+                        (filter === "issues" ? row.issues?.length : row.active),
+                ),
+                filter,
+                openReferences,
             ),
         );
     }
@@ -96,7 +125,9 @@ export function createAdminSection({ i18n, escapeHtml }) {
             return;
         const tbody = upcomingPanelRoot.querySelector("tbody");
         if (!(tbody instanceof HTMLElement)) return;
-        tbody.innerHTML = renderUpcomingRows(rows);
+        updateRows(tbody, (openReferences) =>
+            renderUpcomingRows(rows, openReferences),
+        );
     }
 
     function reportFailure(error) {
@@ -113,6 +144,15 @@ export function createAdminSection({ i18n, escapeHtml }) {
     }
 
     async function handleAction(event) {
+        const toggle = event.target.closest("[data-details-toggle]");
+        if (toggle) {
+            const details = toggle.closest("[data-meeting-reference]");
+            if (details) {
+                event.preventDefault();
+                details.open = !details.open;
+            }
+            return;
+        }
         const button = event.target.closest("button");
         if (!button || !panelRoot?.contains(button)) return;
         if (button.dataset.meetingFilter) {
@@ -198,7 +238,11 @@ export function createAdminSection({ i18n, escapeHtml }) {
             onUnmount: () => {
                 stopPolling();
                 stopUpcomingPolling();
-                if (panelRoot) panelRoot.onclick = null;
+                for (const root of [panelRoot, upcomingPanelRoot]) {
+                    if (!root) continue;
+                    root.onclick = null;
+                    root.onkeydown = null;
+                }
                 panelRoot = null;
                 upcomingPanelRoot = null;
             },
@@ -210,9 +254,6 @@ export function createAdminSection({ i18n, escapeHtml }) {
                     stopPolling();
                 } else {
                     void refresh().catch(reportFailure);
-                    panelRoot.onclick = (event) => {
-                        void handleAction(event).catch(reportFailure);
-                    };
                     startPolling();
                 }
                 upcomingPanelRoot = document.querySelector(
@@ -223,6 +264,20 @@ export function createAdminSection({ i18n, escapeHtml }) {
                 } else {
                     void refreshUpcoming().catch(reportFailure);
                     startUpcomingPolling();
+                }
+                for (const root of [panelRoot, upcomingPanelRoot]) {
+                    if (!root) continue;
+                    root.onclick = (event) => {
+                        void handleAction(event).catch(reportFailure);
+                    };
+                    root.onkeydown = (event) => {
+                        if (
+                            (event.key === "Enter" || event.key === " ") &&
+                            event.target.closest("[data-details-toggle]")
+                        ) {
+                            void handleAction(event).catch(reportFailure);
+                        }
+                    };
                 }
             },
             elements: [

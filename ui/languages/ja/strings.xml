@@ -80,7 +80,6 @@
   <string name="module.jitsi_meet.admin.meetings.table_label">リアルタイム ミーティング状況</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">アクティブなミーティング</string>
   <string name="module.jitsi_meet.admin.meetings.loading">アクティブなミーティングを読み込み中...</string>
-  <string name="module.jitsi_meet.admin.meetings.empty">アクティブなミーティングはありません。</string>
   <string name="module.jitsi_meet.admin.meetings.meeting_url">ミーティング URL</string>
   <string name="module.jitsi_meet.admin.meetings.participants">参加者</string>
   <string name="module.jitsi_meet.admin.meetings.active_sessions">アクティブ セッション</string>
@@ -152,9 +151,9 @@
   <string name="module.jitsi_meet.voip.subject">VoIP 通話</string>
   <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard を利用できません。キャンバスの作成と表示に対応する Whiteboard Provider を更新または有効化してください。</string>
   <string name="module.jitsi_meet.meetings.load.failed">会議を読み込めませんでした。自動更新を停止しました。サーバーの問題を解決してからページを開き直してください。</string>
-  <string name="module.jitsi_meet.admin.filter.active">開催中</string>
+  <string name="module.jitsi_meet.admin.filter.active">進行中の会議</string>
   <string name="module.jitsi_meet.admin.filter.all">すべての会議</string>
-  <string name="module.jitsi_meet.admin.filter.issues">問題あり</string>
+  <string name="module.jitsi_meet.admin.filter.issues">問題のある会議</string>
   <string name="module.jitsi_meet.admin.issues">問題</string>
   <string name="module.jitsi_meet.admin.actions">操作</string>
   <string name="module.jitsi_meet.admin.issue.duplicateparticipants">参加者の組み合わせが重複</string>
@@ -170,4 +169,7 @@
   <string name="module.jitsi_meet.admin.chatroom">チャットルーム</string>
   <string name="module.jitsi_meet.admin.canvas">キャンバス</string>
   <string name="module.jitsi_meet.overlay.meeting_recreated">削除されたミーティングを再作成しました。</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.active">進行中の会議はありません。</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.all">会議がありません。</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.issues">すべての会議は正常です！</string>
 </resources>

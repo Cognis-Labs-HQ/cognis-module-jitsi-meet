@@ -80,7 +80,6 @@
   <string name="module.jitsi_meet.admin.meetings.table_label">Realtime Meeting Activity</string>
   <string name="module.jitsi_meet.admin.meetings.active_table_heading">Active Meetings</string>
   <string name="module.jitsi_meet.admin.meetings.loading">Loading Active Meetings...</string>
-  <string name="module.jitsi_meet.admin.meetings.empty">No active meetings.</string>
   <string name="module.jitsi_meet.admin.meetings.meeting_url">Meeting URL</string>
   <string name="module.jitsi_meet.admin.meetings.participants">Participants</string>
   <string name="module.jitsi_meet.admin.meetings.active_sessions">Active Sessions</string>
@@ -152,9 +151,9 @@
   <string name="module.jitsi_meet.voip.subject">VoIP call</string>
   <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard is unavailable. Update or enable the Whiteboard provider with canvas creation and presentation support.</string>
   <string name="module.jitsi_meet.meetings.load.failed">Meetings could not be loaded. Automatic refresh has stopped; reopen the page after the server issue is resolved.</string>
-  <string name="module.jitsi_meet.admin.filter.active">Active</string>
-  <string name="module.jitsi_meet.admin.filter.all">All meetings</string>
-  <string name="module.jitsi_meet.admin.filter.issues">Issues</string>
+  <string name="module.jitsi_meet.admin.filter.active">Active Meetings</string>
+  <string name="module.jitsi_meet.admin.filter.all">All Meetings</string>
+  <string name="module.jitsi_meet.admin.filter.issues">Troubled Meetings</string>
   <string name="module.jitsi_meet.admin.issues">Issues</string>
   <string name="module.jitsi_meet.admin.actions">Actions</string>
   <string name="module.jitsi_meet.admin.issue.duplicateparticipants">Duplicate participant set</string>
@@ -170,4 +169,7 @@
   <string name="module.jitsi_meet.admin.chatroom">Chat room</string>
   <string name="module.jitsi_meet.admin.canvas">Canvas</string>
   <string name="module.jitsi_meet.overlay.meeting_recreated">The deleted meeting was recreated.</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.active">No active meetings.</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.all">No meetings found.</string>
+  <string name="module.jitsi_meet.admin.meetings.empty.issues">All your meetings are good to go!</string>
 </resources>

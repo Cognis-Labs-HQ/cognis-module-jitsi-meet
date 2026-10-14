@@ -4,6 +4,10 @@ Ausgabe 1.5.258 — Direkt geladene Meetings-Seiten brechen ihren Mount ab, wenn
 
 **Feature-Branch:** feature-align-module-with-structural-changes
 
+## Verwaltungsfilter und Verweise
+
+Ausgabe 1.5.259 — Verweise verwenden den aufklappbaren Abschnittskomponisten des Hosts wie Components. Geöffnete Verweise bleiben bei Aktualisierungen von Meetings und bevorstehenden Meetings erhalten; die Steuerelemente sind per Tastatur bedienbar. Die Filter heißen Aktive Meetings, Alle Meetings und Problematische Meetings und haben jeweils eine eigene Leermeldung.
+
 ## Scoped ctx und ausgeführte Aktions-Flows verwenden
 
 Bootstrap bezieht externe Dienste ausschließlich über den lebenszyklusgebundenen ctx und registriert moduleigene Routen, Provider, Capabilities und Hooks. Speicheroperationen des aktivierten Moduls führen benannte `jitsi-meet:*`-Flows mit den Stufen `initialize-store` und `execute-action` aus; interne Operationen behalten ihre Transaktion. Die Autorisierung erfolgt vor Routenaktionen. Unvollständige Runner scheitern, statt Arbeit still zu überspringen. Die deaktivierte Konfiguration verwendet den eingeschränkten Lifecycle-Einstieg, da Cognis bei deaktivierten Modulen keine Flows registriert.

@@ -4,6 +4,10 @@ Release 1.5.258 — Direct-load Meetings pages abort their mount when the host c
 
 **Feature Branch:** feature-align-module-with-structural-changes
 
+## Administration filters and references
+
+Release 1.5.259 — References use the host’s collapsible section composer, matching Components. Expanded references survive meeting and upcoming-meeting polling, with keyboard-accessible disclosure controls. Filters are Active Meetings, All Meetings and Troubled Meetings, each with a distinct empty message.
+
 ## Use scoped ctx and executed action flows
 
 Bootstrap obtains external services only through the lifecycle-scoped ctx and contributes module-owned routes, providers, capabilities and hooks. Enabled store operations execute named `jitsi-meet:*` flows with `initialize-store` and `execute-action` stages; internal operations retain their existing transaction. Authorization precedes routed actions, and incomplete runners fail rather than silently bypassing work. Disabled configuration uses the restricted lifecycle entrypoint because Cognis does not register module flows while disabled.

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { openChromium } from "./reuse/chromium.js";
+import { createCollapsibleSectionComposer } from "./reuse/admin-disclosure.js";
 import { createMeetingAdminTemplates } from "../templates/admin-meetings.js";
 
 const strings = await readFile(
@@ -14,6 +15,7 @@ const labels = new Map(
     ),
 );
 const templates = createMeetingAdminTemplates({
+    createCollapsibleSectionComposer,
     i18n: { t: (key) => labels.get(key) ?? key },
     escapeHtml: (value) =>
         String(value)

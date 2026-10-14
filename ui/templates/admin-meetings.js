@@ -2,13 +2,19 @@ export function createMeetingAdminTemplates({
     i18n,
     escapeHtml,
     formatDateTime,
+    createCollapsibleSectionComposer,
 }) {
     const text = (key) => escapeHtml(i18n.t(key));
     const label = (key) => text(`module.jitsi_meet.admin.${key}`);
     const date = (value) =>
         escapeHtml(formatDateTime(value, i18n.t("ui.reuse.unknown")));
 
-    function meetingDetails(row) {
+    const referencesComposer = createCollapsibleSectionComposer({
+        escapeHtml,
+        detailsLabel: i18n.t("module.jitsi_meet.admin.references"),
+    });
+
+    function meetingDetails(row, openReferences) {
         const url = String(row.meetingUrl ?? "");
         const name = row.meetingName || url || i18n.t("ui.reuse.unknown");
         const references = [
@@ -23,16 +29,31 @@ export function createMeetingAdminTemplates({
             .join("");
         return `<a class="jitsi-admin-meeting-link" href="${escapeHtml(url || "#")}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)}</a>
             <small class="jitsi-admin-record-id">${escapeHtml(row.id ?? "")}</small>
-            ${references ? `<details class="jitsi-admin-references"><summary>${label("references")}</summary>${references}</details>` : ""}`;
+            ${
+                references
+                    ? referencesComposer.render([
+                          {
+                              id: `references-${row.id}`,
+                              title: i18n.t(
+                                  "module.jitsi_meet.admin.references",
+                              ),
+                              className: "jitsi-admin-references",
+                              attributesHtml: `data-meeting-reference="${escapeHtml(row.id)}"`,
+                              open: openReferences.has(row.id),
+                              contentHtml: references,
+                          },
+                      ])
+                    : ""
+            }`;
     }
 
-    function renderRows(rows) {
+    function renderRows(rows, filter = "active", openReferences = new Set()) {
         if (!rows.length)
-            return `<tr><td class="jitsi-admin-table-cell" colspan="5">${label("meetings.empty")}</td></tr>`;
+            return `<tr><td class="jitsi-admin-table-cell" colspan="5">${label(`meetings.empty.${filter}`)}</td></tr>`;
         return rows
             .map(
                 (row) => `<tr>
-            <td class="jitsi-admin-table-cell jitsi-admin-meeting-cell">${meetingDetails(row)}</td>
+            <td class="jitsi-admin-table-cell jitsi-admin-meeting-cell">${meetingDetails(row, openReferences)}</td>
             <td class="jitsi-admin-table-cell">${escapeHtml(String(row.participantCount ?? 0))}<small class="jitsi-admin-active-users">${label("meetings.active_users")}: ${escapeHtml((row.activeUsernames ?? []).join(", ") || "—")}</small></td>
             <td class="jitsi-admin-table-cell">${date(row.updatedAt)}</td>
             <td class="jitsi-admin-table-cell"><div class="jitsi-admin-issue-list">${(row.issues ?? []).map((issue) => `<span class="jitsi-admin-issue-pill">${label(`issue.${issue.toLowerCase()}`)}</span>`).join("")}</div></td>
@@ -42,13 +63,13 @@ export function createMeetingAdminTemplates({
             .join("");
     }
 
-    function renderUpcomingRows(rows) {
+    function renderUpcomingRows(rows, openReferences = new Set()) {
         if (!rows.length)
             return `<tr><td class="jitsi-admin-table-cell" colspan="4">${label("meetings.upcoming_empty")}</td></tr>`;
         return rows
             .map(
                 (row) => `<tr>
-            <td class="jitsi-admin-table-cell jitsi-admin-meeting-cell">${meetingDetails(row)}</td>
+            <td class="jitsi-admin-table-cell jitsi-admin-meeting-cell">${meetingDetails(row, openReferences)}</td>
             <td class="jitsi-admin-table-cell">${escapeHtml(String(row.participantCount ?? 0))}</td>
             <td class="jitsi-admin-table-cell">${escapeHtml(row.createdByDisplayName ?? row.createdBy ?? "")}<small class="jitsi-admin-record-id">${date(row.createdAt)}</small></td>
             <td class="jitsi-admin-table-cell">${date(row.scheduledAt)}</td>
