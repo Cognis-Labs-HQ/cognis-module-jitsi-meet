@@ -159,3 +159,4 @@ Ausgabe 1.5.254 — Jitsi übergibt die Meeting-UUID als `resourceId` und `meeti
 - [adb2cb2](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/adb2cb2af083776f91d58ce963cf565fe96ffb3b)
 - [2abb9b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2abb9b447b81299f68ecf92a02cf935efe33c1df)
 - [3318f35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3318f352bff2c16c79688dde53cfaa3c737c21ee)
+- [d2aedf7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d2aedf74428a7eaf937f67032c1521279e38387b)
