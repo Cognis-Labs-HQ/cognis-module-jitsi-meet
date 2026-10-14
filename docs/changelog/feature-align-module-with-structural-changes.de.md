@@ -1,3 +1,5 @@
+Ausgabe 1.5.258 — Direkt geladene Meetings-Seiten brechen ihren Mount ab, wenn der Host einen Routenwechsel ausführt oder das Dokument verlassen wird. Die Meeting-Abfrage gehört zu diesem Mount, endet beim Abbruch und kann danach nicht neu starten. Verspätete Antworten und abgebrochene Anfragen dürfen weder die Zielseite verändern noch dort Meeting-Fehler anzeigen. Ein abgebrochener Navigationsversuch lässt die aktuelle Seite aktiv.
+
 # Jitsi Meet an Cognis-Verträge anpassen
 
 **Feature-Branch:** feature-align-module-with-structural-changes

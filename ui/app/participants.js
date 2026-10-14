@@ -43,7 +43,7 @@ export function createPreflightHandlers({
     }
 
     async function runPreflightCheck({ showErrors = false } = {}) {
-        if (state.preflightStatus === "running") {
+        if (signal?.aborted || state.preflightStatus === "running") {
             return false;
         }
         utils.setPreflightStatus(
@@ -56,6 +56,7 @@ export function createPreflightHandlers({
                 method: "POST",
             },
         );
+        if (signal?.aborted) return false;
         if (!response.ok) {
             state.preflightNeedsConfig = response.status === 409;
             const message =
@@ -70,6 +71,7 @@ export function createPreflightHandlers({
             return false;
         }
         const payload = await response.json().catch(() => ({ data: null }));
+        if (signal?.aborted) return false;
         state.preflightNeedsConfig = false;
         const isAlive = payload?.data?.alive === true;
         if (!isAlive) {
@@ -169,7 +171,7 @@ export function createPreflightHandlers({
     }
 
     async function refreshAvailableParticipants() {
-        if (state.shareAccessToken) return;
+        if (signal?.aborted || state.shareAccessToken) return;
         const requestSequence = ++participantRefreshSequence;
         const meetingId = String(state.meeting?.id ?? "").trim();
         const query = meetingId

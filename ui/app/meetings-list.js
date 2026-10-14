@@ -38,6 +38,10 @@ export function createMeetingHandlers({
     let persistedMeetingHoldTimer = null;
     let suppressPersistedMeetingClick = false;
 
+    signal?.addEventListener("abort", stopActiveMeetingsPolling, {
+        once: true,
+    });
+
     function selectPersistedMeeting(meeting) {
         if (isMeetingSelectionLocked(state)) return;
         state.requestedMeetingId = normalizeMeetingId(meeting.id);
@@ -576,6 +580,7 @@ export function createMeetingHandlers({
     }
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
+        if (signal?.aborted) return;
         const requestSequence = ++activeMeetingsRequestSequence;
         if (
             resolveRequested &&
@@ -584,11 +589,22 @@ export function createMeetingHandlers({
         ) {
             renderActiveMeetings({ loading: true });
         }
-        const [response, persistedResponse] = await Promise.all([
-            apiFetch("/api/v1/modules/jitsi-meet/meetings/active"),
-            apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted"),
-            callbacks.refreshAvailableParticipants?.(),
-        ]);
+        let response;
+        let persistedResponse;
+        try {
+            [response, persistedResponse] = await Promise.all([
+                apiFetch("/api/v1/modules/jitsi-meet/meetings/active", {
+                    signal,
+                }),
+                apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted", {
+                    signal,
+                }),
+                callbacks.refreshAvailableParticipants?.(),
+            ]);
+        } catch (error) {
+            if (signal?.aborted) return;
+            throw error;
+        }
         if (!response.ok || !persistedResponse.ok) {
             if (
                 signal?.aborted ||
@@ -668,6 +684,7 @@ export function createMeetingHandlers({
     }
 
     function startActiveMeetingsPolling() {
+        if (signal?.aborted) return;
         if (activeMeetingsPollingSuspended) return;
         if (state.activeMeetingsRefreshTimer !== null) return;
         state.activeMeetingsRefreshTimer = setInterval(() => {

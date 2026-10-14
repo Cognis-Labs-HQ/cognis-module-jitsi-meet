@@ -1,3 +1,5 @@
+Rilis 1.5.258 — Halaman Meetings yang dimuat langsung membatalkan mount saat host menjalankan perubahan rute atau dokumen ditinggalkan. Polling penemuan rapat dimiliki mount tersebut, berhenti saat dibatalkan, dan tidak dapat dimulai kembali. Respons terlambat dan permintaan yang dibatalkan tidak boleh mengubah halaman tujuan atau menampilkan galat Meetings di sana. Navigasi yang dibatalkan mempertahankan halaman saat ini.
+
 # Selaraskan Jitsi Meet dengan Kontrak Cognis
 
 **Cabang Fitur:** feature-align-module-with-structural-changes

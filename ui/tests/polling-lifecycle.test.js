@@ -515,3 +515,98 @@ for (const status of [403, 503]) {
         assert.equal(requests, 1);
     });
 }
+
+for (const outcome of ["failure", "success", "abort-rejection"]) {
+    test(`leaving a direct Meetings page cancels polling and ignores late ${outcome}`, async (context) => {
+        const { createDirectMountController } =
+            await import("../app/route-root.js");
+        const target = new EventTarget();
+        const controller = createDirectMountController(target);
+        const originalInterval = globalThis.setInterval;
+        const originalClear = globalThis.clearInterval;
+        let scheduled = 0;
+        let cleared = 0;
+        globalThis.setInterval = () => ++scheduled;
+        globalThis.clearInterval = () => cleared++;
+        context.after(() => {
+            globalThis.setInterval = originalInterval;
+            globalThis.clearInterval = originalClear;
+        });
+        let resolve;
+        let reject;
+        const pending = new Promise((complete, fail) => {
+            resolve = complete;
+            reject = fail;
+        });
+        const state = {
+            activeMeetings: [{ id: "known" }],
+            persistedMeetings: [],
+            activeMeetingsRefreshTimer: null,
+        };
+        let requests = 0;
+        const handlers = createMeetingHandlers({
+            root: {
+                querySelector: () =>
+                    assert.fail("Detached DOM must not be touched"),
+            },
+            signal: controller.signal,
+            state,
+            callbacks: {},
+            utils: {},
+            i18n: { t: (key) => key },
+            apiFetch: (_, options) => {
+                assert.equal(options.signal, controller.signal);
+                requests++;
+                return pending;
+            },
+        });
+        handlers.startActiveMeetingsPolling();
+        const loading = handlers.loadActiveMeetings({
+            resolveRequested: false,
+        });
+        const feedbackCount = feedback.length;
+        target.dispatchEvent(new Event("cognis:route-will-change"));
+        if (outcome === "abort-rejection")
+            reject(new DOMException("Aborted", "AbortError"));
+        else
+            resolve(
+                Response.json(
+                    { data: [{ id: "late" }] },
+                    { status: outcome === "failure" ? 400 : 200 },
+                ),
+            );
+        await loading;
+        handlers.startActiveMeetingsPolling();
+        await handlers.loadActiveMeetings();
+        assert.equal(scheduled, 1);
+        assert.equal(cleared, 1);
+        assert.equal(state.activeMeetingsRefreshTimer, null);
+        assert.equal(requests, 2);
+        assert.equal(feedback.length, feedbackCount);
+        assert.deepEqual(state.activeMeetings, [{ id: "known" }]);
+    });
+}
+
+test("a preflight failure arriving after page disposal cannot show feedback", async () => {
+    const controller = new AbortController();
+    const pending = deferred();
+    const presentations = [];
+    const state = {};
+    const handlers = createPreflightHandlers({
+        root: { querySelector: () => assert.fail("Detached page") },
+        signal: controller.signal,
+        state,
+        callbacks: {},
+        i18n: { t: (key) => key },
+        utils: { setPreflightStatus: (...args) => presentations.push(args) },
+        apiFetch: () => pending.promise,
+    });
+    const running = handlers.runPreflightCheck({ showErrors: true });
+    const feedbackCount = feedback.length;
+    controller.abort();
+    pending.resolve({ ok: false, status: 400 });
+    assert.equal(await running, false);
+    assert.equal(await handlers.runPreflightCheck({ showErrors: true }), false);
+    assert.equal(presentations.length, 1);
+    assert.equal(feedback.length, feedbackCount);
+});

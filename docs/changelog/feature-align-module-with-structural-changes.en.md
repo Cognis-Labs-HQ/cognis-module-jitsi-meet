@@ -1,3 +1,5 @@
+Release 1.5.258 — Direct-load Meetings pages abort their mount when the host commits a route change or the document leaves. Discovery polling belongs to that mount, stops on abort and cannot restart afterward; late responses and cancelled requests cannot update the destination page or show Meetings errors there. Cancelled navigation keeps the current page alive.
+
 # Align Jitsi Meet with Cognis Contracts
 
 **Feature Branch:** feature-align-module-with-structural-changes
