@@ -479,7 +479,7 @@ export async function bindWhiteboardButton({
             }
             if (!trigger.componentPage) return;
             const synchronizeOpen = trigger.sharedOpenRequested !== true;
-            const automaticOpen = !synchronizeOpen;
+            let automaticOpen = !synchronizeOpen;
             trigger.sharedOpenRequested = false;
             setButtonDisabled(button, true);
             trigger.componentWindowPending = true;
@@ -527,9 +527,13 @@ export async function bindWhiteboardButton({
                         );
                         return;
                     }
-                    await prepareMeetingCanvas(trigger, state);
+                    await prepareMeetingCanvas(trigger, state, {
+                        refreshReference: true,
+                    });
                     if (!requestIsCurrent()) return;
                     whiteboardId = trigger.preparedWhiteboardId;
+                    if (whiteboardId !== state.meeting.state?.whiteboardId)
+                        automaticOpen = false;
                     if (!whiteboardId) {
                         throw new Error("whiteboard_id_missing");
                     }

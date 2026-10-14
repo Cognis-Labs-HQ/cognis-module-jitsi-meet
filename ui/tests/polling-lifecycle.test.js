@@ -429,3 +429,89 @@ test("authorized authentication wait keeps its existing meeting alive and joins 
     assert.equal(state.meeting.waitingForAuthentication, false);
     assert.equal(timers.length, 2);
 });
+
+test("an explicit deleted meeting selection recreates its known participant set and joins the canonical replacement", async () => {
+    const calls = [];
+    const joined = [];
+    const state = {
+        currentProfile: { handle: "alice" },
+        meeting: null,
+        activeMeetings: [],
+        persistedMeetings: [
+            {
+                id: "deleted",
+                participants: [{ username: "alice" }, { username: "bob" }],
+            },
+        ],
+        allParticipants: [],
+        selectedParticipants: [],
+    };
+    const handlers = createMeetingHandlers({
+        root: { querySelector: () => null },
+        state,
+        i18n: { t: (key) => key },
+        utils: { isMeetingActive: () => false, updateOverlay() {} },
+        callbacks: {
+            renderParticipants() {},
+            updateCognisChat: async () => {},
+            joinMeeting: async () => {
+                joined.push(state.meeting.id);
+                return { trackingAllowed: false };
+            },
+        },
+        apiFetch: async (url, options) => {
+            calls.push({ url, input: JSON.parse(options.body) });
+            return url.endsWith("/get")
+                ? Response.json(
+                      { error: { code: "not_found" } },
+                      { status: 404 },
+                  )
+                : Response.json({
+                      data: {
+                          id: "replacement",
+                          participants: ["alice", "bob"],
+                          state: {},
+                      },
+                  });
+        },
+    });
+    await handlers.joinMeetingById("deleted");
+    assert.deepEqual(joined, ["replacement"]);
+    assert.deepEqual(calls[1].input, {
+        participants: ["alice", "bob"],
+        disposable: false,
+    });
+    assert.equal(calls.length, 2);
+});
+
+for (const status of [403, 503]) {
+    test(`meeting recovery never recreates a ${status} failure`, async () => {
+        let requests = 0;
+        const state = {
+            currentProfile: { handle: "alice" },
+            meeting: null,
+            activeMeetings: [],
+            persistedMeetings: [
+                { id: "known", participants: ["alice", "bob"] },
+            ],
+            allParticipants: [],
+            selectedParticipants: [],
+        };
+        const handlers = createMeetingHandlers({
+            root: { querySelector: () => null },
+            state,
+            i18n: { t: (key) => key },
+            utils: { isMeetingActive: () => false, updateOverlay() {} },
+            callbacks: {},
+            apiFetch: async () => {
+                requests += 1;
+                return Response.json(
+                    { error: { code: "forbidden" } },
+                    { status },
+                );
+            },
+        });
+        await handlers.joinMeetingById("known");
+        assert.equal(requests, 1);
+    });
+}

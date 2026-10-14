@@ -296,7 +296,7 @@ export function registerMeetingRoutes({
                 activeMeetingIds,
             )) {
                 const participantProfiles = [];
-                for (const username of meeting.participants.slice(0, 10)) {
+                for (const username of meeting.participants) {
                     const profile = await profileStore
                         .getProfileByHandle(username)
                         .catch(() => null);

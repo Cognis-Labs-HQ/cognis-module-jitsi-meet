@@ -118,6 +118,10 @@ Rilis 1.5.255 — Pesan sendirian mengikuti konfirmasi masuk konferensi Jitsi lo
 
 Rilis 1.5.256 — Pembuatan memakai kembali rapat basis data dengan kelompok peserta terkini atau asli yang sama setelah normalisasi, terlepas dari konteks pemanggil. Opsi forceNew dihapus. Kunci peserta stabil dan penyisipan atomik dengan pengabaian konflik membuat permintaan bersamaan menerima ID yang sama. Perubahan keanggotaan mempertahankan kunci awal; pencarian dan penemuan tidak lagi berhenti pada jumlah catatan tetap. Kecocokan historis memilih satu rapat aktif; beberapa rapat aktif yang cocok memerlukan pemulihan administrator. Penggunaan kembali memulihkan anggota yang diminta dan tidak mengganti hubungan obrolan yang ada. Peserta yang menunggu autentikasi mempertahankan kehadiran dan memeriksa rapat yang sama; setelah autentikasi selesai mereka masuk ke ID tersebut. Konfirmasi masuk Jitsi memulai pelacakan kehadiran berkala meskipun penanda autentikasi lama masih ada. Daftar Rapat tetap terkunci selama masuk dan konferensi, dengan kursor tidak diizinkan dan kartu noninteraktif.
 
+## Pemulihan referensi rapat dan kanvas yang dihapus
+
+Rilis 1.5.257 — Pembukaan kanvas secara eksplisit memperbarui referensi penyedia generik, bukan mempercayai ID kanvas tersiapkan. Kanvas yang hilang dibuat lagi melalui penyedia dan dipetakan ke rapat. Kanvas terbuka yang sudah disetujui dapat diganti tanpa permintaan persetujuan baru hanya jika penyedia memastikan kanvas lama tidak ada dan penggantinya memiliki jenis serta pengenal sumber daya yang sama persis. Peluncuran eksplisit rapat yang dihapus memakai metadata peserta yang sudah dimuat dan pembuatan kanonis normal, mempertahankan sifat sementara dan masuk ke ID pengganti. Referensi tidak dikenal, tamu, serta kegagalan izin atau layanan tidak dipakai untuk menebak sumber daya baru. Konten terhapus tidak dipulihkan; percobaan terbatas membuat item baru dengan notifikasi keberhasilan.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

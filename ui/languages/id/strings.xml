@@ -169,4 +169,5 @@
   <string name="module.jitsi_meet.admin.references">Referensi</string>
   <string name="module.jitsi_meet.admin.chatroom">Ruang obrolan</string>
   <string name="module.jitsi_meet.admin.canvas">Kanvas</string>
+  <string name="module.jitsi_meet.overlay.meeting_recreated">Rapat yang dihapus dibuat kembali.</string>
 </resources>

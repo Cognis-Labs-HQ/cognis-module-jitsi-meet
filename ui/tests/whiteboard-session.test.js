@@ -472,3 +472,39 @@ test("an explicitly disposable meeting uses its disposable factory", async () =>
         },
     ]);
 });
+
+for (const disposable of [false, true]) {
+    test(`explicit open resolves a deleted cached canvas reference (${disposable})`, async () => {
+        let id = "original-canvas";
+        let requests = 0;
+        const resolve = async (input) => {
+            requests += 1;
+            assert.equal(input.resourceId, "meeting");
+            return { whiteboardId: id };
+        };
+        const gateway = {
+            createCanvas: resolve,
+            createDisposableCanvas: resolve,
+        };
+        const state = {
+            meeting: {
+                id: "meeting",
+                roomSlug: "Room",
+                meetingName: "Room",
+                participants: ["alice"],
+                disposable,
+            },
+        };
+        const trigger = {
+            preparedMeetingId: "meeting",
+            whiteboardGateway: gateway,
+        };
+        await prepareMeetingCanvas(trigger, state);
+        assert.equal(trigger.preparedWhiteboardId, "original-canvas");
+        confirmMeetingCanvasMapping("meeting", "original-canvas", gateway);
+        id = "replacement-canvas";
+        await prepareMeetingCanvas(trigger, state, { refreshReference: true });
+        assert.equal(trigger.preparedWhiteboardId, "replacement-canvas");
+        assert.equal(requests, 2);
+    });
+}

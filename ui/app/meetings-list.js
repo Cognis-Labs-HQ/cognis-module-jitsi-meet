@@ -2,6 +2,7 @@ import {
     claimMeetingTransition,
     isMeetingSelectionLocked,
 } from "./reuse/meeting-transition.js";
+import { recoverDeletedMeeting } from "./reuse/meeting-recovery.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-control.js";
@@ -385,7 +386,7 @@ export function createMeetingHandlers({
                 showReclaim: false,
                 visible: true,
             });
-            const getResponse = await apiFetch(
+            let getResponse = await apiFetch(
                 "/api/v1/modules/jitsi-meet/meetings/get",
                 {
                     method: "POST",
@@ -401,11 +402,42 @@ export function createMeetingHandlers({
                 },
             );
             if (!transition.isCurrent()) return;
+            let recovered = false;
+            let failurePayload = null;
+            if (getResponse.status === 404)
+                failurePayload = await getResponse.json().catch(() => null);
+            if (
+                getResponse.status === 404 &&
+                failurePayload?.error?.code === "not_found" &&
+                !state.shareAccessToken
+            ) {
+                const replacement = await recoverDeletedMeeting({
+                    apiFetch,
+                    meetingId: normalizedMeetingId,
+                    records: [
+                        ...(state.persistedMeetings ?? []),
+                        state.meeting,
+                        ...(state.activeMeetings ?? []),
+                    ],
+                    currentUsername:
+                        state.currentProfile?.handle ??
+                        state.currentProfile?.username,
+                    signal,
+                });
+                if (!transition.isCurrent()) return;
+                if (replacement) {
+                    getResponse = replacement;
+                    recovered = true;
+                }
+            }
             if (!getResponse.ok) {
                 state.meeting = null;
-                const errorPayload = await getResponse
-                    .json()
-                    .catch(() => ({ error: null }));
+                const errorPayload = recovered
+                    ? await getResponse.json().catch(() => ({ error: null }))
+                    : (failurePayload ??
+                      (await getResponse
+                          .json()
+                          .catch(() => ({ error: null }))));
                 utils.updateOverlay({
                     message: i18n.t(
                         getResponse.status === 404 ||
@@ -434,8 +466,10 @@ export function createMeetingHandlers({
                 .catch(() => ({ data: null }));
             if (!transition.isCurrent()) return;
             if (
-                normalizeMeetingId(meetingPayload?.data?.id) !==
-                    normalizedMeetingId ||
+                !normalizeMeetingId(meetingPayload?.data?.id) ||
+                (!recovered &&
+                    normalizeMeetingId(meetingPayload.data.id) !==
+                        normalizedMeetingId) ||
                 (autoStart && meetingPayload?.data?.state?.endedAt)
             ) {
                 state.meeting = null;
@@ -447,6 +481,12 @@ export function createMeetingHandlers({
                     visible: true,
                 });
                 return;
+            }
+            if (recovered) {
+                showToast(
+                    i18n.t("module.jitsi_meet.overlay.meeting_recreated"),
+                    { variant: "success" },
+                );
             }
             if (
                 utils.isMeetingActive() &&

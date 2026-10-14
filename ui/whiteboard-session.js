@@ -109,15 +109,22 @@ export function meetingCanvasNeedsPreparation(trigger, state) {
     );
 }
 
-export function prepareMeetingCanvas(trigger, state) {
+export function prepareMeetingCanvas(
+    trigger,
+    state,
+    { refreshReference = false } = {},
+) {
     if (
-        trigger.preparedWhiteboardId ||
+        (!refreshReference && trigger.preparedWhiteboardId) ||
         !state.meeting?.id ||
         !state.meeting?.roomSlug
     ) {
         return Promise.resolve();
     }
-    if (trigger.preparationFailedMeetingId === state.meeting.id) {
+    if (
+        !refreshReference &&
+        trigger.preparationFailedMeetingId === state.meeting.id
+    ) {
         return Promise.resolve();
     }
     if (trigger.preparationPromise) return trigger.preparationPromise;
@@ -161,6 +168,10 @@ export function prepareMeetingCanvas(trigger, state) {
             trigger.whiteboardGateway,
             providerCanvases,
         );
+    }
+    if (refreshReference) {
+        trigger.preparedWhiteboardId = "";
+        providerCanvases.delete(meetingId);
     }
     let cachedCanvas = providerCanvases.get(meetingId);
     if (cachedCanvas?.disposable !== disposableCanvas) {

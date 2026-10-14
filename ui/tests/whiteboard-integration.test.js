@@ -108,7 +108,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /button\.addEventListener\([\s\S]*await prepareMeetingCanvas\(trigger, state\)[\s\S]*loadStage = "unlock"/,
+        /button\.addEventListener\([\s\S]*await prepareMeetingCanvas\(trigger, state, \{[\s\S]*?refreshReference: true,[\s\S]*loadStage = "unlock"/,
     );
     assert.doesNotMatch(
         buttonSource,

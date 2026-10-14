@@ -323,6 +323,12 @@ export function registerMeetingWhiteboardRoutes({
                 active &&
                 (currentState.whiteboardId !== whiteboardId ||
                     currentState.whiteboardDisposable !== whiteboardDisposable);
+            const restoresMissingCanvas =
+                active &&
+                replacesMapping &&
+                currentState.whiteboardActive === true &&
+                currentState.whiteboardId &&
+                !(await fetchBoardData(currentState.whiteboardId));
             if (!resolved.shareGuest && replacesMapping) {
                 let verified = false;
                 try {
@@ -331,6 +337,12 @@ export function registerMeetingWhiteboardRoutes({
                         meeting: resolved.meeting,
                         whiteboardId,
                         expectedCreatorAccountId: resolved.requesterAccountId,
+                        expectedResourceReference: restoresMissingCanvas
+                            ? {
+                                  resourceType: "meeting",
+                                  resourceId: resolved.meeting.id,
+                              }
+                            : null,
                     });
                 } catch (error) {
                     ctx.log?.(
@@ -447,6 +459,7 @@ export function registerMeetingWhiteboardRoutes({
             }
             meetingParticipantUsernames.add(resolved.meeting.createdBy);
             const consensusBypassed =
+                restoresMissingCanvas ||
                 resolved.meeting.disposable === true ||
                 meetingParticipantUsernames.size <= 2;
             let consensusApproved = null;

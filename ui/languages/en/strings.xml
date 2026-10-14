@@ -169,4 +169,5 @@
   <string name="module.jitsi_meet.admin.references">References</string>
   <string name="module.jitsi_meet.admin.chatroom">Chat room</string>
   <string name="module.jitsi_meet.admin.canvas">Canvas</string>
+  <string name="module.jitsi_meet.overlay.meeting_recreated">The deleted meeting was recreated.</string>
 </resources>

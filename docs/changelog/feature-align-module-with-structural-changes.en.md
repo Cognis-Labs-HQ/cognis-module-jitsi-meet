@@ -118,6 +118,10 @@ Release 1.5.255 — The alone-in-meeting prompt follows a confirmed local Jitsi 
 
 Release 1.5.256 — Creation reuses a database meeting with the same normalized current or original participant set, regardless of the caller’s context. There is no forceNew option. Creation uses a stable participant key and an atomic conflict-ignore insert; concurrent requests return the same ID. Membership changes preserve the creation key, and lookup and discovery no longer stop after a fixed record count. Historical matches prefer the single active meeting; multiple active matches require administrator recovery. Reuse restores the requested membership and cannot replace an existing chat association. Authentication waiters retain presence and poll the existing meeting; when authentication completes, they join that same ID. Confirmed Jitsi entry starts recurring presence tracking even if authentication flags are stale. The Meeting List remains blocked during joins and conferences, with a not-allowed cursor and inert cards.
 
+## Recovery of deleted meeting and canvas references
+
+Release 1.5.257 — An explicit canvas open refreshes its generic provider reference instead of trusting a prepared canvas ID. Missing canvases are recreated through the provider and mapped back to the meeting. An already-approved open canvas can be replaced without another consensus request only when the provider confirms that the previous canvas is absent and the replacement has the exact resource type and identifier. Explicit launch of a deleted meeting uses its loaded participant metadata and normal canonical creation, preserving its disposable setting and joining the returned replacement ID. Unknown references, guests and permission/service failures are not used to infer new resources. Deleted content is not restored; recovery creates a fresh item, with success notifications and bounded attempts.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

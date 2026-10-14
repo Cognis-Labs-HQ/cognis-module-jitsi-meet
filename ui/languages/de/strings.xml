@@ -169,4 +169,5 @@
   <string name="module.jitsi_meet.admin.references">Verknüpfungen</string>
   <string name="module.jitsi_meet.admin.chatroom">Chatraum</string>
   <string name="module.jitsi_meet.admin.canvas">Zeichenfläche</string>
+  <string name="module.jitsi_meet.overlay.meeting_recreated">Das gelöschte Meeting wurde neu erstellt.</string>
 </resources>
