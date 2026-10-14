@@ -155,7 +155,7 @@
   <string name="module.jitsi_meet.admin.filter.active">Aktif</string>
   <string name="module.jitsi_meet.admin.filter.all">Semua rapat</string>
   <string name="module.jitsi_meet.admin.filter.issues">Masalah</string>
-  <string name="module.jitsi_meet.admin.issues">Ruang obrolan / Masalah</string>
+  <string name="module.jitsi_meet.admin.issues">Masalah</string>
   <string name="module.jitsi_meet.admin.actions">Tindakan</string>
   <string name="module.jitsi_meet.admin.issue.duplicateparticipants">Kelompok peserta duplikat</string>
   <string name="module.jitsi_meet.admin.issue.duplicateurl">URL rapat duplikat</string>
@@ -166,4 +166,7 @@
   <string name="module.jitsi_meet.admin.confirm.terminate">Akhiri rapat ini untuk peserta Cognis?</string>
   <string name="module.jitsi_meet.admin.confirm.delete">Hapus rapat ini beserta ruang obrolan atau kanvas yang tidak dirujuk rapat lain?</string>
   <string name="module.jitsi_meet.admin.action.completed">Rapat diperbarui.</string>
+  <string name="module.jitsi_meet.admin.references">Referensi</string>
+  <string name="module.jitsi_meet.admin.chatroom">Ruang obrolan</string>
+  <string name="module.jitsi_meet.admin.canvas">Kanvas</string>
 </resources>

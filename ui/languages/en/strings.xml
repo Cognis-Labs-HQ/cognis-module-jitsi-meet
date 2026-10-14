@@ -155,7 +155,7 @@
   <string name="module.jitsi_meet.admin.filter.active">Active</string>
   <string name="module.jitsi_meet.admin.filter.all">All meetings</string>
   <string name="module.jitsi_meet.admin.filter.issues">Issues</string>
-  <string name="module.jitsi_meet.admin.issues">Chat room / Issues</string>
+  <string name="module.jitsi_meet.admin.issues">Issues</string>
   <string name="module.jitsi_meet.admin.actions">Actions</string>
   <string name="module.jitsi_meet.admin.issue.duplicateparticipants">Duplicate participant set</string>
   <string name="module.jitsi_meet.admin.issue.duplicateurl">Duplicate meeting URL</string>
@@ -166,4 +166,7 @@
   <string name="module.jitsi_meet.admin.confirm.terminate">End this meeting for Cognis participants?</string>
   <string name="module.jitsi_meet.admin.confirm.delete">Delete this meeting and any chat room or canvas that no other meeting references?</string>
   <string name="module.jitsi_meet.admin.action.completed">Meeting updated.</string>
+  <string name="module.jitsi_meet.admin.references">References</string>
+  <string name="module.jitsi_meet.admin.chatroom">Chat room</string>
+  <string name="module.jitsi_meet.admin.canvas">Canvas</string>
 </resources>

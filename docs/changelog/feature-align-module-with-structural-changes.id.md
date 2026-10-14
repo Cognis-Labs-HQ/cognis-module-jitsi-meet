@@ -96,6 +96,12 @@ Obrolan rapat menyatakan `source: {sourceType: "meeting", sourceId: meeting.id}`
 
 Konfigurasi dan pengaktifan hanya menginisialisasi tabel konfigurasi, sehingga kegagalan integritas rapat tidak mencegah pengaktifan modul dan akses pemulihan administrasi. Administrasi hanya menginisialisasi tabel tambahan riwayat peserta yang diperlukan untuk pemeriksaan dan mempertahankan batasan rapat.
 
+## Administrasi rapat yang mudah dibaca
+
+Daftar rapat berbagi satu panel dengan jarak antara bagian Aktif dan Mendatang. Nama, ID, serta referensi obrolan dan kanvas yang dapat dibuka tetap bersama; pil masalah yang ringkas memberi ruang untuk peserta, aktivitas, dan tindakan. Filter memakai kontrol netral host tanpa bergerak saat diarahkan penunjuk. Daftar Mendatang hanya memuat rapat tidak aktif yang belum berakhir dengan jadwal mendatang yang valid. Jadwal lampau, kosong, dan tidak valid tetap tersedia di Semua rapat.
+
+Rilis 1.5.252 — tata letak administrasi dan penyaringan jadwal.
+
 ## Commit
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

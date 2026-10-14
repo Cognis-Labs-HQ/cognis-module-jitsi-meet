@@ -181,6 +181,56 @@ test("administration rejects nonadmins before reads and rejects deleting active 
     assert.equal(deletes, 0);
 });
 
+test("upcoming administration lists only valid future schedules before resolving profiles", async () => {
+    let handler;
+    let authorized = false;
+    let reads = 0;
+    const profiles = [];
+    let result;
+    const future = new Date(Date.now() + 60000).toISOString();
+    registerAdminMeetingRoutes({
+        router: {
+            get(path, execute) {
+                if (path.endsWith("/upcoming")) handler = execute;
+            },
+            post() {},
+        },
+        requireAuth: () => (authorized ? { sub: "admin" } : null),
+        maintenance: {
+            async list() {
+                reads += 1;
+                return [
+                    { id: "future", scheduledAt: future, createdBy: "alice" },
+                    { id: "past", scheduledAt: "2020-01-01T00:00:00Z" },
+                    { id: "unscheduled" },
+                    { id: "invalid", scheduledAt: "invalid" },
+                    { id: "active", scheduledAt: future, active: true },
+                    { id: "ended", scheduledAt: future, endedAt: future },
+                ];
+            },
+        },
+        profileStore: {
+            async getProfileByHandle(handle) {
+                profiles.push(handle);
+                return { displayName: "Alice" };
+            },
+        },
+        sendJson(_res, _status, body) {
+            result = body.data;
+        },
+    });
+    await handler({}, {});
+    assert.equal(reads, 0);
+    authorized = true;
+    await handler({}, {});
+    assert.deepEqual(
+        result.map((row) => row.id),
+        ["future"],
+    );
+    assert.equal(result[0].createdByDisplayName, "Alice");
+    assert.deepEqual(profiles, ["alice"]);
+});
+
 test("deleting a sole reference cleans up its chat room and canvas", async () => {
     const { actions, mutations, tables } = fixture();
     tables.jitsi_meetings.shift();

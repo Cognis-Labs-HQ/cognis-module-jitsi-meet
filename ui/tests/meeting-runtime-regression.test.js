@@ -406,21 +406,17 @@ test("administration meetings section labels active and upcoming tables", () => 
         resolve(ROOT, "api/routes/meeting-lifecycle/index.js"),
         "utf8",
     );
-    assert.match(
-        source,
-        /module\.jitsi_meet\.admin\.meetings\.active_table_heading/,
+    const template = readFileSync(
+        resolve(ROOT, "ui/templates/admin-meetings.js"),
+        "utf8",
     );
-    assert.match(
-        source,
-        /module\.jitsi_meet\.admin\.meetings\.upcoming_table_heading/,
-    );
-    assert.match(source, /createdByDisplayName/);
-    assert.match(source, /row\.scheduledAt \?\? row\.createdAt/);
-    assert.match(source, /<col style="width: 1%" \/>/);
-    assert.match(source, /<col style="width: 24\.75%" \/>/);
-    assert.match(source, /white-space: nowrap/);
-    assert.match(source, /admin\.meetings\.meeting_url/);
-    assert.match(source, /admin\.meetings\.schedule_date/);
+    assert.match(source, /createMeetingAdminTemplates/);
+    assert.match(template, /meetings\.active_table_heading/);
+    assert.match(template, /meetings\.upcoming_table_heading/);
+    assert.match(template, /createdByDisplayName/);
+    assert.match(template, /date\(row\.scheduledAt\)/);
+    assert.match(template, /jitsi-admin-issue-pill/);
+    assert.match(template, /meetings\.schedule_date/);
     assert.match(stringsSource, /Active Meetings/);
     assert.match(stringsSource, /Upcoming Meetings/);
     assert.match(stringsSource, /Meeting URL/);

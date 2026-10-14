@@ -4,10 +4,9 @@ const { formatDateTime } = await importReuseModule("timestamp.js");
 const { openPopup } = await importReuseModule("popup.js");
 const { ensurePageStylesheet } = await importReuseModule("page-styles.js");
 import { logUi, showToast } from "./reuse/feedback.js";
+import { createMeetingAdminTemplates } from "./templates/admin-meetings.js";
 
 const REFRESH_INTERVAL_MS = 2500;
-const TABLE_COLUMN_COUNT = 7;
-const UPCOMING_TABLE_COLUMN_COUNT = 5;
 
 /**
  * Creates the Jitsi Meetings administration section contribution rendered in
@@ -59,56 +58,8 @@ export function createAdminSection({ i18n, escapeHtml }) {
         return Array.isArray(rows) ? rows : [];
     }
 
-    function renderRows(rows) {
-        if (!rows.length) {
-            return `<tr><td colspan="${TABLE_COLUMN_COUNT}">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.empty"))}</td></tr>`;
-        }
-        return rows
-            .map((row) => {
-                const users = Array.isArray(row.activeUsernames)
-                    ? row.activeUsernames.join(", ")
-                    : "";
-                const meetingUrl = String(row.meetingUrl ?? "");
-                return `<tr>
-          <td style="width: 1%; white-space: nowrap"><code>${escapeHtml(row.id ?? "")}</code></td>
-          <td><a href="${escapeHtml(meetingUrl || "#")}" target="_blank" rel="noopener noreferrer">${escapeHtml(meetingUrl || i18n.t("ui.reuse.unknown"))}</a></td>
-          <td>${escapeHtml(String(row.participantCount ?? 0))}</td>
-          <td>${escapeHtml(users)}</td>
-          <td>${escapeHtml(formatDateTime(row.updatedAt, i18n.t("ui.reuse.unknown")))}</td>
-          <td>${escapeHtml(row.chatRoomId ?? "")}<br>${(row.issues ?? []).map((issue) => escapeHtml(i18n.t(`module.jitsi_meet.admin.issue.${issue.toLowerCase()}`))).join("<br>")}</td>
-          <td><button type="button" class="btn-cancel" data-meeting-action="${row.active ? "terminate" : "delete"}" data-meeting-id="${escapeHtml(row.id)}">${escapeHtml(i18n.t(`module.jitsi_meet.admin.action.${row.active ? "terminate" : "delete"}`))}</button></td>
-        </tr>`;
-            })
-            .join("");
-    }
-
-    function renderUpcomingRows(rows) {
-        if (!rows.length) {
-            return `<tr><td colspan="${UPCOMING_TABLE_COLUMN_COUNT}">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.upcoming_empty"))}</td></tr>`;
-        }
-        return rows
-            .map((row) => {
-                const createdByLabel =
-                    row.createdByDisplayName ?? row.createdBy ?? "";
-                const createdAtLabel = formatDateTime(
-                    row.createdAt,
-                    i18n.t("ui.reuse.unknown"),
-                );
-                const scheduledAtLabel = formatDateTime(
-                    row.scheduledAt ?? row.createdAt,
-                    i18n.t("ui.reuse.unknown"),
-                );
-                const meetingUrl = String(row.meetingUrl ?? "");
-                return `<tr>
-          <td style="width: 1%; white-space: nowrap"><code>${escapeHtml(row.id ?? "")}</code></td>
-          <td><a href="${escapeHtml(meetingUrl || "#")}" target="_blank" rel="noopener noreferrer">${escapeHtml(meetingUrl || i18n.t("ui.reuse.unknown"))}</a></td>
-          <td>${escapeHtml(String(row.participantCount ?? 0))}</td>
-          <td>${escapeHtml(createdByLabel)}<br><small>${escapeHtml(createdAtLabel)}</small></td>
-          <td>${escapeHtml(scheduledAtLabel)}</td>
-        </tr>`;
-            })
-            .join("");
-    }
+    const { renderRows, renderUpcomingRows, renderPanel } =
+        createMeetingAdminTemplates({ i18n, escapeHtml, formatDateTime });
 
     async function refresh() {
         if (!(panelRoot instanceof HTMLElement) || !panelRoot.isConnected) {
@@ -281,68 +232,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
                         "module.jitsi_meet.admin.meetings.table_label",
                     ),
                     pinned: true,
-                    render: () => `
-            <h3 class="components-section-heading">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.active_table_heading"))}</h3>
-            <div class="users-table-wrap" id="jitsi-admin-meetings-root">
-              <div class="jitsi-admin-filters">${["active", "all", "issues"].map((value) => `<button type="button" class="jitsi-admin-filter-button" data-meeting-filter="${value}" aria-pressed="${filter === value}">${escapeHtml(i18n.t(`module.jitsi_meet.admin.filter.${value}`))}</button>`).join("")}</div>
-              <table class="users-table">
-                <colgroup>
-                  <col style="width: 1%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                </colgroup>
-                <thead>
-                  <tr>
-                     <th style="width: 1%; white-space: nowrap">${escapeHtml(i18n.t("ui.reuse.id"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.meeting_url"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.participants"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.active_users"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.last_active"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.issues"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.actions"))}</th>
-                   </tr>
-                 </thead>
-                                <tbody>
-                  <tr><td colspan="${TABLE_COLUMN_COUNT}">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.loading"))}</td></tr>
-                </tbody>
-              </table>
-            </div>
-          `,
-                },
-                {
-                    id: "jitsi-upcoming-meetings",
-                    label: i18n.t(
-                        "module.jitsi_meet.admin.meetings.upcoming_table_label",
-                    ),
-                    pinned: true,
-                    render: () => `
-            <h3 class="components-section-heading">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.upcoming_table_heading"))}</h3>
-            <div class="users-table-wrap" id="jitsi-admin-upcoming-meetings-root">
-              <table class="users-table">
-                <colgroup>
-                  <col style="width: 1%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                  <col style="width: 24.75%" />
-                </colgroup>
-                <thead>
-                  <tr>
-                     <th style="width: 1%; white-space: nowrap">${escapeHtml(i18n.t("ui.reuse.id"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.meeting_url"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.participants"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.created_by"))}</th>
-                     <th>${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.schedule_date"))}</th>
-                   </tr>
-                 </thead>
-                <tbody>
-                  <tr><td colspan="${UPCOMING_TABLE_COLUMN_COUNT}">${escapeHtml(i18n.t("module.jitsi_meet.admin.meetings.upcoming_loading"))}</td></tr>
-                </tbody>
-              </table>
-            </div>
-          `,
+                    render: () => renderPanel(filter),
                 },
             ],
         },

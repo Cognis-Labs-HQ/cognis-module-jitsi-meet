@@ -96,6 +96,12 @@ Meeting-Chats deklarieren `source: {sourceType: "meeting", sourceId: meeting.id}
 
 Konfiguration und Aktivierung initialisieren ausschließlich die Konfigurationstabelle. Fehler der Meeting-Integrität verhindern daher nicht die Aktivierung und den Zugriff auf die administrative Wiederherstellung. Die Verwaltung initialisiert nur die zur Prüfung benötigte Hilfstabelle für Teilnehmerhistorie und erhält die Meeting-Constraints.
 
+## Übersichtliche Meeting-Verwaltung
+
+Die Meeting-Listen teilen sich ein Panel mit Abstand zwischen den Bereichen für aktive und bevorstehende Meetings. Namen, IDs und aufklappbare Chat- und Zeichenflächen-Verknüpfungen bleiben zusammen; kompakte Problem-Pills schaffen Platz für Teilnehmer, Aktivität und Aktionen. Filter verwenden neutrale Host-Steuerelemente ohne Positionsänderung beim Überfahren. Bevorstehende Meetings sind inaktiv, nicht beendet und haben einen gültigen zukünftigen Termin. Vergangene, fehlende und ungültige Termine bleiben unter Alle Meetings zugänglich.
+
+Ausgabe 1.5.252 — Verwaltungslayout und Terminfilterung.
+
 ## Commits
 
 - [7c8e3142](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/7c8e31420c361f86e1d20a025e9ce4ffa23abb28)

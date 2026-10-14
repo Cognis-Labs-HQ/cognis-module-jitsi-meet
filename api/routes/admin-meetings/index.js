@@ -54,7 +54,11 @@ export function registerAdminMeetingRoutes({
             if (!claims) return;
             const meetings = await withCreatorProfiles(
                 (await maintenance.list()).filter(
-                    (meeting) => !meeting.active && !meeting.endedAt,
+                    (meeting) =>
+                        !meeting.active &&
+                        !meeting.endedAt &&
+                        meeting.scheduledAt &&
+                        new Date(meeting.scheduledAt).getTime() > Date.now(),
                 ),
             );
             sendJson(res, 200, { data: meetings });
