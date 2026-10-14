@@ -88,3 +88,5 @@ Whiteboard はホストのコンポーネントページブローカーでマウ
 API 登録は `api/index.js`、ドメインハンドラーは `api/routes/<domain>/index.js`、CSS は `ui/styles/`、マークアップは `ui/templates/` に配置します。テンプレート由来の AGENTS.md に従い、ローカルスクリプトは `npm --prefix <checkout> test`、導入済み操作は `cognisctl modules:jitsi-meet:ping` を使います。ブラウザープロバイダーは `mountProvider(scopedUiCtx)` を公開し、限定されたフロー、機能、リスナーを使います。ナビゲーションは `ui:navbarLinks` に登録します。Health と Keyring の登録が返す解除関数を `ctx.registerDisposer` に渡します。Keyring リセットはパスワード配送記録を消して再配送を可能にし、ミーティング、メンバーシップ、キャンバスを維持します。
 
 ブラウザー検証は Playwright を使わず、導入済み Chromium の CDP を利用します。`CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser` を実行します。`npm run manifest:hashes` で再生成し、`npm run check:manifest` で検証します。リリースメタデータは `docs/changelog/` に置き、パッケージのハッシュには含めません。
+
+Marketplace バナーは Cognis とプロバイダーのブランドを中央の切り抜きに強いレイアウトで組み合わせ、既存のプロバイダーアイコンを維持します。

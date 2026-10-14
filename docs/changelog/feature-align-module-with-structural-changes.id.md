@@ -24,7 +24,7 @@ Meetings menggunakan page composer, router, pratinjau profil, kontrol, overlay d
 
 ## Terbitkan satu kontrak rilis tersinkron
 
-Modul 1.5.248 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
+Modul 1.5.249 menyinkronkan versi paket dan inventaris SHA-256. Dokumentasi standar menjelaskan perilaku yang didukung saat ini dalam bahasa Jerman, Inggris, Indonesia dan Jepang. PR ini memakai satu set changelog dengan tautan implementasi gabungan. Pengujian perilaku mencakup eksekusi alur tindakan, penolakan izin, pembatalan percobaan ulang, kanvas serentak dan respons usang, selain pemeriksaan isolasi struktural.
 
 ## Pulihkan akses Whiteboard sebelum pembukaan otomatis
 
@@ -72,7 +72,11 @@ Dokumentasikan antarmuka publik dalam empat bahasa. Bedakan skrip npm lokal pada
 
 ## Pertahankan pemilik rapat yang valid dan presentasi opsional
 
-Hapus persyaratan lama untuk membuat halaman komponen secara langsung; gateway Whiteboard opsional memiliki pembuatan halaman. Penghapusan akun mengalihkan rapat yang dipertahankan ke pengelola tersisa tanpa mengubah identitas ruang chat. Panduan menjelaskan kontrak publik tanpa nomor rilis; rilis yang disinkronkan adalah 1.5.248.
+Hapus persyaratan lama untuk membuat halaman komponen secara langsung; gateway Whiteboard opsional memiliki pembuatan halaman. Penghapusan akun mengalihkan rapat yang dipertahankan ke pengelola tersisa tanpa mengubah identitas ruang chat. Panduan menjelaskan kontrak publik tanpa nomor rilis; rilis yang disinkronkan adalah 1.5.249.
+
+## Ilustrasi Cognis dan penyedia
+
+Ganti banner Marketplace dengan komposisi Cognis + penyedia, tempatkan merek di pita tengah yang terlihat dan pertahankan ikon yang ada.
 
 ## Commit
 
