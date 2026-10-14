@@ -164,3 +164,4 @@ Rilis 1.5.255 — Pesan sendirian mengikuti konfirmasi masuk konferensi Jitsi lo
 - [2abb9b4](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2abb9b447b81299f68ecf92a02cf935efe33c1df)
 - [3318f35](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3318f352bff2c16c79688dde53cfaa3c737c21ee)
 - [d2aedf7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d2aedf74428a7eaf937f67032c1521279e38387b)
+- [0d2dd75](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/0d2dd75cdd8dbefe85e7850a7f95c87f0353f140)
