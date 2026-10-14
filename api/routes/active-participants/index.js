@@ -139,6 +139,10 @@ export function registerActiveMeetingParticipantRoute({
                 : null;
             if (!chatRoom && typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
+                    source: {
+                        sourceType: "meeting",
+                        sourceId: resolved.meeting.id,
+                    },
                     usernames: participants,
                     title: buildMeetingChatTitle(resolved.meeting.meetingName),
                     createdByAccountId: claims.sub,

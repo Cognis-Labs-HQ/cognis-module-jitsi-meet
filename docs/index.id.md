@@ -90,3 +90,13 @@ Registrasi API berada di `api/index.js`, handler domain di `api/routes/<domain>/
 Uji browser memakai Chromium terpasang melalui CDP tanpa Playwright: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Buat ulang hash dengan `npm run manifest:hashes`, lalu periksa `npm run check:manifest`. Metadata rilis ada di `docs/changelog/` dan tidak masuk digest paket.
 
 Banner Marketplace memadukan merek Cognis dan identitas penyedia dalam tata letak tengah yang aman dari pemotongan; ikon penyedia yang ada dipertahankan.
+
+## Administrasi dan pemulihan rapat
+
+Administrasi → Rapat menyediakan filter Aktif, Semua rapat, dan Masalah. Daftar khusus administrator membaca catatan yang ada tanpa inisialisasi skema, menandai kelompok peserta dan URL duplikat serta referensi ruang obrolan/kanvas bersama, dan tidak menampilkan kata sandi. Akhiri mengakhiri kehadiran Cognis dan menutup rapat bagi klien Cognis yang terhubung; tindakan ini tidak mengelola konferensi Jitsi yang diikuti secara mandiri. Rapat aktif harus diakhiri sebelum dihapus. Hapus menghapus catatan dan berbagi rapat, serta ruang obrolan atau kanvas hanya jika tidak dirujuk rapat lain. Kegagalan pembersihan mempertahankan catatan untuk percobaan ulang; sumber daya yang sudah tidak ada tidak menghalangi pembersihan. Penghapusan referensi duplikat membersihkan kegagalan keunikan yang tersimpan agar inisialisasi skema normal dapat dicoba lagi. Rute nonadministrator tetap menerapkan skema normal. Penemuan rapat menghentikan penyegaran otomatis dan melaporkan kegagalan ketika respons gagal.
+
+## Pengikatan sumber integrasi eksklusif
+
+Obrolan rapat menyatakan `source: {sourceType: "meeting", sourceId: meeting.id}` melalui resolver Messages. Aktivasi kanvas mengklaim identitas yang sama melalui `whiteboard:sourceBinding`. Penyedia menolak pengikatan rapat yang bersaing; Jitsi tidak mengubah kolom pengikatan penyedia. Penghapusan administrator hanya melepaskan pengikatan rapat yang dihapus jika referensi lama lain masih ada. Pembersihan panggilan Messages melepaskan klaim sumber sambil mempertahankan percakapan asal. Catatan rapat panggilan baru dibatalkan jika pengikatan obrolan gagal. Pengikatan sumber Messages diwajibkan; Whiteboard tetap opsional dan hanya tersedia jika kontrak pengikatannya ada.
+
+Konfigurasi dan pengaktifan hanya menginisialisasi tabel konfigurasi, sehingga kegagalan integritas rapat tidak mencegah pengaktifan modul dan akses pemulihan administrasi. Administrasi hanya menginisialisasi tabel tambahan riwayat peserta yang diperlukan untuk pemeriksaan dan mempertahankan batasan rapat.

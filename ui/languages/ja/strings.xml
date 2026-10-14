@@ -151,4 +151,19 @@
   <string name="module.jitsi_meet.tag_meetings">ミーティング</string>
   <string name="module.jitsi_meet.voip.subject">VoIP 通話</string>
   <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard を利用できません。キャンバスの作成と表示に対応する Whiteboard Provider を更新または有効化してください。</string>
+  <string name="module.jitsi_meet.meetings.load.failed">会議を読み込めませんでした。自動更新を停止しました。サーバーの問題を解決してからページを開き直してください。</string>
+  <string name="module.jitsi_meet.admin.filter.active">開催中</string>
+  <string name="module.jitsi_meet.admin.filter.all">すべての会議</string>
+  <string name="module.jitsi_meet.admin.filter.issues">問題あり</string>
+  <string name="module.jitsi_meet.admin.issues">チャットルーム / 問題</string>
+  <string name="module.jitsi_meet.admin.actions">操作</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateparticipants">参加者の組み合わせが重複</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateurl">会議URLが重複</string>
+  <string name="module.jitsi_meet.admin.issue.sharedchatroom">複数の会議がこのチャットルームを参照</string>
+  <string name="module.jitsi_meet.admin.issue.sharedwhiteboard">複数の会議がこのキャンバスを参照</string>
+  <string name="module.jitsi_meet.admin.action.terminate">終了</string>
+  <string name="module.jitsi_meet.admin.action.delete">削除</string>
+  <string name="module.jitsi_meet.admin.confirm.terminate">Cognisの参加者向けにこの会議を終了しますか？</string>
+  <string name="module.jitsi_meet.admin.confirm.delete">この会議と、他の会議が参照していないチャットルームやキャンバスを削除しますか？</string>
+  <string name="module.jitsi_meet.admin.action.completed">会議を更新しました。</string>
 </resources>

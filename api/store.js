@@ -20,6 +20,8 @@ import {
 import { findMeetingByChatRoomReference } from "./reuse/meeting-room-lookup.js";
 import {
     ensureJitsiStoreSchemaOnce,
+    ensureJitsiAuxiliaryTable,
+    CONFIG_TABLE,
     MEETING_TABLES,
     deleteMeetingRows,
 } from "./reuse/store-schema.js";
@@ -39,6 +41,10 @@ export class JitsiMeetStore {
             profileIdentity.normalizeHandleKey.bind(profileIdentity);
         this.normalizeHandleKeys =
             profileIdentity.normalizeHandleKeys.bind(profileIdentity);
+    }
+
+    ensureConfigurationSchema() {
+        return ensureJitsiAuxiliaryTable(this.db, CONFIG_TABLE);
     }
 
     async ensureSchema() {

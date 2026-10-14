@@ -8,7 +8,7 @@ Bootstrap memperoleh layanan eksternal hanya melalui ctx yang dibatasi siklus hi
 
 ## Pertahankan identitas rapat dan percakapan
 
-Rapat persisten mempertahankan himpunan peserta asli yang dinormalisasi, identitas ruang dan kata sandi ketika keanggotaan berubah atau proses dimulai ulang. Rapat tersimpan boleh berbagi ruang Messages; reservasi panggilan sementara yang terpisah mencegah panggilan bersaing tanpa memaksakan keunikan referensi chat historis. Reservasi dan perubahan rapat tetap transaksional. Kehadiran kedaluwarsa setelah heartbeat terlewat, dan rapat yang berakhir mengabaikan sisa kehadiran.
+Rapat tersimpan mempertahankan ruang obrolan terpisah, ditegakkan oleh batasan skema terkini dan pengikatan sumber milik penyedia. Reservasi panggilan sementara mencegah panggilan bersaing.
 
 ## Hormati penyedia Whiteboard opsional
 
@@ -81,6 +81,20 @@ Ganti banner Marketplace dengan komposisi Cognis + penyedia, tempatkan merek di 
 ## Deskripsi Marketplace yang konsisten
 
 Gunakan ringkasan tindakan singkat dan deskripsi fitur konkret pada metadata Marketplace dengan makna terjemahan yang selaras.
+
+## Administrasi dan pemulihan rapat
+
+Rilis 1.5.251 menambahkan pemulihan administrasi untuk referensi rapat yang bertentangan.
+
+Administrasi → Rapat menyediakan filter Aktif, Semua rapat, dan Masalah. Daftar khusus administrator membaca catatan yang ada tanpa inisialisasi skema, menandai kelompok peserta dan URL duplikat serta referensi ruang obrolan/kanvas bersama, dan tidak menampilkan kata sandi. Akhiri mengakhiri kehadiran Cognis dan menutup rapat bagi klien Cognis yang terhubung; tindakan ini tidak mengelola konferensi Jitsi yang diikuti secara mandiri. Rapat aktif harus diakhiri sebelum dihapus. Hapus menghapus catatan dan berbagi rapat, serta ruang obrolan atau kanvas hanya jika tidak dirujuk rapat lain. Kegagalan pembersihan mempertahankan catatan untuk percobaan ulang; sumber daya yang sudah tidak ada tidak menghalangi pembersihan. Penghapusan referensi duplikat membersihkan kegagalan keunikan yang tersimpan agar inisialisasi skema normal dapat dicoba lagi. Rute nonadministrator tetap menerapkan skema normal. Penemuan rapat menghentikan penyegaran otomatis dan melaporkan kegagalan ketika respons gagal.
+
+## Pengikatan sumber integrasi eksklusif
+
+Obrolan rapat menyatakan `source: {sourceType: "meeting", sourceId: meeting.id}` melalui resolver Messages. Aktivasi kanvas mengklaim identitas yang sama melalui `whiteboard:sourceBinding`. Penyedia menolak pengikatan rapat yang bersaing; Jitsi tidak mengubah kolom pengikatan penyedia. Penghapusan administrator hanya melepaskan pengikatan rapat yang dihapus jika referensi lama lain masih ada. Pembersihan panggilan Messages melepaskan klaim sumber sambil mempertahankan percakapan asal. Catatan rapat panggilan baru dibatalkan jika pengikatan obrolan gagal. Pengikatan sumber Messages diwajibkan; Whiteboard tetap opsional dan hanya tersedia jika kontrak pengikatannya ada.
+
+## Tindakan browser terbatas dan administrasi terverifikasi
+
+Konfigurasi dan pengaktifan hanya menginisialisasi tabel konfigurasi, sehingga kegagalan integritas rapat tidak mencegah pengaktifan modul dan akses pemulihan administrasi. Administrasi hanya menginisialisasi tabel tambahan riwayat peserta yang diperlukan untuk pemeriksaan dan mempertahankan batasan rapat.
 
 ## Commit
 

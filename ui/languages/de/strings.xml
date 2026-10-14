@@ -151,4 +151,19 @@
   <string name="module.jitsi_meet.tag_meetings">Besprechungen</string>
   <string name="module.jitsi_meet.voip.subject">VoIP-Anruf</string>
   <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard ist nicht verfügbar. Aktualisieren oder aktivieren Sie den Whiteboard-Provider mit Unterstützung für Canvas-Erstellung und Darstellung.</string>
+  <string name="module.jitsi_meet.meetings.load.failed">Meetings konnten nicht geladen werden. Die automatische Aktualisierung wurde angehalten; öffnen Sie die Seite nach Behebung des Serverproblems erneut.</string>
+  <string name="module.jitsi_meet.admin.filter.active">Aktiv</string>
+  <string name="module.jitsi_meet.admin.filter.all">Alle Meetings</string>
+  <string name="module.jitsi_meet.admin.filter.issues">Probleme</string>
+  <string name="module.jitsi_meet.admin.issues">Chatraum / Probleme</string>
+  <string name="module.jitsi_meet.admin.actions">Aktionen</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateparticipants">Doppelte Teilnehmergruppe</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateurl">Doppelte Meeting-URL</string>
+  <string name="module.jitsi_meet.admin.issue.sharedchatroom">Mehrere Meetings verweisen auf diesen Chatraum</string>
+  <string name="module.jitsi_meet.admin.issue.sharedwhiteboard">Mehrere Meetings verweisen auf diese Zeichenfläche</string>
+  <string name="module.jitsi_meet.admin.action.terminate">Beenden</string>
+  <string name="module.jitsi_meet.admin.action.delete">Löschen</string>
+  <string name="module.jitsi_meet.admin.confirm.terminate">Dieses Meeting für Cognis-Teilnehmer beenden?</string>
+  <string name="module.jitsi_meet.admin.confirm.delete">Dieses Meeting sowie Chaträume und Zeichenflächen löschen, auf die kein anderes Meeting verweist?</string>
+  <string name="module.jitsi_meet.admin.action.completed">Meeting aktualisiert.</string>
 </resources>

@@ -47,7 +47,14 @@ export function registerJitsiActionStore(ctx, store) {
                     { parameters: args },
                     {
                         handlers: {
-                            "initialize-store": () => store.ensureSchema(),
+                            "initialize-store": () =>
+                                [
+                                    "getConfig",
+                                    "saveConfig",
+                                    "deleteConfig",
+                                ].includes(method)
+                                    ? store.ensureConfigurationSchema()
+                                    : store.ensureSchema(),
                             "execute-action": ({ input }) => {
                                 if (!ctx.flow.exists(flowId)) {
                                     throw new Error(

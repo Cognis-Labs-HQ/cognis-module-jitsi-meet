@@ -36,7 +36,8 @@ test("config endpoint polls and persists the module-owned configuration", async 
             },
         },
         store: {
-            ensureSchema: async () => operations.push("ensure_schema"),
+            ensureConfigurationSchema: async () =>
+                operations.push("ensure_schema"),
             getConfig: async () => config,
             saveConfig: async (values) => {
                 config = values;

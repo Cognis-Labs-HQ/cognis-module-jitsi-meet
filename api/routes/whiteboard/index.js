@@ -1,3 +1,4 @@
+import { bindMeetingCanvasSource } from "../../reuse/whiteboard-source-binding.js";
 import { registerFollowWhiteboard } from "../../reuse/follow-whiteboard.js";
 import { resolveRequesterUsername } from "../../reuse/requester.js";
 import { verifyMeetingWhiteboard } from "../../whiteboard-verification.js";
@@ -270,6 +271,7 @@ export function registerMeetingWhiteboardRoutes({
                 } catch (error) {
                     const stateChanged =
                         error.code === "whiteboard_state_changed";
+                    const sourceConflict = error.code === "source_conflict";
                     ctx.log?.(
                         stateChanged ? "info" : "error",
                         "Meeting Whiteboard access could not be confirmed.",
@@ -282,8 +284,8 @@ export function registerMeetingWhiteboardRoutes({
                     );
                     sendError(
                         res,
-                        stateChanged ? 409 : 503,
-                        stateChanged
+                        stateChanged || sourceConflict ? 409 : 503,
+                        stateChanged || sourceConflict
                             ? error.code
                             : "whiteboard_membership_unavailable",
                         stateChanged
@@ -359,6 +361,32 @@ export function registerMeetingWhiteboardRoutes({
                         403,
                         "forbidden",
                         "Whiteboard does not belong to this meeting.",
+                    );
+                    return;
+                }
+            }
+            if (active) {
+                try {
+                    await bindMeetingCanvasSource(
+                        ctx,
+                        fetchBoardData,
+                        resolved.meeting.id,
+                        whiteboardId,
+                    );
+                } catch (error) {
+                    ctx.log?.("error", "Whiteboard source binding failed.", {
+                        operation: "bind_meeting_canvas",
+                        meetingId: resolved.meeting.id,
+                        whiteboardId,
+                        errorName: error?.name,
+                    });
+                    sendError(
+                        res,
+                        error?.status === 409 ? 409 : 503,
+                        error?.code === "source_conflict"
+                            ? "source_conflict"
+                            : "source_binding_unavailable",
+                        "Whiteboard cannot be bound to this meeting.",
                     );
                     return;
                 }

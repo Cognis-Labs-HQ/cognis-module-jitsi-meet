@@ -76,6 +76,8 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
         meeting: { id: "meeting-1", chatRoomId: "pm-room-1" },
         ownerAccountId: "account-1",
         preserveChatroom: true,
+        releaseChatSource: async (input) =>
+            operations.push(["release_source", input]),
         deleteResourceShares: async (input) => {
             operations.push(["delete_shares", input]);
         },
@@ -101,6 +103,15 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
                 resourceId: "meeting-1",
             },
         ],
+        [
+            "release_source",
+            {
+                roomId: "pm-room-1",
+                actorAccountId: "account-1",
+                sourceType: "meeting",
+                sourceId: "meeting-1",
+            },
+        ],
         ["delete_meeting", "meeting-1"],
         [
             "log",
@@ -119,6 +130,7 @@ test("VoIP-style disposable meeting deletion preserves its source chatroom", asy
 });
 
 test("VoIP call creation derives participants from authorized room membership", async () => {
+    const groupRequests = [];
     const handlers = new Map();
     const createdMeetings = [];
     const requestedMemberships = [];
@@ -166,6 +178,10 @@ test("VoIP call creation derives participants from authorized room membership", 
                 memberAccountIds: ["account-alice", "account-bob"],
             };
         },
+        resolveGroupChat: async (input) => {
+            groupRequests.push(input);
+            return { roomId: input.roomId };
+        },
         resolveRequesterUsername: async () => requesterUsername,
         normalizeHandleKey: (handle) => handle,
         createMeetingPayload: async (input) => {
@@ -199,6 +215,10 @@ test("VoIP call creation derives participants from authorized room membership", 
     assert.equal(createdMeetings[0].chatRoomId, "room-1");
     assert.equal(payloadRequests[0].includeChatRoom, false);
 
+    assert.deepEqual(groupRequests[0].source, {
+        sourceType: "meeting",
+        sourceId: "meeting-1",
+    });
     mappedMeeting = { id: "meeting-2", disposable: true };
     requesterUsername = "alice-renamed";
     const reusedResponse = createRecorder();

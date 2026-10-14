@@ -19,6 +19,10 @@ function createScopedRuntime() {
             async () => ({ authorized: true, memberAccountIds: [] }),
         ],
         ["social:messages:deleteChatroom", async () => {}],
+        [
+            "social:messages:sourceBinding",
+            { bind: async () => {}, release: async () => {} },
+        ],
     ]);
     const flows = new Set([
         "bootstrap-platform",

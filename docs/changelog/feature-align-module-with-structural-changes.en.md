@@ -8,7 +8,7 @@ Bootstrap obtains external services only through the lifecycle-scoped ctx and co
 
 ## Keep meeting and conversation identities stable
 
-Persistent meetings retain their normalized original participant set, room identity and password across membership changes and restarts. Saved meetings may share a Messages room; separate disposable-call reservations prevent competing calls without imposing uniqueness on historical chat references. Reservations and meeting changes remain transactional. Presence expires after missed heartbeats, and ended meetings exclude residual presence.
+Saved meetings retain distinct chat rooms, enforced by current schema constraints and provider-owned source bindings; disposable-call reservations prevent competing calls.
 
 ## Respect the optional Whiteboard provider
 
@@ -81,6 +81,20 @@ Replace the marketplace banner with a Cognis + provider composition, keeping its
 ## Consistent marketplace descriptions
 
 Use short action summaries and concrete feature descriptions across marketplace metadata, keeping localized meanings aligned.
+
+## Meeting administration and recovery
+
+Release 1.5.251 adds administration recovery for conflicting meeting references.
+
+Administration → Meetings offers Active, All meetings and Issues pill filters. The admin-only listing reads existing meeting records without requiring schema initialization, flags duplicate participant sets and URLs plus shared chat-room/canvas references, and never exposes passwords. Terminate ends Cognis presence and closes the meeting for connected Cognis clients; it does not claim to administer an independently joined Jitsi conference. Active meetings must be terminated before deletion. Delete removes meeting-owned records and shares, deleting a chat room or canvas only when no other meeting references it. Cleanup failures retain the meeting record for retry; already absent resources permit cleanup to continue. Deleting duplicate references clears cached uniqueness failures so ordinary schema initialization can retry. Non-admin routes retain normal schema enforcement. Meeting discovery stops automatic polling on a failed response and reports the failure instead of repeatedly retrying it.
+
+## Exclusive integration source bindings
+
+Meeting chats declare `source: {sourceType: "meeting", sourceId: meeting.id}` through the Messages resolver. Canvas activation claims the same identity through `whiteboard:sourceBinding`. Provider-owned claims reject competing meeting bindings; Jitsi never edits their binding columns. Administration deletion releases only the deleted meeting’s binding when another historical reference survives. Messages-initiated call cleanup releases its source claim while retaining the source conversation. Creating a new call rolls back its meeting record if chat binding fails. Messages source binding is required; Whiteboard remains optional and is available only when its source-binding contract exists.
+
+## Scoped browser actions and authoritative administration
+
+Configuration and enablement initialize only the configuration table, so meeting integrity failures do not prevent enabling the module and opening administration recovery. Administration initializes only the auxiliary participant-history table needed for inspection; it preserves meeting constraints.
 
 ## Commits
 

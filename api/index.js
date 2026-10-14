@@ -1,3 +1,4 @@
+import { registerMeetingMaintenance } from "./administration/meetings.js";
 import path from "node:path";
 import { registerMeetingRoutes } from "./routes/meetings/index.js";
 import { registerMeetingPingRoute } from "./routes/config/index.js";
@@ -86,6 +87,12 @@ export function registerUi(ctx) {
     ctx.registerCapabilityProvider({
         scriptUrl: "/static/modules/jitsi-meet/voip-provider.js",
         providesCapabilities: ["voip:startCall"],
+    });
+    ctx.registerCapabilityProvider({
+        scriptUrl:
+            "/static/modules/jitsi-meet/administration/meetings-gateway.js",
+        providesCapabilities: ["jitsi-meet:administration"],
+        access: { minRole: "admin" },
     });
     const meetingsStylesheets = [
         "/static/modules/jitsi-meet/styles/jitsi-meet.css",
@@ -192,7 +199,11 @@ export function registerApiRoutes(router, ctx) {
         return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
-        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function";
+        typeof ctx.getCapability("whiteboard:fetchBoardData") === "function" &&
+        typeof ctx.getCapability("whiteboard:sourceBinding")?.bind ===
+            "function" &&
+        typeof ctx.getCapability("whiteboard:sourceBinding")?.release ===
+            "function";
     const resolveShareGuestMeetingAccess =
         createShareGuestMeetingAccessResolver((capabilityId) =>
             ctx.getCapability(capabilityId),
@@ -207,6 +218,14 @@ export function registerApiRoutes(router, ctx) {
             "Jitsi Meet requires the authorized Messages chatroom deletion capability.",
         );
     }
+    const chatSourceBinding = ctx.getCapability(
+        "social:messages:sourceBinding",
+    );
+    if (
+        typeof chatSourceBinding?.bind !== "function" ||
+        typeof chatSourceBinding?.release !== "function"
+    )
+        throw new Error("Jitsi requires Messages source binding support.");
     const resolveMeetingPayload = (input) =>
         resolveMeetingPayloadOrReject({
             ...input,
@@ -655,6 +674,7 @@ export function registerApiRoutes(router, ctx) {
         resolveModeratorUsernames,
         deleteResourceShares,
         deleteChatroom,
+        releaseChatSource: (input) => chatSourceBinding.release(input),
         requestParticipantAdditionApproval: async ({
             meetingId,
             meetingName,
@@ -821,7 +841,10 @@ export function registerApiRoutes(router, ctx) {
 
     registerAdminMeetingRoutes({
         router,
-        store,
+        maintenance: registerMeetingMaintenance(ctx, dbExecutor),
+        log,
+        readJson,
+        sendError,
         requireAuth,
         sendJson,
         profileStore,

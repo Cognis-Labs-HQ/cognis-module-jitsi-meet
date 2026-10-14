@@ -6,6 +6,7 @@ export async function deleteMeetingResources({
     whiteboardId,
     ownerAccountId,
     chatActorAccountId = ownerAccountId,
+    whiteboardActorAccountId = ownerAccountId,
     resolveWhiteboardDeletion,
     deleteChatroom,
     deleteResourceShares,
@@ -20,7 +21,7 @@ export async function deleteMeetingResources({
             deleteResource: () =>
                 deleteWhiteboard({
                     whiteboardId,
-                    actorAccountId: ownerAccountId,
+                    actorAccountId: whiteboardActorAccountId,
                 }),
             resourceType: "whiteboard",
             resourceId: whiteboardId,

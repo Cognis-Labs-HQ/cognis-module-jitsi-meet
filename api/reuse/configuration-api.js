@@ -33,7 +33,7 @@ async function registerStoredJitsiOrigin({
     log,
 }) {
     try {
-        await store.ensureSchema();
+        await store.ensureConfigurationSchema();
         registerConfiguredJitsiOrigin(
             registerScriptOrigins,
             await store.getConfig(),
@@ -92,7 +92,7 @@ export function registerJitsiConfigurationApi(
     );
     const store = enabled ? registerJitsiActionStore(ctx, rawStore) : rawStore;
     const runEnableTest = async () => {
-        await store.ensureSchema();
+        await store.ensureConfigurationSchema();
         const config = await store.getConfig();
         if (!config.instanceUrl) {
             return {

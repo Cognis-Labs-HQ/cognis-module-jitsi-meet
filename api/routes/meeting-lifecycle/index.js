@@ -33,6 +33,7 @@ export function registerMeetingLifecycleRoutes({
     resolveModeratorUsernames,
     deleteResourceShares,
     deleteChatroom,
+    releaseChatSource,
     revokeKickedGuestShare,
     requestParticipantAdditionApproval,
     normalizeHandleKey,
@@ -136,6 +137,7 @@ export function registerMeetingLifecycleRoutes({
                 return;
             }
             let meeting;
+            let createdMeeting = false;
             try {
                 meeting = await store.createMeeting({
                     instanceUrl: config.instanceUrl,
@@ -145,6 +147,7 @@ export function registerMeetingLifecycleRoutes({
                     disposable: true,
                     forceNew: true,
                 });
+                createdMeeting = true;
             } catch (error) {
                 meeting = await store.getMeetingByChatRoomId(roomId);
                 if (!meeting) throw error;
@@ -154,6 +157,18 @@ export function registerMeetingLifecycleRoutes({
                     meetingId: meeting.id,
                     roomId,
                 });
+            }
+            try {
+                await resolveGroupChat({
+                    roomId,
+                    usernames: participantUsernames,
+                    createdByAccountId: claims.sub,
+                    allowSingleMember: true,
+                    source: { sourceType: "meeting", sourceId: meeting.id },
+                });
+            } catch (error) {
+                if (createdMeeting) await store.deleteMeeting(meeting.id);
+                throw error;
             }
             const state = await store.getMeetingState(meeting.id);
             const payload = await createMeetingPayload({
@@ -242,6 +257,7 @@ export function registerMeetingLifecycleRoutes({
                 : null;
             if (typeof resolveGroupChat === "function") {
                 chatRoom = await resolveGroupChat({
+                    source: { sourceType: "meeting", sourceId: meeting.id },
                     usernames: participants,
                     title: buildMeetingChatTitle(meeting.meetingName),
                     createdByAccountId: claims.sub,
@@ -876,6 +892,7 @@ export function registerMeetingLifecycleRoutes({
                             store,
                             deleteResourceShares,
                             deleteChatroom,
+                            releaseChatSource,
                             preserveChatroom: resolved.meeting.disposable,
                             log,
                         });

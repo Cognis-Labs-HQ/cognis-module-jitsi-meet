@@ -63,7 +63,12 @@ test("every supported asynchronous store action has an executed scoped flow", as
         "jitsi-meet:getConfig:execute-action",
     ]);
     assert.equal(events.at(-1), "SELECT");
-    assert.ok(events.some((event) => event === "schema:jitsi_chat_calls"));
+    assert.deepEqual(
+        events.filter((event) => event.startsWith("schema:")),
+        ["schema:jitsi_module_config"],
+    );
+    await actions.listParticipants("meeting");
+    assert.ok(events.includes("schema:jitsi_chat_calls"));
 });
 
 test("configuration routes execute the same staged operation after authorization", async () => {
@@ -108,7 +113,7 @@ test("configuration routes execute the same staged operation after authorization
 
 test("schema failure prevents the action and disposed flows reject future execution", async () => {
     const { store, actions, flows, events } = createRuntime();
-    store.ensureSchema = async () => {
+    store.ensureConfigurationSchema = async () => {
         throw new Error("schema unavailable");
     };
     await assert.rejects(
@@ -129,7 +134,7 @@ test("an incomplete runner cannot silently bypass a Jitsi action", async () => {
 test("disable during initialization prevents an already-started flow from persisting", async () => {
     const { store, actions, flows, events } = createRuntime();
     let finishInitialization;
-    store.ensureSchema = () =>
+    store.ensureConfigurationSchema = () =>
         new Promise((resolve) => {
             finishInitialization = resolve;
         });
@@ -138,4 +143,28 @@ test("disable during initialization prevents an already-started flow from persis
     finishInitialization();
     await assert.rejects(saving, /Jitsi action is no longer active/);
     assert.deepEqual(events, []);
+});
+
+test("configuration remains available when meeting uniqueness prevents initialization", async () => {
+    const runtime = createRuntime();
+    const ensureTable = runtime.store.db.ensureTable;
+    runtime.store.db.ensureTable = async (definition) => {
+        if (definition.name === "jitsi_meetings")
+            throw Object.assign(new Error("duplicate chat room"), {
+                code: "23505",
+            });
+        return ensureTable(definition);
+    };
+    assert.equal(
+        (await runtime.actions.getConfig()).instanceUrl,
+        "https://meet.example",
+    );
+    await assert.rejects(
+        runtime.actions.listActiveMeetings(),
+        /duplicate chat room/,
+    );
+    assert.equal(
+        (await runtime.actions.getConfig()).instanceUrl,
+        "https://meet.example",
+    );
 });

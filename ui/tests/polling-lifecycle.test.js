@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+const feedback = [];
 const reuseModules = {
     "api-client.js": {
         apiFetch: () => assert.fail("Use the injected API client"),
@@ -24,7 +25,9 @@ globalThis[Symbol.for("cognis.uiCtx")] = {
                           return reuseModules[path];
                       },
                   }
-                : undefined,
+                : capabilityId === "ui:log" || capabilityId === "ui:showToast"
+                  ? (...args) => feedback.push(args)
+                  : undefined,
     },
 };
 globalThis.window = {
@@ -166,3 +169,43 @@ for (const outcome of ["auth", "failure", "cancel"]) {
         } else assert.equal(state.meeting, null);
     });
 }
+
+test("failed meeting discovery stops polling and preserves previous results", async (context) => {
+    const originalSetInterval = globalThis.setInterval;
+    const originalClearInterval = globalThis.clearInterval;
+    let timerCreated = 0;
+    let timerCleared = 0;
+    globalThis.setInterval = () => ++timerCreated;
+    globalThis.clearInterval = () => {
+        timerCleared += 1;
+    };
+    context.after(() => {
+        globalThis.setInterval = originalSetInterval;
+        globalThis.clearInterval = originalClearInterval;
+    });
+    const state = {
+        activeMeetings: [{ id: "known-active" }],
+        persistedMeetings: [{ id: "known-persisted" }],
+        activeMeetingsRefreshTimer: null,
+    };
+    const handlers = createMeetingHandlers({
+        root: { querySelector: () => null },
+        state,
+        callbacks: {},
+        utils: {},
+        i18n: { t: (key) => key },
+        apiFetch: async () => ({ ok: false, status: 400 }),
+    });
+    handlers.startActiveMeetingsPolling();
+    await handlers.loadActiveMeetings({ resolveRequested: false });
+    handlers.startActiveMeetingsPolling();
+    assert.equal(timerCreated, 1);
+    assert.equal(timerCleared, 1);
+    assert.deepEqual(state.activeMeetings, [{ id: "known-active" }]);
+    assert.deepEqual(state.persistedMeetings, [{ id: "known-persisted" }]);
+    assert.ok(
+        feedback.some(
+            ([message]) => message === "module.jitsi_meet.meetings.load.failed",
+        ),
+    );
+});

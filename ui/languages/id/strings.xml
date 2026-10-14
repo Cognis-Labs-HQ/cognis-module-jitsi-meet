@@ -151,4 +151,19 @@
   <string name="module.jitsi_meet.tag_meetings">Rapat</string>
   <string name="module.jitsi_meet.voip.subject">Panggilan VoIP</string>
   <string name="module.jitsi_meet.whiteboard.provider_contract_unavailable">Whiteboard tidak tersedia. Perbarui atau aktifkan provider Whiteboard yang mendukung pembuatan dan presentasi kanvas.</string>
+  <string name="module.jitsi_meet.meetings.load.failed">Rapat tidak dapat dimuat. Penyegaran otomatis dihentikan; buka kembali halaman setelah masalah server diselesaikan.</string>
+  <string name="module.jitsi_meet.admin.filter.active">Aktif</string>
+  <string name="module.jitsi_meet.admin.filter.all">Semua rapat</string>
+  <string name="module.jitsi_meet.admin.filter.issues">Masalah</string>
+  <string name="module.jitsi_meet.admin.issues">Ruang obrolan / Masalah</string>
+  <string name="module.jitsi_meet.admin.actions">Tindakan</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateparticipants">Kelompok peserta duplikat</string>
+  <string name="module.jitsi_meet.admin.issue.duplicateurl">URL rapat duplikat</string>
+  <string name="module.jitsi_meet.admin.issue.sharedchatroom">Beberapa rapat merujuk ruang obrolan ini</string>
+  <string name="module.jitsi_meet.admin.issue.sharedwhiteboard">Beberapa rapat merujuk kanvas ini</string>
+  <string name="module.jitsi_meet.admin.action.terminate">Akhiri</string>
+  <string name="module.jitsi_meet.admin.action.delete">Hapus</string>
+  <string name="module.jitsi_meet.admin.confirm.terminate">Akhiri rapat ini untuk peserta Cognis?</string>
+  <string name="module.jitsi_meet.admin.confirm.delete">Hapus rapat ini beserta ruang obrolan atau kanvas yang tidak dirujuk rapat lain?</string>
+  <string name="module.jitsi_meet.admin.action.completed">Rapat diperbarui.</string>
 </resources>

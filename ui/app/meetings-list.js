@@ -33,6 +33,7 @@ export function createMeetingHandlers({
 }) {
     let meetingExitPromise = null;
     let activeMeetingsRequestSequence = 0;
+    let activeMeetingsPollingSuspended = false;
     let persistedMeetingHoldTimer = null;
     let suppressPersistedMeetingClick = false;
 
@@ -546,16 +547,26 @@ export function createMeetingHandlers({
             apiFetch("/api/v1/modules/jitsi-meet/meetings/persisted"),
             callbacks.refreshAvailableParticipants?.(),
         ]);
-        if (!response.ok) {
+        if (!response.ok || !persistedResponse.ok) {
             if (
                 signal?.aborted ||
                 requestSequence !== activeMeetingsRequestSequence
             )
                 return;
-            state.activeMeetings = [];
-            renderActiveMeetings();
+            activeMeetingsPollingSuspended = true;
+            stopActiveMeetingsPolling();
+            logUi("error", "Meeting discovery failed; polling stopped.", {
+                component: "module:jitsi-meet",
+                operation: "load_active_meetings",
+                activeStatus: response.status,
+                persistedStatus: persistedResponse.status,
+            });
+            showToast(i18n.t("module.jitsi_meet.meetings.load.failed"), {
+                variant: "error",
+            });
             return;
         }
+        activeMeetingsPollingSuspended = false;
         const payload = await response.json().catch(() => ({ data: [] }));
         if (
             signal?.aborted ||
@@ -615,6 +626,7 @@ export function createMeetingHandlers({
     }
 
     function startActiveMeetingsPolling() {
+        if (activeMeetingsPollingSuspended) return;
         if (state.activeMeetingsRefreshTimer !== null) return;
         state.activeMeetingsRefreshTimer = setInterval(() => {
             void loadActiveMeetings({ resolveRequested: false });

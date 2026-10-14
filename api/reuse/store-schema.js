@@ -4,6 +4,54 @@ import {
     getDataEncryptionKey,
 } from "./crypto.js";
 
+export const CONFIG_TABLE = {
+    name: "jitsi_module_config",
+    columns: [
+        { name: "id", type: "text", primaryKey: true },
+        { name: "instance_url", type: "text" },
+        {
+            name: "updated_at",
+            type: "timestamp",
+            notNull: true,
+            default: "now",
+        },
+    ],
+};
+
+export const ORIGINAL_PARTICIPANTS_TABLE = {
+    name: "jitsi_meeting_original_participants",
+    columns: [
+        { name: "meeting_id", type: "text", notNull: true },
+        { name: "username", type: "text", notNull: true },
+        {
+            name: "recorded_at",
+            type: "timestamp",
+            notNull: true,
+            default: "now",
+        },
+    ],
+    primaryKey: ["meeting_id", "username"],
+};
+
+const auxiliarySchemas = new WeakMap();
+
+export function ensureJitsiAuxiliaryTable(databaseExecutor, definition) {
+    let schemas = auxiliarySchemas.get(databaseExecutor);
+    if (!schemas) {
+        schemas = new Map();
+        auxiliarySchemas.set(databaseExecutor, schemas);
+    }
+    if (schemas.has(definition.name)) return schemas.get(definition.name);
+    const initialization = databaseExecutor
+        .ensureTable(definition)
+        .catch((error) => {
+            schemas.delete(definition.name);
+            throw error;
+        });
+    schemas.set(definition.name, initialization);
+    return initialization;
+}
+
 export const MEETING_TABLES = [
     "jitsi_chat_calls",
     "jitsi_meeting_presence",
@@ -29,19 +77,7 @@ export async function deleteMeetingRows(executor, meetingId) {
 }
 
 export async function ensureJitsiStoreSchema({ db }) {
-    await db.ensureTable({
-        name: "jitsi_module_config",
-        columns: [
-            { name: "id", type: "text", primaryKey: true },
-            { name: "instance_url", type: "text" },
-            {
-                name: "updated_at",
-                type: "timestamp",
-                notNull: true,
-                default: "now",
-            },
-        ],
-    });
+    await ensureJitsiAuxiliaryTable(db, CONFIG_TABLE);
 
     await db.ensureTable({
         name: "jitsi_meetings",
@@ -127,20 +163,7 @@ export async function ensureJitsiStoreSchema({ db }) {
         primaryKey: ["meeting_id", "username"],
     });
 
-    await db.ensureTable({
-        name: "jitsi_meeting_original_participants",
-        columns: [
-            { name: "meeting_id", type: "text", notNull: true },
-            { name: "username", type: "text", notNull: true },
-            {
-                name: "recorded_at",
-                type: "timestamp",
-                notNull: true,
-                default: "now",
-            },
-        ],
-        primaryKey: ["meeting_id", "username"],
-    });
+    await ensureJitsiAuxiliaryTable(db, ORIGINAL_PARTICIPANTS_TABLE);
 
     await db.ensureTable({
         name: "jitsi_meeting_state",
@@ -245,11 +268,19 @@ export async function ensureJitsiStoreSchemaOnce(db) {
     const existing = schemaInitializationByExecutor.get(db);
     if (existing) return existing;
     const initialization = ensureJitsiStoreSchema({ db }).catch((error) => {
-        if (schemaInitializationByExecutor.get(db) === initialization) {
+        // Retrying a uniqueness violation cannot repair existing data.
+        if (
+            error?.code !== "23505" &&
+            schemaInitializationByExecutor.get(db) === initialization
+        ) {
             schemaInitializationByExecutor.delete(db);
         }
         throw error;
     });
     schemaInitializationByExecutor.set(db, initialization);
     return initialization;
+}
+
+export function resetJitsiStoreSchema(db) {
+    schemaInitializationByExecutor.delete(db);
 }

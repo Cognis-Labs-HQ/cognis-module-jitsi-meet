@@ -872,3 +872,23 @@ test("keyring reset clears delivery receipts and preserves the meeting", async (
         },
     ]);
 });
+
+test("schema uniqueness failures do not repeat ALTER on every request", async () => {
+    let attempts = 0;
+    const failure = Object.assign(new Error("duplicate chat room"), {
+        code: "23505",
+    });
+    const databaseExecutor = {
+        async ensureTable() {
+            attempts += 1;
+            throw failure;
+        },
+    };
+    const store = new JitsiMeetStore({
+        db: databaseExecutor,
+        profileIdentity: profileIdentityFake,
+    });
+    await assert.rejects(store.ensureSchema(), (error) => error === failure);
+    await assert.rejects(store.ensureSchema(), (error) => error === failure);
+    assert.equal(attempts, 1);
+});

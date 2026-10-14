@@ -1,3 +1,4 @@
+import { bindMeetingCanvasSource } from "./whiteboard-source-binding.js";
 import { updateMeetingWhiteboardMembership } from "./whiteboard-membership.js";
 
 const FLOW_ID = "jitsi-meet:followWhiteboard";
@@ -7,7 +8,12 @@ export function registerFollowWhiteboard(ctx, dependencies) {
     ctx.registerFlow({
         id: FLOW_ID,
         description: "Authorize access to an already-open meeting Whiteboard.",
-        stages: ["verify-mapping", "grant-membership", "confirm-mapping"],
+        stages: [
+            "verify-mapping",
+            "claim-source",
+            "grant-membership",
+            "confirm-mapping",
+        ],
     });
     return async (input) => {
         const verifyMapping = async () => {
@@ -30,6 +36,13 @@ export function registerFollowWhiteboard(ctx, dependencies) {
         const result = await ctx.flow.run(FLOW_ID, input, {
             handlers: {
                 "verify-mapping": verifyMapping,
+                "claim-source": () =>
+                    bindMeetingCanvasSource(
+                        ctx,
+                        dependencies.fetchBoardData,
+                        input.meeting.id,
+                        input.whiteboardId,
+                    ),
                 "grant-membership": async ({ stageResults }) => {
                     if (!ctx.flow.exists(FLOW_ID))
                         throw new Error(

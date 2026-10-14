@@ -15,7 +15,7 @@ export function registerMeetingConfigRoutes({
         async (req, res) => {
             const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            await store.ensureSchema();
+            await store.ensureConfigurationSchema();
             const config = await store.getConfig();
             sendJson(res, 200, { data: config });
         },
@@ -27,7 +27,7 @@ export function registerMeetingConfigRoutes({
         async (req, res) => {
             const claims = requireAuth(req, res, "admin");
             if (!claims) return;
-            await store.ensureSchema();
+            await store.ensureConfigurationSchema();
             const body = await readJson(req);
             const instanceUrl = normalizeHttpUrl(body.instanceUrl);
             if (!instanceUrl) {
@@ -61,7 +61,7 @@ export function registerMeetingConfigRoutes({
         async (req, res) => {
             const claims = requireAuth(req, res, "admin");
             if (!claims) return;
-            await store.ensureSchema();
+            await store.ensureConfigurationSchema();
             await store.deleteConfig();
             registerConfiguredJitsiOrigin(registerScriptOrigins, {});
             log?.("info", "Jitsi Meet configuration deleted.", {
@@ -80,7 +80,7 @@ export function registerMeetingPingRoute({ router, store, sendJson }) {
     router.get(
         "/api/v1/modules/jitsi-meet/ping",
         async (_req, res) => {
-            await store.ensureSchema();
+            await store.ensureConfigurationSchema();
             const config = await store.getConfig();
             sendJson(res, 200, {
                 data: {

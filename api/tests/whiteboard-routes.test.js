@@ -42,6 +42,7 @@ function createRoutes({
     beforeMembershipAdd = () => {},
     providerVersion = "2.3.151",
     whiteboardApproval = { approved: true },
+    sourceBinding = { bind: async () => {} },
 } = {}) {
     const handlers = new Map();
     const stateUpdates = [];
@@ -58,6 +59,8 @@ function createRoutes({
         },
         ctx: {
             ...createFlowRuntime(),
+            getCapability: (id) =>
+                id === "whiteboard:sourceBinding" ? sourceBinding : undefined,
             async getModuleAssurance(moduleId) {
                 assert.equal(moduleId, "nextcloud-whiteboard");
                 return {
@@ -874,4 +877,49 @@ test("Whiteboard diagnostics report the installed release without promising vers
             "nextcloud-whiteboard@2.3.151",
         );
     }
+});
+
+test("a canvas bound to another meeting cannot replace the meeting mapping", async () => {
+    const harness = createRoutes({
+        sourceBinding: {
+            bind: async () => {
+                throw Object.assign(new Error("Already bound"), {
+                    status: 409,
+                    code: "source_conflict",
+                });
+            },
+        },
+    });
+    const response = createRecorder();
+    const request = {
+        body: {
+            meetingId: "meeting-1",
+            whiteboardId: "board-1",
+            active: true,
+            disposable: false,
+        },
+    };
+    await harness.handlers.get(
+        "POST /api/v1/modules/jitsi-meet/whiteboard/state",
+    )(request, response);
+    assert.equal(response.status, 409);
+    assert.deepEqual(harness.stateUpdates, []);
+});
+
+test("following an open canvas cannot bind it to a competing meeting", async () => {
+    const routes = createRoutes({
+        state: openWhiteboardState(),
+        sourceBinding: {
+            bind: async () => {
+                throw Object.assign(new Error("Already bound"), {
+                    status: 409,
+                    code: "source_conflict",
+                });
+            },
+        },
+    });
+    const response = await followExistingBoard(routes);
+    assert.equal(response.status, 409);
+    assert.equal(response.body.error.code, "source_conflict");
+    assert.deepEqual(routes.membershipAdds, []);
 });

@@ -20,6 +20,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "social:profile:identity",
         "social:messagesUiClient",
         "social:messages:deleteChatroom",
+        "social:messages:sourceBinding",
         "social:messages:membership",
         "social:messages:resolveRoomMembership",
         "share:uiClient",
@@ -30,10 +31,13 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "ui:showToast",
         "ui:openErrorPopup",
         "ui:reuse",
+        "ui:scopedActions",
         "component-pages:discard",
         "ui:makeFloatingWindow",
         "ui:navbarLinks",
         "auth:registerKeyringDataOwner",
+        "share:listByResource",
+        "share:deleteResourceShares",
     ]);
     for (const optionalCapability of [
         "component-pages:spawn",

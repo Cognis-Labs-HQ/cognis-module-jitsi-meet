@@ -1,0 +1,14 @@
+.jitsi-admin-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.jitsi-admin-filter-button {
+    border-radius: 999px;
+}
+
+.jitsi-admin-filter-button[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+}
