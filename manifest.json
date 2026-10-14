@@ -108,6 +108,10 @@
             "sha256": "8fafead6e01dbab777528e72d1ce924ff3d8e0bd250d21a0a29116fe1ef7ed44"
         },
         {
+            "path": ".github/copilot-instructions.md",
+            "sha256": "6c0dd69b71d06d3687a55f1227bffd26b5e742177857bb764c85a4e9ed3d38a3"
+        },
+        {
             "path": ".gitignore",
             "sha256": "16d30e4462189fb14dd611bdb708c510630c576a1f35b9383e89a4352da36c97"
         },
@@ -118,10 +122,6 @@
         {
             "path": ".prettierrc",
             "sha256": "fa9273146be8edfd6bbddaff9d0654effb7b4cd67c6163b67e971195d796ead3"
-        },
-        {
-            "path": "AGENTS.md",
-            "sha256": "6c0dd69b71d06d3687a55f1227bffd26b5e742177857bb764c85a4e9ed3d38a3"
         },
         {
             "path": "LICENSE",
