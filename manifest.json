@@ -109,7 +109,7 @@
         },
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "6c0dd69b71d06d3687a55f1227bffd26b5e742177857bb764c85a4e9ed3d38a3"
+            "sha256": "250dfbb7370c670600bd27948d0b32b116e0224cc406bc9b6fad7250b0bced9a"
         },
         {
             "path": ".gitignore",
