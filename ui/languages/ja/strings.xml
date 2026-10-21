@@ -5,6 +5,7 @@
   <string name="module.jitsi_meet.overlay.select_participants">開始するには、少なくとも 1 人をミーティング参加者リストへドラッグしてください。</string>
   <string name="module.jitsi_meet.overlay.start_meeting">ミーティング開始</string>
   <string name="module.jitsi_meet.overlay.auth_required">認証が必要です</string>
+  <string name="module.jitsi_meet.overlay.authenticate">認証する</string>
   <string name="module.jitsi_meet.overlay.reclaim">セッションを引き継ぐ</string>
   <string name="module.jitsi_meet.overlay.loading">事前チェックを実行中...</string>
   <string name="module.jitsi_meet.overlay.preflight_running">事前チェックを実行しています。成功するまでミーティング開始は無効です。</string>
