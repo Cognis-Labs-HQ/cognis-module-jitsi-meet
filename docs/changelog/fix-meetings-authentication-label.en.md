@@ -13,3 +13,4 @@ Check module string references, manifest labels and dynamically selected adminis
 ## Commits
 
 - [feedcc1c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/feedcc1cd007336610fa8c1be6287c6589544f58)
+- [e07d7aeb](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/e07d7aeb6334ba5f51400206dd40ad6b89f24b66)
