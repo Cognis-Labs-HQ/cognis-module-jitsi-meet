@@ -2,7 +2,7 @@
  * Resolves the host-owned logging and feedback capabilities used by this module.
  *
  * @example
- * `showToast(i18n.t("module.jitsi_meet.saved"), { variant: "success" });`
+ * `showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), { variant: "error" });`
  *
  * @param {string} capabilityName
  * @returns {Function}

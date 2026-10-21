@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.261",
+    "version": "1.5.262",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -497,11 +497,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "0e3a5e0b100b57691607b9d2a455a59a0a652fc71beffe83b1e761b861ed1e9b"
+            "sha256": "e6d9969ce15c696bd0227ea95684c264c389ef7ddc08801b554b755462ae5875"
         },
         {
             "path": "package.json",
-            "sha256": "474c0a7af126cd062583837b9bd4429ba8607582bfa55c73451d3e1a16f420b5"
+            "sha256": "dd2838e44b2d70d9c2a1acae1cf19cd067db9d1f37916a6a443521ec5f8c5454"
         },
         {
             "path": "routes.json",
@@ -641,7 +641,7 @@
         },
         {
             "path": "ui/reuse/feedback.js",
-            "sha256": "13e8ebe901c305fef83101b0a64af3915724057f1c55a8c49528fa909b700de6"
+            "sha256": "bfb7747d40ba4d337672ecc6d6fdd7d93360017186ceb5d215902cc472558509"
         },
         {
             "path": "ui/reuse/gateway-clients.js",
@@ -713,7 +713,7 @@
         },
         {
             "path": "ui/tests/localization-quality.test.js",
-            "sha256": "fba31d4c1ef5e38790f7210dcefa9a44f44cf3b5bd46ce2d5b100b523ced6af4"
+            "sha256": "34e71a1580e85e5e6aeb408f954c476dcbc484a2dc9a5fc15d9b75adb9624c77"
         },
         {
             "path": "ui/tests/meeting-overlay.test.js",
