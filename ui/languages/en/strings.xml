@@ -5,6 +5,7 @@
   <string name="module.jitsi_meet.overlay.select_participants">Drag at least one participant into the meeting list to begin.</string>
   <string name="module.jitsi_meet.overlay.start_meeting">Start Meeting</string>
   <string name="module.jitsi_meet.overlay.auth_required">Authentication Required</string>
+  <string name="module.jitsi_meet.overlay.authenticate">Authenticate</string>
   <string name="module.jitsi_meet.overlay.reclaim">Reclaim Session</string>
   <string name="module.jitsi_meet.overlay.loading">Running Pre-Flight Check...</string>
   <string name="module.jitsi_meet.overlay.preflight_running">Pre-Flight Check In Progress. Starting is disabled until it succeeds.</string>

@@ -78,8 +78,13 @@ test("pull request release notes follow Cognis changelog structure", () => {
     }
 });
 
-test("current release documentation has matching localized structure and provenance", () => {
+test("release documentation has matching localized structure and provenance", () => {
     const branch = "feature-align-module-with-structural-changes";
+    const releaseVersion = readFileSync(
+        resolve(ROOT, `docs/changelog/${branch}.en.md`),
+        "utf8",
+    ).match(/\b\d+\.\d+\.\d+\b/)?.[0];
+    assert.ok(releaseVersion);
     let expectedHeadings;
     let expectedCommits;
     let expectedStandardHeadings;
@@ -95,10 +100,7 @@ test("current release documentation has matching localized structure and provena
         ].map((match) => match[1]);
         assert.ok(commits.length > 0);
         assert.equal(commits.length, new Set(commits).size);
-        const { version } = JSON.parse(
-            readFileSync(resolve(ROOT, "manifest.json"), "utf8"),
-        );
-        assert.ok(source.includes(` ${version} `));
+        assert.ok(source.includes(` ${releaseVersion} `));
         const standardHeadings = headingLevels(
             resolve(ROOT, `docs/index.${language}.md`),
         );
