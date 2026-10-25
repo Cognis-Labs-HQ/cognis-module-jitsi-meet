@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const feedback = [];
+let offline = false;
 const reuseModules = {
     "api-client.js": {
         apiFetch: () => assert.fail("Use the injected API client"),
@@ -18,16 +19,18 @@ const reuseModules = {
 globalThis[Symbol.for("cognis.uiCtx")] = {
     capabilities: {
         get: (capabilityId) =>
-            capabilityId === "ui:reuse"
-                ? {
-                      async importModule(path) {
-                          assert.ok(Object.hasOwn(reuseModules, path), path);
-                          return reuseModules[path];
-                      },
-                  }
-                : capabilityId === "ui:log" || capabilityId === "ui:showToast"
-                  ? (...args) => feedback.push(args)
-                  : undefined,
+            capabilityId === "offline:state"
+                ? { isOffline: () => offline }
+                : capabilityId === "ui:reuse"
+                  ? {
+                        async importModule(path) {
+                            assert.ok(Object.hasOwn(reuseModules, path), path);
+                            return reuseModules[path];
+                        },
+                    }
+                  : capabilityId === "ui:log" || capabilityId === "ui:showToast"
+                    ? (...args) => feedback.push(args)
+                    : undefined,
     },
 };
 globalThis.window = {
@@ -638,3 +641,114 @@ test("deleted conversation calls recover through the existing Messages conversat
     assert.equal(await recoverDeletedMeeting(options), null);
     assert.equal(calls.length, 1);
 });
+
+for (const failure of ["offline_operation_unavailable", "connection_refused"]) {
+    test(`meeting polling catches ${failure} and stops without losing results`, async (context) => {
+        let tick;
+        let clears = 0;
+        const originalSet = globalThis.setInterval;
+        const originalClear = globalThis.clearInterval;
+        globalThis.setInterval = (callback) => {
+            tick = callback;
+            return 42;
+        };
+        globalThis.clearInterval = () => clears++;
+        context.after(() => {
+            globalThis.setInterval = originalSet;
+            globalThis.clearInterval = originalClear;
+        });
+        const state = {
+            activeMeetings: [{ id: "active" }],
+            persistedMeetings: [{ id: "persisted" }],
+            activeMeetingsRefreshTimer: null,
+        };
+        const start = feedback.length;
+        const handlers = createMeetingHandlers({
+            root: { querySelector: () => null },
+            state,
+            callbacks: {},
+            utils: {},
+            apiFetch: async () => {
+                throw new Error(failure);
+            },
+        });
+        handlers.startActiveMeetingsPolling();
+        tick();
+        await new Promise((resolve) => setImmediate(resolve));
+        assert.equal(clears, 1);
+        assert.equal(state.activeMeetingsRefreshTimer, null);
+        handlers.startActiveMeetingsPolling();
+        assert.equal(state.activeMeetingsRefreshTimer, null);
+        assert.deepEqual(state.activeMeetings, [{ id: "active" }]);
+        assert.deepEqual(state.persistedMeetings, [{ id: "persisted" }]);
+        assert.equal(
+            feedback
+                .slice(start)
+                .some(
+                    ([message]) =>
+                        message === "module.jitsi_meet.meetings.load.failed",
+                ),
+            false,
+        );
+    });
+}
+
+test("offline discovery skips all requests and cannot start a polling timer", async () => {
+    offline = true;
+    try {
+        const state = { activeMeetingsRefreshTimer: null };
+        const handlers = createMeetingHandlers({
+            state,
+            root: {},
+            callbacks: {},
+            utils: {},
+            apiFetch: () =>
+                assert.fail("Offline discovery must not request data"),
+        });
+        await handlers.loadActiveMeetings();
+        handlers.startActiveMeetingsPolling();
+        assert.equal(state.activeMeetingsRefreshTimer, null);
+    } finally {
+        offline = false;
+    }
+});
+
+for (const operation of ["presence", "state"]) {
+    test(`active meeting ${operation} polling handles network loss and stops both timers`, async (context) => {
+        const timers = [];
+        const cleared = [];
+        const originalSet = globalThis.setInterval;
+        const originalClear = globalThis.clearInterval;
+        globalThis.setInterval = (callback) => {
+            timers.push(callback);
+            return timers.length;
+        };
+        globalThis.clearInterval = (id) => cleared.push(id);
+        context.after(() => {
+            globalThis.setInterval = originalSet;
+            globalThis.clearInterval = originalClear;
+        });
+        const state = {
+            meeting: { id: "active-meeting" },
+            jitsiConferenceJoined: true,
+            heartbeatTimer: null,
+            stateRefreshTimer: null,
+        };
+        const handlers = createPreflightHandlers({
+            root: {},
+            state,
+            callbacks: {},
+            utils: {},
+            apiFetch: async () => {
+                throw new TypeError("network unavailable");
+            },
+        });
+        handlers.ensureMeetingTracking();
+        timers[operation === "presence" ? 0 : 1]();
+        await new Promise((resolve) => setImmediate(resolve));
+        assert.deepEqual(cleared, [1, 2]);
+        assert.equal(state.heartbeatTimer, null);
+        assert.equal(state.stateRefreshTimer, null);
+        assert.equal(state.meeting.id, "active-meeting");
+    });
+}

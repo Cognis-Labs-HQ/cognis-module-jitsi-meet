@@ -1,4 +1,9 @@
 import {
+    bindMeetingPolling,
+    isMeetingOffline,
+    runMeetingPoll,
+} from "./reuse/polling-lifecycle.js";
+import {
     claimMeetingTransition,
     isMeetingSelectionLocked,
 } from "./reuse/meeting-transition.js";
@@ -38,9 +43,7 @@ export function createMeetingHandlers({
     let persistedMeetingHoldTimer = null;
     let suppressPersistedMeetingClick = false;
 
-    signal?.addEventListener("abort", stopActiveMeetingsPolling, {
-        once: true,
-    });
+    bindMeetingPolling(signal, stopActiveMeetingsPolling);
 
     function selectPersistedMeeting(meeting) {
         if (isMeetingSelectionLocked(state)) return;
@@ -580,7 +583,7 @@ export function createMeetingHandlers({
     }
 
     async function loadActiveMeetings({ resolveRequested = true } = {}) {
-        if (signal?.aborted) return;
+        if (signal?.aborted || isMeetingOffline()) return;
         const requestSequence = ++activeMeetingsRequestSequence;
         if (
             resolveRequested &&
@@ -603,6 +606,22 @@ export function createMeetingHandlers({
             ]);
         } catch (error) {
             if (signal?.aborted) return;
+            activeMeetingsPollingSuspended = true;
+            stopActiveMeetingsPolling();
+            const offline =
+                isMeetingOffline() ||
+                error?.message === "offline_operation_unavailable";
+            logUi(
+                offline ? "info" : "error",
+                "Meeting discovery interrupted; polling stopped.",
+                {
+                    component: "module:jitsi-meet",
+                    operation: "loadActiveMeetings",
+                    errorName: error?.name,
+                },
+            );
+            if (offline || !resolveRequested || error?.name === "AbortError")
+                return;
             throw error;
         }
         if (!response.ok || !persistedResponse.ok) {
@@ -684,11 +703,15 @@ export function createMeetingHandlers({
     }
 
     function startActiveMeetingsPolling() {
-        if (signal?.aborted) return;
+        if (signal?.aborted || isMeetingOffline()) return;
         if (activeMeetingsPollingSuspended) return;
         if (state.activeMeetingsRefreshTimer !== null) return;
         state.activeMeetingsRefreshTimer = setInterval(() => {
-            void loadActiveMeetings({ resolveRequested: false });
+            void runMeetingPoll(
+                "pollActiveMeetings",
+                () => loadActiveMeetings({ resolveRequested: false }),
+                stopActiveMeetingsPolling,
+            );
         }, ACTIVE_MEETINGS_REFRESH_INTERVAL_MS);
     }
 

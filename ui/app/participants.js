@@ -1,3 +1,8 @@
+import {
+    bindMeetingPolling,
+    isMeetingOffline,
+    runMeetingPoll,
+} from "./reuse/polling-lifecycle.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
@@ -38,6 +43,15 @@ export function createPreflightHandlers({
 }) {
     let participantRefreshSequence = 0;
     let stateRefreshSequence = 0;
+
+    function stopTracking() {
+        clearInterval(state.heartbeatTimer);
+        clearInterval(state.stateRefreshTimer);
+        state.heartbeatTimer = state.stateRefreshTimer = null;
+    }
+
+    bindMeetingPolling(signal, stopTracking);
+
     if (!(state.pendingParticipantUsernames instanceof Set)) {
         state.pendingParticipantUsernames = new Set();
     }
@@ -446,7 +460,7 @@ export function createPreflightHandlers({
 
     async function loadMeetingState() {
         const meetingId = state.meeting?.id;
-        if (!meetingId) return;
+        if (!meetingId || signal?.aborted || isMeetingOffline()) return;
         const requestSequence = ++stateRefreshSequence;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/state",
@@ -584,7 +598,8 @@ export function createPreflightHandlers({
         active = true,
         { terminated = false } = {},
     ) {
-        if (!state.meeting?.id) return null;
+        if (!state.meeting?.id || signal?.aborted || isMeetingOffline())
+            return null;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/presence",
             {
@@ -618,16 +633,25 @@ export function createPreflightHandlers({
     }
 
     function ensureMeetingTracking({ pendingAuthentication = false } = {}) {
+        if (signal?.aborted || isMeetingOffline()) return;
         if (!state.meeting?.id || state.meeting.requiresReclaim) return;
         if (!shouldTrackMeetingPresence() && !pendingAuthentication) return;
         if (state.heartbeatTimer === null) {
             state.heartbeatTimer = setInterval(() => {
-                void keepPresenceAlive(true);
+                void runMeetingPoll(
+                    "pollMeetingPresence",
+                    () => keepPresenceAlive(true),
+                    stopTracking,
+                );
             }, HEARTBEAT_INTERVAL_MS);
         }
         if (state.stateRefreshTimer === null) {
             state.stateRefreshTimer = setInterval(() => {
-                void loadMeetingState();
+                void runMeetingPoll(
+                    "pollMeetingState",
+                    loadMeetingState,
+                    stopTracking,
+                );
             }, STATE_REFRESH_INTERVAL_MS);
         }
     }
