@@ -126,3 +126,11 @@ Direkt geladene Meetings-Seiten brechen ihren Mount ab, wenn der Host einen Rout
 Verweise verwenden den aufklappbaren Abschnittskomponisten des Hosts wie Components. Geöffnete Verweise bleiben bei Aktualisierungen von Meetings und bevorstehenden Meetings erhalten; die Steuerelemente sind per Tastatur bedienbar. Die Filter heißen Aktive Meetings, Alle Meetings und Problematische Meetings und haben jeweils eine eigene Leermeldung.
 
 Quellzuordnungen von Zeichenflächen erfolgen erst nach Zustimmung innerhalb der serialisierten Zustandsänderung. Fehler beim Teilnehmerabgleich oder Speichern geben neue Zuordnungen frei und erhalten bestehende Verknüpfungen. Allgemeine Meeting-Erstellung erzeugt keine kurzlebigen Anrufe; deren Wiederherstellung nutzt die VoIP-Route des vorhandenen Gesprächs. Überholte Abfragen bevorstehender Meetings werden verworfen. Direkte Seiten verwenden das Lebenszyklussignal des Hosts statt unabhängiger Controller.
+
+## Verbindungsverlust bei der Raumsuche behandeln
+
+Die Raumsuche stoppt nach einem Netzwerkfehler ihre Abfragen und fängt abgelehnte Timer-Anfragen ab. Offline- und abgebrochene Anfragen öffnen keine Fehlermeldungen zur Suche und löschen die letzten Raumlisten nicht. Das Modul nutzt die optionale Offline-Status-Fähigkeit des Hosts; die Bereinigung bleibt an das Seitensignal gebunden. Die Präsenz- und Statusabfragen laufender Meetings folgen demselben Lebenszyklus und stoppen gemeinsam nach einer fehlgeschlagenen Hintergrundanfrage.
+
+## Aktuelle Abfrage beibehalten
+
+Timer für Anwesenheit und Status gehören zu einer Tracking-Generation und einer Meeting-Identität. Ein Meeting-Wechsel oder der Neustart des Trackings für dasselbe Meeting beendet die vorherige Generation. Verspätete Fehler und bereits eingeplante Rückrufe alter Generationen können die aktuellen Anwesenheits- und Statustimer weder stoppen noch Anfragen für die neue Sitzung senden. Fehler der aktuellen Generation stoppen weiterhin beide Timer; Seiten- und Offline-Bereinigung machen diese Generation ungültig.

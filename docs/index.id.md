@@ -126,3 +126,11 @@ Halaman Meetings yang dimuat langsung membatalkan mount saat host menjalankan pe
 Referensi menggunakan komposer bagian yang dapat dibuka dari host, sama seperti Components. Referensi yang terbuka tetap terbuka selama polling rapat dan rapat mendatang, dengan kontrol yang dapat digunakan melalui papan ketik. Filter Rapat Aktif, Semua Rapat, dan Rapat Bermasalah masing-masing memiliki pesan kosong tersendiri.
 
 Klaim sumber kanvas hanya dilakukan setelah persetujuan, di dalam pembaruan status berseri. Kegagalan sinkronisasi anggota atau penyimpanan melepas klaim baru dan mempertahankan klaim yang sudah dipetakan. Pembuatan rapat umum tidak membuat panggilan sementara; pemulihan panggilan percakapan memakai rute VoIP percakapan yang ada. Polling rapat mendatang yang sudah tergantikan diabaikan. Halaman langsung memakai sinyal siklus hidup host, bukan controller mandiri.
+
+## Tangani koneksi terputus saat pencarian ruang
+
+Pencarian ruang menghentikan polling setelah kegagalan jaringan dan menangani penolakan promise pewaktu. Permintaan luring dan yang dibatalkan tidak memunculkan toast kesalahan pencarian atau menghapus daftar ruang terakhir. Modul menggunakan kapabilitas status luring host yang opsional dan mengikat pembersihan pada sinyal halaman. Polling kehadiran dan status ruang aktif mengikuti siklus hidup yang sama dan berhenti bersama setelah permintaan latar belakang gagal.
+
+## Pertahankan Polling Aktif
+
+Callback timer kehadiran dan status terikat pada generasi pelacakan dan identitas rapat. Berpindah rapat atau memulai ulang pelacakan rapat yang sama menonaktifkan generasi sebelumnya. Kegagalan terlambat dan callback yang sudah dijadwalkan dari generasi lama tidak dapat menghentikan timer kehadiran atau status saat ini maupun mengirim permintaan untuk sesi baru. Kegagalan generasi aktif tetap menghentikan kedua timer, dan pembersihan halaman atau mode luring membatalkan generasinya.

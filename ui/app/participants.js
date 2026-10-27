@@ -1,3 +1,8 @@
+import {
+    bindMeetingPolling,
+    isMeetingOffline,
+    runMeetingPoll,
+} from "./reuse/polling-lifecycle.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
@@ -38,6 +43,20 @@ export function createPreflightHandlers({
 }) {
     let participantRefreshSequence = 0;
     let stateRefreshSequence = 0;
+    let trackingGeneration = 0;
+    let trackingMeetingId = null;
+
+    function stopTracking() {
+        trackingGeneration++;
+        trackingMeetingId = null;
+        if (state.heartbeatTimer !== null) clearInterval(state.heartbeatTimer);
+        if (state.stateRefreshTimer !== null)
+            clearInterval(state.stateRefreshTimer);
+        state.heartbeatTimer = state.stateRefreshTimer = null;
+    }
+
+    bindMeetingPolling(signal, stopTracking);
+
     if (!(state.pendingParticipantUsernames instanceof Set)) {
         state.pendingParticipantUsernames = new Set();
     }
@@ -446,7 +465,7 @@ export function createPreflightHandlers({
 
     async function loadMeetingState() {
         const meetingId = state.meeting?.id;
-        if (!meetingId) return;
+        if (!meetingId || signal?.aborted || isMeetingOffline()) return;
         const requestSequence = ++stateRefreshSequence;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/state",
@@ -584,7 +603,8 @@ export function createPreflightHandlers({
         active = true,
         { terminated = false } = {},
     ) {
-        if (!state.meeting?.id) return null;
+        if (!state.meeting?.id || signal?.aborted || isMeetingOffline())
+            return null;
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/presence",
             {
@@ -618,18 +638,37 @@ export function createPreflightHandlers({
     }
 
     function ensureMeetingTracking({ pendingAuthentication = false } = {}) {
+        if (signal?.aborted || isMeetingOffline()) return;
         if (!state.meeting?.id || state.meeting.requiresReclaim) return;
         if (!shouldTrackMeetingPresence() && !pendingAuthentication) return;
-        if (state.heartbeatTimer === null) {
-            state.heartbeatTimer = setInterval(() => {
-                void keepPresenceAlive(true);
-            }, HEARTBEAT_INTERVAL_MS);
+        const meetingId = state.meeting.id;
+        if (
+            trackingMeetingId === meetingId &&
+            state.heartbeatTimer !== null &&
+            state.stateRefreshTimer !== null
+        )
+            return;
+        stopTracking();
+        trackingMeetingId = meetingId;
+        const generation = trackingGeneration;
+        const isCurrentTracking = () =>
+            generation === trackingGeneration &&
+            state.meeting?.id === meetingId &&
+            !signal?.aborted;
+        function pollCurrentMeeting(operation, task) {
+            if (!isCurrentTracking()) return;
+            void runMeetingPoll(operation, task, () => {
+                if (isCurrentTracking()) stopTracking();
+            });
         }
-        if (state.stateRefreshTimer === null) {
-            state.stateRefreshTimer = setInterval(() => {
-                void loadMeetingState();
-            }, STATE_REFRESH_INTERVAL_MS);
-        }
+        state.heartbeatTimer = setInterval(() => {
+            pollCurrentMeeting("pollMeetingPresence", () =>
+                keepPresenceAlive(true),
+            );
+        }, HEARTBEAT_INTERVAL_MS);
+        state.stateRefreshTimer = setInterval(() => {
+            pollCurrentMeeting("pollMeetingState", loadMeetingState);
+        }, STATE_REFRESH_INTERVAL_MS);
     }
 
     function getParticipantId(candidate) {

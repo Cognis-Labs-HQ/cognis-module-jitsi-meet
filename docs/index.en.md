@@ -126,3 +126,11 @@ Direct-load Meetings pages abort their mount when the host commits a route chang
 References use the host’s collapsible section composer, matching Components. Expanded references survive meeting and upcoming-meeting polling, with keyboard-accessible disclosure controls. Filters are Active Meetings, All Meetings and Troubled Meetings, each with a distinct empty message.
 
 Canvas source claims occur only after approval and inside the serialized state update. Membership or persistence failures release newly claimed canvases while preserving existing mapped claims. General meeting creation cannot provision disposable calls; recovery of conversation calls uses the existing conversation’s VoIP route. Superseded upcoming polls are ignored. Direct pages consume the host lifecycle signal instead of creating independent controllers.
+
+## Handle connection loss during discovery
+
+Meeting discovery stops polling after a network failure and catches timer rejections. Offline and cancelled requests do not open discovery error toasts or clear the last meeting lists. The module uses the optional host offline-state capability and keeps cleanup tied to the page signal. Active-meeting presence and state polling follow the same lifecycle and stop together after a failed background request.
+
+## Keep Current Meeting Polling
+
+Presence and state timer callbacks belong to a tracking generation and meeting identity. Switching meetings or restarting tracking for the same meeting retires the previous generation. Late failures and already queued callbacks from retired generations cannot stop the current heartbeat or state timers or send requests for the new session. A failure from the current generation still stops both timers, and page/offline cleanup invalidates its generation.
