@@ -13,3 +13,4 @@
 ## コミット
 
 - [aa0931e](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/aa0931ebfe17662ccef1c95a507bc065d24f0fdd)
+- [b3208b0](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b3208b04a9020af737e8217488389aab39fe10a6)
