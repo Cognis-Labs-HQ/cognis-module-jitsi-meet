@@ -43,10 +43,15 @@ export function createPreflightHandlers({
 }) {
     let participantRefreshSequence = 0;
     let stateRefreshSequence = 0;
+    let trackingGeneration = 0;
+    let trackingMeetingId = null;
 
     function stopTracking() {
-        clearInterval(state.heartbeatTimer);
-        clearInterval(state.stateRefreshTimer);
+        trackingGeneration++;
+        trackingMeetingId = null;
+        if (state.heartbeatTimer !== null) clearInterval(state.heartbeatTimer);
+        if (state.stateRefreshTimer !== null)
+            clearInterval(state.stateRefreshTimer);
         state.heartbeatTimer = state.stateRefreshTimer = null;
     }
 
@@ -636,24 +641,34 @@ export function createPreflightHandlers({
         if (signal?.aborted || isMeetingOffline()) return;
         if (!state.meeting?.id || state.meeting.requiresReclaim) return;
         if (!shouldTrackMeetingPresence() && !pendingAuthentication) return;
-        if (state.heartbeatTimer === null) {
-            state.heartbeatTimer = setInterval(() => {
-                void runMeetingPoll(
-                    "pollMeetingPresence",
-                    () => keepPresenceAlive(true),
-                    stopTracking,
-                );
-            }, HEARTBEAT_INTERVAL_MS);
+        const meetingId = state.meeting.id;
+        if (
+            trackingMeetingId === meetingId &&
+            state.heartbeatTimer !== null &&
+            state.stateRefreshTimer !== null
+        )
+            return;
+        stopTracking();
+        trackingMeetingId = meetingId;
+        const generation = trackingGeneration;
+        const isCurrentTracking = () =>
+            generation === trackingGeneration &&
+            state.meeting?.id === meetingId &&
+            !signal?.aborted;
+        function pollCurrentMeeting(operation, task) {
+            if (!isCurrentTracking()) return;
+            void runMeetingPoll(operation, task, () => {
+                if (isCurrentTracking()) stopTracking();
+            });
         }
-        if (state.stateRefreshTimer === null) {
-            state.stateRefreshTimer = setInterval(() => {
-                void runMeetingPoll(
-                    "pollMeetingState",
-                    loadMeetingState,
-                    stopTracking,
-                );
-            }, STATE_REFRESH_INTERVAL_MS);
-        }
+        state.heartbeatTimer = setInterval(() => {
+            pollCurrentMeeting("pollMeetingPresence", () =>
+                keepPresenceAlive(true),
+            );
+        }, HEARTBEAT_INTERVAL_MS);
+        state.stateRefreshTimer = setInterval(() => {
+            pollCurrentMeeting("pollMeetingState", loadMeetingState);
+        }, STATE_REFRESH_INTERVAL_MS);
     }
 
     function getParticipantId(candidate) {

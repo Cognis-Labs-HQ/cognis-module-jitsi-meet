@@ -44,10 +44,12 @@ const { createMeetingHandlers } = await import("../app/meetings-list.js");
 
 function deferred() {
     let resolve;
-    const promise = new Promise((complete) => {
+    let reject;
+    const promise = new Promise((complete, fail) => {
         resolve = complete;
+        reject = fail;
     });
-    return { promise, resolve };
+    return { promise, resolve, reject };
 }
 
 for (const change of ["switch", "abort"]) {
@@ -751,4 +753,85 @@ for (const operation of ["presence", "state"]) {
         assert.equal(state.stateRefreshTimer, null);
         assert.equal(state.meeting.id, "active-meeting");
     });
+}
+
+for (const operation of ["presence", "state"]) {
+    for (const nextMeetingId of ["next-meeting", "old-meeting"]) {
+        test(`late ${operation} failure preserves restarted tracking for ${nextMeetingId}`, async (context) => {
+            const pending = deferred();
+            const callbacks = [];
+            const activeTimers = new Set();
+            const originalSet = globalThis.setInterval;
+            const originalClear = globalThis.clearInterval;
+            globalThis.setInterval = (callback) => {
+                callbacks.push(callback);
+                activeTimers.add(callbacks.length);
+                return callbacks.length;
+            };
+            globalThis.clearInterval = (timerId) =>
+                activeTimers.delete(timerId);
+            context.after(() => {
+                globalThis.setInterval = originalSet;
+                globalThis.clearInterval = originalClear;
+            });
+            const state = {
+                meeting: { id: "old-meeting" },
+                jitsiConferenceJoined: true,
+                heartbeatTimer: null,
+                stateRefreshTimer: null,
+            };
+            const requests = [];
+            const handlers = createPreflightHandlers({
+                root: {},
+                state,
+                callbacks: { updateAloneParticipantPrompt: () => false },
+                utils: {},
+                apiFetch: (path, options) => {
+                    requests.push({ path, input: JSON.parse(options.body) });
+                    if (requests.length === 1) return pending.promise;
+                    return Promise.resolve({
+                        ok: true,
+                        json: async () => ({ data: { state: {} } }),
+                    });
+                },
+            });
+            handlers.ensureMeetingTracking();
+            callbacks[operation === "presence" ? 0 : 1]();
+            assert.equal(requests.length, 1);
+            clearInterval(state.heartbeatTimer);
+            clearInterval(state.stateRefreshTimer);
+            state.heartbeatTimer = state.stateRefreshTimer = null;
+            state.meeting = { id: nextMeetingId };
+            handlers.ensureMeetingTracking();
+            const currentTimers = [
+                state.heartbeatTimer,
+                state.stateRefreshTimer,
+            ];
+            assert.deepEqual([...activeTimers], currentTimers);
+            pending.reject(new TypeError("old request failed"));
+            await new Promise((resolve) => setImmediate(resolve));
+            assert.deepEqual(
+                [state.heartbeatTimer, state.stateRefreshTimer],
+                currentTimers,
+            );
+            assert.deepEqual([...activeTimers], currentTimers);
+            callbacks[0]();
+            callbacks[1]();
+            assert.equal(
+                requests.length,
+                1,
+                "retired timer callbacks cannot send for the new session",
+            );
+            callbacks[currentTimers[0] - 1]();
+            callbacks[currentTimers[1] - 1]();
+            await new Promise((resolve) => setImmediate(resolve));
+            assert.equal(requests.length, 3);
+            assert.ok(
+                requests
+                    .slice(1)
+                    .every(({ input }) => input.meetingId === nextMeetingId),
+            );
+            assert.deepEqual([...activeTimers], currentTimers);
+        });
+    }
 }

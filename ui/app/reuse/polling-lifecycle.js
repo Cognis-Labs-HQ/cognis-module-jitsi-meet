@@ -27,7 +27,7 @@ export async function runMeetingPoll(operation, task, stop) {
             isMeetingOffline() || error?.name === "AbortError"
                 ? "info"
                 : "error",
-            "Meeting polling interrupted; polling stopped.",
+            "Meeting polling request interrupted.",
             {
                 component: "module:jitsi-meet",
                 operation,

@@ -130,3 +130,7 @@ Quellzuordnungen von Zeichenflächen erfolgen erst nach Zustimmung innerhalb der
 ## Verbindungsverlust bei der Raumsuche behandeln
 
 Die Raumsuche stoppt nach einem Netzwerkfehler ihre Abfragen und fängt abgelehnte Timer-Anfragen ab. Offline- und abgebrochene Anfragen öffnen keine Fehlermeldungen zur Suche und löschen die letzten Raumlisten nicht. Das Modul nutzt die optionale Offline-Status-Fähigkeit des Hosts; die Bereinigung bleibt an das Seitensignal gebunden. Die Präsenz- und Statusabfragen laufender Meetings folgen demselben Lebenszyklus und stoppen gemeinsam nach einer fehlgeschlagenen Hintergrundanfrage.
+
+## Aktuelle Abfrage beibehalten
+
+Timer für Anwesenheit und Status gehören zu einer Tracking-Generation und einer Meeting-Identität. Ein Meeting-Wechsel oder der Neustart des Trackings für dasselbe Meeting beendet die vorherige Generation. Verspätete Fehler und bereits eingeplante Rückrufe alter Generationen können die aktuellen Anwesenheits- und Statustimer weder stoppen noch Anfragen für die neue Sitzung senden. Fehler der aktuellen Generation stoppen weiterhin beide Timer; Seiten- und Offline-Bereinigung machen diese Generation ungültig.
