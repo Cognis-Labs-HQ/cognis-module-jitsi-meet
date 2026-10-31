@@ -173,4 +173,11 @@
   <string name="module.jitsi_meet.admin.meetings.empty.active">No active meetings.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.all">No meetings found.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.issues">All your meetings are good to go!</string>
+    <string name="module.jitsi-meet.tutorial.title">Find And Prepare A Meeting</string>
+    <string name="module.jitsi-meet.tutorial.welcome.title">Meetings Overview</string>
+    <string name="module.jitsi-meet.tutorial.welcome.body">Use Meetings to see sessions available to your account. This tutorial never joins, creates or starts a call for you.</string>
+    <string name="module.jitsi-meet.tutorial.meetings.title">Available Meetings</string>
+    <string name="module.jitsi-meet.tutorial.meetings.body">Review the visible meeting cards and their normal access controls. Empty lists and unavailable sessions do not grant additional access.</string>
+    <string name="module.jitsi-meet.tutorial.participants.title">Choose Participants</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Stage participants using the normal controls. Start becomes available only when the meeting requirements are satisfied; cancel this tutorial before making a call.</string>
 </resources>

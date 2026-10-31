@@ -173,4 +173,11 @@
   <string name="module.jitsi_meet.admin.meetings.empty.active">Keine aktiven Meetings.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.all">Keine Meetings gefunden.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.issues">Alle Ihre Meetings sind bereit!</string>
+    <string name="module.jitsi-meet.tutorial.title">Besprechung vorbereiten</string>
+    <string name="module.jitsi-meet.tutorial.welcome.title">Besprechungsübersicht</string>
+    <string name="module.jitsi-meet.tutorial.welcome.body">Unter Besprechungen sehen Sie die für Ihr Konto verfügbaren Sitzungen. Diese Anleitung tritt keinem Anruf bei und startet oder erstellt keinen Anruf.</string>
+    <string name="module.jitsi-meet.tutorial.meetings.title">Verfügbare Besprechungen</string>
+    <string name="module.jitsi-meet.tutorial.meetings.body">Prüfen Sie sichtbare Besprechungskarten und ihre normalen Zugriffskontrollen. Leere Listen und nicht verfügbare Sitzungen gewähren keinen zusätzlichen Zugriff.</string>
+    <string name="module.jitsi-meet.tutorial.participants.title">Teilnehmer auswählen</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Stellen Sie Teilnehmer mit den normalen Bedienelementen zusammen. Start wird erst bei erfüllten Voraussetzungen verfügbar; beenden Sie die Anleitung vor einem Anruf.</string>
 </resources>
