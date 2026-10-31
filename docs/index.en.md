@@ -134,3 +134,7 @@ Meeting discovery stops polling after a network failure and catches timer reject
 ## Keep Current Meeting Polling
 
 Presence and state timer callbacks belong to a tracking generation and meeting identity. Switching meetings or restarting tracking for the same meeting retires the previous generation. Late failures and already queued callbacks from retired generations cannot stop the current heartbeat or state timers or send requests for the new session. A failure from the current generation still stops both timers, and page/offline cleanup invalidates its generation.
+
+## Guided tutorial
+
+[Guided tutorial](tutorials.en.md)

@@ -134,3 +134,7 @@ Die Raumsuche stoppt nach einem Netzwerkfehler ihre Abfragen und fängt abgelehn
 ## Aktuelle Abfrage beibehalten
 
 Timer für Anwesenheit und Status gehören zu einer Tracking-Generation und einer Meeting-Identität. Ein Meeting-Wechsel oder der Neustart des Trackings für dasselbe Meeting beendet die vorherige Generation. Verspätete Fehler und bereits eingeplante Rückrufe alter Generationen können die aktuellen Anwesenheits- und Statustimer weder stoppen noch Anfragen für die neue Sitzung senden. Fehler der aktuellen Generation stoppen weiterhin beide Timer; Seiten- und Offline-Bereinigung machen diese Generation ungültig.
+
+## Geführtes Tutorial
+
+[Geführtes Tutorial](tutorials.de.md)

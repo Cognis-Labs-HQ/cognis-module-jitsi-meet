@@ -173,4 +173,11 @@
   <string name="module.jitsi_meet.admin.meetings.empty.active">進行中の会議はありません。</string>
   <string name="module.jitsi_meet.admin.meetings.empty.all">会議がありません。</string>
   <string name="module.jitsi_meet.admin.meetings.empty.issues">すべての会議は正常です！</string>
+    <string name="module.jitsi-meet.tutorial.title">会議を準備する</string>
+    <string name="module.jitsi-meet.tutorial.welcome.title">会議の概要</string>
+    <string name="module.jitsi-meet.tutorial.welcome.body">会議ページでアカウントが利用できるセッションを確認します。このチュートリアルが通話に参加、作成、開始することはありません。</string>
+    <string name="module.jitsi-meet.tutorial.meetings.title">利用できる会議</string>
+    <string name="module.jitsi-meet.tutorial.meetings.body">表示された会議カードと通常のアクセス制御を確認します。空の一覧や利用できないセッションから追加の権限を取得することはありません。</string>
+    <string name="module.jitsi-meet.tutorial.participants.title">参加者を選ぶ</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">通常の操作で参加者を選びます。要件を満たすと開始が利用できます。実際に通話する前にチュートリアルを終了してください。</string>
 </resources>
