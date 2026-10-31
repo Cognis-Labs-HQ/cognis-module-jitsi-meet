@@ -173,4 +173,11 @@
   <string name="module.jitsi_meet.admin.meetings.empty.active">Tidak ada rapat aktif.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.all">Tidak ada rapat ditemukan.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.issues">Semua rapat Anda siap digunakan!</string>
+    <string name="module.jitsi-meet.tutorial.title">Menyiapkan Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.welcome.title">Ringkasan Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.welcome.body">Gunakan Pertemuan untuk melihat sesi yang tersedia bagi akun Anda. Tutorial ini tidak bergabung, membuat, atau memulai panggilan.</string>
+    <string name="module.jitsi-meet.tutorial.meetings.title">Pertemuan yang Tersedia</string>
+    <string name="module.jitsi-meet.tutorial.meetings.body">Periksa kartu pertemuan dan kontrol akses biasa. Daftar kosong dan sesi yang tidak tersedia tidak memberikan akses tambahan.</string>
+    <string name="module.jitsi-meet.tutorial.participants.title">Pilih Peserta</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Siapkan peserta melalui kontrol biasa. Mulai hanya tersedia jika persyaratan pertemuan terpenuhi; batalkan tutorial sebelum melakukan panggilan.</string>
 </resources>

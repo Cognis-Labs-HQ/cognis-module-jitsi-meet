@@ -134,3 +134,7 @@ Pencarian ruang menghentikan polling setelah kegagalan jaringan dan menangani pe
 ## Pertahankan Polling Aktif
 
 Callback timer kehadiran dan status terikat pada generasi pelacakan dan identitas rapat. Berpindah rapat atau memulai ulang pelacakan rapat yang sama menonaktifkan generasi sebelumnya. Kegagalan terlambat dan callback yang sudah dijadwalkan dari generasi lama tidak dapat menghentikan timer kehadiran atau status saat ini maupun mengirim permintaan untuk sesi baru. Kegagalan generasi aktif tetap menghentikan kedua timer, dan pembersihan halaman atau mode luring membatalkan generasinya.
+
+## Tutorial terpandu
+
+[Tutorial terpandu](tutorials.id.md)
