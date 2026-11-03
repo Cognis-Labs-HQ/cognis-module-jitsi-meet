@@ -1,60 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-const requests = [];
-const capabilities = new Map();
-const flows = new Map();
-const hooks = new Map();
-const controller = new AbortController();
-capabilities.set("ui:scopedActions", (ctx, namespace, actions) => {
-    const published = {};
-    for (const [action, execute] of Object.entries(actions)) {
-        const flowId = `${namespace}:${action}`;
-        ctx.registerFlow(flowId, ["execute"]);
-        ctx.extendFlow(flowId, "execute", { id: flowId }, async (stage) => {
-            stage.data.result = await execute(stage.input);
-        });
-        published[action] = async (input) =>
-            (await ctx.runFlow(flowId, input)).data.result;
-    }
-    return published;
-});
-capabilities.set("ui:reuse", {
-    importModule(path) {
-        assert.equal(path, "api-client.js");
-        return {
-            apiFetch: async (url, options) => {
-                requests.push({ url, options });
-                return Response.json({ data: [] });
-            },
-        };
-    },
-});
-globalThis[Symbol.for("cognis.uiCtx")] = {
-    capabilities: { get: (id) => capabilities.get(id) },
-};
+import { createScopedProviderHost } from "./fixtures/scoped-provider-host.js";
+
+const { requests, capabilities, flows, controller, scope, root } =
+    createScopedProviderHost();
+globalThis[Symbol.for("cognis.uiCtx")] = root;
 const { mountProvider } = await import("../administration/meetings-gateway.js");
-const scope = {
-    signal: controller.signal,
-    capabilities: {
-        get: (id) => capabilities.get(id),
-        contribute: (id, value) => capabilities.set(id, value),
-    },
-    registerFlow(id, stages) {
-        assert.equal(flows.has(id), false);
-        flows.set(id, stages);
-    },
-    extendFlow(id, stage, _hook, execute) {
-        hooks.set(`${id}:${stage}`, execute);
-    },
-    async runFlow(id, input) {
-        controller.signal.throwIfAborted();
-        const stage = { input, data: {} };
-        for (const name of flows.get(id))
-            await hooks.get(`${id}:${name}`)(stage);
-        return stage;
-    },
-};
 mountProvider(scope);
 
 test("meeting administration executes scoped flows and sends only the selected action", async () => {

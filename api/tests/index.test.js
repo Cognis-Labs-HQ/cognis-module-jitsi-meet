@@ -54,6 +54,7 @@ test("jitsi manifest declares its supplied capabilities and dependencies", () =>
         "meeting:moderation",
         "jitsi-meet:getMeetingChat",
         "voip:startCall",
+        "meetings:createMeeting",
     ]);
     assert.deepEqual(manifest.requires, [
         "e8732526-8976-54ef-828b-ed0dfe21bd9e",

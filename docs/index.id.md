@@ -134,3 +134,7 @@ Pencarian ruang menghentikan polling setelah kegagalan jaringan dan menangani pe
 ## Pertahankan Polling Aktif
 
 Callback timer kehadiran dan status terikat pada generasi pelacakan dan identitas rapat. Berpindah rapat atau memulai ulang pelacakan rapat yang sama menonaktifkan generasi sebelumnya. Kegagalan terlambat dan callback yang sudah dijadwalkan dari generasi lama tidak dapat menghentikan timer kehadiran atau status saat ini maupun mengirim permintaan untuk sesi baru. Kegagalan generasi aktif tetap menghentikan kedua timer, dan pembersihan halaman atau mode luring membatalkan generasinya.
+
+## Pembuatan Rapat Milik Penyedia
+
+Kapabilitas browser `meetings:createMeeting({ participants, scheduledAt, signal })` mengembalikan `{ meetingId, navigationUrl }`. Penyedianya memiliki permintaan HTTP serta tujuan navigasi dan menjalankan `jitsi-meet:creation:create` melalui kontrak host `ui:scopedActions`. Konsumen menemukan kapabilitas opsional ini alih-alih menyusun endpoint modul. Autentikasi dan validasi tetap berada pada batas API yang ada. Penyedia yang dibatalkan atau dihapus tidak dapat menjalankan aksi berikutnya.

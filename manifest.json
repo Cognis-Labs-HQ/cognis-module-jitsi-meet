@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.5.263",
+    "version": "1.5.264",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -10,7 +10,8 @@
         "meeting:chat",
         "meeting:moderation",
         "jitsi-meet:getMeetingChat",
-        "voip:startCall"
+        "voip:startCall",
+        "meetings:createMeeting"
     ],
     "entrypoints": {
         "bootstrap": "./bootstrap.js",
@@ -161,7 +162,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "533bcd3d130da8ec4e1867ded64d20182eb29e42b5eeaede3d3ac36c22d9f912"
+            "sha256": "0c6d12968700abb574d032602277b848c339ee476c189f5c140e37fb446011c9"
         },
         {
             "path": "api/meeting-chat-capability.js",
@@ -357,7 +358,7 @@
         },
         {
             "path": "api/tests/index.test.js",
-            "sha256": "23d44f054d23b7a3cd5832b42f2a3513a04bff57848289aa7ca037ef6dd0814d"
+            "sha256": "d7983a08a0f425a16cb97f506d4ff81b111791d67ca30f74c90952b5155faf90"
         },
         {
             "path": "api/tests/manifest-targets.test.js",
@@ -481,27 +482,27 @@
         },
         {
             "path": "docs/index.de.md",
-            "sha256": "fa5a612a85cfb2013244e2deaf85d6f0aac5e42f457156cc3c212a26cf46f39e"
+            "sha256": "fb0d90f691296584982a8805425602e6905bbd77b9110ee6b7ad2ced7e25bb5d"
         },
         {
             "path": "docs/index.en.md",
-            "sha256": "1b0b5ddd30dbf8ed64a6fa9e88710dd88c39f172f54394081b53a69d4e126552"
+            "sha256": "6d452bb5239c19fa0c7ad40faa7b1c3adff32635eb2b1fde75b845fb2537f061"
         },
         {
             "path": "docs/index.id.md",
-            "sha256": "77eef05413e900f10962e9b65c55bcf691fd0133089543151f681651df13ab0b"
+            "sha256": "aa5c9c3b5fce2741a5e483bed6e8bad0f9c5c037a97cf5bf4d11f5fb808dd1b1"
         },
         {
             "path": "docs/index.ja.md",
-            "sha256": "dad51b89fc135d6cbe390d2d2d3032ac530e9e86447e608f77df863796c90d6d"
+            "sha256": "743815aea92d9ee40962ee5d45f44016c8dbb7dc7b6b2b7c1f6015caec5d7d10"
         },
         {
             "path": "package-lock.json",
-            "sha256": "9f4b11deb7c1e47b3767d0152ff61132e76823c37ad72af6f36ca306f32f59fb"
+            "sha256": "e1a7a645c21a196228f84954b54a8213957a556535c845c56236ba56cc18b238"
         },
         {
             "path": "package.json",
-            "sha256": "73343c11e26dd284d061781d4edee5e2f902e63cd11bf156836d3516d89d3250"
+            "sha256": "a5f682cc7c36879c58a47838e7af864286cec1b3498a3d8ad1ab97dc70979fe2"
         },
         {
             "path": "routes.json",
@@ -600,6 +601,10 @@
             "sha256": "5f1cbd93bce556dbd90fe205280cbe77adbd9c4cb70368b392cce281fd09911f"
         },
         {
+            "path": "ui/creation/provider.js",
+            "sha256": "5bace1838235f4cc6bded4d0fd4da2f1587ddb053ed63226ccf09c75ef81990d"
+        },
+        {
             "path": "ui/index.html",
             "sha256": "e1eaa976ae635c9bd1bc7c9f4a3b184feecd00ed1cf2c217086a000ac9c11c9f"
         },
@@ -693,7 +698,7 @@
         },
         {
             "path": "ui/tests/admin-meetings-gateway.test.js",
-            "sha256": "5cc9c730aa4f342611d25827d683754931e0ed8fa7319e7d644efc3c74508260"
+            "sha256": "08fd6dbdaa888c83ae0ac0286ce5ddad7956faf52addd5fea6ffa0e3ba972368"
         },
         {
             "path": "ui/tests/admin-meetings-section.test.js",
@@ -708,8 +713,16 @@
             "sha256": "4f490771c3678dcc716b25f4465fb39c9eab476774897cc030c9ec690d2761eb"
         },
         {
+            "path": "ui/tests/creation-provider.test.js",
+            "sha256": "5c117f6034b6aff776a6d618cc1d9981d8a97f960e50d041ab34a6185605431d"
+        },
+        {
             "path": "ui/tests/embedded-component.browser.js",
             "sha256": "2e41455484cdb14adce7bbc069c0a4fbe2d7d604608d009e8660dea37545d873"
+        },
+        {
+            "path": "ui/tests/fixtures/scoped-provider-host.js",
+            "sha256": "07f4b1f358530e2e64e03a7ff70943a299232eed92adc1dcd8716e6afd1adf57"
         },
         {
             "path": "ui/tests/jitsi-storage.test.js",
