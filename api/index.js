@@ -94,6 +94,11 @@ export function registerUi(ctx) {
         providesCapabilities: ["jitsi-meet:administration"],
         access: { minRole: "admin" },
     });
+    ctx.registerCapabilityProvider({
+        scriptUrl: "/static/modules/jitsi-meet/creation/provider.js",
+        providesCapabilities: ["meetings:createMeeting"],
+        access: { minRole: "user" },
+    });
     const meetingsStylesheets = [
         "/static/modules/jitsi-meet/styles/jitsi-meet.css",
     ];
