@@ -180,4 +180,16 @@
     <string name="module.jitsi-meet.tutorial.meetings.body">Review the visible meeting cards and their normal access controls. Empty lists and unavailable sessions do not grant additional access.</string>
     <string name="module.jitsi-meet.tutorial.participants.title">Choose Participants</string>
     <string name="module.jitsi-meet.tutorial.participants.body">Stage participants using the normal controls. Start becomes available only when the meeting requirements are satisfied; finish this tutorial before making a call.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.title">Meeting Controls</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step1.title">In-Call Controls</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step1.body">Use the call’s microphone, camera and leave controls deliberately; joining and leaving remain your own actions.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step2.title">Meeting Chat</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step2.body">Check the meeting chat and its participants before sending a message.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step3.title">Sharing And Whiteboard</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step3.body">Available sharing and Whiteboard controls follow the meeting’s permissions and enabled integrations.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.title">Meeting Administration</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step1.title">Meeting Status</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step1.body">Filter active meetings or issues, then inspect participant counts and linked resources.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step2.title">Terminate Or Delete</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step2.body">Terminating an active meeting and deleting an inactive record have different effects; review the confirmation.</string>
 </resources>

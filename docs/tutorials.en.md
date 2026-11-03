@@ -13,3 +13,5 @@ The host owns callouts, arrows, spotlight, accessibility and the shared floating
 The play is informational and never performs a privileged action. Missing targets allow Next during the first run and Retry or Cancel on replay.
 
 Provider tests check the public contract, all four translations, availability rules, rollback and rejection of unsupported host versions.
+
+Coverage includes meeting preparation, live call/chat/sharing controls, and administrator-only inspection and termination/deletion review.

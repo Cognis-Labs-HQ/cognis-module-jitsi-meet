@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.1",
+    "version": "1.6.2",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -162,7 +162,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "ca60fb619f4463294273d5ad2e9d6576914878bd09a202981ac5462f2cdaa86d"
+            "sha256": "cfbf26b35d8898f539cdd4f6bebd5817e6185474f03750efafea2decdae2ddf7"
         },
         {
             "path": "api/meeting-chat-capability.js",
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "849fe305ca2b1bc856f11de66b335ea20b0745877eaa60423d68a0fabf9b15fb"
+            "sha256": "882308f8fb7caa10b51b4e04a00e2cbca2f1c6acf3010f8d1fe9a3db8f70e5a6"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "e7569463fa2e7df16a3e80d63f7d422929e38c66ed513657f53f04f436897058"
+            "sha256": "66684fb1a4e2b4f4825c5c7fde82f36a5e25ad100b8f19c6257daa3db4f19660"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "568525dc45558f4f786fbc2f7be8959dcc2f53b992e314e42d8048806edb4f98"
+            "sha256": "147fc40b1bbc04f620fbaa61e240e3f0382476628dc0ea83cc651bde591e8020"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "2327895bca5892dbd003b550acc4fa590aba2ec6b1ad7dd5e47f67d21f66cb67"
+            "sha256": "887c972c1fe03d1c4c9ca4d604471650a4ca380ac2d7673c14347f4fa8298947"
         },
         {
             "path": "package-lock.json",
-            "sha256": "5e4ac15870e2462f13bebee8ae046c5d43cacf024dde9af707f1410760864098"
+            "sha256": "fac7b815ac91cfa5b52dc0e16e765993ef26d0ebe5fdd3850f2ffb07d2fa971c"
         },
         {
             "path": "package.json",
-            "sha256": "46c1a82ea01ed1140e10d89d215c48d81499c87069f91460b5147e4c1ed2c455"
+            "sha256": "c8ca117a6e05d146aa54dbdd09fa74837e398f5f7eb5f029f703ad80a4db52f0"
         },
         {
             "path": "routes.json",
@@ -630,19 +630,19 @@
         },
         {
             "path": "ui/languages/de/strings.xml",
-            "sha256": "b65c6b1c9128db67c3f989d183492ac924f2834fb913fbfbf68f10b1550eacb1"
+            "sha256": "2ce6ad40d4402e0ca1ae9c3561b84d8d2b85984232f510e1548e787fe0f4a828"
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "5511123230fe0c386f2b044c754547007102146b6d5eb14a923306fa9251410f"
+            "sha256": "aa6a29166b166fe8c2383fedf40646bc2539a9426c94d7dea324d6811779fb13"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "962bccd1c6e3da3bfffece29b7144ead6e958232aa494ce2f2e73abf3c734823"
+            "sha256": "572891932ed30fc4e0a886e8ad34223c5d27abbd44758414fe09c790079f2063"
         },
         {
             "path": "ui/languages/ja/strings.xml",
-            "sha256": "3cef3f81b1172751ed92ecc1269dc0b97c6eec4ec9a3308b8316231d457d33f7"
+            "sha256": "60ffe600c20479ef5828ad9a8c471f3cbde3f9581c04ada693fd162ec57173de"
         },
         {
             "path": "ui/meeting-embed.js",
@@ -765,6 +765,10 @@
             "sha256": "aa06b1e021f7f6ad445f395e9dc84892041a2a1809aa4e8d35ed3e9e1c5951e6"
         },
         {
+            "path": "ui/tests/page-tutorials.test.js",
+            "sha256": "c2c9605aa999fd081319265e1f74e0847be78fd79641fbd9dc5fbe3fd1b82c70"
+        },
+        {
             "path": "ui/tests/polling-lifecycle.test.js",
             "sha256": "81c7b6c93a70aff180607a423fa23ed654e1c50a46251d64c8cc232948eb3106"
         },
@@ -815,6 +819,14 @@
         {
             "path": "ui/tests/whiteboard-session.test.js",
             "sha256": "e56ca0aa22a8f43d1bdc1db1f4accb6ef82446869bb26fc829d40b7db310d125"
+        },
+        {
+            "path": "ui/tutorials/details-provider.js",
+            "sha256": "ef85bb8c0412e53a4f7d03ed5a12a79c90ee7d894a07d47493a3ae6e0ad848f3"
+        },
+        {
+            "path": "ui/tutorials/guides.js",
+            "sha256": "59a4739eca0f61185d018a86164a89ea8d8e82c78f56f0849ce4d656ad8e7d0f"
         },
         {
             "path": "ui/tutorials/plays.js",

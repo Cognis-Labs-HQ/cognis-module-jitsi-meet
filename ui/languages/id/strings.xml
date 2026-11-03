@@ -180,4 +180,16 @@
     <string name="module.jitsi-meet.tutorial.meetings.body">Periksa kartu pertemuan dan kontrol akses biasa. Daftar kosong dan sesi yang tidak tersedia tidak memberikan akses tambahan.</string>
     <string name="module.jitsi-meet.tutorial.participants.title">Pilih Peserta</string>
     <string name="module.jitsi-meet.tutorial.participants.body">Siapkan peserta melalui kontrol biasa. Mulai hanya tersedia jika persyaratan pertemuan terpenuhi; selesaikan tutorial sebelum melakukan panggilan.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.title">Kontrol Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step1.title">Kontrol dalam Panggilan</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step1.body">Gunakan kontrol mikrofon, kamera, dan keluar dengan sengaja; bergabung dan keluar tetap merupakan aksi Anda.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step2.title">Chat Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step2.body">Periksa chat pertemuan dan pesertanya sebelum mengirim pesan.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step3.title">Berbagi dan Papan Tulis</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.step3.body">Kontrol berbagi dan papan tulis mengikuti izin pertemuan serta integrasi yang aktif.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.title">Administrasi Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step1.title">Status Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step1.body">Saring pertemuan aktif atau masalah, lalu periksa jumlah peserta dan sumber terkait.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step2.title">Akhiri atau Hapus</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.step2.body">Mengakhiri pertemuan aktif dan menghapus rekaman tidak aktif memiliki dampak berbeda; tinjau konfirmasinya.</string>
 </resources>
