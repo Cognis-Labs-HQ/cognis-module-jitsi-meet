@@ -1,5 +1,6 @@
 export const definition = {
     version: 1,
+    page: "/meetings",
     id: "introduction",
     titleKey: "module.jitsi-meet.tutorial.title",
     steps: [

@@ -179,5 +179,5 @@
     <string name="module.jitsi-meet.tutorial.meetings.title">Pertemuan yang Tersedia</string>
     <string name="module.jitsi-meet.tutorial.meetings.body">Periksa kartu pertemuan dan kontrol akses biasa. Daftar kosong dan sesi yang tidak tersedia tidak memberikan akses tambahan.</string>
     <string name="module.jitsi-meet.tutorial.participants.title">Pilih Peserta</string>
-    <string name="module.jitsi-meet.tutorial.participants.body">Siapkan peserta melalui kontrol biasa. Mulai hanya tersedia jika persyaratan pertemuan terpenuhi; batalkan tutorial sebelum melakukan panggilan.</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Siapkan peserta melalui kontrol biasa. Mulai hanya tersedia jika persyaratan pertemuan terpenuhi; selesaikan tutorial sebelum melakukan panggilan.</string>
 </resources>

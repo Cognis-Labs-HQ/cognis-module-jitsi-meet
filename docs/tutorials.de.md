@@ -1,6 +1,6 @@
 # Geführtes Tutorial
 
-Das Kontomenü zeigt den Einführungsablauf dieses Moduls, wenn sein UI-Anbieter aktiviert ist und das aktuelle Konto Zugriff hat. Der Host muss den Vertrag `ui:tutorials` in Version eins bereitstellen.
+Dieses Modul bindet seinen Einführungsablauf über `ui:tutorials` an seine eigene Seite. Beim ersten zulässigen Besuch startet er automatisch; das Fragezeichen-SVG neben dem Seitentitel wiederholt ihn. Der Host muss den seitengebundenen Tutorialvertrag der Version eins bereitstellen.
 
 ## Anwendungsbeispiele
 
@@ -8,8 +8,8 @@ Der Ablauf erklärt Besprechungen und vorgemerkte Teilnehmer, ohne eine Besprech
 
 ## Technische Spezifikation
 
-Das Modul registriert seinen Ablauf und übersetzte Texte über ctx. Der Host verwaltet Katalog, Hinweise, Pfeile, Hervorhebung, Tastatur- und Zeigersteuerung, geschützte SPA-Navigation und Barrierefreiheit. Schließen, fremde Navigation, Zugriffsverlust oder Deaktivierung beenden die Sitzung. Scheitert das Einhängen des Anbieters, werden seine Registrierungen zurückgenommen.
+Der Host verwaltet Hinweise, Pfeile, Hervorhebung, Barrierefreiheit und das gemeinsame schwebende Aktionsmenü. Erstdurchläufe bieten stets Weiter, ohne Abbrechen oder Überspringen. Wiederholungen bieten Abbrechen mit `btn-cancel`. Der Abschluss wird im Browser pro Konto gespeichert. Navigation, Zugriffsverlust und Anbieterentfernung beenden die Sitzung; fehlgeschlagenes Mounten nimmt Registrierungen zurück.
 
-Der Ablauf informiert nur. Er erstellt keine Konten, ändert keine Konfiguration, sendet keine Nachrichten, akzeptiert keine Vereinbarungen und startet keine Anrufe. Ziele müssen eindeutig sein; bei fehlenden Inhalten sind Wiederholen und Abbrechen möglich.
+Der Ablauf erklärt nur und führt keine privilegierte Aktion aus. Fehlende Ziele erlauben Weiter im Erstdurchlauf sowie Wiederholen oder Abbrechen bei erneuter Wiedergabe.
 
 Anbietertests prüfen den öffentlichen Vertrag, alle vier Übersetzungen, Verfügbarkeitsregeln, Fehlerbereinigung und die Ablehnung nicht unterstützter Host-Versionen.

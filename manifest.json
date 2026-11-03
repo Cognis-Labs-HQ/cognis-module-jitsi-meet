@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "0054b7e97fd2389c09722ece2c68a467b3fb8eab6e98746b02a6e03975d3aad2"
+            "sha256": "849fe305ca2b1bc856f11de66b335ea20b0745877eaa60423d68a0fabf9b15fb"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "c4af30c9b360410a14bafbb0208673bc9f879286789a9d3cad6eed1ba26e7d16"
+            "sha256": "e7569463fa2e7df16a3e80d63f7d422929e38c66ed513657f53f04f436897058"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "999e2acdc639ff80654bfa729b31ce779e326293e58ef20c2f7cd1d785441e56"
+            "sha256": "568525dc45558f4f786fbc2f7be8959dcc2f53b992e314e42d8048806edb4f98"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "5ec3f370ad20d9793dc8bfb6432409bce21ae6028140077cc1a9b2c34b20740a"
+            "sha256": "2327895bca5892dbd003b550acc4fa590aba2ec6b1ad7dd5e47f67d21f66cb67"
         },
         {
             "path": "package-lock.json",
-            "sha256": "9aec67bcd953cee1056f81f32a034a9f02311037bae42a6f100320f7c18ac281"
+            "sha256": "5e4ac15870e2462f13bebee8ae046c5d43cacf024dde9af707f1410760864098"
         },
         {
             "path": "package.json",
-            "sha256": "7ba12fc70bdcc9a2efdc60021b07abde739680bc7a6bcca9dc64e6facb4d95f2"
+            "sha256": "46c1a82ea01ed1140e10d89d215c48d81499c87069f91460b5147e4c1ed2c455"
         },
         {
             "path": "routes.json",
@@ -634,11 +634,11 @@
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "480b3ffac9250e1d0bdebceda5145468629d236bee632b02edf78f5d306ef2ee"
+            "sha256": "5511123230fe0c386f2b044c754547007102146b6d5eb14a923306fa9251410f"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "dbc166076164c6aa9fbfc7c990a103cbbf50994b56769ab1bbb5b48593432636"
+            "sha256": "962bccd1c6e3da3bfffece29b7144ead6e958232aa494ce2f2e73abf3c734823"
         },
         {
             "path": "ui/languages/ja/strings.xml",
@@ -798,7 +798,7 @@
         },
         {
             "path": "ui/tests/tutorials.test.js",
-            "sha256": "6c1dc58d81c66e8ce2eb273ba53ea25c61e8dfc674836815c14a1def9eb553fd"
+            "sha256": "df9af9a8f7bb4a572986169289e724f59983d57be6653228239b628c892442e9"
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",
@@ -818,7 +818,7 @@
         },
         {
             "path": "ui/tutorials/plays.js",
-            "sha256": "9690f84eeee531e0c5ba57f903574e75d72165516e7740a83a7617dac07a730e"
+            "sha256": "41ebd56c9ed94671aa9157b1dec05ce68f423640db0c4c675fbd60ba4fd840f5"
         },
         {
             "path": "ui/tutorials/provider.js",

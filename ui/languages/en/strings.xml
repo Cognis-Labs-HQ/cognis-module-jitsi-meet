@@ -179,5 +179,5 @@
     <string name="module.jitsi-meet.tutorial.meetings.title">Available Meetings</string>
     <string name="module.jitsi-meet.tutorial.meetings.body">Review the visible meeting cards and their normal access controls. Empty lists and unavailable sessions do not grant additional access.</string>
     <string name="module.jitsi-meet.tutorial.participants.title">Choose Participants</string>
-    <string name="module.jitsi-meet.tutorial.participants.body">Stage participants using the normal controls. Start becomes available only when the meeting requirements are satisfied; cancel this tutorial before making a call.</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Stage participants using the normal controls. Start becomes available only when the meeting requirements are satisfied; finish this tutorial before making a call.</string>
 </resources>
