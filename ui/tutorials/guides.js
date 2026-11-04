@@ -8,28 +8,28 @@ export const guides = [
                 titleKey: "module.jitsi-meet.tutorial.more.meeting.title",
                 steps: [
                     {
-                        id: "step1",
+                        id: "in-call-controls",
                         selector: ".jitsi-stage-frame-wrap",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step1.title",
+                            "module.jitsi-meet.tutorial.more.meeting.in.call.controls.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step1.body",
+                            "module.jitsi-meet.tutorial.more.meeting.in.call.controls.body",
                     },
                     {
-                        id: "step2",
+                        id: "meeting-chat",
                         selector: ".jitsi-chat-pane",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step2.title",
+                            "module.jitsi-meet.tutorial.more.meeting.meeting.chat.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step2.body",
+                            "module.jitsi-meet.tutorial.more.meeting.meeting.chat.body",
                     },
                     {
-                        id: "step3",
+                        id: "sharing-and-whiteboard",
                         selector: ".jitsi-stage-actions",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step3.title",
+                            "module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.step3.body",
+                            "module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.body",
                     },
                 ],
                 scope: "#jitsi-meeting-frame:not([hidden])",
@@ -46,20 +46,20 @@ export const guides = [
                     "module.jitsi-meet.tutorial.more.administration.title",
                 steps: [
                     {
-                        id: "step1",
+                        id: "meeting-status",
                         selector: ".jitsi-admin-filters",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.administration.step1.title",
+                            "module.jitsi-meet.tutorial.more.administration.meeting.status.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.administration.step1.body",
+                            "module.jitsi-meet.tutorial.more.administration.meeting.status.body",
                     },
                     {
-                        id: "step2",
+                        id: "terminate-or-delete",
                         selector: "#jitsi-admin-meetings-root",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.administration.step2.title",
+                            "module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.administration.step2.body",
+                            "module.jitsi-meet.tutorial.more.administration.terminate.or.delete.body",
                     },
                 ],
                 scope: "#jitsi-admin-meetings-root",

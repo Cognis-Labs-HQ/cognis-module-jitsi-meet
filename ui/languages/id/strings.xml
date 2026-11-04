@@ -181,15 +181,15 @@
     <string name="module.jitsi-meet.tutorial.participants.title">Pilih Peserta</string>
     <string name="module.jitsi-meet.tutorial.participants.body">Siapkan peserta melalui kontrol biasa. Mulai hanya tersedia jika persyaratan pertemuan terpenuhi; selesaikan tutorial sebelum melakukan panggilan.</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.title">Kontrol Pertemuan</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step1.title">Kontrol dalam Panggilan</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step1.body">Gunakan kontrol mikrofon, kamera, dan keluar dengan sengaja; bergabung dan keluar tetap merupakan aksi Anda.</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step2.title">Chat Pertemuan</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step2.body">Periksa chat pertemuan dan pesertanya sebelum mengirim pesan.</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step3.title">Berbagi dan Papan Tulis</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step3.body">Kontrol berbagi dan papan tulis mengikuti izin pertemuan serta integrasi yang aktif.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.title">Kontrol dalam Panggilan</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.body">Gunakan kontrol mikrofon, kamera, dan keluar dengan sengaja; bergabung dan keluar tetap merupakan aksi Anda.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.title">Chat Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.body">Periksa chat pertemuan dan pesertanya sebelum mengirim pesan.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.title">Berbagi dan Papan Tulis</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.body">Kontrol berbagi dan papan tulis mengikuti izin pertemuan serta integrasi yang aktif.</string>
     <string name="module.jitsi-meet.tutorial.more.administration.title">Administrasi Pertemuan</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step1.title">Status Pertemuan</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step1.body">Saring pertemuan aktif atau masalah, lalu periksa jumlah peserta dan sumber terkait.</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step2.title">Akhiri atau Hapus</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step2.body">Mengakhiri pertemuan aktif dan menghapus rekaman tidak aktif memiliki dampak berbeda; tinjau konfirmasinya.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.title">Status Pertemuan</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.body">Saring pertemuan aktif atau masalah, lalu periksa jumlah peserta dan sumber terkait.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title">Akhiri atau Hapus</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.body">Mengakhiri pertemuan aktif dan menghapus rekaman tidak aktif memiliki dampak berbeda; tinjau konfirmasinya.</string>
 </resources>

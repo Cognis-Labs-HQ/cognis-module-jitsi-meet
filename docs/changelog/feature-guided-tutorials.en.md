@@ -18,6 +18,10 @@ The host owns callouts, arrows, spotlight, accessibility and the shared floating
 
 Coverage includes meeting preparation, live call/chat/sharing controls, and administrator-only inspection and termination/deletion review.
 
+## Descriptive Tutorial Keys
+
+Tutorial step translation keys and target identifiers describe their subject instead of their position in the guide. The same keys are supplied in all four supported languages.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

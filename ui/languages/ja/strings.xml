@@ -181,15 +181,15 @@
     <string name="module.jitsi-meet.tutorial.participants.title">参加者を選ぶ</string>
     <string name="module.jitsi-meet.tutorial.participants.body">通常の操作で参加者を選びます。要件を満たすと開始が利用できます。実際に通話する前にチュートリアルを終了してください。</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.title">会議中の操作</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step1.title">通話中の操作</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step1.body">マイク、カメラ、退出は通話の操作から行います。参加と退出は自分で選びます。</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step2.title">会議のチャット</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step2.body">メッセージを送る前に、会議のチャットと参加者を確認します。</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step3.title">共有とホワイトボード</string>
-    <string name="module.jitsi-meet.tutorial.more.meeting.step3.body">共有とホワイトボードの操作は、会議の権限と有効な連携に応じて利用できます。</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.title">通話中の操作</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.body">マイク、カメラ、退出は通話の操作から行います。参加と退出は自分で選びます。</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.title">会議のチャット</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.body">メッセージを送る前に、会議のチャットと参加者を確認します。</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.title">共有とホワイトボード</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.body">共有とホワイトボードの操作は、会議の権限と有効な連携に応じて利用できます。</string>
     <string name="module.jitsi-meet.tutorial.more.administration.title">会議の管理</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step1.title">会議の状態</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step1.body">使用中の会議や問題を絞り込み、参加人数と関連する情報を確認します。</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step2.title">終了または削除</string>
-    <string name="module.jitsi-meet.tutorial.more.administration.step2.body">使用中の会議の終了と、停止中の記録の削除では影響が異なります。確認内容を見直します。</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.title">会議の状態</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.body">使用中の会議や問題を絞り込み、参加人数と関連する情報を確認します。</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title">終了または削除</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.body">使用中の会議の終了と、停止中の記録の削除では影響が異なります。確認内容を見直します。</string>
 </resources>

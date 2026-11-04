@@ -18,6 +18,10 @@ Host mengelola petunjuk, panah, sorotan, aksesibilitas, dan menu aksi mengambang
 
 Cakupan meliputi persiapan pertemuan, kontrol panggilan, chat, dan berbagi, serta pemeriksaan dan tinjauan pengakhiran atau penghapusan khusus administrator.
 
+## Kunci Tutorial Deskriptif
+
+Kunci terjemahan langkah tutorial dan pengenal sasaran menjelaskan topiknya, bukan posisinya dalam panduan. Kunci yang sama tersedia dalam keempat bahasa yang didukung.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

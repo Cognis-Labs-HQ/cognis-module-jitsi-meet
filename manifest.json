@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -514,11 +514,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "fac7b815ac91cfa5b52dc0e16e765993ef26d0ebe5fdd3850f2ffb07d2fa971c"
+            "sha256": "62a5fe2fbe5975dc3cfc0a2ecb7e700531305d195834b4c1fb4da22338cb0d2d"
         },
         {
             "path": "package.json",
-            "sha256": "c8ca117a6e05d146aa54dbdd09fa74837e398f5f7eb5f029f703ad80a4db52f0"
+            "sha256": "5c33c4cb204586d0767c16cbcaa1cd468ea0dcdc6b066ad8f7d407f20f6697eb"
         },
         {
             "path": "routes.json",
@@ -630,19 +630,19 @@
         },
         {
             "path": "ui/languages/de/strings.xml",
-            "sha256": "2ce6ad40d4402e0ca1ae9c3561b84d8d2b85984232f510e1548e787fe0f4a828"
+            "sha256": "11395f84775f9ee2052f6e0c58661be7962c7f130bb19e8b2224afb634cbc5bf"
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "aa6a29166b166fe8c2383fedf40646bc2539a9426c94d7dea324d6811779fb13"
+            "sha256": "38a124a90b9a7b700570e1aa548dde0a5e8ad4839a5836cdf038b3ef02c683a7"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "572891932ed30fc4e0a886e8ad34223c5d27abbd44758414fe09c790079f2063"
+            "sha256": "714ab5d541f2fb61abc96cee7372d87de8cf411dd39150a49f37328d78a3e2b9"
         },
         {
             "path": "ui/languages/ja/strings.xml",
-            "sha256": "60ffe600c20479ef5828ad9a8c471f3cbde3f9581c04ada693fd162ec57173de"
+            "sha256": "b7a4978ccb4ae39354a63c9f2b5777f6550d3ef5159f23b57d56be3cf9091bb1"
         },
         {
             "path": "ui/meeting-embed.js",
@@ -826,7 +826,7 @@
         },
         {
             "path": "ui/tutorials/guides.js",
-            "sha256": "59a4739eca0f61185d018a86164a89ea8d8e82c78f56f0849ce4d656ad8e7d0f"
+            "sha256": "68490ce53ab0ec1e1ae0194ca430eaa0657dfb27f2f72ec96d11bce414807bfb"
         },
         {
             "path": "ui/tutorials/plays.js",
