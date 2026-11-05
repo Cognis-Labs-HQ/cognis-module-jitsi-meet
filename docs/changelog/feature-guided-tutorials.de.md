@@ -22,6 +22,10 @@ Die Abdeckung umfasst Vorbereitung, Anruf-, Chat- und Freigabesteuerung sowie ad
 
 Die Übersetzungsschlüssel und Zielkennungen der Anleitungsschritte beschreiben ihr Thema statt ihrer Position. Dieselben Schlüssel sind in allen vier unterstützten Sprachen vorhanden.
 
+## Konkrete Anleitungstexte
+
+Die Schritte beschreiben verfügbare Bedienelemente und Aufgaben, ohne sachfremde Zusicherungen über Berechtigungen oder nicht ausgeführte Aktionen.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

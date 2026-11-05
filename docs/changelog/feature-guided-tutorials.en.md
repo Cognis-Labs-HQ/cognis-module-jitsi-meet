@@ -22,6 +22,10 @@ Coverage includes meeting preparation, live call/chat/sharing controls, and admi
 
 Tutorial step translation keys and target identifiers describe their subject instead of their position in the guide. The same keys are supplied in all four supported languages.
 
+## Actionable Tutorial Copy
+
+Tutorial steps focus on the controls and tasks available on the page, without unrelated reassurances about permissions or actions the guide does not perform.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

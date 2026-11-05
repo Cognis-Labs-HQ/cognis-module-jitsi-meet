@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.3",
+    "version": "1.6.4",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -514,11 +514,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "62a5fe2fbe5975dc3cfc0a2ecb7e700531305d195834b4c1fb4da22338cb0d2d"
+            "sha256": "85fd74ef85cad52a0f83187d85cac1ef2059959f203ad8fac61758939429b8e0"
         },
         {
             "path": "package.json",
-            "sha256": "5c33c4cb204586d0767c16cbcaa1cd468ea0dcdc6b066ad8f7d407f20f6697eb"
+            "sha256": "3b3ed100f0cddb563641b034819923a5c2a665b1dd80331f42893a8a35d55986"
         },
         {
             "path": "routes.json",
@@ -630,19 +630,19 @@
         },
         {
             "path": "ui/languages/de/strings.xml",
-            "sha256": "11395f84775f9ee2052f6e0c58661be7962c7f130bb19e8b2224afb634cbc5bf"
+            "sha256": "a43785e672b036387b9b5d55131793985b8b53a7e2eb57685037e5acbfdef89a"
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "38a124a90b9a7b700570e1aa548dde0a5e8ad4839a5836cdf038b3ef02c683a7"
+            "sha256": "0f31f8c8944816ea535add4e6dab7fdc2b8fcdb75cfc323c2ad6a2bfdeaf4d71"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "714ab5d541f2fb61abc96cee7372d87de8cf411dd39150a49f37328d78a3e2b9"
+            "sha256": "509b652871d5b5174c5817218f318940e6add026ab5010da70ecd8aeee6e8576"
         },
         {
             "path": "ui/languages/ja/strings.xml",
-            "sha256": "b7a4978ccb4ae39354a63c9f2b5777f6550d3ef5159f23b57d56be3cf9091bb1"
+            "sha256": "9d9c6d2a5d35b7ef0319e9ebda04d541ba36f6ebed7bba5dc447ffb55621cd88"
         },
         {
             "path": "ui/meeting-embed.js",

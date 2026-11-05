@@ -22,6 +22,10 @@ Cakupan meliputi persiapan pertemuan, kontrol panggilan, chat, dan berbagi, sert
 
 Kunci terjemahan langkah tutorial dan pengenal sasaran menjelaskan topiknya, bukan posisinya dalam panduan. Kunci yang sama tersedia dalam keempat bahasa yang didukung.
 
+## Petunjuk Yang Berguna
+
+Langkah tutorial berfokus pada kontrol dan tugas yang tersedia, tanpa pernyataan yang tidak relevan tentang izin atau tindakan yang tidak dilakukan panduan.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)
