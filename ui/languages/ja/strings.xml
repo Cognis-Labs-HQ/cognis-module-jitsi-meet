@@ -179,7 +179,7 @@
     <string name="module.jitsi-meet.tutorial.meetings.title">利用できる会議</string>
     <string name="module.jitsi-meet.tutorial.meetings.body">ミーティングカードから参加するセッションを探します。</string>
     <string name="module.jitsi-meet.tutorial.participants.title">参加者を選ぶ</string>
-    <string name="module.jitsi-meet.tutorial.participants.body">ミーティングの操作項目で参加者を選びます。必要な条件を満たすと開始できます。</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">参加者を検索してミーティングに追加します。ミーティングの条件を満たすと開始ボタンが利用できます。</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.title">会議中の操作</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.title">通話中の操作</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.body">通話中はマイクとカメラを操作し、終了するときは退出を選びます。</string>

@@ -36,6 +36,18 @@ Setiap komponen antarmuka wajib dicakup tutorial. Panduan kontribusi mengharuska
 
 Penjelasan siklus rapat menyoroti kontrol Akhiri atau Hapus yang ditampilkan. Target pertama yang dapat digunakan dipilih dalam bagian tutorial; langkah dilewati jika tidak ada kontrol yang cocok.
 
+## Wilayah tutorial yang terlihat
+
+Wilayah tutorial dan isyarat Berikutnya ditetapkan secara eksplisit.
+
+## Antrean menu mengambang bersama
+
+Menu mengikuti antrean host bersama dan masa hidup komponen.
+
+## Kontrol pemulihan yang didokumentasikan
+
+Tampilan target hilang menyediakan Berikutnya dan Mulai Ulang Tutorial; pemutaran ulang juga menyediakan Batal.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

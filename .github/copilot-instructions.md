@@ -85,6 +85,8 @@ Write consistent user-first walkthroughs: explain the user's goal, prerequisites
 
 Set each step's `highlightNext` flag deliberately: use `true` when the user must choose Next or Finish to continue an explanation, and `false` for steps completed by an event or wait condition. Review branches, conditional controls, empty states, audience-specific counts, replay, restart, keyboard operation and reduced-motion behavior through the public contracts.
 
+Floating action menus must use the host’s queued `ui:floatingMenus` contract or queued reuse/composer menu API. Bind queue ownership to the component/page signal, wait for the grant before exposing controls, and release it on teardown. Tutorials retain their priority reservation across steps; page menus must wait until the tutorial yields. Do not create a parallel floating-menu visibility path that bypasses these flows.
+
 Every new feature or UI change warrants a review of existing tutorials in the same change. Add or revise affected steps, targets, conditions, branches, localized text and coverage documentation; remove misleading instructions and verify actual progression rather than relying on selectors or source assertions alone. A UI change is incomplete until its tutorial coverage is reviewed and updated where needed.
 
 ## API, persistence, configuration, and security

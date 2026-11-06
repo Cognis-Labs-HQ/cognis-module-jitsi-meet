@@ -179,7 +179,7 @@
     <string name="module.jitsi-meet.tutorial.meetings.title">Pertemuan yang Tersedia</string>
     <string name="module.jitsi-meet.tutorial.meetings.body">Lihat kartu rapat untuk menemukan sesi yang ingin diikuti.</string>
     <string name="module.jitsi-meet.tutorial.participants.title">Pilih Peserta</string>
-    <string name="module.jitsi-meet.tutorial.participants.body">Pilih peserta melalui kontrol rapat. Mulai tersedia setelah persyaratan rapat terpenuhi.</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Gunakan Cari Peserta untuk mencari orang dan menambahkan mereka ke rapat. Mulai tersedia setelah persyaratan rapat terpenuhi.</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.title">Kontrol Pertemuan</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.title">Kontrol dalam Panggilan</string>
     <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.body">Gunakan kontrol mikrofon dan kamera selama panggilan, lalu Keluar untuk meninggalkannya.</string>

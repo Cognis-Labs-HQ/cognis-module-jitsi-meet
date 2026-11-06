@@ -36,6 +36,18 @@ Tutorial coverage is required for every UI-facing component. Contributor guidanc
 
 Meeting lifecycle explanations highlight the displayed Terminate or Delete control. The first usable target is selected inside the tutorial section and the step is skipped when no matching control is available.
 
+## Visible tutorial regions
+
+Tutorial regions and Next cues are authored explicitly.
+
+## Shared floating-menu queue
+
+Menus follow the shared queued host contract and component lifetime.
+
+## Documented recovery controls
+
+Missing-target views provide Next and Restart Tutorial; replay also provides Cancel.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

@@ -10,7 +10,7 @@ The play introduces meetings and staged participants without joining or creating
 
 The host owns callouts, arrows, spotlight, accessibility and the shared floating action menu. First-time runs offer Next throughout, without Cancel or Skip. Replays offer Cancel with `btn-cancel`. Completion is stored per account in the browser. Navigation, access loss and provider removal release the session; failed mounts roll back registrations.
 
-The play is informational and never performs a privileged action. Missing targets allow Next during the first run and Retry or Cancel on replay.
+Tutorial regions and Next cues are authored explicitly. Menus follow the shared queued host contract and component lifetime. Missing-target views provide Next and Restart Tutorial; replay also provides Cancel.
 
 Provider tests check the public contract, all four translations, availability rules, rollback and rejection of unsupported host versions.
 

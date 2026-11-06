@@ -11,8 +11,9 @@ export async function mountProvider(ctx) {
     try {
         const targets = {};
         for (const [name, selector] of Object.entries({
-            meetings: "#jitsi-active-meetings",
-            participants: "#jitsi-staged-participants",
+            welcome: ".jitsi-overlay-title",
+            meetings: ".jitsi-overlay-active-meetings",
+            participants: "#jitsi-find-participants-btn",
         })) {
             targets[name] = (
                 await owner.target(name, {

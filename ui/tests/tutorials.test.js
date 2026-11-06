@@ -121,6 +121,7 @@ test("the module contributes a localized, permission-aware play through the publ
     assert.ok(state.play.steps.length >= 2);
     assert.equal(state.play.available(), true);
     for (const step of state.play.steps) {
+        assert.ok(step.effects.arrow && step.effects.spotlight, step.id);
         assert.equal(
             step.highlightNext,
             !Boolean(step.advance || step.waitFor),

@@ -36,6 +36,18 @@ Alle UI-Komponenten benötigen eine Anleitung. Die Beitragsrichtlinien verlangen
 
 Erklärungen zum Besprechungslebenszyklus heben die angezeigte Beenden- oder Löschen-Schaltfläche hervor. Der erste nutzbare Treffer wird im Tutorial-Abschnitt gewählt; ohne passenden Treffer wird der Schritt übersprungen.
 
+## Sichtbare Tutorial-Ziele
+
+Tutorial-Ziele und Weiter-Hinweise sind ausdrücklich festgelegt.
+
+## Gemeinsame Menüwarteschlange
+
+Menüs folgen der gemeinsamen Host-Warteschlange und der Komponentenlebensdauer.
+
+## Dokumentierte Wiederherstellungsaktionen
+
+Bei fehlenden Zielen stehen Weiter und Tutorial neu starten bereit; Wiederholungen bieten auch Abbrechen.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

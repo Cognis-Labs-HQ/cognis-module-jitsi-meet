@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.6",
+    "version": "1.6.7",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -110,7 +110,7 @@
         },
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "7085bb1d52f884f9adb2516f44a48e8977c3e2d0911fa59f6db3cc2acfe6b177"
+            "sha256": "38b88438ee1cbf5783a1540da73ae4c837ec1235412a5ddad321ad0ad6e72c86"
         },
         {
             "path": ".gitignore",
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "292ba79d47a4cb7f9fd410566fdc9e5f05cfe54b2159fe1d14b0279e647bea22"
+            "sha256": "842885d15160b8b3eb2ca4ccdb7a1464826d69a16e6081d4f4ad07c29bb7ce8a"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "b9befe46a7bfbad1da3daecb54c078c3ad4fb2d7d3c239bd340823ecbdb82324"
+            "sha256": "9e53c9d38ae4dcd708bfaa365800263a687ba6ef5f2c68ceb28f79c0d4c034f9"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "e3179a4d241a9d3c652bf5502da1f95923a0a13e251a16cd45c94214712a65de"
+            "sha256": "330ad2d60293c621968490ace6e096a8fcb5cc9be62c707c449be47910ac9e49"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "2c8721128de38387ad9ab3701a60e98095b28754f24fb3986dde4fbcc2f2fd93"
+            "sha256": "a496d24491191c99278db3601092efebed2f4de1cecd71924f53d63deeea4074"
         },
         {
             "path": "package-lock.json",
-            "sha256": "45a356e9158688913e45c35edac9fe6683a6665c4e89a2eea471ccef32b5a0f0"
+            "sha256": "d01f51399591168aae3924b2f4845ee422d6ca3bf76e6e15af2a1836c2a54386"
         },
         {
             "path": "package.json",
-            "sha256": "a2de204e945255cdebc7b94bdd0f68cfd784806462385f28d55b712a6e849133"
+            "sha256": "a468e8c1ab881aea61c77f5127ced89971d99aad4782c27113cdac93ba4655d4"
         },
         {
             "path": "routes.json",
@@ -630,19 +630,19 @@
         },
         {
             "path": "ui/languages/de/strings.xml",
-            "sha256": "a43785e672b036387b9b5d55131793985b8b53a7e2eb57685037e5acbfdef89a"
+            "sha256": "974b2c75f4183b8a9ac9d067b00de8a8f9dbd27cbac65c514dc5c673ccbb303c"
         },
         {
             "path": "ui/languages/en/strings.xml",
-            "sha256": "0f31f8c8944816ea535add4e6dab7fdc2b8fcdb75cfc323c2ad6a2bfdeaf4d71"
+            "sha256": "001b888732d095f6dc916d5ebd71c9efc88af35c88a0c64e986dbe5d2718a8c4"
         },
         {
             "path": "ui/languages/id/strings.xml",
-            "sha256": "509b652871d5b5174c5817218f318940e6add026ab5010da70ecd8aeee6e8576"
+            "sha256": "cf3997f56e5b9f149ddd301f3d5bc023e616c73cafe74b492b631e4effffb98a"
         },
         {
             "path": "ui/languages/ja/strings.xml",
-            "sha256": "9d9c6d2a5d35b7ef0319e9ebda04d541ba36f6ebed7bba5dc447ffb55621cd88"
+            "sha256": "9cf7a2e34c2778ba9e75f1d06375f429cfbbc80091702b86dcebf8d4ce4af54a"
         },
         {
             "path": "ui/meeting-embed.js",
@@ -741,6 +741,10 @@
             "sha256": "07f4b1f358530e2e64e03a7ff70943a299232eed92adc1dcd8716e6afd1adf57"
         },
         {
+            "path": "ui/tests/fixtures/tutorial-browser.js",
+            "sha256": "06752bc8ce190d0097a1a4ecbe3171bb02447268f432bd6c37f7e5468b444804"
+        },
+        {
             "path": "ui/tests/jitsi-storage.test.js",
             "sha256": "35b70c075fb308457e4975bb0db18921598a0fc8909f5080e0e4fcc6992ff070"
         },
@@ -802,7 +806,7 @@
         },
         {
             "path": "ui/tests/tutorials.test.js",
-            "sha256": "4031cab192967dd3205546bb9f1ab0ee84ebdb10472514011908afd12f5176c0"
+            "sha256": "5302816832dcf7da3c832bbe3926bf9b81efa18f7dbfbd29c49107a5da245312"
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",
@@ -830,11 +834,11 @@
         },
         {
             "path": "ui/tutorials/plays.js",
-            "sha256": "c7c3de941317ee788bafa4878894ea5417c2d19cb21c89e036b6f0f07e61dcfa"
+            "sha256": "62a0db304a82d5667582da59188063c392824311624288f01626da7ffb7e89d1"
         },
         {
             "path": "ui/tutorials/provider.js",
-            "sha256": "cfe4cf94314af2a68f3018aeacd70b95ef8e977536c902603c255cad038c8ef5"
+            "sha256": "21c24207980ec296b8bbcc776f4dafb1dff1baf1b1fe7d8abda2bb1512e84826"
         },
         {
             "path": "ui/voip-provider.js",

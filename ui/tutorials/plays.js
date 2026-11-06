@@ -7,12 +7,13 @@ export const definition = {
         {
             highlightNext: true,
             id: "welcome",
+            target: "welcome",
             titleKey: "module.jitsi-meet.tutorial.welcome.title",
             bodyKey: "module.jitsi-meet.tutorial.welcome.body",
             effects: {
                 callout: true,
-                arrow: false,
-                spotlight: false,
+                arrow: true,
+                spotlight: true,
             },
             missing: {
                 timeoutMs: 5000,
