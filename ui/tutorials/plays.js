@@ -5,6 +5,7 @@ export const definition = {
     titleKey: "module.jitsi-meet.tutorial.title",
     steps: [
         {
+            highlightNext: true,
             id: "welcome",
             titleKey: "module.jitsi-meet.tutorial.welcome.title",
             bodyKey: "module.jitsi-meet.tutorial.welcome.body",
@@ -20,6 +21,7 @@ export const definition = {
             route: "/meetings",
         },
         {
+            highlightNext: true,
             id: "meetings",
             titleKey: "module.jitsi-meet.tutorial.meetings.title",
             bodyKey: "module.jitsi-meet.tutorial.meetings.body",
@@ -35,6 +37,7 @@ export const definition = {
             target: "meetings",
         },
         {
+            highlightNext: true,
             id: "participants",
             titleKey: "module.jitsi-meet.tutorial.participants.title",
             bodyKey: "module.jitsi-meet.tutorial.participants.body",

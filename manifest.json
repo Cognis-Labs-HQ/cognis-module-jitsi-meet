@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.4",
+    "version": "1.6.5",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -110,7 +110,7 @@
         },
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "250dfbb7370c670600bd27948d0b32b116e0224cc406bc9b6fad7250b0bced9a"
+            "sha256": "7085bb1d52f884f9adb2516f44a48e8977c3e2d0911fa59f6db3cc2acfe6b177"
         },
         {
             "path": ".gitignore",
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "882308f8fb7caa10b51b4e04a00e2cbca2f1c6acf3010f8d1fe9a3db8f70e5a6"
+            "sha256": "372b2caebfaa7ca99972fd0e4fc2d295b5136dd8bc1856e0093e6a238dc6c2ea"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "66684fb1a4e2b4f4825c5c7fde82f36a5e25ad100b8f19c6257daa3db4f19660"
+            "sha256": "a3b30e5664fd05daf66b7294da3ce15d026cd007f0738e94b2684d0ea63f9ce0"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "147fc40b1bbc04f620fbaa61e240e3f0382476628dc0ea83cc651bde591e8020"
+            "sha256": "8b1bcd6f8d79c327ab7308f7ba05695c41981805192f60b7c46fd465ab7cbb96"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "887c972c1fe03d1c4c9ca4d604471650a4ca380ac2d7673c14347f4fa8298947"
+            "sha256": "8d9c0967209bf53923ae90436740db4b452a0af9303ed5f1e938d49cce178994"
         },
         {
             "path": "package-lock.json",
-            "sha256": "85fd74ef85cad52a0f83187d85cac1ef2059959f203ad8fac61758939429b8e0"
+            "sha256": "0d1a500ba75e76ec289ba61d4b5ee8b41e41f30e35263afaabe4c53cde0b2971"
         },
         {
             "path": "package.json",
-            "sha256": "3b3ed100f0cddb563641b034819923a5c2a665b1dd80331f42893a8a35d55986"
+            "sha256": "bf151c5b131f7832f68fb27d8a9b6cbe26ff68a75ddc2e3ff3f3cb19d5f110fe"
         },
         {
             "path": "routes.json",
@@ -766,7 +766,7 @@
         },
         {
             "path": "ui/tests/page-tutorials.test.js",
-            "sha256": "c2c9605aa999fd081319265e1f74e0847be78fd79641fbd9dc5fbe3fd1b82c70"
+            "sha256": "01426a76db15735c07a1161d284f663cd11c042a5139fc2056b77cac4e2ec9f8"
         },
         {
             "path": "ui/tests/polling-lifecycle.test.js",
@@ -802,7 +802,7 @@
         },
         {
             "path": "ui/tests/tutorials.test.js",
-            "sha256": "df9af9a8f7bb4a572986169289e724f59983d57be6653228239b628c892442e9"
+            "sha256": "4031cab192967dd3205546bb9f1ab0ee84ebdb10472514011908afd12f5176c0"
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",
@@ -826,11 +826,11 @@
         },
         {
             "path": "ui/tutorials/guides.js",
-            "sha256": "68490ce53ab0ec1e1ae0194ca430eaa0657dfb27f2f72ec96d11bce414807bfb"
+            "sha256": "2a344a91e30b2be5e15d7f33d2640bffbc3be23047136eb445794fcb42468f8b"
         },
         {
             "path": "ui/tutorials/plays.js",
-            "sha256": "41ebd56c9ed94671aa9157b1dec05ce68f423640db0c4c675fbd60ba4fd840f5"
+            "sha256": "c7c3de941317ee788bafa4878894ea5417c2d19cb21c89e036b6f0f07e61dcfa"
         },
         {
             "path": "ui/tutorials/provider.js",

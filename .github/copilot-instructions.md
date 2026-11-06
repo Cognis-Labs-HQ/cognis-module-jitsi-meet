@@ -77,6 +77,16 @@ Never navigate with `window.location.href`, `window.location.replace`, or `windo
 
 Do not install or use Playwright; use existing browser tooling or a standalone Chromium/CDP check without a new browser dependency. Put every user-facing string in the German, English, Indonesian, and Japanese XML locale files with matching keys and genuine translations. Namespace keys to the module and use lowercase period-delimited words (for example `module.example.canvas.label`); do not use underscores or kebab-case between words. Localize manifest metadata, page titles, subtitles, labels, errors, empty states, accessibility text, and CLI-facing output where the host contract supports it.
 
+## Tutorial coverage and maintenance
+
+Every UI-facing component must be covered by a page- or URL-bound tutorial through the host's public `ui:tutorials` contract. Cover the actual pages, controls, menus, dialogs and embedded surfaces users encounter, including administrator-only and optional states. Keep coverage with the owning component and use role restrictions, conditions and dependencies so inaccessible or unavailable stages are excluded from the path and total count.
+
+Write consistent user-first walkthroughs: explain the user's goal, prerequisites, useful actions and expected outcome using the real controls. Prefer meaningful task sequences over a list of labels. Do not expose implementation details or add irrelevant reassurances about permissions or actions the guide does not perform. Use the host's shared presentation, localized copy in all four supported languages, lifecycle cleanup and safe interaction/navigation guards; never make destructive changes merely to demonstrate a feature.
+
+Set each step's `highlightNext` flag deliberately: use `true` when the user must choose Next or Finish to continue an explanation, and `false` for steps completed by an event or wait condition. Review branches, conditional controls, empty states, audience-specific counts, replay, restart, keyboard operation and reduced-motion behavior through the public contracts.
+
+Every new feature or UI change warrants a review of existing tutorials in the same change. Add or revise affected steps, targets, conditions, branches, localized text and coverage documentation; remove misleading instructions and verify actual progression rather than relying on selectors or source assertions alone. A UI change is incomplete until its tutorial coverage is reviewed and updated where needed.
+
 ## API, persistence, configuration, and security
 
 Validate, bound, sanitize, and normalize at API boundaries. Authenticate and authorize before business logic, use least privilege and secure defaults, and return stable public errors without internal details. Do not impose an arbitrary result limit when the caller did not request one; validate an explicit limit without silently clamping or substituting it.

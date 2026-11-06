@@ -8,6 +8,7 @@ export const guides = [
                 titleKey: "module.jitsi-meet.tutorial.more.meeting.title",
                 steps: [
                     {
+                        highlightNext: true,
                         id: "in-call-controls",
                         selector: ".jitsi-stage-frame-wrap",
                         titleKey:
@@ -16,6 +17,7 @@ export const guides = [
                             "module.jitsi-meet.tutorial.more.meeting.in.call.controls.body",
                     },
                     {
+                        highlightNext: true,
                         id: "meeting-chat",
                         selector: ".jitsi-chat-pane",
                         titleKey:
@@ -24,6 +26,7 @@ export const guides = [
                             "module.jitsi-meet.tutorial.more.meeting.meeting.chat.body",
                     },
                     {
+                        highlightNext: true,
                         id: "sharing-and-whiteboard",
                         selector: ".jitsi-stage-actions",
                         titleKey:
@@ -46,6 +49,7 @@ export const guides = [
                     "module.jitsi-meet.tutorial.more.administration.title",
                 steps: [
                     {
+                        highlightNext: true,
                         id: "meeting-status",
                         selector: ".jitsi-admin-filters",
                         titleKey:
@@ -54,6 +58,7 @@ export const guides = [
                             "module.jitsi-meet.tutorial.more.administration.meeting.status.body",
                     },
                     {
+                        highlightNext: true,
                         id: "terminate-or-delete",
                         selector: "#jitsi-admin-meetings-root",
                         titleKey:
