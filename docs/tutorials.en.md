@@ -17,3 +17,5 @@ Provider tests check the public contract, all four translations, availability ru
 Coverage includes meeting preparation, live call/chat/sharing controls, and administrator-only inspection and termination/deletion review.
 
 Each tutorial step now explicitly declares `highlightNext`: explanations that require Next or Finish enable it, while interaction- and wait-driven exercises disable it. The cue retains a static outline for reduced motion.
+
+Meeting lifecycle explanations highlight the displayed Terminate or Delete control. The first usable target is selected inside the tutorial section and the step is skipped when no matching control is available.

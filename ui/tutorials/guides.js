@@ -60,7 +60,8 @@ export const guides = [
                     {
                         highlightNext: true,
                         id: "terminate-or-delete",
-                        selector: "#jitsi-admin-meetings-root",
+                        selector: "button[data-meeting-action]:not(:disabled)",
+                        targetMatch: "first",
                         titleKey:
                             "module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title",
                         bodyKey:
