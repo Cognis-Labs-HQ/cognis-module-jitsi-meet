@@ -78,6 +78,15 @@ function appendMeetingLinkToBody(body, meetingId) {
 }
 
 export function registerUi(ctx) {
+    ctx.registerCapabilityProvider({
+        scriptUrl: "/static/modules/jitsi-meet/tutorials/details-provider.js",
+        providesCapabilities: ["jitsi-meet:pageTutorials"],
+        access: { minRole: "user" },
+    });
+    ctx.registerCapabilityProvider({
+        scriptUrl: "/static/modules/jitsi-meet/tutorials/provider.js",
+        providesCapabilities: ["jitsi-meet:tutorials"],
+    });
     const moduleUiRoot = path.join(ctx.moduleRoot, "ui");
     ctx.registerStaticDir("", moduleUiRoot);
     ctx.registerNavbarPlugin({

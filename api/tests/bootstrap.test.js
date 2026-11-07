@@ -183,8 +183,19 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
     ).contribution;
     assert.deepEqual(navbarContribution.access, { minRole: "user" });
     assert.equal(navbarContribution.providesCapabilities, undefined);
+    assert.ok(
+        firstEnabledSnapshot.uiContributions.some(
+            ({ type, contribution }) =>
+                type === "capability-provider" &&
+                contribution.providesCapabilities.includes(
+                    "jitsi-meet:tutorials",
+                ),
+        ),
+    );
     const capabilityProvider = firstEnabledSnapshot.uiContributions.find(
-        ({ type }) => type === "capability-provider",
+        ({ type, contribution }) =>
+            type === "capability-provider" &&
+            contribution.providesCapabilities.includes("voip:startCall"),
     ).contribution;
     assert.equal(
         capabilityProvider.scriptUrl,

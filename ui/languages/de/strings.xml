@@ -173,4 +173,23 @@
   <string name="module.jitsi_meet.admin.meetings.empty.active">Keine aktiven Meetings.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.all">Keine Meetings gefunden.</string>
   <string name="module.jitsi_meet.admin.meetings.empty.issues">Alle Ihre Meetings sind bereit!</string>
+    <string name="module.jitsi-meet.tutorial.title">Besprechung vorbereiten</string>
+    <string name="module.jitsi-meet.tutorial.welcome.title">Besprechungsübersicht</string>
+    <string name="module.jitsi-meet.tutorial.welcome.body">Öffnen Sie Meetings, um die für Ihr Konto verfügbaren Sitzungen zu sehen.</string>
+    <string name="module.jitsi-meet.tutorial.meetings.title">Verfügbare Besprechungen</string>
+    <string name="module.jitsi-meet.tutorial.meetings.body">Sehen Sie sich die Meeting-Karten an, um eine Sitzung zum Beitreten zu finden.</string>
+    <string name="module.jitsi-meet.tutorial.participants.title">Teilnehmer auswählen</string>
+    <string name="module.jitsi-meet.tutorial.participants.body">Suchen Sie über „Teilnehmer Suchen“ nach Personen und fügen Sie sie zum Meeting hinzu. Start ist verfügbar, sobald die Meeting-Voraussetzungen erfüllt sind.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.title">Besprechungssteuerung</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.title">Steuerung im Anruf</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.in.call.controls.body">Steuern Sie während eines Anrufs Mikrofon und Kamera. Mit Verlassen beenden Sie die Teilnahme.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.title">Besprechungschat</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.meeting.chat.body">Prüfen Sie Besprechungschat und Teilnehmer vor dem Senden einer Nachricht.</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.title">Teilen und Whiteboard</string>
+    <string name="module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.body">Verfügbare Freigabe- und Whiteboard-Funktionen folgen Besprechungsrechten und aktiven Integrationen.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.title">Besprechungen verwalten</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.title">Besprechungsstatus</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.meeting.status.body">Filtern Sie aktive Besprechungen oder Probleme und prüfen Sie Teilnehmerzahlen und Ressourcen.</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title">Beenden oder löschen</string>
+    <string name="module.jitsi-meet.tutorial.more.administration.terminate.or.delete.body">Das Beenden aktiver Besprechungen und Löschen inaktiver Datensätze wirken unterschiedlich; prüfen Sie die Bestätigung.</string>
 </resources>
