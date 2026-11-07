@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.7",
+    "version": "1.6.8",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -514,11 +514,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "d01f51399591168aae3924b2f4845ee422d6ca3bf76e6e15af2a1836c2a54386"
+            "sha256": "6d4d3f0cb0cc75a7365f60483efb8545ac5d5bd5051f6fb740a90caa197aaf1b"
         },
         {
             "path": "package.json",
-            "sha256": "a468e8c1ab881aea61c77f5127ced89971d99aad4782c27113cdac93ba4655d4"
+            "sha256": "2b06fbdce59ad56337358afe0fd8d4e6289ea0d210751e977bd0105b65895215"
         },
         {
             "path": "routes.json",
@@ -739,10 +739,6 @@
         {
             "path": "ui/tests/fixtures/scoped-provider-host.js",
             "sha256": "07f4b1f358530e2e64e03a7ff70943a299232eed92adc1dcd8716e6afd1adf57"
-        },
-        {
-            "path": "ui/tests/fixtures/tutorial-browser.js",
-            "sha256": "06752bc8ce190d0097a1a4ecbe3171bb02447268f432bd6c37f7e5468b444804"
         },
         {
             "path": "ui/tests/jitsi-storage.test.js",

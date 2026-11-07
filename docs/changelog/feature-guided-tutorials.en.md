@@ -48,6 +48,10 @@ Menus follow the shared queued host contract and component lifetime.
 
 Missing-target views provide Next and Restart Tutorial; replay also provides Cancel.
 
+## Remove Browser Demo Fixture
+
+The standalone tutorial browser fixture is removed; automated provider and module tests remain in place.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)
