@@ -52,6 +52,10 @@ Missing-target views provide Next and Restart Tutorial; replay also provides Can
 
 The standalone tutorial browser fixture is removed; automated provider and module tests remain in place.
 
+## Intentional tutorial guidance
+
+Tutorials explain distinct visible controls in UI order. Shared guidance covers active-view discovery, stable examples, empty states, conditional branches and lifecycle cleanup. Replay controls and reduced-motion documentation match the shared host.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

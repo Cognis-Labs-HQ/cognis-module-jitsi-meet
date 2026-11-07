@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.8",
+    "version": "1.6.9",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -110,7 +110,7 @@
         },
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "38b88438ee1cbf5783a1540da73ae4c837ec1235412a5ddad321ad0ad6e72c86"
+            "sha256": "7dcb306f151f9f06d7d079d84f4b357dd1037d35f0732fb3a6f4c4270c2d4cc8"
         },
         {
             "path": ".gitignore",
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "842885d15160b8b3eb2ca4ccdb7a1464826d69a16e6081d4f4ad07c29bb7ce8a"
+            "sha256": "0c2169011a38a97fc7bd8ff2276b87e01c2571789c69e7c21db2cd993ff8f87a"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "9e53c9d38ae4dcd708bfaa365800263a687ba6ef5f2c68ceb28f79c0d4c034f9"
+            "sha256": "a7b19a4b37a8c41bc6a33b036890819a45cdfb80f5c021adfe207ed78355c2db"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "330ad2d60293c621968490ace6e096a8fcb5cc9be62c707c449be47910ac9e49"
+            "sha256": "dd4cc0f3d875bb8c2eecb1a5e6c15bf481e350bb67a1043bc53585747d7fdcd8"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "a496d24491191c99278db3601092efebed2f4de1cecd71924f53d63deeea4074"
+            "sha256": "cde47dce7d49064a25bdde65c521dc8f33492fcc012150244c566f8d84488cda"
         },
         {
             "path": "package-lock.json",
-            "sha256": "6d4d3f0cb0cc75a7365f60483efb8545ac5d5bd5051f6fb740a90caa197aaf1b"
+            "sha256": "786a672bf9af74a9a1d51410aa85fd0affac02d3931ffbc6439d1c2662200fc3"
         },
         {
             "path": "package.json",
-            "sha256": "2b06fbdce59ad56337358afe0fd8d4e6289ea0d210751e977bd0105b65895215"
+            "sha256": "c1ba3ebd7949b904005c0d004fa0ca2ad998869615d4ada03f4ebba31fb09c4a"
         },
         {
             "path": "routes.json",
@@ -802,7 +802,7 @@
         },
         {
             "path": "ui/tests/tutorials.test.js",
-            "sha256": "5302816832dcf7da3c832bbe3926bf9b81efa18f7dbfbd29c49107a5da245312"
+            "sha256": "451b46c4984f28ff00660f9463d9588b8739c3ac83eb56eebf9b705d47d5a225"
         },
         {
             "path": "ui/tests/whiteboard-control.test.js",

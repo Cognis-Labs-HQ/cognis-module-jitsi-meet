@@ -118,7 +118,11 @@ test("the module contributes a localized, permission-aware play through the publ
     assert.ok(state.published.has(`${manifest.id}:tutorials`));
     assert.equal(state.play.version, 1);
     assert.equal(state.play.page, "/meetings");
-    assert.ok(state.play.steps.length >= 2);
+    assert.ok(state.play.steps.length >= 1);
+    assert.equal(
+        new Set(state.play.steps.map((step) => step.target)).size,
+        state.play.steps.length,
+    );
     assert.equal(state.play.available(), true);
     for (const step of state.play.steps) {
         assert.ok(step.effects.arrow && step.effects.spotlight, step.id);

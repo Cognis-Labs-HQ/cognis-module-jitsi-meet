@@ -52,6 +52,10 @@ Tampilan target hilang menyediakan Berikutnya dan Mulai Ulang Tutorial; pemutara
 
 Fixture peramban tutorial mandiri dihapus; pengujian otomatis penyedia dan modul tetap dipertahankan.
 
+## Panduan tutorial terarah
+
+Tutorial menjelaskan kontrol terlihat yang berbeda sesuai urutan UI. Petunjuk bersama mencakup penemuan tampilan aktif, contoh stabil, keadaan kosong, cabang bersyarat, dan pembersihan siklus hidup. Kontrol pemutaran ulang serta dokumentasi pengurangan gerakan sesuai host bersama.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

@@ -8,14 +8,10 @@ The play introduces meetings and staged participants without joining or creating
 
 ## Technical Specification
 
-The host owns callouts, arrows, spotlight, accessibility and the shared floating action menu. First-time runs offer Next throughout, without Cancel or Skip. Replays offer Cancel with `btn-cancel`. Completion is stored per account in the browser. Navigation, access loss and provider removal release the session; failed mounts roll back registrations.
-
-Tutorial regions and Next cues are authored explicitly. Menus follow the shared queued host contract and component lifetime. Missing-target views provide Next and Restart Tutorial; replay also provides Cancel.
-
 Provider tests check the public contract, all four translations, availability rules, rollback and rejection of unsupported host versions.
 
 Coverage includes meeting preparation, live call/chat/sharing controls, and administrator-only inspection and termination/deletion review.
 
-Each tutorial step now explicitly declares `highlightNext`: explanations that require Next or Finish enable it, while interaction- and wait-driven exercises disable it. The cue retains a static outline for reduced motion.
-
 Meeting lifecycle explanations highlight the displayed Terminate or Delete control. The first usable target is selected inside the tutorial section and the step is skipped when no matching control is available.
+
+The shared host provides queued floating actions. First visits offer Next/Finish without Cancel or Skip; replays offer Skip before the last visible step. Restart Tutorial appears after the first visible step. Completion survives content updates. Explicit highlightNext flags enable only a breathing animation for explanatory steps; reduced motion disables it. Each stage highlights a distinct rendered control in UI order. Guides stay bound to the current view, handle empty and optional states, and release their resources on navigation or owner removal.
