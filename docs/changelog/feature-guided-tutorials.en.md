@@ -56,6 +56,10 @@ The standalone tutorial browser fixture is removed; automated provider and modul
 
 Tutorials explain distinct visible controls in UI order. Shared guidance covers active-view discovery, stable examples, empty states, conditional branches and lifecycle cleanup. Replay controls and reduced-motion documentation match the shared host.
 
+## Focused Walkthrough
+
+The meeting guide highlights the full Participants panel first and the Available Participants section at its participant-selection stage.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

@@ -91,6 +91,8 @@ Floating action menus must use the host’s queued `ui:floatingMenus` contract o
 
 Every new feature or UI change warrants a review of existing tutorials in the same change. Add or revise affected steps, targets, conditions, branches, localized text and coverage documentation; remove misleading instructions and verify actual progression rather than relying on selectors or source assertions alone. A UI change is incomplete until its tutorial coverage is reviewed and updated where needed.
 
+Validate tutorial targets in populated and empty rendered views; repeated sections need distinct owner-defined semantic markers. Highlight the region described by the step, fit compact action groups to their buttons, and exclude absent optional controls from counts. Gate language-module guides through Study’s public `isEnrolled(language)` contract; navigating to a language does not prove manual enrollment. Begin after enrollment rather than asking already enrolled users to enroll again. Explain useful actions and outcomes rather than internal safeguards. Test click-driven branches whose owners prevent native defaults, as well as Next bypass, Back, Restart and popup teardown.
+
 ## API, persistence, configuration, and security
 
 Validate, bound, sanitize, and normalize at API boundaries. Authenticate and authorize before business logic, use least privilege and secure defaults, and return stable public errors without internal details. Do not impose an arbitrary result limit when the caller did not request one; validate an explicit limit without silently clamping or substituting it.

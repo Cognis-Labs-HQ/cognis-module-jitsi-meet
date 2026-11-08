@@ -56,6 +56,10 @@ Das eigenständige Browser-Tutorial-Fixture ist entfernt; automatisierte Anbiete
 
 Anleitungen erklären unterschiedliche sichtbare Bedienelemente in UI-Reihenfolge. Die gemeinsamen Vorgaben behandeln aktive Ansichten, stabile Beispiele, Leerzustände, bedingte Zweige und Lebensdauerbereinigung. Wiederholungsaktionen und Dokumentation zu reduzierter Bewegung entsprechen dem gemeinsamen Host.
 
+## Gezielte Anleitung
+
+Die Besprechungsanleitung hebt zuerst den gesamten Teilnehmerbereich und bei der Auswahl den Abschnitt verfügbare Teilnehmer hervor.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

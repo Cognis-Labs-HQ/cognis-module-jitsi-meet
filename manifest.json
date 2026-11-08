@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi_meet.name",
-    "version": "1.6.9",
+    "version": "1.6.10",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -110,7 +110,7 @@
         },
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "785ae616be351eb71d83f9b8b4104f1596fcca91133b3e0db02fffd3fe018be3"
+            "sha256": "5ba2224b581a82d91f0975f26d75c170e662c38abfb63e7b0a368a18da715730"
         },
         {
             "path": ".gitignore",
@@ -498,27 +498,27 @@
         },
         {
             "path": "docs/tutorials.de.md",
-            "sha256": "0c2169011a38a97fc7bd8ff2276b87e01c2571789c69e7c21db2cd993ff8f87a"
+            "sha256": "35cf51020f2f687328a9472e867c6c12d60a3472fbffeac9376b6fc518edc723"
         },
         {
             "path": "docs/tutorials.en.md",
-            "sha256": "a7b19a4b37a8c41bc6a33b036890819a45cdfb80f5c021adfe207ed78355c2db"
+            "sha256": "d04440b362aad3a699b95a6e0b36fdff0f80998fdbd5b2a547e8f47b3ecfa44f"
         },
         {
             "path": "docs/tutorials.id.md",
-            "sha256": "dd4cc0f3d875bb8c2eecb1a5e6c15bf481e350bb67a1043bc53585747d7fdcd8"
+            "sha256": "34dbd8bf905b33d4a7c77006cd81e84a8ace89a2cb7349bc1eb49e1ffb8a397a"
         },
         {
             "path": "docs/tutorials.ja.md",
-            "sha256": "cde47dce7d49064a25bdde65c521dc8f33492fcc012150244c566f8d84488cda"
+            "sha256": "04e5a819a5beac0662cb7512aef754c50111434875799fe777c6c015aff812b9"
         },
         {
             "path": "package-lock.json",
-            "sha256": "786a672bf9af74a9a1d51410aa85fd0affac02d3931ffbc6439d1c2662200fc3"
+            "sha256": "7069295fdb9b53f8a5bd94114c0cfdee710939cad1179558f54a7ba6d8561e8e"
         },
         {
             "path": "package.json",
-            "sha256": "c1ba3ebd7949b904005c0d004fa0ca2ad998869615d4ada03f4ebba31fb09c4a"
+            "sha256": "fd2386bc0355f6038bfeacebbecd27bd5fa2bbb3e51286775dcec0f3f679536b"
         },
         {
             "path": "routes.json",
@@ -834,7 +834,7 @@
         },
         {
             "path": "ui/tutorials/provider.js",
-            "sha256": "21c24207980ec296b8bbcc776f4dafb1dff1baf1b1fe7d8abda2bb1512e84826"
+            "sha256": "cb3cb16c533ad1ccb6e58bca8c77c4c3c78ce23ab6e83c9f04bc31f2aee06f56"
         },
         {
             "path": "ui/voip-provider.js",
