@@ -78,3 +78,4 @@ The meeting-chat stage is omitted from the path and count while chat is unavaila
 - [986caf0e7](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/986caf0e74d203cb5b86092892fbdb75871853bd)
 - [b7c4f6886](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b7c4f68864ea21dee0150186c1509e428df28a7b)
 - [2e99cf649](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2e99cf649345992d41f19a9179c83153b6dfabd6)
+- [d6f10af07](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f10af071009f75e9f52526a01d59cb6987714c)
