@@ -60,6 +60,10 @@ Tutorials explain distinct visible controls in UI order. Shared guidance covers 
 
 The meeting guide highlights the full Participants panel first and the Available Participants section at its participant-selection stage.
 
+## Optional Meeting Chat
+
+The meeting-chat stage is omitted from the path and count while chat is unavailable.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

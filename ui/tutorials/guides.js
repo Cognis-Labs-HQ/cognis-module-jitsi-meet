@@ -19,6 +19,7 @@ export const guides = [
                     {
                         highlightNext: true,
                         id: "meeting-chat",
+                        when: ({ targetAvailable }) => targetAvailable,
                         selector: ".jitsi-chat-pane",
                         titleKey:
                             "module.jitsi-meet.tutorial.more.meeting.meeting.chat.title",

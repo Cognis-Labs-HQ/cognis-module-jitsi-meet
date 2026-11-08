@@ -60,6 +60,10 @@ Tutorial menjelaskan kontrol terlihat yang berbeda sesuai urutan UI. Petunjuk be
 
 Panduan rapat menyorot seluruh panel peserta terlebih dahulu dan bagian peserta tersedia pada tahap pemilihan peserta.
 
+## Chat Rapat Opsional
+
+Langkah chat rapat dihilangkan dari alur dan jumlah langkah selama chat tidak tersedia.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

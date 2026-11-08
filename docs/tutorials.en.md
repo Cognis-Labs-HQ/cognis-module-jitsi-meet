@@ -17,3 +17,5 @@ Meeting lifecycle explanations highlight the displayed Terminate or Delete contr
 The shared host provides queued floating actions. First visits offer Next/Finish without Cancel or Skip; replays offer Skip before the last visible step. Restart Tutorial appears after the first visible step. Completion survives content updates. Explicit highlightNext flags enable only a breathing animation for explanatory steps; reduced motion disables it. Each stage highlights a distinct rendered control in UI order. Guides stay bound to the current view, handle empty and optional states, and release their resources on navigation or owner removal.
 
 The meeting guide highlights the full Participants panel first and the Available Participants section at its participant-selection stage.
+
+The meeting-chat stage is omitted from the path and count while chat is unavailable.
