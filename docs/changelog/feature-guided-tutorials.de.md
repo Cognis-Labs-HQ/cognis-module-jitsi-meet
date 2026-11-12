@@ -83,3 +83,4 @@ Der Besprechungschat entfällt aus Ablauf und Schrittzahl, solange er nicht verf
 - [b7c4f6886](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/b7c4f68864ea21dee0150186c1509e428df28a7b)
 - [2e99cf649](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2e99cf649345992d41f19a9179c83153b6dfabd6)
 - [d6f10af07](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f10af071009f75e9f52526a01d59cb6987714c)
+- [8fb4477](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8fb44771d4d49011b5bb8640b655ddbe8f8af659)
