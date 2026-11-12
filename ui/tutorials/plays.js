@@ -2,14 +2,14 @@ export const definition = {
     version: 1,
     page: "/meetings",
     id: "introduction",
-    titleKey: "module.jitsi-meet.tutorial.title",
+    titleKey: "module.jitsi.meet.tutorial.title",
     steps: [
         {
             highlightNext: true,
             id: "welcome",
             target: "welcome",
-            titleKey: "module.jitsi-meet.tutorial.welcome.title",
-            bodyKey: "module.jitsi-meet.tutorial.welcome.body",
+            titleKey: "module.jitsi.meet.tutorial.welcome.title",
+            bodyKey: "module.jitsi.meet.tutorial.welcome.body",
             effects: {
                 callout: true,
                 arrow: true,
@@ -24,8 +24,8 @@ export const definition = {
         {
             highlightNext: true,
             id: "meetings",
-            titleKey: "module.jitsi-meet.tutorial.meetings.title",
-            bodyKey: "module.jitsi-meet.tutorial.meetings.body",
+            titleKey: "module.jitsi.meet.tutorial.meetings.title",
+            bodyKey: "module.jitsi.meet.tutorial.meetings.body",
             effects: {
                 callout: true,
                 arrow: true,
@@ -40,8 +40,8 @@ export const definition = {
         {
             highlightNext: true,
             id: "participants",
-            titleKey: "module.jitsi-meet.tutorial.participants.title",
-            bodyKey: "module.jitsi-meet.tutorial.participants.body",
+            titleKey: "module.jitsi.meet.tutorial.participants.title",
+            bodyKey: "module.jitsi.meet.tutorial.participants.body",
             effects: {
                 callout: true,
                 arrow: true,

@@ -5,16 +5,16 @@ export const guides = [
             {
                 id: "meeting",
                 page: ({ pathname }) => /^\/meetings?$/.test(pathname),
-                titleKey: "module.jitsi-meet.tutorial.more.meeting.title",
+                titleKey: "module.jitsi.meet.tutorial.more.meeting.title",
                 steps: [
                     {
                         highlightNext: true,
                         id: "in-call-controls",
                         selector: ".jitsi-stage-frame-wrap",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.in.call.controls.title",
+                            "module.jitsi.meet.tutorial.more.meeting.in.call.controls.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.in.call.controls.body",
+                            "module.jitsi.meet.tutorial.more.meeting.in.call.controls.body",
                     },
                     {
                         highlightNext: true,
@@ -22,18 +22,18 @@ export const guides = [
                         when: ({ targetAvailable }) => targetAvailable,
                         selector: ".jitsi-chat-pane",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.meeting.chat.title",
+                            "module.jitsi.meet.tutorial.more.meeting.meeting.chat.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.meeting.chat.body",
+                            "module.jitsi.meet.tutorial.more.meeting.meeting.chat.body",
                     },
                     {
                         highlightNext: true,
                         id: "sharing-and-whiteboard",
                         selector: ".jitsi-stage-actions",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.title",
+                            "module.jitsi.meet.tutorial.more.meeting.sharing.and.whiteboard.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.meeting.sharing.and.whiteboard.body",
+                            "module.jitsi.meet.tutorial.more.meeting.sharing.and.whiteboard.body",
                     },
                 ],
                 scope: "#jitsi-meeting-frame:not([hidden])",
@@ -47,16 +47,16 @@ export const guides = [
                 id: "administration",
                 page: "/administration",
                 titleKey:
-                    "module.jitsi-meet.tutorial.more.administration.title",
+                    "module.jitsi.meet.tutorial.more.administration.title",
                 steps: [
                     {
                         highlightNext: true,
                         id: "meeting-status",
                         selector: ".jitsi-admin-filters",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.administration.meeting.status.title",
+                            "module.jitsi.meet.tutorial.more.administration.meeting.status.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.administration.meeting.status.body",
+                            "module.jitsi.meet.tutorial.more.administration.meeting.status.body",
                     },
                     {
                         highlightNext: true,
@@ -64,9 +64,9 @@ export const guides = [
                         selector: "button[data-meeting-action]:not(:disabled)",
                         targetMatch: "first",
                         titleKey:
-                            "module.jitsi-meet.tutorial.more.administration.terminate.or.delete.title",
+                            "module.jitsi.meet.tutorial.more.administration.terminate.or.delete.title",
                         bodyKey:
-                            "module.jitsi-meet.tutorial.more.administration.terminate.or.delete.body",
+                            "module.jitsi.meet.tutorial.more.administration.terminate.or.delete.body",
                     },
                 ],
                 scope: "#jitsi-admin-meetings-root",

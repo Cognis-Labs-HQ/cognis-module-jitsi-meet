@@ -13,7 +13,7 @@ export function createMeetingPageElements(
     if (!inShareView) {
         elements.push({
             id: "jitsi-participants",
-            label: i18n.t("module.jitsi_meet.participants.heading"),
+            label: i18n.t("module.jitsi.meet.participants.heading"),
             pinned: true,
             gridSize: {
                 default: [12, 2],
@@ -25,7 +25,7 @@ export function createMeetingPageElements(
     }
     elements.push({
         id: "jitsi-stage",
-        label: i18n.t("module.jitsi_meet.overlay.title"),
+        label: i18n.t("module.jitsi.meet.overlay.title"),
         pinned: true,
         gridSize: {
             default: [includeChat ? 8 : 12, 5],
@@ -36,7 +36,7 @@ export function createMeetingPageElements(
     if (includeChat) {
         elements.push({
             id: "jitsi-chat",
-            label: i18n.t("module.jitsi_meet.chat.heading"),
+            label: i18n.t("module.jitsi.meet.chat.heading"),
             pinned: true,
             gridSize: {
                 default: [4, 5],

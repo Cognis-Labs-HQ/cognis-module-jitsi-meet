@@ -221,7 +221,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
         source,
         /function updateAloneParticipantPrompt\(activeParticipants\)/,
     );
-    assert.match(source, /module\.jitsi_meet\.overlay\.alone_prompt/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.alone\.prompt/);
     assert.match(source, /alonePromptDismissedMeetingId/);
     assert.match(
         source,
@@ -246,7 +246,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     );
 
     assert.match(source, /async function loadMeetingState\(\)/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.auth_waiting/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.auth\.waiting/);
     assert.match(
         source,
         /callbacks\.updateAloneParticipantPrompt\(\s*payload\?\.data\?\.activeParticipants,/,
@@ -257,7 +257,7 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     );
     assert.match(
         source,
-        /jitsi-leave-alone-btn[\s\S]*module\.jitsi_meet\.overlay\.meeting_left/,
+        /jitsi-leave-alone-btn[\s\S]*module\.jitsi\.meet\.overlay\.meeting\.left/,
     );
 });
 
@@ -314,9 +314,9 @@ test("meetings overlay strings include alone participant prompt actions", () => 
         resolve(ROOT, "ui/languages/en/strings.xml"),
         "utf8",
     );
-    assert.match(source, /module\.jitsi_meet\.overlay\.alone_prompt/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.leave_meeting/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.remain_in_meeting/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.alone\.prompt/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.leave\.meeting/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.remain\.in\.meeting/);
 });
 
 test("meetings mini chat filters room-event records from rendering", () => {
@@ -411,12 +411,12 @@ test("administration meetings section labels active and upcoming tables", () => 
         "utf8",
     );
     assert.match(source, /createMeetingAdminTemplates/);
-    assert.match(template, /meetings\.active_table_heading/);
-    assert.match(template, /meetings\.upcoming_table_heading/);
+    assert.match(template, /meetings\.active\.table\.heading/);
+    assert.match(template, /meetings\.upcoming\.table\.heading/);
     assert.match(template, /createdByDisplayName/);
     assert.match(template, /date\(row\.scheduledAt\)/);
     assert.match(template, /jitsi-admin-issue-pill/);
-    assert.match(template, /meetings\.schedule_date/);
+    assert.match(template, /meetings\.schedule\.date/);
     assert.match(stringsSource, /Active Meetings/);
     assert.match(stringsSource, /Upcoming Meetings/);
     assert.match(stringsSource, /Meeting URL/);
@@ -437,7 +437,7 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
     );
     assert.match(
         markupSource,
-        /module\.jitsi_meet\.participants\.active_meetings/,
+        /module\.jitsi\.meet\.participants\.active\.meetings/,
     );
     assert.match(source, /\/api\/v1\/modules\/jitsi-meet\/meetings\/active/);
     assert.match(source, /requestedMeetingId/);
@@ -469,7 +469,7 @@ test("meetings UI renders active meetings panel and deep-link join support", () 
         /if \(!autoStart\) \{\s*state\.meeting = null;\s*callbacks\.renderParticipants\(\)/,
     );
     assert.match(source, /clearRequestedMeetingParameters\(\)/);
-    assert.match(source, /module\.jitsi_meet\.meeting_not_found/);
+    assert.match(source, /module\.jitsi\.meet\.meeting\.not\.found/);
     assert.match(source, /async function joinMeetingById/);
     assert.match(
         source,
@@ -686,7 +686,7 @@ test("Messages VoIP provider creates a locked disposable component call", () => 
         /\["component", "navigate"\]\.some[\s\S]*supportedActions\.includes\(action\)/,
     );
     assert.match(providerSource, /action: "component"/);
-    assert.match(providerSource, /module\.jitsi_meet\.voip\.subject/);
+    assert.match(providerSource, /module\.jitsi\.meet\.voip\.subject/);
     assert.match(providerSource, /allowNavigation: true/);
     assert.match(providerSource, /disposableMeeting: true/);
     assert.match(providerSource, /mode: "overlay"/);
@@ -796,7 +796,7 @@ test("disposable link-share guests remain on the meeting exit overlay", () => {
     );
     assert.match(
         roomSource,
-        /fallbackOverlayMessageKey:\s*"module\.jitsi_meet\.overlay\.meeting_left"/,
+        /fallbackOverlayMessageKey:\s*"module\.jitsi\.meet\.overlay\.meeting\.left"/,
     );
     assert.match(
         listSource,

@@ -103,6 +103,8 @@ Use manifest `ui.preferences` and the module-owned `GET`/`PUT /api/v1/modules/<i
 
 Declare hard dependencies sparingly and prefer capability requirements or soft dependencies for optional integrations. Disabled modules must not run their normal bootstrap. Use a declared `disabledApi` entrypoint only when configuration must work while disabled, and register only routes explicitly allowed in that state.
 
+Translation namespaces are independent of immutable module IDs: use periods between every word, including tutorial keys, and keep namespace validation strict. Match each XML file’s existing sibling indentation and preserve translation values when formatting. Renaming translation keys must not rename tutorial owners or IDs, module IDs, UUIDs or capabilities.
+
 ## Tests and quality
 
 Tests must run in this standalone repository with local fakes for host capabilities. Test public route, capability, flow, lifecycle, authorization, localization, and manifest contracts rather than Cognis or sibling implementations. Every behavior change requires tests, safe logging, and synchronized documentation. Keep localized documentation variants structurally and semantically synchronized.

@@ -144,7 +144,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
             operation: "admin_meetings",
             errorName: error?.name,
         });
-        showToast(i18n.t("module.jitsi_meet.meetings.load.failed"), {
+        showToast(i18n.t("module.jitsi.meet.meetings.load.failed"), {
             variant: "error",
         });
     }
@@ -173,12 +173,12 @@ export function createAdminSection({ i18n, escapeHtml }) {
         const action = button.dataset.meetingAction;
         if (!action) return;
         const choice = await openPopup({
-            title: i18n.t(`module.jitsi_meet.admin.action.${action}`),
-            body: `<p>${escapeHtml(i18n.t(`module.jitsi_meet.admin.confirm.${action}`))}</p>`,
+            title: i18n.t(`module.jitsi.meet.admin.action.${action}`),
+            body: `<p>${escapeHtml(i18n.t(`module.jitsi.meet.admin.confirm.${action}`))}</p>`,
             actions: [
                 {
                     id: "proceed",
-                    label: i18n.t(`module.jitsi_meet.admin.action.${action}`),
+                    label: i18n.t(`module.jitsi.meet.admin.action.${action}`),
                     variant: "cancel",
                 },
                 {
@@ -196,7 +196,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
                     ? gateway.deleteAdminMeeting
                     : gateway.terminateAdminMeeting;
             await execute({ meetingId: button.dataset.meetingId });
-            showToast(i18n.t("module.jitsi_meet.admin.action.completed"), {
+            showToast(i18n.t("module.jitsi.meet.admin.action.completed"), {
                 variant: "success",
             });
             await refresh();
@@ -290,7 +290,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
                 {
                     id: "jitsi-live-meetings",
                     label: i18n.t(
-                        "module.jitsi_meet.admin.meetings.table_label",
+                        "module.jitsi.meet.admin.meetings.table.label",
                     ),
                     pinned: true,
                     render: () => renderPanel(filter),

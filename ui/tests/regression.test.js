@@ -149,9 +149,9 @@ test("new meetings can start with an empty participant stage and prompt for a li
     );
     assert.match(
         meetingsSource,
-        /state\.preflightPassed && participantCount === 0[\s\S]*ready_without_participants/,
+        /state\.preflightPassed && participantCount === 0[\s\S]*ready\.without\.participants/,
     );
-    assert.match(meetingsSource, /participantCount > 0[\s\S]*ready_to_start/);
+    assert.match(meetingsSource, /participantCount > 0[\s\S]*ready\.to\.start/);
 });
 
 test("meeting link guests derive participants from the scoped meeting payload", () => {
@@ -534,7 +534,7 @@ test("jitsi meetings lock participants and block navigation while meeting is act
     assert.doesNotMatch(source, /window\.addEventListener\(\s*"keydown"/);
     assert.match(
         source,
-        /window\.addEventListener\(\s*"click"[\s\S]*module\.jitsi_meet\.overlay\.leave_blocked/,
+        /window\.addEventListener\(\s*"click"[\s\S]*module\.jitsi\.meet\.overlay\.leave\.blocked/,
     );
 });
 
@@ -556,7 +556,7 @@ test("active non-disposable meetings accept participant drops without unstaging 
     );
     assert.match(
         source,
-        /participant_addition_declined[\s\S]*?participants\.invite_rejected/,
+        /participant_addition_declined[\s\S]*?participants\.invite\.rejected/,
     );
     assert.match(
         source,
@@ -601,7 +601,7 @@ test("participant rendering preserves an active meeting overlay state and shows 
     );
     assert.match(
         source,
-        /state\.availableParticipants\.length === 0[\s\S]*module\.jitsi_meet\.participants\.available_none/,
+        /state\.availableParticipants\.length === 0[\s\S]*module\.jitsi\.meet\.participants\.available\.none/,
     );
     assert.match(
         source,
@@ -632,7 +632,7 @@ test("dragging an available participant reveals the active meeting dropzone", ()
     assert.match(source, /document\.addEventListener\("drop", cancel/);
     assert.match(source, /window\.addEventListener\("blur", cancel/);
     assert.match(source, /event\.key === "Escape"[\s\S]*cancel\(\)/);
-    assert.match(source, /module\.jitsi_meet\.participants\.drop_to_invite/);
+    assert.match(source, /module\.jitsi\.meet\.participants\.drop\.to\.invite/);
     assert.match(
         source,
         /dropPreviousMessage[\s\S]*message\.textContent = overlay\.dataset\.dropLabel/,
@@ -664,7 +664,7 @@ test("local Jitsi kick events remove account participants or invalidate guest li
     assert.match(source, /kickedParticipant\?\.local === true/);
     assert.match(source, /meetings\/participants\/kicked/);
     assert.match(source, /accessToken: state\.shareAccessToken \|\| undefined/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.kicked/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.kicked/);
     assert.match(
         source,
         /payload\.data\.participants[\s\S]*state\.availableParticipants = state\.allParticipants\.filter/,
@@ -688,7 +688,7 @@ test("meeting participant surfaces and chat refresh membership in real time", ()
         source,
         /payload\.data\.chatRoomId[\s\S]*await callbacks\.updateCognisChat\(\)/,
     );
-    assert.match(source, /module\.jitsi_meet\.participants\.invite_success/);
+    assert.match(source, /module\.jitsi\.meet\.participants\.invite\.success/);
     assert.match(
         source,
         /jitsi-active-meetings-empty jitsi-participants-empty/,
@@ -864,20 +864,23 @@ test("meetings mini chat supports participant private-chat switching and return-
     assert.match(cssSource, /\.jitsi-chat-header/);
     assert.match(cssSource, /\.jitsi-chat-return-btn/);
     assert.match(cssSource, /\.jitsi-chat-participant-item\.active/);
-    assert.match(stringsSource, /module\.jitsi_meet\.chat\.return_to_meeting/);
     assert.match(
         stringsSource,
-        /module\.jitsi_meet\.chat\.private_open_failed/,
+        /module\.jitsi\.meet\.chat\.return\.to\.meeting/,
+    );
+    assert.match(
+        stringsSource,
+        /module\.jitsi\.meet\.chat\.private\.open\.failed/,
     );
 });
 
 test("meetings session state polling handles closed meetings and distinct leave messaging", () => {
     const source = readJitsiUiBundle();
     assert.match(source, /latestState\.endedAt/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.meeting_closed/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.meeting\.closed/);
     assert.match(source, /getResponse\.status === 404/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.join_failed/);
-    assert.match(source, /module\.jitsi_meet\.overlay\.meeting_left/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.join\.failed/);
+    assert.match(source, /module\.jitsi\.meet\.overlay\.meeting\.left/);
     assert.match(source, /honorMeetingClosed: false/);
     assert.match(
         source,

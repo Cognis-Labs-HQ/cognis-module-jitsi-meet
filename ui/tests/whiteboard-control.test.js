@@ -142,7 +142,7 @@ test("an enabled provider with an incomplete presentation contract keeps an expl
     assert.equal(button.disabled, true);
     assert.equal(
         button.title,
-        "module.jitsi_meet.whiteboard.provider_contract_unavailable",
+        "module.jitsi.meet.whiteboard.provider.contract.unavailable",
     );
     assert.equal(mount.slot.title, button.title);
     assert.deepEqual(logs.at(-1)[2].missingCapabilities, [
@@ -214,7 +214,7 @@ test("failed provider discovery leaves a disabled control and releases it on dep
     assert.equal(mount.slot.firstElementChild.disabled, true);
     assert.equal(
         mount.slot.title,
-        "module.jitsi_meet.whiteboard.provider_contract_unavailable",
+        "module.jitsi.meet.whiteboard.provider.contract.unavailable",
     );
     assert.equal(logs.at(-1)[2].operation, "load_whiteboard_ui_providers");
     controller.abort();

@@ -117,8 +117,8 @@ export function registerUi(ctx) {
             pattern: "^/meetings$",
             base: "/meetings",
             componentPage: {
-                labelKey: "module.jitsi_meet.page_title",
-                descriptionKey: "module.jitsi_meet.description",
+                labelKey: "module.jitsi.meet.page.title",
+                descriptionKey: "module.jitsi.meet.description",
                 modes: ["overlay", "fullscreen", "pip"],
                 minSize: JITSI_PIP_MINIMUM_SIZE,
             },
@@ -138,7 +138,7 @@ export function registerUi(ctx) {
     }
     ctx.registerAdminSection({
         id: "module-jitsi-meet-meetings",
-        label: "module.jitsi_meet.name",
+        label: "module.jitsi.meet.name",
         scriptUrl: "/static/modules/jitsi-meet/admin-meetings-section.js",
         access: { minRole: "admin" },
         stringsBaseUrl: "/static/modules/jitsi-meet/languages",

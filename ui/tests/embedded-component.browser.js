@@ -257,7 +257,7 @@ try {
         },
         {
             base,
-            aloneMessage: labels.get("module.jitsi_meet.overlay.alone_prompt"),
+            aloneMessage: labels.get("module.jitsi.meet.overlay.alone.prompt"),
         },
     );
     assert.deepEqual(result.initialButtons, ["jitsi-start-btn"]);

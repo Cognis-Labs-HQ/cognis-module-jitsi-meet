@@ -84,7 +84,7 @@ export function createChatHandlers({
         if (!(chatThread instanceof HTMLElement)) return;
         messageReactions.hideReactionHoverPopup();
         if (!Array.isArray(messages) || messages.length === 0) {
-            chatThread.innerHTML = `<p class="jitsi-chat-empty">${escapeHtml(i18n.t("module.jitsi_meet.chat.empty"))}</p>`;
+            chatThread.innerHTML = `<p class="jitsi-chat-empty">${escapeHtml(i18n.t("module.jitsi.meet.chat.empty"))}</p>`;
             return;
         }
         chatThread.innerHTML = messages
@@ -216,14 +216,14 @@ export function createChatHandlers({
         if (heading instanceof HTMLElement) {
             if (state.chatMode === "private" && privateParticipant) {
                 const privateHeadingTemplate = i18n.t(
-                    "module.jitsi_meet.chat.heading_private",
+                    "module.jitsi.meet.chat.heading.private",
                 );
                 heading.textContent = privateHeadingTemplate.replace(
                     "{{displayName}}",
                     privateParticipant.displayName,
                 );
             } else {
-                heading.textContent = i18n.t("module.jitsi_meet.chat.heading");
+                heading.textContent = i18n.t("module.jitsi.meet.chat.heading");
             }
         }
         strip.hidden = entries.length === 0;
@@ -347,7 +347,7 @@ export function createChatHandlers({
                 },
             );
             showToast(
-                i18n.t("module.jitsi_meet.chat.private_open_unavailable"),
+                i18n.t("module.jitsi.meet.chat.private.open.unavailable"),
                 {
                     variant: "warning",
                 },
@@ -364,8 +364,8 @@ export function createChatHandlers({
                 response.status === 401 ||
                 response.status === 403 ||
                 errorCode === "forbidden"
-                    ? "module.jitsi_meet.chat.private_open_forbidden"
-                    : "module.jitsi_meet.chat.private_open_unavailable";
+                    ? "module.jitsi.meet.chat.private.open.forbidden"
+                    : "module.jitsi.meet.chat.private.open.unavailable";
             void logUi(
                 "error",
                 "[jitsi-meet] failed to open private chat room",
@@ -398,7 +398,7 @@ export function createChatHandlers({
                 },
             );
             showToast(
-                i18n.t("module.jitsi_meet.chat.private_open_invalid_response"),
+                i18n.t("module.jitsi.meet.chat.private.open.invalid.response"),
                 {
                     variant: "error",
                 },

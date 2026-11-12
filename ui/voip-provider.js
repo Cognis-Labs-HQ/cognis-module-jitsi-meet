@@ -77,7 +77,7 @@ export async function resolveVoipCallAction(input = {}) {
             meetingId,
             meetingSubject:
                 String(input.meetingSubject ?? "").trim() ||
-                i18n.t("module.jitsi_meet.voip.subject"),
+                i18n.t("module.jitsi.meet.voip.subject"),
             allParticipantsRequired: true,
             allowNavigation: true,
         },

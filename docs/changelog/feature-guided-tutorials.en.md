@@ -64,6 +64,10 @@ The meeting guide highlights the full Participants panel first and the Available
 
 The meeting-chat stage is omitted from the path and count while chat is unavailable.
 
+## Consistent Translation Catalogs
+
+Translation keys use lowercase period-delimited words throughout the module metadata and tutorials. Catalog entries retain their original translated values and match the surrounding XML indentation. Strict namespace checks reject hyphens and underscores in translation keys. Module IDs, UUIDs, capabilities and tutorial completion identities remain unchanged.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

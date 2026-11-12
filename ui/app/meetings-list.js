@@ -89,14 +89,14 @@ export function createMeetingHandlers({
         card.classList.add("jitsi-persisted-meeting-card-held");
         const action = await openPopup({
             title: i18n.t(
-                "module.jitsi_meet.participants.previous_remove_title",
+                "module.jitsi.meet.participants.previous.remove.title",
             ),
-            body: `<p>${escapeHtml(i18n.t("module.jitsi_meet.participants.previous_remove_body"))}</p>`,
+            body: `<p>${escapeHtml(i18n.t("module.jitsi.meet.participants.previous.remove.body"))}</p>`,
             actions: [
                 {
                     id: "remove",
                     label: i18n.t(
-                        "module.jitsi_meet.participants.previous_remove_confirm",
+                        "module.jitsi.meet.participants.previous.remove.confirm",
                     ),
                     variant: "cancel",
                 },
@@ -120,8 +120,8 @@ export function createMeetingHandlers({
         showToast(
             i18n.t(
                 response.ok
-                    ? "module.jitsi_meet.participants.previous_remove_success"
-                    : "module.jitsi_meet.participants.previous_remove_failed",
+                    ? "module.jitsi.meet.participants.previous.remove.success"
+                    : "module.jitsi.meet.participants.previous.remove.failed",
             ),
             { variant: response.ok ? "info" : "error" },
         );
@@ -146,7 +146,7 @@ export function createMeetingHandlers({
         );
 
         if (!state.persistedMeetings.length) {
-            persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi_meet.participants.persisted_none"))}</p>`;
+            persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi.meet.participants.persisted.none"))}</p>`;
             return;
         }
         persistedMeetingsEl.replaceChildren(
@@ -171,7 +171,7 @@ export function createMeetingHandlers({
                 );
                 card.setAttribute(
                     "aria-label",
-                    `${meeting.meetingName}. ${i18n.t("module.jitsi_meet.participants.previous_select")}`,
+                    `${meeting.meetingName}. ${i18n.t("module.jitsi.meet.participants.previous.select")}`,
                 );
                 const title = document.createElement("h4");
                 title.className = "jitsi-persisted-meeting-title";
@@ -280,8 +280,8 @@ export function createMeetingHandlers({
             state.activeMeetings.length === 0
         ) {
             const emptyMessage = loading
-                ? i18n.t("module.jitsi_meet.participants.active_loading")
-                : i18n.t("module.jitsi_meet.participants.active_none");
+                ? i18n.t("module.jitsi.meet.participants.active.loading")
+                : i18n.t("module.jitsi.meet.participants.active.none");
             activeMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(emptyMessage)}</p>`;
             return;
         }
@@ -386,7 +386,7 @@ export function createMeetingHandlers({
             renderPersistedMeetings();
             renderActiveMeetings();
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.joining"),
+                message: i18n.t("module.jitsi.meet.overlay.joining"),
                 loading: false,
                 canStart: false,
                 showAuth: false,
@@ -449,8 +449,8 @@ export function createMeetingHandlers({
                     message: i18n.t(
                         getResponse.status === 404 ||
                             errorPayload?.error?.code === "meeting_closed"
-                            ? "module.jitsi_meet.overlay.meeting_closed"
-                            : "module.jitsi_meet.overlay.join_failed",
+                            ? "module.jitsi.meet.overlay.meeting.closed"
+                            : "module.jitsi.meet.overlay.join.failed",
                     ),
                     canStart: false,
                     showAuth: false,
@@ -462,7 +462,7 @@ export function createMeetingHandlers({
                     errorPayload?.error?.code === "not_found"
                 ) {
                     clearRequestedMeetingParameters();
-                    showToast(i18n.t("module.jitsi_meet.meeting_not_found"), {
+                    showToast(i18n.t("module.jitsi.meet.meeting.not.found"), {
                         variant: "warning",
                     });
                 }
@@ -481,7 +481,7 @@ export function createMeetingHandlers({
             ) {
                 state.meeting = null;
                 utils.updateOverlay({
-                    message: i18n.t("module.jitsi_meet.overlay.meeting_closed"),
+                    message: i18n.t("module.jitsi.meet.overlay.meeting.closed"),
                     canStart: false,
                     showAuth: false,
                     showReclaim: false,
@@ -491,7 +491,7 @@ export function createMeetingHandlers({
             }
             if (recovered) {
                 showToast(
-                    i18n.t("module.jitsi_meet.overlay.meeting_recreated"),
+                    i18n.t("module.jitsi.meet.overlay.meeting.recreated"),
                     { variant: "success" },
                 );
             }
@@ -638,7 +638,7 @@ export function createMeetingHandlers({
                 activeStatus: response.status,
                 persistedStatus: persistedResponse.status,
             });
-            showToast(i18n.t("module.jitsi_meet.meetings.load.failed"), {
+            showToast(i18n.t("module.jitsi.meet.meetings.load.failed"), {
                 variant: "error",
             });
             return;
@@ -685,7 +685,7 @@ export function createMeetingHandlers({
         );
         if (!requestedMeeting) {
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.meeting_closed"),
+                message: i18n.t("module.jitsi.meet.overlay.meeting.closed"),
                 canStart: false,
                 showAuth: false,
                 showReclaim: false,
@@ -829,7 +829,7 @@ export function createMeetingHandlers({
             })
             .catch(() => null);
         const initialOverlayMessageKey = forceClosedOverlay
-            ? "module.jitsi_meet.overlay.meeting_closed"
+            ? "module.jitsi.meet.overlay.meeting.closed"
             : fallbackOverlayMessageKey;
         await resetMeetingState({
             overlayMessageKey: initialOverlayMessageKey,
@@ -842,7 +842,7 @@ export function createMeetingHandlers({
             leaveState?.meetingClosed
         ) {
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.meeting_closed"),
+                message: i18n.t("module.jitsi.meet.overlay.meeting.closed"),
                 canStart: state.preflightPassed,
                 showAuth: false,
                 showReclaim: false,
@@ -886,7 +886,7 @@ export function createMeetingHandlers({
             if (state.alonePromptMeetingId === state.meeting.id) {
                 state.alonePromptMeetingId = "";
                 utils.updateOverlay({
-                    message: i18n.t("module.jitsi_meet.overlay.in_meeting"),
+                    message: i18n.t("module.jitsi.meet.overlay.in.meeting"),
                     canStart: false,
                     showAuth: false,
                     showReclaim: false,
@@ -906,7 +906,7 @@ export function createMeetingHandlers({
         }
         state.alonePromptMeetingId = state.meeting.id;
         utils.updateOverlay({
-            message: i18n.t("module.jitsi_meet.overlay.alone_prompt"),
+            message: i18n.t("module.jitsi.meet.overlay.alone.prompt"),
             canStart: false,
             showAuth: false,
             showReclaim: false,
@@ -918,21 +918,21 @@ export function createMeetingHandlers({
 
     function lobbyMessageKey(participantCount) {
         if (state.preflightStatus === "running") {
-            return "module.jitsi_meet.overlay.preflight_running";
+            return "module.jitsi.meet.overlay.preflight.running";
         }
         if (state.preflightStatus === "failed") {
             if (state.preflightNeedsConfig) {
-                return "module.jitsi_meet.overlay.config_required";
+                return "module.jitsi.meet.overlay.config.required";
             }
-            return "module.jitsi_meet.overlay.preflight_required";
+            return "module.jitsi.meet.overlay.preflight.required";
         }
         if (state.preflightPassed && participantCount === 0) {
-            return "module.jitsi_meet.overlay.ready_without_participants";
+            return "module.jitsi.meet.overlay.ready.without.participants";
         }
         if (state.preflightPassed || participantCount > 0) {
-            return "module.jitsi_meet.overlay.ready_to_start";
+            return "module.jitsi.meet.overlay.ready.to.start";
         }
-        return "module.jitsi_meet.overlay.select_participants";
+        return "module.jitsi.meet.overlay.select.participants";
     }
 
     return {

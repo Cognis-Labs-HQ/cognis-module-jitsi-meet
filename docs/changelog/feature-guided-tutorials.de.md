@@ -64,6 +64,10 @@ Die Besprechungsanleitung hebt zuerst den gesamten Teilnehmerbereich und bei der
 
 Der Besprechungschat entfällt aus Ablauf und Schrittzahl, solange er nicht verfügbar ist.
 
+## Einheitliche Übersetzungskataloge
+
+Übersetzungsschlüssel verwenden in Modulmetadaten und Tutorials durchgehend kleingeschriebene, durch Punkte getrennte Wörter. Katalogeinträge behalten ihre ursprünglichen Übersetzungen und entsprechen der umgebenden XML-Einrückung. Strenge Namensraumprüfungen weisen Bindestriche und Unterstriche in Übersetzungsschlüsseln zurück. Modul-IDs, UUIDs, Fähigkeiten und Tutorialabschluss-Bezeichner bleiben unverändert.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)
