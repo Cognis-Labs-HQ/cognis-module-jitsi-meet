@@ -192,4 +192,6 @@
   <string name="module.jitsi.meet.tutorial.more.administration.meeting.status.body">使用中の会議や問題を絞り込み、参加人数と関連する情報を確認します。</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.title">終了または削除</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.body">使用中の会議の終了と、停止中の記録の削除では影響が異なります。確認内容を見直します。</string>
+  <string name="module.jitsi.meet.tutorial.start.title">会議を開始して共有する</string>
+  <string name="module.jitsi.meet.tutorial.start.body">参加者を選ばず「開始」をクリックすると単独の会議を作れます。参加後に「共有」でリンクを送ります。参加者を選んだ場合は会議の招待が送られます。</string>
 </resources>

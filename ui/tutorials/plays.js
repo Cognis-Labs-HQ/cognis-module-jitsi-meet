@@ -53,5 +53,14 @@ export const definition = {
             },
             target: "participants",
         },
+        {
+            highlightNext: true,
+            id: "start",
+            target: "start",
+            titleKey: "module.jitsi.meet.tutorial.start.title",
+            bodyKey: "module.jitsi.meet.tutorial.start.body",
+            effects: { callout: true, arrow: true, spotlight: true },
+            when: ({ targetAvailable }) => targetAvailable,
+        },
     ],
 };

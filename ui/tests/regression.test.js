@@ -605,7 +605,7 @@ test("participant rendering preserves an active meeting overlay state and shows 
     );
     assert.match(
         source,
-        /state\.availableParticipants\.length === 0[\s\S]*availablePool\.replaceChildren\(emptyMessage\)/,
+        /state\.availableParticipants\.length === 0[\s\S]*availablePool\.replaceChildren\(findButton, emptyMessage\)/,
     );
 });
 

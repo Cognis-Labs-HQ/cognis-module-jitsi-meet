@@ -192,4 +192,6 @@
   <string name="module.jitsi.meet.tutorial.more.administration.meeting.status.body">Filter active meetings or issues, then inspect participant counts and linked resources.</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.title">Terminate Or Delete</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.body">Terminating an active meeting and deleting an inactive record have different effects; review the confirmation.</string>
+  <string name="module.jitsi.meet.tutorial.start.title">Start And Share A Meeting</string>
+  <string name="module.jitsi.meet.tutorial.start.body">Click Start without selecting participants to create a standalone meeting. Once you join, use Share to send its link to others. Selecting participants instead sends them meeting invitations.</string>
 </resources>
