@@ -88,3 +88,4 @@ The preparation guide is available only while the lobby is rendered and no meeti
 - [2e99cf649](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2e99cf649345992d41f19a9179c83153b6dfabd6)
 - [d6f10af07](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/d6f10af071009f75e9f52526a01d59cb6987714c)
 - [8fb4477](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/8fb44771d4d49011b5bb8640b655ddbe8f8af659)
+- [3af9784](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/3af97840da865d05998e80898c788d202ce12383)
