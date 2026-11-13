@@ -1,3 +1,4 @@
+import { requireMeetingResourceClaims } from "../../reuse/resource-admission.js";
 import { commitMeetingCanvasState } from "../../whiteboard/activation.js";
 import { bindMeetingCanvasSource } from "../../reuse/whiteboard-source-binding.js";
 import { registerFollowWhiteboard } from "../../reuse/follow-whiteboard.js";
@@ -24,19 +25,22 @@ function createMeetingStateSerializer() {
 async function resolveAuthorizedMeeting({
     req,
     res,
-    body,
+    readJson,
     store,
     profileStore,
     profileIdentity,
     requireAuth,
+    getGuestClaims,
     sendError,
     canAccessMeeting,
     resolveShareGuestMeetingAccess,
     resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
 }) {
-    const claims = requireAuth(req, res, "user");
+    const claims =
+        (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
     if (!claims) return null;
+    const body = await readJson(req);
     const meetingId = String(body.meetingId ?? "").trim();
     if (!meetingId) {
         sendError(res, 400, "bad_request", "meetingId is required.");
@@ -83,6 +87,7 @@ async function resolveAuthorizedMeeting({
         return null;
     }
     return {
+        body,
         meeting,
         requesterAccountId: claims.sub,
         requesterUsername,
@@ -97,6 +102,7 @@ export function registerMeetingWhiteboardRoutes({
     profileStore,
     profileIdentity,
     requireAuth,
+    getGuestClaims,
     readJson,
     sendJson,
     sendError,
@@ -119,7 +125,12 @@ export function registerMeetingWhiteboardRoutes({
     router.get(
         "/api/v1/modules/jitsi-meet/whiteboard/availability",
         async (req, res) => {
-            const claims = requireAuth(req, res, "user");
+            const claims = await requireMeetingResourceClaims(req, res, {
+                requireAuth,
+                getGuestClaims,
+                resolveShareGuestMeetingAccess,
+                sendError,
+            });
             if (!claims) return;
             const providerAssurance = await ctx
                 .getModuleAssurance?.("nextcloud-whiteboard")
@@ -156,21 +167,20 @@ export function registerMeetingWhiteboardRoutes({
                 },
             });
         },
-        { access: { minRole: "user" } },
     );
 
     router.post(
         "/api/v1/modules/jitsi-meet/screen-sharing",
         async (req, res) => {
-            const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
                 req,
                 res,
-                body,
+                readJson,
                 store,
                 profileStore,
                 profileIdentity,
                 requireAuth,
+                getGuestClaims,
                 sendError,
                 canAccessMeeting,
                 resolveShareGuestMeetingAccess,
@@ -178,6 +188,7 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
+            const { body } = resolved;
             if (typeof body.active !== "boolean") {
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
@@ -201,21 +212,20 @@ export function registerMeetingWhiteboardRoutes({
             });
             sendJson(res, 200, { data: updates });
         },
-        { access: { minRole: "user" } },
     );
 
     router.post(
         "/api/v1/modules/jitsi-meet/whiteboard/state",
         async (req, res) => {
-            const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
                 req,
                 res,
-                body,
+                readJson,
                 store,
                 profileStore,
                 profileIdentity,
                 requireAuth,
+                getGuestClaims,
                 sendError,
                 canAccessMeeting,
                 resolveShareGuestMeetingAccess,
@@ -223,6 +233,7 @@ export function registerMeetingWhiteboardRoutes({
                 listClassroomParticipantHandles,
             });
             if (!resolved) return;
+            const { body } = resolved;
             if (typeof body.active !== "boolean") {
                 sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
@@ -615,6 +626,5 @@ export function registerMeetingWhiteboardRoutes({
                 },
             });
         },
-        { access: { minRole: "user" } },
     );
 }

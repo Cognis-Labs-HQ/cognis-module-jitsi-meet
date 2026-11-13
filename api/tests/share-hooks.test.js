@@ -150,6 +150,10 @@ function createFlowHarness(executor, profileStore = createProfileStore()) {
     const ctx = { flow };
     const capabilities = new Map([
         ["db:executor", executor],
+        [
+            "share:resolveGuestId",
+            (claims) => (claims?.purpose === "share" ? "share-1" : ""),
+        ],
         ["social:profileStore", profileStore],
         ["social:profile:identity", profileIdentityFake],
         ["logging:log", () => undefined],
@@ -260,7 +264,7 @@ test("jitsi share hooks let participants mint and revoke meeting shares", async 
         true,
     );
     const kickedGuestRevokeResult = await ctx.flow.run("revoke-share-token", {
-        claims: { sub: "share:share-1:guest-1" },
+        claims: { sub: "share:share-1:guest-1", purpose: "share" },
         shareId: "share-1",
         resourceType: "meeting",
         resourceId: "meeting-1",

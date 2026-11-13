@@ -55,10 +55,18 @@ export async function resolveWhiteboardCapabilities(
     return capabilities;
 }
 
-export async function resolveWhiteboardServerContract(apiFetch, signal) {
+export async function resolveWhiteboardServerContract(
+    apiFetch,
+    signal,
+    { meetingId = "", accessToken } = {},
+) {
     const response = await apiFetch(
-        "/api/v1/modules/jitsi-meet/whiteboard/availability",
-        { signal },
+        `/api/v1/modules/jitsi-meet/whiteboard/availability?meetingId=${encodeURIComponent(meetingId)}`,
+        {
+            signal,
+            accessToken,
+            suppressAccessDeniedEvent: Boolean(accessToken),
+        },
     );
     const payload = await response.json().catch(() => ({}));
     return {

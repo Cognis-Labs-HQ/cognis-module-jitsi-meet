@@ -62,6 +62,8 @@ export function createPreflightHandlers({
     }
 
     async function runPreflightCheck({ showErrors = false } = {}) {
+        // Existing guest meetings are checked by their target-scoped get/join routes.
+        if (state.shareAccessToken) return false;
         if (signal?.aborted || state.preflightStatus === "running") {
             return false;
         }

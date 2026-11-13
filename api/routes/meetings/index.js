@@ -14,6 +14,7 @@ export function registerMeetingRoutes({
     canAccessMeeting,
     filterUsernamesForGuestVisibility,
     requireAuth,
+    getGuestClaims,
     readJson,
     sendJson,
     sendError,
@@ -433,109 +434,105 @@ export function registerMeetingRoutes({
         { access: { minRole: "user" } },
     );
 
-    router.post(
-        "/api/v1/modules/jitsi-meet/meetings/get",
-        async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
-            if (!claims) return;
-            const body = await readJson(req);
-            const includeChat = body.includeChat !== false;
-            const shareGuestAccess =
-                typeof resolveShareGuestMeetingAccess === "function"
-                    ? await resolveShareGuestMeetingAccess({
-                          claims,
-                          meetingId: String(body.meetingId ?? "").trim(),
-                          requiredCapability: "meeting:join",
-                      })
-                    : { isGuest: false };
-            if (shareGuestAccess.isGuest) {
-                if (!shareGuestAccess.allowed) {
-                    sendError(
-                        res,
-                        403,
-                        "forbidden",
-                        "Share guest access is not allowed for this meeting.",
-                    );
-                    return;
-                }
-                const meetingId = String(body.meetingId ?? "").trim();
-                const meeting = await store.getMeetingById(meetingId);
-                if (!meeting) {
-                    sendError(res, 404, "not_found", "Meeting not found.");
-                    return;
-                }
-                const [rawParticipants, storedState, activeMeetings] =
-                    await Promise.all([
-                        store.listParticipants(meeting.id),
-                        store.getMeetingState(meeting.id),
-                        store.listActiveMeetings(),
-                    ]);
-                const isActivelyOpen = activeMeetings.some(
-                    (activeMeeting) => activeMeeting.id === meeting.id,
+    router.post("/api/v1/modules/jitsi-meet/meetings/get", async (req, res) => {
+        const claims =
+            (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
+        if (!claims) return;
+        await store.ensureSchema();
+        const body = await readJson(req);
+        const includeChat = body.includeChat !== false;
+        const shareGuestAccess =
+            typeof resolveShareGuestMeetingAccess === "function"
+                ? await resolveShareGuestMeetingAccess({
+                      claims,
+                      meetingId: String(body.meetingId ?? "").trim(),
+                      requiredCapability: "meeting:join",
+                  })
+                : { isGuest: claims.purpose === "share", allowed: false };
+        if (shareGuestAccess.isGuest) {
+            if (!shareGuestAccess.allowed) {
+                sendError(
+                    res,
+                    403,
+                    "forbidden",
+                    "Share guest access is not allowed for this meeting.",
                 );
-                const state = isActivelyOpen
-                    ? { ...storedState, endedAt: null }
-                    : storedState;
-                const participants =
-                    typeof filterUsernamesForGuestVisibility === "function"
-                        ? await filterUsernamesForGuestVisibility(
-                              rawParticipants,
-                          )
-                        : rawParticipants;
-                const payload = await createMeetingPayload({
-                    store,
-                    meeting,
-                    state,
-                    participants,
-                    requesterUsername: meeting.createdBy,
-                    chatUrl:
-                        includeChat && meeting.chatRoomId
-                            ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
-                            : null,
-                    includeChatRoom: includeChat,
-                    requiresReclaim: false,
-                });
-                sendJson(res, 200, {
-                    data: {
-                        ...payload,
-                        readOnly: true,
-                    },
-                });
                 return;
             }
-
-            const resolved = await resolveMeetingPayloadOrReject({
-                body,
-                profileStore,
-                store,
-                claims,
-                res,
-                listClassroomParticipantHandles,
-                profileStore,
-                requesterAccountId: claims.sub,
-            });
-            if (!resolved) return;
-
+            const meetingId = String(body.meetingId ?? "").trim();
+            const meeting = await store.getMeetingById(meetingId);
+            if (!meeting) {
+                sendError(res, 404, "not_found", "Meeting not found.");
+                return;
+            }
+            const [rawParticipants, storedState, activeMeetings] =
+                await Promise.all([
+                    store.listParticipants(meeting.id),
+                    store.getMeetingState(meeting.id),
+                    store.listActiveMeetings(),
+                ]);
+            const isActivelyOpen = activeMeetings.some(
+                (activeMeeting) => activeMeeting.id === meeting.id,
+            );
+            const state = isActivelyOpen
+                ? { ...storedState, endedAt: null }
+                : storedState;
+            const participants =
+                typeof filterUsernamesForGuestVisibility === "function"
+                    ? await filterUsernamesForGuestVisibility(rawParticipants)
+                    : rawParticipants;
             const payload = await createMeetingPayload({
                 store,
-                meeting: resolved.meeting,
-                state: resolved.state,
-                participants: resolved.participants,
-                requesterUsername: resolved.requesterUsername,
+                meeting,
+                state,
+                participants,
+                requesterUsername: meeting.createdBy,
+                guest: true,
                 chatUrl:
-                    includeChat && resolved.meeting.chatRoomId
-                        ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                    includeChat && meeting.chatRoomId
+                        ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
                         : null,
                 includeChatRoom: includeChat,
                 requiresReclaim: false,
             });
             sendJson(res, 200, {
-                data: payload,
+                data: {
+                    ...payload,
+                    readOnly: true,
+                },
             });
-        },
-        { access: { minRole: "user" } },
-    );
+            return;
+        }
+
+        const resolved = await resolveMeetingPayloadOrReject({
+            body,
+            profileStore,
+            store,
+            claims,
+            res,
+            listClassroomParticipantHandles,
+            profileStore,
+            requesterAccountId: claims.sub,
+        });
+        if (!resolved) return;
+
+        const payload = await createMeetingPayload({
+            store,
+            meeting: resolved.meeting,
+            state: resolved.state,
+            participants: resolved.participants,
+            requesterUsername: resolved.requesterUsername,
+            chatUrl:
+                includeChat && resolved.meeting.chatRoomId
+                    ? `/messages/${encodeURIComponent(resolved.meeting.chatRoomId)}`
+                    : null,
+            includeChatRoom: includeChat,
+            requiresReclaim: false,
+        });
+        sendJson(res, 200, {
+            data: payload,
+        });
+    });
 
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/preflight",
@@ -771,9 +768,10 @@ export function registerMeetingRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/state",
         async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims =
+                (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
             if (!claims) return;
+            await store.ensureSchema();
             const body = await readJson(req);
             const includeChat = body.includeChat !== false;
             const shareGuestAccess =
@@ -783,7 +781,7 @@ export function registerMeetingRoutes({
                           meetingId: String(body.meetingId ?? "").trim(),
                           requiredCapability: "meeting:join",
                       })
-                    : { isGuest: false };
+                    : { isGuest: claims.purpose === "share", allowed: false };
             if (shareGuestAccess.isGuest) {
                 if (!shareGuestAccess.allowed) {
                     sendError(
@@ -867,6 +865,5 @@ export function registerMeetingRoutes({
                 },
             });
         },
-        { access: { minRole: "user" } },
     );
 }

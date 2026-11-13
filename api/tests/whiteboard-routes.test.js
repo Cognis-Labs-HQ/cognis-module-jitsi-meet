@@ -86,7 +86,7 @@ test("every authorized attendee can synchronize observed screen sharing", async 
             meetingDisposable: true,
         },
         {
-            claims: { sub: "share:share-17:guest-session-4" },
+            claims: { sub: "share:share-17:guest-session-4", purpose: "share" },
             guestAllowed: true,
         },
     ]) {
@@ -112,7 +112,7 @@ test("meeting share guests synchronize the mapped state with their stable presen
         whiteboardOpenVotes: [],
     };
     const routes = createRoutes({
-        claims: { sub: "share:share-17:guest-session-4" },
+        claims: { sub: "share:share-17:guest-session-4", purpose: "share" },
         guestAllowed: true,
         organizerUsername: "alice",
         presence: [
@@ -155,7 +155,7 @@ test("meeting share guests cannot create or replace a whiteboard mapping", async
         },
     ]) {
         const routes = createRoutes({
-            claims: { sub: "share:share-17:guest-session-4" },
+            claims: { sub: "share:share-17:guest-session-4", purpose: "share" },
             guestAllowed: true,
             state,
         });
@@ -183,7 +183,7 @@ test("meeting share guests cannot create or replace a whiteboard mapping", async
 
 test("meeting share guest tokens cannot update another meeting", async () => {
     const routes = createRoutes({
-        claims: { sub: "share:share-17:guest-session-4" },
+        claims: { sub: "share:share-17:guest-session-4", purpose: "share" },
         guestAllowed: false,
     });
     const response = createRecorder();
@@ -709,7 +709,7 @@ test("unauthorized meeting users cannot grant themselves Whiteboard membership",
 test("link guests follow the exact mapped board without an account membership grant", async () => {
     const routes = createRoutes({
         state: openWhiteboardState(),
-        claims: { sub: "share:guest" },
+        claims: { sub: "share:guest", purpose: "share" },
         guestAllowed: true,
     });
     const response = await followExistingBoard(routes);

@@ -495,7 +495,15 @@ export async function bindWhiteboardButton({
             void (async () => {
                 try {
                     const serverContract =
-                        await resolveWhiteboardServerContract(apiFetch, signal);
+                        await resolveWhiteboardServerContract(
+                            apiFetch,
+                            signal,
+                            {
+                                meetingId,
+                                accessToken:
+                                    state.shareAccessToken || undefined,
+                            },
+                        );
                     if (!requestIsCurrent()) return;
                     if (!serverContract.available) {
                         await logUi(
