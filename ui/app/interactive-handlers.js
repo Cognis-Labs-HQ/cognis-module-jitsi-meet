@@ -90,13 +90,13 @@ export function createInteractiveHandlersBinder({
                         category: "user",
                         typeFilter: "user",
                         ariaLabel: i18n.t(
-                            "module.jitsi_meet.participants.search",
+                            "module.jitsi.meet.participants.search",
                         ),
                         noResultsText: i18n.t(
-                            "module.jitsi_meet.participants.none",
+                            "module.jitsi.meet.participants.none",
                         ),
                         confirmLabel: i18n.t(
-                            "module.jitsi_meet.participants.add_selected",
+                            "module.jitsi.meet.participants.add.selected",
                         ),
                         multiSelect: true,
                         onSelectMultiple: (results) => {
@@ -481,7 +481,7 @@ export function createInteractiveHandlersBinder({
                 if (currentPath === nextPath) return;
                 event.preventDefault();
                 event.stopPropagation();
-                showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
+                showToast(i18n.t("module.jitsi.meet.overlay.leave.blocked"), {
                     variant: "warning",
                 });
             },
@@ -492,7 +492,7 @@ export function createInteractiveHandlersBinder({
             () => {
                 if (!isMeetingActive() || canNavigateDuringMeeting()) return;
                 history.pushState(history.state, "", window.location.href);
-                showToast(i18n.t("module.jitsi_meet.overlay.leave_blocked"), {
+                showToast(i18n.t("module.jitsi.meet.overlay.leave.blocked"), {
                     variant: "warning",
                 });
             },
@@ -518,7 +518,7 @@ export function createInteractiveHandlersBinder({
                     );
                     updateOverlay({
                         message: i18n.t(
-                            "module.jitsi_meet.overlay.auth_in_progress",
+                            "module.jitsi.meet.overlay.auth.in.progress",
                         ),
                         showAuth: true,
                         visible: true,
@@ -546,7 +546,7 @@ export function createInteractiveHandlersBinder({
                     state.alonePromptDismissedMeetingId = "";
                     await resetMeetingState({
                         overlayMessageKey:
-                            "module.jitsi_meet.overlay.meeting_left",
+                            "module.jitsi.meet.overlay.meeting.left",
                     });
                 },
                 { signal: bindSignal },
@@ -560,7 +560,7 @@ export function createInteractiveHandlersBinder({
                         state.meeting?.id ?? "";
                     state.alonePromptMeetingId = "";
                     updateOverlay({
-                        message: i18n.t("module.jitsi_meet.overlay.in_meeting"),
+                        message: i18n.t("module.jitsi.meet.overlay.in.meeting"),
                         canStart: false,
                         showAuth: false,
                         showReclaim: false,
@@ -591,7 +591,7 @@ export function createInteractiveHandlersBinder({
                     );
                     updateOverlay({
                         message: i18n.t(
-                            "module.jitsi_meet.overlay.reclaim_done",
+                            "module.jitsi.meet.overlay.reclaim.done",
                         ),
                         showReclaim: false,
                         visible: true,
@@ -647,7 +647,7 @@ export function createInteractiveHandlersBinder({
                     );
                     if (!response.ok) {
                         showToast(
-                            i18n.t("module.jitsi_meet.chat.send_failed"),
+                            i18n.t("module.jitsi.meet.chat.send.failed"),
                             {
                                 variant: "error",
                             },

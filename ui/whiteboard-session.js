@@ -87,13 +87,13 @@ export async function ensureWhiteboardKeyringUnlocked(trigger, state) {
         await trigger.requestKeyringUnlock({
             request: {
                 component: trigger.i18n.t(
-                    "module.jitsi_meet.whiteboard.keyring_component",
+                    "module.jitsi.meet.whiteboard.keyring.component",
                 ),
                 action: trigger.i18n.t(
-                    "module.jitsi_meet.whiteboard.keyring_action",
+                    "module.jitsi.meet.whiteboard.keyring.action",
                 ),
                 process: trigger.i18n
-                    .t("module.jitsi_meet.whiteboard.keyring_process")
+                    .t("module.jitsi.meet.whiteboard.keyring.process")
                     .replace("{{meeting}}", meetingName),
             },
         }),

@@ -67,7 +67,7 @@ export function createPreflightHandlers({
         }
         utils.setPreflightStatus(
             "running",
-            i18n.t("module.jitsi_meet.overlay.loading"),
+            i18n.t("module.jitsi.meet.overlay.loading"),
         );
         const response = await apiFetch(
             "/api/v1/modules/jitsi-meet/meetings/preflight",
@@ -80,8 +80,8 @@ export function createPreflightHandlers({
             state.preflightNeedsConfig = response.status === 409;
             const message =
                 response.status === 409
-                    ? i18n.t("module.jitsi_meet.overlay.config_required")
-                    : i18n.t("module.jitsi_meet.overlay.probe_failed");
+                    ? i18n.t("module.jitsi.meet.overlay.config.required")
+                    : i18n.t("module.jitsi.meet.overlay.probe.failed");
             utils.setPreflightStatus("failed", message);
             renderParticipants();
             if (showErrors) {
@@ -94,7 +94,7 @@ export function createPreflightHandlers({
         state.preflightNeedsConfig = false;
         const isAlive = payload?.data?.alive === true;
         if (!isAlive) {
-            const message = i18n.t("module.jitsi_meet.overlay.probe_failed");
+            const message = i18n.t("module.jitsi.meet.overlay.probe.failed");
             utils.setPreflightStatus("failed", message);
             renderParticipants();
             if (showErrors) {
@@ -104,7 +104,7 @@ export function createPreflightHandlers({
         }
         utils.setPreflightStatus(
             "passed",
-            i18n.t("module.jitsi_meet.overlay.probe_done"),
+            i18n.t("module.jitsi.meet.overlay.probe.done"),
         );
         renderParticipants();
         return true;
@@ -130,7 +130,7 @@ export function createPreflightHandlers({
             emptyMessage.className =
                 "jitsi-active-meetings-empty jitsi-participants-empty";
             emptyMessage.textContent = i18n.t(
-                "module.jitsi_meet.participants.available_none",
+                "module.jitsi.meet.participants.available.none",
             );
             availablePool.replaceChildren(emptyMessage);
         } else {
@@ -294,7 +294,7 @@ export function createPreflightHandlers({
         const message = overlay.querySelector("#jitsi-overlay-message");
         if (visible) {
             overlay.dataset.dropLabel = i18n.t(
-                "module.jitsi_meet.participants.drop_to_invite",
+                "module.jitsi.meet.participants.drop.to.invite",
             );
             if (message instanceof HTMLElement) {
                 overlay.dataset.dropPreviousMessage = message.textContent ?? "";
@@ -385,8 +385,8 @@ export function createPreflightHandlers({
                         i18n.t(
                             errorPayload?.error?.code ===
                                 "participant_addition_declined"
-                                ? "module.jitsi_meet.participants.invite_rejected"
-                                : "module.jitsi_meet.overlay.invite_failed",
+                                ? "module.jitsi.meet.participants.invite.rejected"
+                                : "module.jitsi.meet.overlay.invite.failed",
                         ),
                         {
                             variant:
@@ -410,7 +410,7 @@ export function createPreflightHandlers({
                 }
                 showToast(
                     i18n
-                        .t("module.jitsi_meet.participants.invite_success")
+                        .t("module.jitsi.meet.participants.invite.success")
                         .replace(
                             "{{participant}}",
                             fromAvailable.displayName || normalized,
@@ -495,16 +495,16 @@ export function createPreflightHandlers({
         if (!latestState) return;
         if (latestState.endedAt) {
             await callbacks.resetMeetingState({
-                overlayMessageKey: "module.jitsi_meet.overlay.meeting_closed",
+                overlayMessageKey: "module.jitsi.meet.overlay.meeting.closed",
             });
             return;
         }
         if (payload?.data?.sessionActive === false) {
             await callbacks.resetMeetingState({
                 overlayMessageKey:
-                    "module.jitsi_meet.overlay.reclaimed_elsewhere",
+                    "module.jitsi.meet.overlay.reclaimed.elsewhere",
                 toastMessageKey:
-                    "module.jitsi_meet.overlay.reclaimed_elsewhere",
+                    "module.jitsi.meet.overlay.reclaimed.elsewhere",
                 toastVariant: "warning",
             });
             return;
@@ -576,7 +576,7 @@ export function createPreflightHandlers({
             !latestState.authCompletedAt
         ) {
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.auth_waiting"),
+                message: i18n.t("module.jitsi.meet.overlay.auth.waiting"),
                 showAuth: true,
                 visible: true,
             });
@@ -584,7 +584,7 @@ export function createPreflightHandlers({
         }
         if (!state.jitsiConferenceJoined && latestState.authCompletedAt) {
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.auth_completed"),
+                message: i18n.t("module.jitsi.meet.overlay.auth.completed"),
                 canStart: false,
                 showAuth: false,
                 visible: true,
@@ -782,7 +782,7 @@ export function createPreflightHandlers({
         void callbacks
             .joinMeeting()
             .catch(() => {
-                showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+                showToast(i18n.t("module.jitsi.meet.overlay.join.failed"), {
                     variant: "error",
                 });
             })

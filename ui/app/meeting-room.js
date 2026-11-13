@@ -50,13 +50,13 @@ export function createEmbedHandlers({
         );
         const roomName = resolveRoomName(state.meeting);
         if (!meetingHost || !roomName) {
-            showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+            showToast(i18n.t("module.jitsi.meet.overlay.join.failed"), {
                 variant: "error",
             });
             return;
         }
         if (typeof window.JitsiMeetExternalAPI !== "function") {
-            showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+            showToast(i18n.t("module.jitsi.meet.overlay.join.failed"), {
                 variant: "error",
             });
             return;
@@ -104,7 +104,7 @@ export function createEmbedHandlers({
         );
         const meetingKeyringId = `meeting:${state.meeting.id}:password`;
         const meetingProcess = i18n
-            .t("module.jitsi_meet.keyring_request_process")
+            .t("module.jitsi.meet.keyring.request.process")
             .replace(
                 "{{meeting}}",
                 state.meeting.meetingName || state.meeting.id,
@@ -142,7 +142,7 @@ export function createEmbedHandlers({
             );
             if (!isCurrent()) return;
             if (!acknowledgeResponse.ok) {
-                showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+                showToast(i18n.t("module.jitsi.meet.overlay.join.failed"), {
                     variant: "error",
                 });
                 return;
@@ -207,8 +207,8 @@ export function createEmbedHandlers({
         const promptForCurrentMeetingPassword = async ({ invalid }) => {
             let passwordInput = null;
             const result = await openPopup({
-                title: i18n.t("module.jitsi_meet.keyring_prompt_title"),
-                body: `<label class="stack"><span>${escapeHtml(i18n.t(invalid ? "module.jitsi_meet.keyring_invalid" : "module.jitsi_meet.keyring_prompt"))}</span><input id="jitsi-keyring-password" type="password" autocomplete="off" required></label>`,
+                title: i18n.t("module.jitsi.meet.keyring.prompt.title"),
+                body: `<label class="stack"><span>${escapeHtml(i18n.t(invalid ? "module.jitsi.meet.keyring.invalid" : "module.jitsi.meet.keyring.prompt"))}</span><input id="jitsi-keyring-password" type="password" autocomplete="off" required></label>`,
                 actions: [
                     {
                         id: "save",
@@ -289,7 +289,7 @@ export function createEmbedHandlers({
             if (!response.ok) {
                 state.kickReportedMeetingId = "";
                 showToast(
-                    i18n.t("module.jitsi_meet.overlay.kick_sync_failed"),
+                    i18n.t("module.jitsi.meet.overlay.kick.sync.failed"),
                     {
                         variant: "error",
                     },
@@ -297,8 +297,8 @@ export function createEmbedHandlers({
                 return;
             }
             await callbacks.resetMeetingState({
-                overlayMessageKey: "module.jitsi_meet.overlay.kicked",
-                toastMessageKey: "module.jitsi_meet.overlay.kicked",
+                overlayMessageKey: "module.jitsi.meet.overlay.kicked",
+                toastMessageKey: "module.jitsi.meet.overlay.kicked",
                 toastVariant: "warning",
                 skipPresenceUpdate: true,
             });
@@ -312,7 +312,7 @@ export function createEmbedHandlers({
             }
             await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
-                    "module.jitsi_meet.overlay.meeting_left",
+                    "module.jitsi.meet.overlay.meeting.left",
                 honorMeetingClosed: false,
             });
             await callbacks.closeComponentWindow();
@@ -321,7 +321,7 @@ export function createEmbedHandlers({
             if (state.jitsiApi !== apiInstance) return;
             await callbacks.handleMeetingExit({
                 fallbackOverlayMessageKey:
-                    "module.jitsi_meet.overlay.meeting_closed",
+                    "module.jitsi.meet.overlay.meeting.closed",
                 forceClosedOverlay: true,
                 reportTerminated: true,
             });
@@ -413,7 +413,7 @@ export function createEmbedHandlers({
                         prompt: promptForCurrentMeetingPassword,
                         request: {
                             action: i18n.t(
-                                "module.jitsi_meet.keyring_request_action_update",
+                                "module.jitsi.meet.keyring.request.action.update",
                             ),
                             process: meetingProcess,
                         },
@@ -453,7 +453,7 @@ export function createEmbedHandlers({
 
         frame.hidden = false;
         utils.updateOverlay({
-            message: i18n.t("module.jitsi_meet.overlay.in_meeting"),
+            message: i18n.t("module.jitsi.meet.overlay.in.meeting"),
             canStart: false,
             showAuth: false,
             showReclaim: false,
@@ -487,7 +487,7 @@ export function createEmbedHandlers({
         );
         if (!isCurrent()) return;
         if (!joinResponse.ok) {
-            showToast(i18n.t("module.jitsi_meet.overlay.join_failed"), {
+            showToast(i18n.t("module.jitsi.meet.overlay.join.failed"), {
                 variant: "error",
             });
             return;
@@ -502,7 +502,7 @@ export function createEmbedHandlers({
         if (!isCurrent()) return;
         if (state.meeting.requiresReclaim) {
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.reclaim_prompt"),
+                message: i18n.t("module.jitsi.meet.overlay.reclaim.prompt"),
                 showReclaim: true,
                 visible: true,
             });
@@ -512,7 +512,7 @@ export function createEmbedHandlers({
         if (state.meeting.waitingForAuthentication) {
             callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.auth_waiting_other"),
+                message: i18n.t("module.jitsi.meet.overlay.auth.waiting.other"),
                 visible: true,
             });
             return { trackingAllowed: false };
@@ -525,7 +525,7 @@ export function createEmbedHandlers({
             callbacks.ensureMeetingTracking({ pendingAuthentication: true });
             utils.updateOverlay({
                 message: i18n.t(
-                    "module.jitsi_meet.overlay.auth_required_description",
+                    "module.jitsi.meet.overlay.auth.required.description",
                 ),
                 showAuth: Boolean(state.meeting.canAuthenticate),
                 visible: true,
@@ -567,7 +567,7 @@ export function createEmbedHandlers({
 
             const selected = utils.selectedUsernames();
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.creating"),
+                message: i18n.t("module.jitsi.meet.overlay.creating"),
                 loading: true,
                 canStart: false,
                 visible: true,
@@ -590,8 +590,8 @@ export function createEmbedHandlers({
             if (!createResponse.ok) {
                 const message =
                     createResponse.status === 409
-                        ? i18n.t("module.jitsi_meet.overlay.config_required")
-                        : i18n.t("module.jitsi_meet.overlay.create_failed");
+                        ? i18n.t("module.jitsi.meet.overlay.config.required")
+                        : i18n.t("module.jitsi.meet.overlay.create.failed");
                 utils.updateOverlay({
                     message,
                     loading: false,
@@ -616,7 +616,7 @@ export function createEmbedHandlers({
             await callbacks.updateCognisChat();
 
             utils.updateOverlay({
-                message: i18n.t("module.jitsi_meet.overlay.joining"),
+                message: i18n.t("module.jitsi.meet.overlay.joining"),
                 loading: false,
                 canStart: false,
                 visible: true,

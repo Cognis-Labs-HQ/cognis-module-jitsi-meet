@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { validateModuleStructure } from "../../scripts/module-structure.js";
@@ -30,4 +30,18 @@ test("structure validation rejects misplaced CSS and flat route handlers", async
     await writeFile(join(root, "ui/example.css"), "");
     await writeFile(join(root, "api/example-routes.js"), "");
     assert.equal((await validateModuleStructure(root)).length, 2);
+});
+
+test("module locale keys use period-delimited segments", async () => {
+    for (const locale of ["de", "en", "id", "ja"]) {
+        const xml = await readFile(
+            new URL(
+                `../../ui/languages/${locale}/strings.xml`,
+                import.meta.url,
+            ),
+            "utf8",
+        );
+        for (const match of xml.matchAll(/<string name="(module\.[^"]+)"/g))
+            assert.match(match[1], /^module(?:\.[a-z0-9]+)+$/);
+    }
 });

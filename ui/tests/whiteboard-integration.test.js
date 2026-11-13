@@ -83,7 +83,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.ok(!manifest.requiresCapabilities.includes("whiteboard:uiGateway"));
     assert.match(buttonSource, /whiteboard\/availability/);
     assert.match(buttonSource, /resolveWhiteboardServerContract/);
-    assert.match(buttonSource, /provider_unavailable/);
+    assert.match(
+        buttonSource,
+        /module\.jitsi\.meet\.whiteboard\.provider\.unavailable/,
+    );
     assert.match(
         buttonSource,
         /state\.meeting\?\.disposable === true[\s\S]*"createDisposableCanvas"[\s\S]*"createCanvas"/,
@@ -104,7 +107,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /state\.meeting\?\.disposable === true/);
     assert.match(
         buttonSource,
-        /approvalRequested === true[\s\S]*module\.jitsi_meet\.whiteboard\.request_sent[\s\S]*variant: "info"/,
+        /approvalRequested === true[\s\S]*module\.jitsi\.meet\.whiteboard\.request\.sent[\s\S]*variant: "info"/,
     );
     assert.match(
         buttonSource,
@@ -128,7 +131,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     assert.match(buttonSource, /classList\.toggle\("active", confirmed\)/);
     assert.match(
         buttonSource,
-        /button\.dataset\.activeLabel[\s\S]*?module\.jitsi_meet\.whiteboard\.close/,
+        /button\.dataset\.activeLabel[\s\S]*?module\.jitsi\.meet\.whiteboard\.close/,
     );
     assert.match(
         buttonSource,
@@ -207,10 +210,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /screen_sharing_locked_tooltip[\s\S]*?trigger\.button\.title = screenSharingTooltip[\s\S]*?trigger\.slot\.title = screenSharingTooltip/,
+        /screen\.sharing\.locked\.tooltip[\s\S]*?trigger\.button\.title = screenSharingTooltip[\s\S]*?trigger\.slot\.title = screenSharingTooltip/,
     );
     assert.match(buttonSource, /globalThis\.console\?\.error/);
-    assert.match(buttonSource, /load_failed_detailed/);
+    assert.match(buttonSource, /load\.failed\.detailed/);
     assert.match(buttonSource, /stage: stageKey/);
     assert.match(
         buttonSource,
@@ -218,7 +221,7 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
     );
     assert.match(
         buttonSource,
-        /trigger\.loadRetryAfter = Date\.now\(\) \+ 2_000[\s\S]*?whiteboard\.load_failed/,
+        /trigger\.loadRetryAfter = Date\.now\(\) \+ 2_000[\s\S]*?whiteboard\.load\.failed/,
     );
     assert.doesNotMatch(
         buttonSource,

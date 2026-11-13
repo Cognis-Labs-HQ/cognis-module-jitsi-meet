@@ -210,7 +210,7 @@ test("failed meeting discovery stops polling and preserves previous results", as
     assert.deepEqual(state.persistedMeetings, [{ id: "known-persisted" }]);
     assert.ok(
         feedback.some(
-            ([message]) => message === "module.jitsi_meet.meetings.load.failed",
+            ([message]) => message === "module.jitsi.meet.meetings.load.failed",
         ),
     );
 });
@@ -688,7 +688,7 @@ for (const failure of ["offline_operation_unavailable", "connection_refused"]) {
                 .slice(start)
                 .some(
                     ([message]) =>
-                        message === "module.jitsi_meet.meetings.load.failed",
+                        message === "module.jitsi.meet.meetings.load.failed",
                 ),
             false,
         );

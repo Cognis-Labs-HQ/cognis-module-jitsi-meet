@@ -113,7 +113,7 @@ export async function mount(
             )) ?? NULL_MESSAGE_REACTIONS_CONTROLLER;
     }
     if (signal?.aborted) return messageReactions.destroy();
-    applyDocumentTitle(i18n, "module.jitsi_meet.page_title");
+    applyDocumentTitle(i18n, "module.jitsi.meet.page.title");
     signal?.addEventListener(
         "abort",
         () => {
@@ -425,7 +425,7 @@ export async function mount(
         i18n,
         pageContext: {
             title: i18n.t("ui.reuse.meetings"),
-            subtitle: i18n.t("module.jitsi_meet.page.subtitle"),
+            subtitle: i18n.t("module.jitsi.meet.page.subtitle"),
         },
         showTopbar: !focusState,
         showNavbar: !limitedShareView && !focusState,

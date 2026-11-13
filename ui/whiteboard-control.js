@@ -41,7 +41,7 @@ function setButtonDisabled(button, disabled) {
 
 function explainUnavailableWhiteboard(button, slot, i18n, signal) {
     const message = i18n.t(
-        "module.jitsi_meet.whiteboard.provider_contract_unavailable",
+        "module.jitsi.meet.whiteboard.provider.contract.unavailable",
     );
     setButtonDisabled(button, true);
     button.title = message;
@@ -124,11 +124,11 @@ async function handleWhiteboardLoadError(
     await logUi("error", "Meeting whiteboard loading failed.", metadata);
     showToast(
         trigger.i18n
-            .t("module.jitsi_meet.whiteboard.load_failed_detailed")
+            .t("module.jitsi.meet.whiteboard.load.failed.detailed")
             .replace(
                 "{{stage}}",
                 trigger.i18n.t(
-                    `module.jitsi_meet.whiteboard.stage.${stageKey}`,
+                    `module.jitsi.meet.whiteboard.stage.${stageKey}`,
                 ),
             ),
         { variant: "error" },
@@ -164,7 +164,7 @@ export function syncWhiteboardButtonAvailability({ root, state }) {
             state.meeting?.state?.screenSharingActive === true;
         const screenSharingTooltip = screenSharingActive
             ? trigger.i18n.t(
-                  "module.jitsi_meet.whiteboard.screen_sharing_locked_tooltip",
+                  "module.jitsi.meet.whiteboard.screen.sharing.locked.tooltip",
               )
             : "";
         trigger.button.title = screenSharingTooltip;
@@ -325,8 +325,8 @@ export async function bindWhiteboardButton({
     button.type = "button";
     button.className = "btn-confirm btn-animated";
     button.setAttribute("aria-pressed", "false");
-    button.dataset.inactiveLabel = i18n.t("module.jitsi_meet.whiteboard.open");
-    button.dataset.activeLabel = i18n.t("module.jitsi_meet.whiteboard.close");
+    button.dataset.inactiveLabel = i18n.t("module.jitsi.meet.whiteboard.open");
+    button.dataset.activeLabel = i18n.t("module.jitsi.meet.whiteboard.close");
     button.textContent = button.dataset.inactiveLabel;
     if (state.shareAccessToken) {
         button.hidden = true;
@@ -468,7 +468,7 @@ export async function bindWhiteboardButton({
                             },
                         );
                         showToast(
-                            i18n.t("module.jitsi_meet.whiteboard.close_failed"),
+                            i18n.t("module.jitsi.meet.whiteboard.close.failed"),
                             { variant: "error" },
                         );
                     } finally {
@@ -521,7 +521,7 @@ export async function bindWhiteboardButton({
                         );
                         showToast(
                             i18n.t(
-                                "module.jitsi_meet.whiteboard.provider_unavailable",
+                                "module.jitsi.meet.whiteboard.provider.unavailable",
                             ),
                             { variant: "error" },
                         );
@@ -574,8 +574,8 @@ export async function bindWhiteboardButton({
                         showToast(
                             i18n.t(
                                 responseData?.approvalRequested === true
-                                    ? "module.jitsi_meet.whiteboard.request_sent"
-                                    : "module.jitsi_meet.whiteboard.consensus_pending",
+                                    ? "module.jitsi.meet.whiteboard.request.sent"
+                                    : "module.jitsi.meet.whiteboard.consensus.pending",
                             ),
                             { variant: "info" },
                         );
@@ -608,7 +608,7 @@ export async function bindWhiteboardButton({
                             closeButton: {
                                 className: "btn-cancel",
                                 label: i18n.t(
-                                    "module.jitsi_meet.whiteboard.close",
+                                    "module.jitsi.meet.whiteboard.close",
                                 ),
                                 onClose: () => button.click(),
                             },

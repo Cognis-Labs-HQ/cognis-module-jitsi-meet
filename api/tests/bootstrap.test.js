@@ -173,8 +173,8 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
     ).contribution;
     assert.equal(componentPageRoute.id, "module.jitsi.meet.meetings");
     assert.deepEqual(componentPageRoute.componentPage, {
-        labelKey: "module.jitsi_meet.page_title",
-        descriptionKey: "module.jitsi_meet.description",
+        labelKey: "module.jitsi.meet.page.title",
+        descriptionKey: "module.jitsi.meet.description",
         modes: ["overlay", "fullscreen", "pip"],
         minSize: { width: 400, height: 225 },
     });
@@ -183,8 +183,19 @@ test("jitsi bootstrap is removable and repeatable across lifecycle cycles", () =
     ).contribution;
     assert.deepEqual(navbarContribution.access, { minRole: "user" });
     assert.equal(navbarContribution.providesCapabilities, undefined);
+    assert.ok(
+        firstEnabledSnapshot.uiContributions.some(
+            ({ type, contribution }) =>
+                type === "capability-provider" &&
+                contribution.providesCapabilities.includes(
+                    "jitsi-meet:tutorials",
+                ),
+        ),
+    );
     const capabilityProvider = firstEnabledSnapshot.uiContributions.find(
-        ({ type }) => type === "capability-provider",
+        ({ type, contribution }) =>
+            type === "capability-provider" &&
+            contribution.providesCapabilities.includes("voip:startCall"),
     ).contribution;
     assert.equal(
         capabilityProvider.scriptUrl,
@@ -339,8 +350,8 @@ test("manifest exposes localized configuration metadata for core rendering", asy
         "/static/modules/jitsi-meet/languages",
     );
     for (const preference of manifest.ui.preferences) {
-        assert.match(preference.labelKey, /^module\.jitsi_meet\./);
-        assert.match(preference.descriptionKey, /^module\.jitsi_meet\./);
+        assert.match(preference.labelKey, /^module\.jitsi\.meet\./);
+        assert.match(preference.descriptionKey, /^module\.jitsi\.meet\./);
     }
     for (const metadataKey of [
         manifest.name,
@@ -349,6 +360,6 @@ test("manifest exposes localized configuration metadata for core rendering", asy
         ...manifest.categories,
         ...manifest.tags,
     ]) {
-        assert.match(metadataKey, /^module\.jitsi_meet\./);
+        assert.match(metadataKey, /^module\.jitsi\.meet\./);
     }
 });
