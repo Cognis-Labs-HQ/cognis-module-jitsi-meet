@@ -192,4 +192,6 @@
   <string name="module.jitsi.meet.tutorial.more.administration.meeting.status.body">Saring pertemuan aktif atau masalah, lalu periksa jumlah peserta dan sumber terkait.</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.title">Akhiri atau Hapus</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.body">Mengakhiri pertemuan aktif dan menghapus rekaman tidak aktif memiliki dampak berbeda; tinjau konfirmasinya.</string>
+  <string name="module.jitsi.meet.tutorial.start.title">Mulai Dan Bagikan Rapat</string>
+  <string name="module.jitsi.meet.tutorial.start.body">Klik Mulai tanpa memilih peserta untuk membuat rapat mandiri. Setelah bergabung, gunakan Bagikan untuk mengirim tautannya. Jika Anda memilih peserta, mereka akan menerima undangan rapat.</string>
 </resources>

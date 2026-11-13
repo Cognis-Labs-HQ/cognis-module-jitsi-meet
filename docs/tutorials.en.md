@@ -21,3 +21,5 @@ The meeting guide highlights the full Participants panel first and the Available
 The meeting-chat stage is omitted from the path and count while chat is unavailable.
 
 The preparation guide is available only while the lobby is rendered and no meeting embed is active. Direct meeting links do not offer lobby-only targets. Leaving the call restores the lobby guide. The live guide uses the module route root as its shared boundary, with a separate visible-meeting condition, so the frame wrapper, sharing actions and optional chat remain reachable. Disabled or hidden chat is excluded from the path and count.
+
+An empty participant directory must not block a standalone meeting. Keep the participant finder mounted when the directory is empty so repeated renders can update the Start button after preflight. A successful preflight permits creation without selected participants; failed preflight still prevents starting. The preparation tutorial explains choosing Start without participants and sharing the link after joining.

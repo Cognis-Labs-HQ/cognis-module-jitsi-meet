@@ -26,6 +26,7 @@ export async function mountProvider(ctx) {
             welcome: ".jitsi-participants-pane",
             meetings: ".jitsi-overlay-active-meetings",
             participants: ".jitsi-available-participants-column",
+            start: "#jitsi-start-btn",
         })) {
             targets[name] = (
                 await owner.target(name, {

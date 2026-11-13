@@ -21,3 +21,5 @@ Die Besprechungsanleitung hebt zuerst den gesamten Teilnehmerbereich und bei der
 Der Besprechungschat entfällt aus Ablauf und Schrittzahl, solange er nicht verfügbar ist.
 
 Die Vorbereitungsanleitung ist nur bei sichtbarer Lobby ohne aktiven Besprechungsrahmen verfügbar. Direkte Besprechungslinks bieten keine reinen Lobbyziele an. Nach Verlassen des Anrufs ist die Lobbyanleitung wieder verfügbar. Die Anrufanleitung verwendet den Routenbereich des Moduls als gemeinsame Grenze und prüft die Sichtbarkeit der Besprechung getrennt. Dadurch bleiben Rahmen, Freigabeaktionen und optionaler Chat erreichbar. Deaktivierter oder ausgeblendeter Chat entfällt aus Ablauf und Schrittzahl.
+
+Ein leeres Teilnehmerverzeichnis darf eine eigenständige Besprechung nicht blockieren. Die Teilnehmersuche bleibt auch bei leerem Verzeichnis eingebunden, damit erneute Darstellungen die Startschaltfläche nach der Vorprüfung aktualisieren können. Eine erfolgreiche Vorprüfung erlaubt das Erstellen ohne ausgewählte Teilnehmer; eine fehlgeschlagene verhindert den Start weiterhin. Die Vorbereitungsanleitung erklärt das Starten ohne Teilnehmer und das Teilen des Links nach dem Beitritt.

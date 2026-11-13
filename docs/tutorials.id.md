@@ -21,3 +21,5 @@ Panduan rapat menyorot seluruh panel peserta terlebih dahulu dan bagian peserta 
 Langkah chat rapat dihilangkan dari alur dan jumlah langkah selama chat tidak tersedia.
 
 Panduan persiapan hanya tersedia saat lobi terlihat dan sematan rapat tidak aktif. Tautan langsung ke rapat tidak menawarkan target khusus lobi. Setelah meninggalkan panggilan, panduan lobi tersedia kembali. Panduan panggilan memakai akar rute modul sebagai batas bersama dan memeriksa visibilitas rapat secara terpisah, sehingga bingkai, aksi berbagi, dan obrolan opsional tetap terjangkau. Obrolan yang dinonaktifkan atau disembunyikan dikeluarkan dari alur dan jumlah langkah.
+
+Direktori peserta kosong tidak boleh menghalangi rapat mandiri. Pencari peserta tetap terpasang saat direktori kosong agar render berulang dapat memperbarui tombol Mulai setelah pemeriksaan awal. Pemeriksaan berhasil mengizinkan pembuatan tanpa peserta terpilih; pemeriksaan gagal tetap mencegah mulai. Panduan persiapan menjelaskan Mulai tanpa peserta dan membagikan tautan setelah bergabung.

@@ -132,7 +132,7 @@ export function createPreflightHandlers({
             emptyMessage.textContent = i18n.t(
                 "module.jitsi.meet.participants.available.none",
             );
-            availablePool.replaceChildren(emptyMessage);
+            availablePool.replaceChildren(findButton, emptyMessage);
         } else {
             availablePool.replaceChildren(
                 findButton,

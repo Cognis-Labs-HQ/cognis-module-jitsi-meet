@@ -149,3 +149,5 @@ Template guidance baseline: [d71b980](https://github.com/Cognis-Labs-HQ/cognis-m
 Keep Jitsi meeting state, chat-room identity and Whiteboard integration separate. Consume neutral Whiteboard capabilities without provider implementation imports. Preserve upstream overlay presentation and live PiP state. Meeting chat-room IDs are unique and participant joins/leaves retain the existing room.
 
 Keep live-meeting tutorial scope on the module-owned common ancestor of the frame wrapper, sharing actions and chat; use a separate visible-meeting condition instead of narrowing the boundary to the embed. Offer preparation only in the rendered lobby with no active meeting embed, including direct-join and reconnect states. Verify both transitions and all scoped targets in a rendered browser layout.
+
+An empty participant directory is not a prerequisite failure for standalone shared-link meetings. Keep lookup controls mounted across empty-list renders so preflight can update Start, and test both successful and failed preflight without selected participants.

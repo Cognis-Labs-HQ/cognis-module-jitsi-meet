@@ -192,4 +192,6 @@
   <string name="module.jitsi.meet.tutorial.more.administration.meeting.status.body">Filtern Sie aktive Besprechungen oder Probleme und prüfen Sie Teilnehmerzahlen und Ressourcen.</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.title">Beenden oder löschen</string>
   <string name="module.jitsi.meet.tutorial.more.administration.terminate.or.delete.body">Das Beenden aktiver Besprechungen und Löschen inaktiver Datensätze wirken unterschiedlich; prüfen Sie die Bestätigung.</string>
+  <string name="module.jitsi.meet.tutorial.start.title">Eine Besprechung starten und teilen</string>
+  <string name="module.jitsi.meet.tutorial.start.body">Klicken Sie ohne ausgewählte Teilnehmer auf Starten, um eine eigenständige Besprechung zu erstellen. Teilen Sie nach dem Beitritt ihren Link über Teilen. Ausgewählte Teilnehmer erhalten stattdessen Einladungen.</string>
 </resources>
