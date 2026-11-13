@@ -147,3 +147,5 @@ Treat ctx as the backbone of every supported server and browser action. Extend d
 Template guidance baseline: [d71b980](https://github.com/Cognis-Labs-HQ/cognis-module-template/blob/d71b98077d8d7af087b44009dafc2d736f86b617/.github/copilot-instructions.md).
 
 Keep Jitsi meeting state, chat-room identity and Whiteboard integration separate. Consume neutral Whiteboard capabilities without provider implementation imports. Preserve upstream overlay presentation and live PiP state. Meeting chat-room IDs are unique and participant joins/leaves retain the existing room.
+
+Keep live-meeting tutorial scope on the module-owned common ancestor of the frame wrapper, sharing actions and chat; use a separate visible-meeting condition instead of narrowing the boundary to the embed. Offer preparation only in the rendered lobby with no active meeting embed, including direct-join and reconnect states. Verify both transitions and all scoped targets in a rendered browser layout.

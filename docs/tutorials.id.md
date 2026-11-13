@@ -19,3 +19,5 @@ Host bersama menyediakan aksi mengambang melalui antreannya. Kunjungan awal mena
 Panduan rapat menyorot seluruh panel peserta terlebih dahulu dan bagian peserta tersedia pada tahap pemilihan peserta.
 
 Langkah chat rapat dihilangkan dari alur dan jumlah langkah selama chat tidak tersedia.
+
+Panduan persiapan hanya tersedia saat lobi terlihat dan sematan rapat tidak aktif. Tautan langsung ke rapat tidak menawarkan target khusus lobi. Setelah meninggalkan panggilan, panduan lobi tersedia kembali. Panduan panggilan memakai akar rute modul sebagai batas bersama dan memeriksa visibilitas rapat secara terpisah, sehingga bingkai, aksi berbagi, dan obrolan opsional tetap terjangkau. Obrolan yang dinonaktifkan atau disembunyikan dikeluarkan dari alur dan jumlah langkah.

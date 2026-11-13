@@ -1,5 +1,17 @@
 import { definition } from "./plays.js";
 
+function lobbyVisible() {
+    const lobby = document.querySelector(
+        '.jitsi-route-root:not([data-suppress-meeting-overlay="true"]) #jitsi-overlay:not([hidden])',
+    );
+    return Boolean(
+        lobby?.getClientRects().length &&
+        !document.querySelector(
+            ".jitsi-route-root #jitsi-meeting-frame:not([hidden])",
+        ),
+    );
+}
+
 /** Register only through the host's public tutorial and resource contracts. */
 export async function mountProvider(ctx) {
     const api = ctx.capabilities.get("ui:tutorials");
@@ -18,6 +30,7 @@ export async function mountProvider(ctx) {
             targets[name] = (
                 await owner.target(name, {
                     resolve: () => {
+                        if (!lobbyVisible()) return null;
                         const matches = document.querySelectorAll(selector);
                         return matches.length === 1 ? matches[0] : null;
                     },
@@ -28,7 +41,8 @@ export async function mountProvider(ctx) {
             ...definition,
             available: () =>
                 ctx.capabilities.get("session:isAuthenticated")?.() === true &&
-                ctx.capabilities.get("offline:state")?.isOffline() !== true,
+                ctx.capabilities.get("offline:state")?.isOffline() !== true &&
+                lobbyVisible(),
             requires: ["ui:navigate"],
             steps: definition.steps.map((step) => ({
                 ...step,

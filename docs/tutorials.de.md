@@ -19,3 +19,5 @@ Der gemeinsame Host stellt schwebende Aktionen über seine Warteschlange bereit.
 Die Besprechungsanleitung hebt zuerst den gesamten Teilnehmerbereich und bei der Auswahl den Abschnitt verfügbare Teilnehmer hervor.
 
 Der Besprechungschat entfällt aus Ablauf und Schrittzahl, solange er nicht verfügbar ist.
+
+Die Vorbereitungsanleitung ist nur bei sichtbarer Lobby ohne aktiven Besprechungsrahmen verfügbar. Direkte Besprechungslinks bieten keine reinen Lobbyziele an. Nach Verlassen des Anrufs ist die Lobbyanleitung wieder verfügbar. Die Anrufanleitung verwendet den Routenbereich des Moduls als gemeinsame Grenze und prüft die Sichtbarkeit der Besprechung getrennt. Dadurch bleiben Rahmen, Freigabeaktionen und optionaler Chat erreichbar. Deaktivierter oder ausgeblendeter Chat entfällt aus Ablauf und Schrittzahl.

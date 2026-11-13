@@ -68,6 +68,10 @@ Langkah chat rapat dihilangkan dari alur dan jumlah langkah selama chat tidak te
 
 Kunci terjemahan menggunakan kata huruf kecil yang dipisahkan titik pada metadata modul dan tutorial. Entri katalog mempertahankan nilai terjemahan asli dan mengikuti indentasi XML di sekitarnya. Pemeriksaan namespace yang ketat menolak tanda hubung dan garis bawah pada kunci terjemahan. ID modul, UUID, kapabilitas, dan identitas penyelesaian tutorial tetap sama.
 
+## Ketersediaan Lobi dan Panggilan
+
+Panduan persiapan hanya tersedia saat lobi terlihat dan sematan rapat tidak aktif. Tautan langsung ke rapat tidak menawarkan target khusus lobi. Setelah meninggalkan panggilan, panduan lobi tersedia kembali. Panduan panggilan memakai akar rute modul sebagai batas bersama dan memeriksa visibilitas rapat secara terpisah, sehingga bingkai, aksi berbagi, dan obrolan opsional tetap terjangkau. Obrolan yang dinonaktifkan atau disembunyikan dikeluarkan dari alur dan jumlah langkah.
+
 ## Komit
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

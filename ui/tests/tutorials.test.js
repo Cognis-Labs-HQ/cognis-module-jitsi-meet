@@ -1,7 +1,33 @@
-import test from "node:test";
+import test, { beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { mountProvider } from "../tutorials/provider.js";
+
+let previousDocument;
+let lobby;
+let frame;
+let lobbyRendered;
+beforeEach(() => {
+    previousDocument = globalThis.document;
+    lobby = true;
+    frame = false;
+    lobbyRendered = true;
+    globalThis.document = {
+        querySelector: (selector) =>
+            selector.includes("#jitsi-overlay")
+                ? lobby
+                    ? { getClientRects: () => (lobbyRendered ? [{}] : []) }
+                    : null
+                : frame
+                  ? {}
+                  : null,
+        querySelectorAll: () => [{ id: "visible-target" }],
+    };
+});
+afterEach(() => {
+    if (previousDocument === undefined) delete globalThis.document;
+    else globalThis.document = previousDocument;
+});
 
 const manifest = JSON.parse(
     readFileSync(new URL("../../manifest.json", import.meta.url), "utf8"),
@@ -14,6 +40,7 @@ function fixture({ fail = false } = {}) {
         administrative = true,
         authenticated = true,
         offline = false;
+    const resolvers = new Map();
     const targets = [],
         routes = [],
         published = new Map();
@@ -25,6 +52,7 @@ function fixture({ fail = false } = {}) {
         target: async (id, options) => {
             assert.equal(typeof options.resolve, "function");
             targets.push(id);
+            resolvers.set(id, options.resolve);
             return { id: `module.${manifest.id}:${id}` };
         },
         register: async (play) => {
@@ -90,6 +118,7 @@ function fixture({ fail = false } = {}) {
     return {
         ctx,
         targets,
+        resolvers,
         routes,
         published,
         capabilities,
@@ -192,4 +221,31 @@ test("an unsupported host contract is rejected before allocating an owner", asyn
         mountProvider(state.ctx),
         /tutorial_contract_unavailable/,
     );
+});
+
+test("direct joins exclude preparation and returning to the lobby restores it", async () => {
+    lobby = false;
+    frame = true;
+    const state = fixture();
+    const dispose = await mountProvider(state.ctx);
+    assert.equal(state.play.available(), false);
+    for (const resolve of state.resolvers.values())
+        assert.equal(resolve(), null);
+    frame = false;
+    lobby = true;
+    assert.equal(state.play.available(), true);
+    for (const resolve of state.resolvers.values())
+        assert.equal(resolve().id, "visible-target");
+    lobbyRendered = false;
+    assert.equal(state.play.available(), false);
+    dispose();
+});
+
+test("a visible reconnect overlay does not offer lobby guidance during a call", async () => {
+    frame = true;
+    const state = fixture();
+    const dispose = await mountProvider(state.ctx);
+    assert.equal(state.play.available(), false);
+    assert.equal(state.resolvers.get("meetings")(), null);
+    dispose();
 });

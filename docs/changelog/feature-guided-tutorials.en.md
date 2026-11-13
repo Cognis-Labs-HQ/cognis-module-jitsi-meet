@@ -68,6 +68,10 @@ The meeting-chat stage is omitted from the path and count while chat is unavaila
 
 Translation keys use lowercase period-delimited words throughout the module metadata and tutorials. Catalog entries retain their original translated values and match the surrounding XML indentation. Strict namespace checks reject hyphens and underscores in translation keys. Module IDs, UUIDs, capabilities and tutorial completion identities remain unchanged.
 
+## Lobby And Live-call Availability
+
+The preparation guide is available only while the lobby is rendered and no meeting embed is active. Direct meeting links do not offer lobby-only targets. Leaving the call restores the lobby guide. The live guide uses the module route root as its shared boundary, with a separate visible-meeting condition, so the frame wrapper, sharing actions and optional chat remain reachable. Disabled or hidden chat is excluded from the path and count.
+
 ## Commits
 
 - [2ca1e32](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/2ca1e3292d5c02ae229f8a5652b40929b0272219)

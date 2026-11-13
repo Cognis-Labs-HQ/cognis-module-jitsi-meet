@@ -19,3 +19,5 @@ The shared host provides queued floating actions. First visits offer Next/Finish
 The meeting guide highlights the full Participants panel first and the Available Participants section at its participant-selection stage.
 
 The meeting-chat stage is omitted from the path and count while chat is unavailable.
+
+The preparation guide is available only while the lobby is rendered and no meeting embed is active. Direct meeting links do not offer lobby-only targets. Leaving the call restores the lobby guide. The live guide uses the module route root as its shared boundary, with a separate visible-meeting condition, so the frame wrapper, sharing actions and optional chat remain reachable. Disabled or hidden chat is excluded from the path and count.
