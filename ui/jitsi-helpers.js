@@ -19,10 +19,14 @@ const FALLBACK_MESSAGE_UI_RESOURCES = Object.freeze({
     profileFileNamespace: null,
 });
 
-export async function loadMessageUiResources() {
+export async function loadMessageUiResources({
+    meetingId = "",
+    accessToken,
+} = {}) {
     try {
         const response = await apiFetch(
-            "/api/v1/modules/jitsi-meet/ui-resources",
+            `/api/v1/modules/jitsi-meet/ui-resources?meetingId=${encodeURIComponent(meetingId)}`,
+            { accessToken, suppressAccessDeniedEvent: Boolean(accessToken) },
         );
         if (!response.ok) {
             void logUi(

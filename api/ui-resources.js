@@ -1,3 +1,4 @@
+import { requireMeetingResourceClaims } from "./reuse/resource-admission.js";
 const JITSI_MODULE_LANGUAGE_BASE_URLS = [
     "/static/modules/jitsi-meet/languages",
 ];
@@ -65,6 +66,9 @@ export function buildUnavailableJitsiUiResourcesPayload() {
 
 export function registerJitsiUiResourcesRoute({
     requireAuth,
+    getGuestClaims,
+    resolveShareGuestMeetingAccess,
+    sendError,
     router,
     sendJson,
     log,
@@ -72,7 +76,12 @@ export function registerJitsiUiResourcesRoute({
     unavailable = false,
 }) {
     router.get("/api/v1/modules/jitsi-meet/ui-resources", async (req, res) => {
-        const claims = requireAuth(req, res, "user");
+        const claims = await requireMeetingResourceClaims(req, res, {
+            requireAuth,
+            getGuestClaims,
+            resolveShareGuestMeetingAccess,
+            sendError,
+        });
         if (!claims) return;
         try {
             sendJson(res, 200, {

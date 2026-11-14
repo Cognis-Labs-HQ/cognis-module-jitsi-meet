@@ -93,7 +93,10 @@ export async function mount(
         requestedMeetingId ||
         String(focusState?.meetingId ?? "") ||
         (inShareView ? String(shareContext?.resourceId ?? "") : "");
-    const messageUiResources = await loadMessageUiResources();
+    const messageUiResources = await loadMessageUiResources({
+        meetingId: resolvedMeetingId,
+        accessToken: shareContext?.guestAccessToken || undefined,
+    });
     const chatLoadingModule = messageUiResources.chatLoadingModuleUrl
         ? await import(messageUiResources.chatLoadingModuleUrl)
         : null;

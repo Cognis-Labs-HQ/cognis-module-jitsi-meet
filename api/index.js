@@ -15,7 +15,6 @@ import {
 } from "./ui-resources.js";
 import { registerMeetingShareRoutes } from "./routes/share/index.js";
 import { resolveRequesterUsername } from "./reuse/requester.js";
-import { resolveShareGuestId } from "./reuse/share-guest.js";
 import { registerMeetingWhiteboardRoutes } from "./routes/whiteboard/index.js";
 import { registerMeetingWhiteboardDelegationHook } from "./whiteboard-delegation.js";
 import {
@@ -147,6 +146,9 @@ export function registerUi(ctx) {
 
 export function registerApiRoutes(router, ctx) {
     const requireAuth = ctx.getCapability("auth:requireAuth");
+    const getGuestClaims = ctx.getCapability("share:getGuestClaims");
+    const resolveShareGuestId = (claims) =>
+        ctx.getCapability("share:resolveGuestId")?.(claims) ?? "";
     if (typeof requireAuth !== "function") {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
     }
@@ -487,6 +489,9 @@ export function registerApiRoutes(router, ctx) {
     );
     registerJitsiUiResourcesRoute({
         requireAuth,
+        getGuestClaims,
+        resolveShareGuestMeetingAccess,
+        sendError,
         router,
         sendJson,
         log,
@@ -660,6 +665,7 @@ export function registerApiRoutes(router, ctx) {
         profileStore,
         profileIdentity,
         requireAuth,
+        getGuestClaims,
         readJson,
         sendJson,
         sendError,
@@ -672,7 +678,8 @@ export function registerApiRoutes(router, ctx) {
         createMeetingPayload,
         resolveMeetingPayload,
         resolveShareGuestMeetingAccess,
-        resolveShareGuestPresenceUsername,
+        resolveShareGuestPresenceUsername: (claims) =>
+            resolveShareGuestPresenceUsername(claims, resolveShareGuestId),
         listClassroomParticipantHandles,
         canAccessMeeting: canAccessMeetingForRequester,
         resolveGroupChat,
@@ -844,6 +851,7 @@ export function registerApiRoutes(router, ctx) {
                 usernames,
             ),
         requireAuth,
+        getGuestClaims,
         readJson,
         sendJson,
         sendError,

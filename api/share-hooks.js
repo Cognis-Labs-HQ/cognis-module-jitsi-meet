@@ -4,7 +4,6 @@ import {
     getFirstMatchingStageResult,
     getFirstStageResult,
 } from "./reuse/flow-helpers.js";
-import { resolveShareGuestId } from "./reuse/share-guest.js";
 /**
  * Determines whether an already-authenticated requester (identified by
  * their real account claims, not a share-guest token) already has direct
@@ -83,6 +82,8 @@ async function resolveMeetingRequesterAccess({
 }
 
 export function registerShareFlowHooks(ctx) {
+    const resolveShareGuestId = (claims) =>
+        ctx.getCapability("share:resolveGuestId")?.(claims) ?? "";
     if (
         !ctx.flow.exists("mint-share-token") ||
         !ctx.flow.exists("resolve-share-token")

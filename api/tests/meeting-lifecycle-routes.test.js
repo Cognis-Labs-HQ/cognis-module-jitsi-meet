@@ -659,7 +659,13 @@ test("a kicked guest invalidates the share link used to join", async () => {
                 revocations.push({ inactive: [meetingId, username] });
             },
         },
-        requireAuth: () => ({ sub: "share:link-1:guest-1", role: "user" }),
+        requireAuth: () =>
+            assert.fail("guest must not enter account admission"),
+        getGuestClaims: async () => ({
+            sub: "share:link-1:guest-1",
+            role: "user",
+            purpose: "share",
+        }),
         readJson: async (req) => req.body,
         sendJson: (res, status, body) => {
             res.writeHead(status);
@@ -684,7 +690,11 @@ test("a kicked guest invalidates the share link used to join", async () => {
     assert.equal(response.status, 200);
     assert.deepEqual(revocations, [
         {
-            claims: { sub: "share:link-1:guest-1", role: "user" },
+            claims: {
+                sub: "share:link-1:guest-1",
+                role: "user",
+                purpose: "share",
+            },
             meetingId: "meeting-1",
         },
         { inactive: ["meeting-1", "guest:guest-1"] },

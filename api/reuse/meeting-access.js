@@ -1,4 +1,3 @@
-import { resolveShareGuestId } from "./share-guest.js";
 import { resolveRequesterUsername } from "./requester.js";
 
 /**
@@ -9,11 +8,12 @@ import { resolveRequesterUsername } from "./requester.js";
  * guest is actively present. Prefixing with "guest:" keeps this identifier
  * out of any real username namespace.
  *
- * @param {{ sub?: string } | undefined} claims
+ * @param {{ sub?: string, purpose?: string } | undefined} claims
+ * @param {(claims: object) => string} resolveShareGuestId Share-owned identity resolver.
  * @returns {string} The `guest:<id>` presence username, or `""` when the
  *   claims do not resolve to a share guest.
  */
-export function resolveShareGuestPresenceUsername(claims) {
+export function resolveShareGuestPresenceUsername(claims, resolveShareGuestId) {
     const shareGuestId = resolveShareGuestId(claims);
     return shareGuestId ? `guest:${shareGuestId}` : "";
 }
@@ -219,6 +219,7 @@ export async function createMeetingPayload({
     includeChatRoom = true,
     requiresReclaim,
     meetingPassword = "",
+    guest = false,
 }) {
     return store.buildMeetingPayload(meeting, participants, state, {
         chatUrl,
@@ -226,11 +227,13 @@ export async function createMeetingPayload({
         requiresReclaim,
         meetingPassword,
         canAuthenticate:
+            !guest &&
             store.canCurrentUserInitiateAuth(state, requesterUsername) === true,
         waitingForAuthentication:
             state.authRequired &&
             !state.authCompletedAt &&
-            !store.canCurrentUserInitiateAuth(state, requesterUsername),
+            (guest ||
+                !store.canCurrentUserInitiateAuth(state, requesterUsername)),
     });
 }
 
@@ -240,7 +243,11 @@ export function createShareGuestMeetingAccessResolver(resolveCapability) {
             "share:resolveGuestAccess",
         );
         if (typeof resolveGuestAccess !== "function") {
-            return { isGuest: false, allowed: false, tokenRecord: null };
+            return {
+                isGuest: claims?.purpose === "share",
+                allowed: false,
+                tokenRecord: null,
+            };
         }
         const access = await resolveGuestAccess({
             claims,
@@ -249,7 +256,7 @@ export function createShareGuestMeetingAccessResolver(resolveCapability) {
             requiredCapability,
         });
         return {
-            isGuest: access?.shareGuest === true,
+            isGuest: claims?.purpose === "share" || access?.shareGuest === true,
             allowed: access?.authorized === true,
             tokenRecord: null,
         };

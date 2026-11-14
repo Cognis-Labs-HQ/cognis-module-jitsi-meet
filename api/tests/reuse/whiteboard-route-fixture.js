@@ -117,7 +117,15 @@ export function createRoutes({
             },
         },
         profileIdentity: profileIdentityFake,
-        requireAuth: (req) => req.claims ?? claims,
+        requireAuth: (req) => {
+            const account = req.claims ?? claims;
+            assert.notEqual(account.purpose, "share");
+            return account;
+        },
+        getGuestClaims: async (req) => {
+            const candidate = req.claims ?? claims;
+            return candidate.purpose === "share" ? candidate : null;
+        },
         readJson: async (req) => req.body,
         sendJson(res, status, body) {
             res.writeHead(status);
@@ -129,11 +137,11 @@ export function createRoutes({
         },
         canAccessMeeting: async () => authorized,
         resolveShareGuestMeetingAccess: async () => ({
-            isGuest: String(claims.sub).startsWith("share:"),
+            isGuest: claims.purpose === "share",
             allowed: guestAllowed,
         }),
         resolveShareGuestPresenceUsername: () =>
-            String(claims.sub).startsWith("share:")
+            claims.purpose === "share"
                 ? `guest:${String(claims.sub).split(":")[1]}`
                 : "",
         listClassroomParticipantHandles: async () => [],

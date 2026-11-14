@@ -331,7 +331,7 @@ test("meetings mini chat supports the Messages reaction floating menu", () => {
     const appSource = readJitsiUiBundle();
     assert.match(
         appSource,
-        /async function loadMessageUiResources\(\)[\s\S]*\/api\/v1\/modules\/jitsi-meet\/ui-resources/,
+        /async function loadMessageUiResources\([\s\S]*\/api\/v1\/modules\/jitsi-meet\/ui-resources/,
     );
     assert.match(appSource, /async function loadMessageReactionsController\(/);
     assert.match(appSource, /messageReactions\.renderReactionRow\(message\)/);

@@ -9,6 +9,7 @@ export function registerMeetingLifecycleRoutes({
     router,
     store,
     requireAuth,
+    getGuestClaims,
     readJson,
     sendJson,
     sendError,
@@ -398,9 +399,10 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
         async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims =
+                (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
             if (!claims) return;
+            await store.ensureSchema();
             const body = await readJson(req);
             const meetingId = String(body.meetingId ?? "").trim();
             if (!meetingId) {
@@ -526,14 +528,14 @@ export function registerMeetingLifecycleRoutes({
             });
             sendJson(res, 200, { data: { removed: true } });
         },
-        { access: { minRole: "user" } },
     );
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/join",
         async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims =
+                (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
             if (!claims) return;
+            await store.ensureSchema();
             const body = await readJson(req);
             const includeChat = body.includeChat !== false;
             const meetingId = String(body.meetingId ?? "").trim();
@@ -576,6 +578,7 @@ export function registerMeetingLifecycleRoutes({
                     state,
                     participants,
                     requesterUsername: meeting.createdBy,
+                    guest: true,
                     chatUrl:
                         includeChat && meeting.chatRoomId
                             ? `/messages/${encodeURIComponent(meeting.chatRoomId)}`
@@ -757,7 +760,6 @@ export function registerMeetingLifecycleRoutes({
                 data: payload,
             });
         },
-        { access: { minRole: "user" } },
     );
     registerMeetingChatSummaryRoute({
         router,
@@ -774,9 +776,10 @@ export function registerMeetingLifecycleRoutes({
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/presence",
         async (req, res) => {
-            await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims =
+                (await getGuestClaims?.(req)) ?? requireAuth(req, res, "user");
             if (!claims) return;
+            await store.ensureSchema();
             const body = await readJson(req);
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
                 claims,
@@ -940,6 +943,5 @@ export function registerMeetingLifecycleRoutes({
                 },
             });
         },
-        { access: { minRole: "user" } },
     );
 }
