@@ -21,3 +21,7 @@ Jalankan `npm install`, lalu `npm test`. Pengujian dan kode runtime hanya memaka
 Gunakan penerapan Jitsi HTTPS yang tepercaya. Akses API rapat diautentikasi, catatan rapat dibatasi untuk peserta, kata sandi dibuat untuk setiap rapat, dan akses tamu dibatasi oleh kapabilitas berbagi bercakupan. Tinjau repositori dan digest berkas yang dideklarasikan sebelum mengaktifkannya.
 
 Jalankan skrip lokal di checkout atau gunakan `npm --prefix <checkout> test`; ini bukan perintah Cognis global. Operasi terpasang memakai `cognisctl modules:jitsi-meet:ping`. Uji browser memakai Chromium terpasang: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Lihat [kontrak integrasi](docs/index.id.md) dan AGENTS.md turunan templat.
+
+## Kompatibilitas penghapusan akun
+
+Aktifkan modul ini hanya setelah memasang protokol v1 `auth:deprovisionOutcome` milik Auth dan `system:contracts` pada konteks tahap flow Core yang dibekukan secara dangkal, beserta dependensi penerimaan tamu terverifikasi. Pembersihan akun memerlukan penghapusan yang telah diselesaikan dan dikonfirmasi penyedia untuk pemanggilan yang sama. Kontrak yang hilang atau tidak kompatibel menghentikan pembersihan, bukan memercayai masukan yang berubah atau hasil flow publik. Pembaruan host tidak melindungi integrasi Jitsi lama; koordinasikan kedua pembaruan. Dependensi kandidat host dan urutan rilis pendamping dicatat dalam changelog. Lihat [kontrak integrasi](docs/index.id.md) untuk cakupan uji sintetis dan perilaku saat pembersihan gagal.

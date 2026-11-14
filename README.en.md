@@ -21,3 +21,7 @@ Run `npm install` followed by `npm test`. Tests and runtime code use only reposi
 Use a trusted HTTPS Jitsi deployment. Meeting API access is authenticated, meeting records are participant-gated, passwords are generated per meeting, and guest access is restricted by scoped share capabilities. Review the repository and its declared file digests before enabling it.
 
 Run local scripts in this checkout or use `npm --prefix <checkout> test`. They are not global Cognis commands. Installed operations use `cognisctl modules:jitsi-meet:ping`. The standards-mode browser regression uses an installed Chromium binary: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. See [integration contracts](docs/index.en.md) and the template-derived AGENTS.md.
+
+## Account deletion compatibility
+
+Enable this module only after installing Auth’s `auth:deprovisionOutcome` protocol v1 and `system:contracts` on Core’s shallow-frozen flow-stage context, alongside the verified guest admission dependencies. Account cleanup requires an owner-confirmed committed deletion for the exact invocation. Missing or incompatible contracts stop cleanup rather than trusting mutable input or public flow results. A host update does not protect older Jitsi integrations; coordinate both upgrades. The companion’s candidate host dependency and release order are recorded in its changelog. See [integration contracts](docs/index.en.md) for synthetic test coverage and cleanup failure behavior.
