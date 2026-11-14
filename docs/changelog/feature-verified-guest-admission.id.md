@@ -12,5 +12,4 @@ Saat tamu mulai, sumber daya UI dan ketersediaan Whiteboard dimuat hanya untuk r
 
 ## Komit
 
-- [fd67a8b](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/fd67a8bfe2cff29e397ebeefdf9d07d14ba8d295)
-- [aeb80de](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/aeb80dea9e72a3c5b56217a1583b64cc440622a5)
+- [ea6b331](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/ea6b331722d3b7f709431a9b30c4e6cb1e517ee5)
