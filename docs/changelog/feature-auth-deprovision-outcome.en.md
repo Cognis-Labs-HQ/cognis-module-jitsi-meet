@@ -10,8 +10,12 @@ Jitsi 1.6.16 resolves `auth:deprovisionOutcome` protocol v1 through the active s
 
 This companion requires the candidate Auth 2.2.12 outcome contract and Core 0.6.6 immutable flow-stage references. These are coordinated release dependencies, not a claim of already released host support. Install the matching host before enabling this module and update older Jitsi consumers before considering their cleanup protected. Preserve the verified guest admission changes from [PR #33](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/pull/33). No older-host fallback is provided.
 
+Host-assisted validation used local Cognis candidate `dd4da31aa021aa6e714473bff2486d59a2d37521`. Four synthetic cases passed through its public Core package and the registered Jitsi cleanup hook: retained invocation-pair replay, forged context replacement, and mutable public results for both denied and committed deletions. This records candidate provenance, not a published host release.
+
 ## Verify cleanup through registered flows
 
 Synthetic tests exercise exported bootstrap, registered cleanup and store flows, forged results, changed targets, invocation binding, provider lifetime, resource errors, optional Whiteboard behavior, disable/re-enable and uninstall. The server-only change introduces no tutorial controls or progression steps. No live account, meeting or external resource is modified by validation.
 
 ## Commits
+
+- [411b7d5](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/411b7d53a3a98927252a62854861dcb332bcbe7f)
