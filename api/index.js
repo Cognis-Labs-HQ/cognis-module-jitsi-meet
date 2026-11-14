@@ -384,16 +384,14 @@ export function registerApiRoutes(router, ctx) {
         "cleanup-dependencies",
         { id: "jitsi-meet:delete-user-activity" },
         async (stageCtx) => {
-            const input = stageCtx.input ?? {};
-            const persistResult = stageCtx.stageResults["persist-state"] ?? [];
-            if (
-                input.action !== "delete" ||
-                !input.username ||
-                !persistResult[0]?.persisted
-            ) {
+            const username = stageCtx.ctx
+                .requireCapability("system:contracts")
+                .resolve("auth:deprovisionOutcome", 1)
+                .deletedAccount(stageCtx.input, stageCtx.stageResults);
+            if (typeof username !== "string" || !username.trim()) {
                 return { cleaned: false };
             }
-            const accountId = String(input.username).trim();
+            const accountId = username.trim();
             const participantHandle =
                 await profileIdentity.resolveAccountHandle(accountId);
             let cleanup;
