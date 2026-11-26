@@ -1,6 +1,6 @@
 {
     "name": "@cognis/module-jitsi-meet",
-    "version": "1.6.14",
+    "version": "1.6.15",
     "private": false,
     "type": "module",
     "scripts": {
@@ -8,9 +8,16 @@
         "lint": "node ./tooling/scripts/lint-placeholder.mjs && node ./tooling/scripts/lint-readable.mjs",
         "test:browser": "node ui/tests/embedded-component.browser.js",
         "check:manifest": "node scripts/validate-manifest.js",
-        "manifest:hashes": "node scripts/update-manifest-hashes.js"
+        "manifest:hashes": "node scripts/update-manifest-hashes.js",
+        "check:docs": "node scripts/check-documentation.js",
+        "check": "npm test && npm run lint && npm run check:docs && npm run check:manifest"
     },
     "devDependencies": {
         "prettier": "^3.9.6"
+    },
+    "documentation": {
+        "readme": "docs/README.en.md",
+        "usage": "docs/USAGE.en.md",
+        "technical": "docs/TECHNICAL.en.md"
     }
 }

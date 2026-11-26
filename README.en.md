@@ -1,23 +1,19 @@
-# Jitsi Meet Module
+# Jitsi Meet
 
-**English** · [Deutsch](README.de.md) · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
+Join and host video meetings from Cognis.
 
-This repository contains the external Jitsi Meet module for Cognis. It provides video meeting creation, joining, moderation, participant management, meeting chat integration, and scoped guest sharing.
+## What You Can Do
 
-## Installation
+Start a meeting, invite participants, share its link and use meeting chat. A configured Whiteboard integration adds a shared canvas.
 
-Add this repository through **Modules → Module Sources** in Cognis, install the module, review its requested capabilities and dependencies, and then enable it separately. Enabling registers the `/meetings` and `/meeting` application routes, the Meetings navigation entry, administration section, static browser assets, APIs, capabilities, and flow hooks. Disabling removes those scoped contributions. Configure the Jitsi instance URL in the installed module's Settings popup. Cognis renders the manifest-declared fields, while this module validates and persists changes through its GET and PUT config endpoint.
+## Before You Start
 
-## Capabilities and dependencies
+An administrator must configure a reachable Jitsi server and enable Meetings. Allow camera and microphone access when needed. Shared links follow their access and password requirements.
 
-The module publishes `meeting:video`, `meeting:chat`, and `meeting:moderation`. Runtime integrations are resolved through Cognis `ctx` capabilities and flows. Its manifest declares UUID-based dependencies on the Social gateway, Profile adapter, Share gateway, and Messages adapter, alongside the narrower runtime capability requirements. Nextcloud Whiteboard is declared as an optional soft dependency so Cognis can offer it during installation without blocking Meetings when it is unavailable. No Cognis internal package or source-tree import is required.
+## Get Started
 
-## Development
+Open Meetings, optionally choose participants and wait for the connection check. Select Start to enter the meeting, then use its sharing control to invite others.
 
-Run `npm install` followed by `npm test`. Tests and runtime code use only repository-relative module paths so the suite runs outside the Cognis monorepo. The manifest publishes `ui.stringsBaseUrl` so Cognis can resolve the module's localized metadata before its browser UI loads.
+## Learn More
 
-## Security
-
-Use a trusted HTTPS Jitsi deployment. Meeting API access is authenticated, meeting records are participant-gated, passwords are generated per meeting, and guest access is restricted by scoped share capabilities. Review the repository and its declared file digests before enabling it.
-
-Run local scripts in this checkout or use `npm --prefix <checkout> test`. They are not global Cognis commands. Installed operations use `cognisctl modules:jitsi-meet:ping`. The standards-mode browser regression uses an installed Chromium binary: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. See [integration contracts](docs/index.en.md) and the template-derived AGENTS.md.
+[Usage](docs/USAGE.en.md) provides procedures. [Technical](docs/TECHNICAL.en.md) provides contracts and configuration.

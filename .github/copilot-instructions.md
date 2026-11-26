@@ -10,7 +10,7 @@ Run `npm install` before exploration or development. Use `rg` rather than recurs
 
 Every new external module MUST start from [cognis-module-template](https://github.com/Cognis-Labs-HQ/cognis-module-template), using GitHub's template creation or a fork. Do not invent a parallel skeleton. Replace template identity, namespace, publisher, repository links, artwork and examples before publishing. Generate a new UUID once for the new product; never ship the template UUID or replace an established module UUID. Remove `template: true` from derived products. Record the template revision used in contributor guidance and review later template updates rather than blindly copying product code.
 
-Read [Cognis external-module contracts](https://github.com/Cognis-Labs-HQ/Cognis/blob/master/src/docs/modules/external.en.md) and the owning capability documentation. The template supplies the contributor skeleton; the installed host's public contracts determine runtime compatibility.
+Read [Cognis external-module contracts](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/modules/external/TECHNICAL.en.md) and the owning capability documentation. The template supplies the contributor skeleton; the installed host's public contracts determine runtime compatibility.
 
 ## External module contract
 
@@ -34,26 +34,26 @@ Register owned cleanup with `ctx.registerDisposer` when using host registrations
 
 Use the following concern paths, creating optional directories only when the module provides that concern:
 
-| Path                                      | Ownership                                                                    |
-| ----------------------------------------- | ---------------------------------------------------------------------------- |
-| `bootstrap.js`                            | Sole server integration and lifecycle orchestration                          |
-| `api/index.js`                            | API registration and ctx-derived dependency wiring                           |
-| `api/routes/<domain>/index.js`            | Thin domain-specific HTTP handlers                                           |
-| `api/<feature>/`                          | Feature-owned server implementation                                          |
-| `api/reuse/`                              | Server abstractions consumed by multiple features                            |
-| `ui/index.js` or `ui/app/<page>/index.js` | Browser mount/unmount entrypoints                                            |
-| `ui/<feature>/`                           | Feature-owned browser behavior                                               |
-| `ui/styles/`                              | All module CSS; shared primitives in `ui/styles/reuse/`                      |
-| `ui/templates/`                           | Reusable HTML/markup templates; `ui/index.html` may be a declared page shell |
-| `ui/languages/<locale>/strings.xml`       | Module translations                                                          |
-| `api/tests/`, `ui/tests/`, `cli/tests/`   | Layer-owned public-contract tests                                            |
-| `tests/`                                  | Cross-layer lifecycle and content-graph tests only                           |
-| `cli/index.js`                            | Host operational command registration                                        |
-| `docs/index.<locale>.md`                  | Integration overview; focused contracts may use descriptive names            |
-| `docs/changelog/<branch>.<locale>.md`     | Host-discovered release provenance                                           |
-| `data/<domain>/`                          | Provider datasets and schemas                                                |
-| `assets/`                                 | Artwork, SVG icons and screenshots                                           |
-| `scripts/`, `tooling/`                    | Local validation, generation and build tools                                 |
+| Path                                                                              | Ownership                                                                    |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `bootstrap.js`                                                                    | Sole server integration and lifecycle orchestration                          |
+| `api/index.js`                                                                    | API registration and ctx-derived dependency wiring                           |
+| `api/routes/<domain>/index.js`                                                    | Thin domain-specific HTTP handlers                                           |
+| `api/<feature>/`                                                                  | Feature-owned server implementation                                          |
+| `api/reuse/`                                                                      | Server abstractions consumed by multiple features                            |
+| `ui/index.js` or `ui/app/<page>/index.js`                                         | Browser mount/unmount entrypoints                                            |
+| `ui/<feature>/`                                                                   | Feature-owned browser behavior                                               |
+| `ui/styles/`                                                                      | All module CSS; shared primitives in `ui/styles/reuse/`                      |
+| `ui/templates/`                                                                   | Reusable HTML/markup templates; `ui/index.html` may be a declared page shell |
+| `ui/languages/<locale>/strings.xml`                                               | Module translations                                                          |
+| `api/tests/`, `ui/tests/`, `cli/tests/`                                           | Layer-owned public-contract tests                                            |
+| `tests/`                                                                          | Cross-layer lifecycle and content-graph tests only                           |
+| `cli/index.js`                                                                    | Host operational command registration                                        |
+| `docs/README.<locale>.md`, `docs/USAGE.<locale>.md`, `docs/TECHNICAL.<locale>.md` | Integration overview; focused contracts may use descriptive names            |
+| `docs/changelog/<branch>.<locale>.md`                                             | Host-discovered release provenance                                           |
+| `data/<domain>/`                                                                  | Provider datasets and schemas                                                |
+| `assets/`                                                                         | Artwork, SVG icons and screenshots                                           |
+| `scripts/`, `tooling/`                                                            | Local validation, generation and build tools                                 |
 
 Keep route URLs stable when moving handler files. Use generic names inside a domain directory; do not retain forwarding-only old-path entrypoints. Do not place CSS beside browser scripts or HTTP handlers in a flat `*-routes.js` API root. Add executable structure checks to reject deviations and test imported entrypoints and stylesheet dependencies after relocation.
 
@@ -105,6 +105,14 @@ Declare hard dependencies sparingly and prefer capability requirements or soft d
 
 Translation namespaces are independent of immutable module IDs: use periods between every word, including tutorial keys, and keep namespace validation strict. Match each XML file’s existing sibling indentation and preserve translation values when formatting. Renaming translation keys must not rename tutorial owners or IDs, module IDs, UUIDs or capabilities.
 
+## Documentation bundles
+
+Declare exactly documentation.readme, documentation.usage and documentation.technical in the manifest, pointing to docs/README.en.md, docs/USAGE.en.md and docs/TECHNICAL.en.md. Supply all three roles in en, de, id and ja with exact uppercase basenames and lowercase locale suffixes and .md extension. Root localized README files describe the marketplace entry; the manifest declares the versioned Docs bundle.
+
+Follow the exact role/language headings in scripts/reuse/documentation/structure.json and the [host documentation standard](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.en.md). README is non-technical purpose/access/first steps; USAGE contains concrete procedures, prerequisites, outcomes and troubleshooting; TECHNICAL describes current interfaces, configuration, behavior, security and source references. No journal entries, release comparisons, placeholders or duplicated technical paragraphs. Source-file links follow blob/HEAD; changelog commit links retain full immutable targets and short labels. Templates live in .github/documentation/. Run npm run check:docs and the standalone mutation tests; do not relax the schema to admit drift.
+
+Route runtime diagnostics through the host logging gateway. Never write directly to the browser console or create a diagnostic sink in the module. CLI and build reports use explicit terminal streams. Preserve page-composer ownership of viewport fitting, panel surfaces and menus; do not override host shell selectors. Tutorial completion belongs to the host account store, and Settings guides use owner-published targets and branch lifetimes.
+
 ## Tests and quality
 
 Tests must run in this standalone repository with local fakes for host capabilities. Test public route, capability, flow, lifecycle, authorization, localization, and manifest contracts rather than Cognis or sibling implementations. Every behavior change requires tests, safe logging, and synchronized documentation. Keep localized documentation variants structurally and semantically synchronized.
@@ -116,6 +124,7 @@ Run all of the following before committing:
 ```sh
 npm install
 npm run lint
+npm run check:docs
 npm test
 npm run manifest:hashes
 npm run check:manifest
@@ -144,7 +153,7 @@ Treat ctx as the backbone of every supported server and browser action. Extend d
 
 ## Module-specific requirements
 
-Template guidance baseline: [d71b980](https://github.com/Cognis-Labs-HQ/cognis-module-template/blob/d71b98077d8d7af087b44009dafc2d736f86b617/.github/copilot-instructions.md).
+Template guidance baseline: [492b85b](https://github.com/Cognis-Labs-HQ/cognis-module-template/commit/492b85b4db5fdf4728cc517f665f28675a772110).
 
 Keep Jitsi meeting state, chat-room identity and Whiteboard integration separate. Consume neutral Whiteboard capabilities without provider implementation imports. Preserve upstream overlay presentation and live PiP state. Meeting chat-room IDs are unique and participant joins/leaves retain the existing room.
 

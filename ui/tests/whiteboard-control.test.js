@@ -238,3 +238,33 @@ test("rebinding a recovered provider clears its previous failure explanation", a
     controller.abort();
     assert.deepEqual(mount.slot.children, []);
 });
+
+test("failed Whiteboard preparation sends safe diagnostics through the host gateway and retains localized feedback", async () => {
+    const toasts = [];
+    capabilities.set("ui:showToast", (...args) => toasts.push(args));
+    publishGateway({
+        createCanvas() {},
+        requestCanvasPage() {
+            throw new TypeError("private provider payload");
+        },
+        openCanvas() {},
+    });
+    const mount = createMount();
+    const controller = new AbortController();
+    await bindWhiteboardButton({ ...mount, signal: controller.signal });
+    assert.equal(logs.at(-1)[0], "error");
+    assert.deepEqual(logs.at(-1)[2], {
+        component: "module:jitsi-meet",
+        operation: "prepare_meeting_whiteboard",
+        stage: "prepare",
+        meetingId: "meeting-1",
+        whiteboardId: undefined,
+        errorName: "TypeError",
+    });
+    assert.equal(
+        toasts.at(-1)[0],
+        "module.jitsi.meet.whiteboard.load.failed.detailed",
+    );
+    assert.equal(mount.slot.firstElementChild.disabled, true);
+    controller.abort();
+});
