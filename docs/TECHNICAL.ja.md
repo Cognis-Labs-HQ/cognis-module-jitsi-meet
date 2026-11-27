@@ -30,6 +30,8 @@ Jitsi Meet は、参加者選択、Messages チャット、セッション引き
 
 ## 動作
 
+既定のステージとチャットは、通常表示の最小幅から横に並ぶように、グリッド幅の比率を6:3にします。`stackAt: "medium"` により、内容の幅が900 CSSピクセル以下ではホストの Composer が各領域を全幅で縦に並べます。チャットがない場合はステージに `max: "full"` を指定し、利用できる行全体を使います。参加者は独立した全幅の行を維持し、保存済みの配置は既存の設定キーを使い続けます。
+
 ### 連携とアクション Flow
 
 `bootstrap.js` は、モジュール所有のルート、UI 登録、公開 Capability `jitsi-meet:getMeetingChat`、ブラウザー Provider `voip:startCall`、既存のホストのミーティング・共有・ユーザー削除 Flow のフックを登録します。モジュールは非特権で、必要なコンポーネント UUID と Capability を Manifest に宣言します。任意の Whiteboard サービスは動的に検出し、有効化を妨げません。

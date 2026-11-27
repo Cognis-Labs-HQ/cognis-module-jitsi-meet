@@ -24,6 +24,8 @@ Meeting-Erstellung, Beitritt, Präsenz, Zustand, Passwortanforderungen, Sitzungs
 
 ## Verhalten
 
+Bühne und Chat verwenden standardmäßig ein Rasterbreitenverhältnis von 6:3, damit sie bereits in der ersten regulären Darstellung nebeneinander passen. `stackAt: "medium"` lässt den Host-Composer die Bereiche bis 900 CSS-Pixel Inhaltsbreite in voller Breite untereinander anordnen. Ohne Chat nutzt die Bühne mit `max: "full"` die verfügbare Zeile. Teilnehmer behalten ihre eigene Zeile in voller Breite. Gespeicherte Anpassungen bleiben unter dem bestehenden Einstellungsschlüssel.
+
 ### Integration und Aktions-Flows
 
 `bootstrap.js` registriert moduleigene Routen, UI-Beiträge, die öffentliche Capability `jitsi-meet:getMeetingChat`, den Browser-Provider `voip:startCall` sowie Hooks auf bestehende Meeting-, Freigabe- und Deprovisionierungs-Flows des Hosts. Das Modul ist nicht privilegiert und deklariert benötigte Komponenten-UUIDs und Capabilities im Manifest. Optionale Whiteboard-Dienste werden dynamisch ermittelt und verhindern keine Aktivierung.

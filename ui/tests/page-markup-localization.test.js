@@ -125,3 +125,35 @@ test("meeting administration renders populated and empty tables with every real 
         assert.match(templates.renderUpcomingRows(rows), /Meeting/);
     }
 });
+
+test("meeting pane defaults fit a regular composer row with a two-to-one stage/chat split", () => {
+    const i18n = { t: (key) => key };
+    for (const share of [false, true]) {
+        const elements = createMeetingPageElements(i18n, share);
+        const stage = elements.find((element) => element.id === "jitsi-stage");
+        const chat = elements.find((element) => element.id === "jitsi-chat");
+        assert.ok(
+            stage.gridSize.default[0] + chat.gridSize.default[0] <= 10,
+            "Both panes fit the first regular-width grid above the medium boundary",
+        );
+        assert.equal(stage.gridSize.default[0], 2 * chat.gridSize.default[0]);
+        for (const element of [stage, chat]) {
+            assert.ok(element.gridSize.default[0] >= element.gridSize.min[0]);
+            assert.ok(element.gridSize.default[1] >= element.gridSize.min[1]);
+        }
+    }
+});
+
+test("a meeting without chat declares a full-width stage for both ordinary and share views", () => {
+    const i18n = { t: (key) => key };
+    for (const share of [false, true]) {
+        const stage = createMeetingPageElements(i18n, share, {
+            includeChat: false,
+        }).find((element) => element.id === "jitsi-stage");
+        assert.equal(stage.gridSize.max, "full");
+        assert.ok(
+            stage.gridSize.min[1] >= 4,
+            "The stage keeps a usable minimum height",
+        );
+    }
+});

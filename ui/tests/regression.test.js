@@ -721,25 +721,8 @@ test("jitsi meetings reset participant state and disable mini chat until ready",
     assert.match(cssSource, /pointer-events: none;/);
 });
 
-test("meetings page defaults stage and chat across the full composer row", () => {
-    const source = readJitsiUiBundle();
-    assert.match(
-        source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[includeChat \? 8 : 12,\s*5\][\s\S]*min:\s*\[includeChat \? 6 : 8,\s*4\]/,
-    );
-    assert.match(
-        source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[4,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
-    );
-    assert.doesNotMatch(
-        source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
-    );
-    assert.doesNotMatch(
-        source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
-    );
-    assert.match(source, /if \(includeChat\) \{[\s\S]*id: "jitsi-chat"/);
+test("meetings page asks Composer to stack its panes through tablet widths", () => {
+    assert.match(readJitsiUiBundle(), /stackAt:\s*"medium"/);
 });
 
 test("meetings UI recovers a live session after composer edit rerenders the iframe", () => {

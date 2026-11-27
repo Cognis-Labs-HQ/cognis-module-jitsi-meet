@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi.meet.name",
-    "version": "1.6.15",
+    "version": "1.6.16",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -546,19 +546,19 @@
         },
         {
             "path": "docs/TECHNICAL.de.md",
-            "sha256": "54846f03119df993f8dbe9135ab9910ed0fc3c8929340b08760c209148193297"
+            "sha256": "162cdf0cf1dedc054a88035acb1e400e665fa2569c7e9b80004d23b91d5c150c"
         },
         {
             "path": "docs/TECHNICAL.en.md",
-            "sha256": "2708b655d10fb8860db9f8fcf1392d1b84816c58ea643bc2aa6aab683693922b"
+            "sha256": "99543c894a07331e1c8ee7ab8c70dcfcafec66f49a5bccf69c2918afc6cff1df"
         },
         {
             "path": "docs/TECHNICAL.id.md",
-            "sha256": "d68007697a07ac57b1a5c2c3d87310bfd88c355d5518aee48c59e8b94a62b944"
+            "sha256": "fa3405f9b5dab5353e692bfca1c477096bc050a79a2807b33a9a3b07e95d61a2"
         },
         {
             "path": "docs/TECHNICAL.ja.md",
-            "sha256": "7c0751a826b6c004b76eea84dbb765b123637626e949160d01a5b4f7c26e252e"
+            "sha256": "55e2c6f04fdf40051881c404688aef93bb60eff7554a9e3a77abc805439e00d1"
         },
         {
             "path": "docs/USAGE.de.md",
@@ -578,11 +578,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "33af9c201d119657fc2f7f8f450f21eb23afd2f498b10d0d1c6d9f9d8839957a"
+            "sha256": "aec419dd4b97df0141825b04caf2f1ea28cf0f8980abd5c06f6201be62603186"
         },
         {
             "path": "package.json",
-            "sha256": "3c0e332504c4afff28aed1f7d88811a7e9ed4e38450305de4110783eb5152e52"
+            "sha256": "0bac1fee37d8605f075f2013f03ad5469e0ace601caac3d2b3fb8aa7cd62526d"
         },
         {
             "path": "routes.json",
@@ -646,7 +646,7 @@
         },
         {
             "path": "ui/app/index.js",
-            "sha256": "7e167e990ed0debe8e2ca8781a8f871717d20b67e91147af7bdf396b85010e4a"
+            "sha256": "49aeadddf789d7af5f34361ff76489d89698c2751f65858f82e1f66e3b3775cc"
         },
         {
             "path": "ui/app/interactive-handlers.js",
@@ -742,7 +742,7 @@
         },
         {
             "path": "ui/page-elements.js",
-            "sha256": "404944ea3ab27515b7116d895db55c1942a3c53fa44b1697e027149fbdfdc717"
+            "sha256": "103cafa6df9d4962de0a8a951f48bb6cd4ec9029c5e1708da6878efbec69e2b0"
         },
         {
             "path": "ui/reuse/abortable-delay.js",
@@ -850,7 +850,7 @@
         },
         {
             "path": "ui/tests/page-markup-localization.test.js",
-            "sha256": "3b0c4aa5c4635724ae2f72fddaa6e40ed5f0fdd850853bb4efd71ec192a47559"
+            "sha256": "ae1cd08b8f3cd0e58e9c5239580a30340c667d3263c5755c3531ee2e82533c5c"
         },
         {
             "path": "ui/tests/page-tutorials.test.js",
@@ -866,7 +866,7 @@
         },
         {
             "path": "ui/tests/regression.test.js",
-            "sha256": "2602e687932a39d57cdecf9c8a195b14384647819c9a5a3abfc776cf8b041316"
+            "sha256": "47ef72e5211bd5afc28e81d49b644dcc4af6c11e84d571f136d256449dda0810"
         },
         {
             "path": "ui/tests/reuse/admin-disclosure.js",

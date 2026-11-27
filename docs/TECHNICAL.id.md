@@ -24,6 +24,8 @@ Pembuatan rapat, bergabung, kehadiran, keadaan, klaim kata sandi, pengambilaliha
 
 ## Perilaku
 
+Secara bawaan, panggung dan chat memakai rasio lebar grid 6:3 agar keduanya muat pada tata letak reguler terkecil. `stackAt: "medium"` meminta Composer host menumpuk panel selebar penuh pada lebar konten hingga 900 piksel CSS. Tanpa chat, panggung mendeklarasikan `max: "full"` untuk mengisi baris yang tersedia. Peserta tetap memiliki baris selebar penuh. Penyesuaian tersimpan tetap memakai kunci preferensi yang ada.
+
 ### Integrasi dan Alur Tindakan
 
 `bootstrap.js` mendaftarkan rute, kontribusi UI, kapabilitas publik `jitsi-meet:getMeetingChat`, penyedia browser `voip:startCall` dan kait pada alur rapat, berbagi serta penghapusan pengguna milik host. Modul tidak memiliki akses istimewa dan mendeklarasikan UUID komponen serta kapabilitas yang diperlukan dalam manifest. Layanan Whiteboard opsional ditemukan secara dinamis dan tidak menghalangi aktivasi.

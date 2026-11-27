@@ -28,6 +28,8 @@ Meeting creation, joins, presence, state, password claims, session reclaim, part
 
 ## Behavior
 
+The default stage and chat use a 6:3 grid-width ratio so they fit together at the first regular-width layout. `stackAt: "medium"` asks the host Composer to stack full-width panes at content widths up to 900 CSS pixels. Without chat, the stage declares `max: "full"` and occupies the available row. Participants retain their own full-width row. Saved customization remains under the existing preference key.
+
 ### Integration and Action Flows
 
 `bootstrap.js` registers module-owned routes, UI contributions, public `jitsi-meet:getMeetingChat`, the browser `voip:startCall` provider, and hooks on existing host meeting, sharing and deprovisioning flows. The module is unprivileged and declares required component UUIDs and capabilities in its manifest. Optional Whiteboard services are discovered dynamically and do not prevent activation.
