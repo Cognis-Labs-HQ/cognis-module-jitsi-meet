@@ -14,7 +14,12 @@ Laufzeitdiagnosen verwenden das Logging-Gateway des Hosts und dessen Ausgaberich
 
 Die Standardbreiten von Bühne und Chat passen im Verhältnis zwei zu eins in die erste reguläre Composer-Zeile. Die gemeinsame mittlere Darstellung ordnet die Bereiche auf Telefonen und Tablets in voller Breite untereinander an; ohne Chat nutzt die Bühne die volle Zeile. Einstellungsschlüssel und gespeicherte Anpassungen bleiben erhalten.
 
+## Aussagekräftige Bindungsnamen
+
+Die Bindungen des Moduls verwenden aussagekräftige Rollennamen; öffentliche API-Bezeichnungen, Nutzdatenschlüssel und Importziele bleiben erhalten. Die Syntaxbaumprüfung erfasst Bootstrap, Skripte, Tests und Testdaten und ersetzt die zeilenbasierte Prüfung. Sechzig gemeinsame Regressionstestfälle decken Deklarationen, Destrukturierungen, Parameter, private Mitglieder, Enum-/Namensraumbindungen, TypeScript-Typzusicherungen und zulässige Typbezeichner ab. Komponentenanweisungen und technische Handbücher in vier Sprachen beschreiben dieselben Regeln; Versionen, Sperrdateien und Paketprüfsummen sind synchronisiert.
+
 ## Commits
 
 - [891e30c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/891e30ccb141ddc0a9e9a9e05a3b5a5a76499de8)
 - [5a5bbb1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5a5bbb1ec7c04c266698032145d8e6bdcca0f7bf)
+- [2724795](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/27247957859220b243aa93c566031e5e266599c7)

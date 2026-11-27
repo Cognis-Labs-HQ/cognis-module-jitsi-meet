@@ -14,7 +14,12 @@ Info、使用例、技術情報を、マニフェストで宣言する完全な�
 
 ステージとチャットの既定幅は2対1で、通常表示の最小の Composer 行に収まります。共通の中間表示により、スマートフォンとタブレットでは各領域を全幅で縦に並べ、チャットがない会議ではステージを全幅にします。既存の設定キーと保存済みの配置を保持します。
 
+## 役割が分かるバインディング名
+
+モジュールのバインディングを役割が分かる名前にし、公開 API 名、ペイロードのキー、インポート先を維持します。行単位の検証を構文木検証に置き換え、bootstrap、スクリプト、テスト、フィクスチャを走査します。共通の60件の回帰検証用フィクスチャで、宣言、分割代入、引数、プライベートメンバー、enum と名前空間のバインディング、TypeScript の型アサーション、許可された型識別名を検証します。コンポーネントの指針と4言語の技術文書は同じ方針を説明し、バージョン、ロックファイル、パッケージのハッシュを同期します。
+
 ## コミット
 
 - [891e30c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/891e30ccb141ddc0a9e9a9e05a3b5a5a76499de8)
 - [5a5bbb1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5a5bbb1ec7c04c266698032145d8e6bdcca0f7bf)
+- [2724795](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/27247957859220b243aa93c566031e5e266599c7)

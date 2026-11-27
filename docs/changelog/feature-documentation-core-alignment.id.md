@@ -14,7 +14,12 @@ Diagnostik runtime memakai gerbang logging host beserta kebijakan keluarannya. L
 
 Ukuran bawaan panggung dan chat muat pada baris Composer reguler terkecil dengan rasio lebar dua banding satu. Tampilan medium bersama menumpuk panel selebar penuh pada ponsel dan tablet; pertemuan tanpa chat memakai panggung selebar penuh. Kunci preferensi dan penyesuaian tersimpan tetap dipertahankan.
 
+## Nama binding deskriptif
+
+Binding modul memakai nama peran deskriptif dengan mempertahankan label API publik, kunci muatan, dan target impor. Validasi pohon sintaks memindai bootstrap, skrip, pengujian, dan fixture, menggantikan pemeriksaan berbasis baris. Enam puluh fixture regresi bersama mencakup deklarasi, destrukturisasi, parameter, anggota privat, binding enum/namespace, penegasan tipe TypeScript, dan identitas tipe yang diizinkan. Petunjuk komponen dan manual teknis dalam empat bahasa menjelaskan kebijakan yang sama; versi, berkas kunci, dan hash paket diselaraskan.
+
 ## Commit
 
 - [891e30c](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/891e30ccb141ddc0a9e9a9e05a3b5a5a76499de8)
 - [5a5bbb1](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/5a5bbb1ec7c04c266698032145d8e6bdcca0f7bf)
+- [2724795](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/commit/27247957859220b243aa93c566031e5e266599c7)
