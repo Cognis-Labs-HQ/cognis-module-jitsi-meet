@@ -7,7 +7,7 @@ import {
     deleteMeetingRows,
     resetJitsiStoreSchema,
 } from "../reuse/store-schema.js";
-import { readDbTimestampValue } from "../reuse/timestamp.js";
+import { readDbTimestampValue as readDatabaseTimestampValue } from "../reuse/timestamp.js";
 
 /** Inspect existing records even when a new uniqueness constraint cannot initialize. */
 export function registerMeetingMaintenance(ctx, databaseExecutor) {
@@ -142,10 +142,16 @@ export function registerMeetingMaintenance(ctx, databaseExecutor) {
                         chatRoomId: meeting.chat_room_id,
                         whiteboardId: state?.whiteboard_id ?? null,
                         createdBy: meeting.created_by,
-                        createdAt: readDbTimestampValue(meeting.created_at),
-                        updatedAt: readDbTimestampValue(meeting.updated_at),
-                        endedAt: readDbTimestampValue(state?.ended_at),
-                        scheduledAt: readDbTimestampValue(meeting.scheduled_at),
+                        createdAt: readDatabaseTimestampValue(
+                            meeting.created_at,
+                        ),
+                        updatedAt: readDatabaseTimestampValue(
+                            meeting.updated_at,
+                        ),
+                        endedAt: readDatabaseTimestampValue(state?.ended_at),
+                        scheduledAt: readDatabaseTimestampValue(
+                            meeting.scheduled_at,
+                        ),
                         participantCount: participants.filter(
                             (entry) => entry.meeting_id === meeting.id,
                         ).length,

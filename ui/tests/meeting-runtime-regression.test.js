@@ -10,16 +10,16 @@ import { deactivateMeetingChatState } from "../app/chat-state.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function readJitsiUiBundle() {
-    const uiDir = resolve(ROOT, "ui");
-    const rootSources = readdirSync(uiDir)
+    const uiDirectory = resolve(ROOT, "ui");
+    const rootSources = readdirSync(uiDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(uiDir, entry), "utf8"));
-    const appDir = resolve(uiDir, "app");
-    const appSources = readdirSync(appDir)
+        .map((entry) => readFileSync(join(uiDirectory, entry), "utf8"));
+    const appDirectory = resolve(uiDirectory, "app");
+    const appSources = readdirSync(appDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(appDir, entry), "utf8"));
+        .map((entry) => readFileSync(join(appDirectory, entry), "utf8"));
     return [...rootSources, ...appSources].join("\n");
 }
 
@@ -206,11 +206,14 @@ test("meetings UI prompts a participant who becomes alone before leaving", () =>
     );
     assert.match(markupSource, /id="jitsi-leave-alone-btn"/);
     assert.match(markupSource, /id="jitsi-remain-alone-btn"/);
-    assert.match(constantsSource, /ALONE_PROMPT_GRACE_PERIOD_MS = 180_000/);
+    assert.match(
+        constantsSource,
+        /ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS = 180_000/,
+    );
     assert.match(source, /function deferAloneParticipantPrompt\(/);
     assert.match(
         source,
-        /state\.alonePromptBlockedUntil = Date\.now\(\) \+ delayMs;/,
+        /state\.alonePromptBlockedUntil = Date\.now\(\) \+ delayMilliseconds;/,
     );
     assert.match(
         source,

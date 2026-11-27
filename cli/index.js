@@ -1,14 +1,14 @@
-function requireArgs(args, names, usage) {
-    const missing = names.filter((_, index) => !args[index]);
+function requireArguments(argumentsList, names, usage) {
+    const missing = names.filter((_, index) => !argumentsList[index]);
     if (missing.length === 0) return;
     throw new Error(
         `Not enough arguments (missing: ${missing.join(", ")})\n\nUsage:\n  ${usage}`,
     );
 }
 
-function queryString(params) {
+function queryString(parameters) {
     const query = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
+    for (const [key, value] of Object.entries(parameters)) {
         if (value !== undefined && value !== "") query.set(key, value);
     }
     const serialized = query.toString();
@@ -63,13 +63,13 @@ export function registerCommands({ register, apiGet }) {
 
     register(
         "modules:jitsi-meet:participants",
-        async ({ args, apiBaseUrl, getApiToken }) => {
+        async ({ args: argumentsList, apiBaseUrl, getApiToken }) => {
             const usage =
                 "cognisctl modules:jitsi-meet:participants <meeting-id>";
-            requireArgs(args, ["meeting-id"], usage);
+            requireArguments(argumentsList, ["meeting-id"], usage);
             return apiGet(
                 apiBaseUrl,
-                `/api/v1/modules/jitsi-meet/participants${queryString({ meetingId: args[0] })}`,
+                `/api/v1/modules/jitsi-meet/participants${queryString({ meetingId: argumentsList[0] })}`,
                 await getApiToken(),
             );
         },

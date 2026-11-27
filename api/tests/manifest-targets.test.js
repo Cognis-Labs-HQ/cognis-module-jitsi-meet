@@ -6,7 +6,7 @@ import {
     readFile,
     writeFile,
     symlink,
-    rm,
+    rm as remove,
 } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -20,7 +20,7 @@ const validator = new URL(
 for (const kind of ["missing", "directory", "symlink", "outside"]) {
     test(`manifest validation rejects ${kind} artwork before inventory checks`, async (context) => {
         const root = await mkdtemp(join(tmpdir(), "module-target-"));
-        context.after(() => rm(root, { recursive: true, force: true }));
+        context.after(() => remove(root, { recursive: true, force: true }));
         const source = await readFile(validator, "utf8");
         await writeFile(join(root, "validate.mjs"), source);
         await writeFile(

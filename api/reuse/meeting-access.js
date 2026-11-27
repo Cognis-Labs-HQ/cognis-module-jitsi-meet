@@ -145,7 +145,7 @@ export async function resolveMeetingPayloadOrReject({
     store,
     claims,
     sendError,
-    res,
+    res: response,
     listClassroomParticipantHandles,
     resolveShareUserAccess = null,
 }) {
@@ -154,18 +154,18 @@ export async function resolveMeetingPayloadOrReject({
         profileIdentity,
         claims.sub,
     ).catch((error) => {
-        sendError(res, 409, "profile_required", error.message);
+        sendError(response, 409, "profile_required", error.message);
         return null;
     });
     if (!requesterUsername) return null;
     const meetingId = String(body.meetingId ?? "").trim();
     if (!meetingId) {
-        sendError(res, 400, "bad_request", "meetingId is required.");
+        sendError(response, 400, "bad_request", "meetingId is required.");
         return null;
     }
     const meeting = await store.getMeetingById(meetingId);
     if (!meeting) {
-        sendError(res, 404, "not_found", "Meeting not found.");
+        sendError(response, 404, "not_found", "Meeting not found.");
         return null;
     }
     const authorized = await canAccessMeeting({
@@ -180,7 +180,7 @@ export async function resolveMeetingPayloadOrReject({
     });
     if (!authorized) {
         sendError(
-            res,
+            response,
             403,
             "forbidden",
             "You are not listed as an allowed meeting participant.",

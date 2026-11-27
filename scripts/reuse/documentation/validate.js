@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, lstatSync, existsSync } from "node:fs";
-import { resolve, relative, dirname, sep } from "node:path";
+import { resolve, relative, dirname, sep as separator } from "node:path";
 import structure from "./structure.json" with { type: "json" };
 import { contentIssues } from "./content.js";
 import { markdownLayout } from "./markdown-layout.js";
@@ -169,7 +169,10 @@ export function referenceIssues(markdown, root, repository, directory) {
             continue;
         try {
             const path = resolve(root, decodeURIComponent(match[3]));
-            if (!path.startsWith(resolve(root) + sep) || !existsSync(path))
+            if (
+                !path.startsWith(resolve(root) + separator) ||
+                !existsSync(path)
+            )
                 issues.push(`Missing owned source target: ${match[3]}`);
         } catch {
             issues.push(`Invalid source target: ${match[3]}`);
@@ -182,7 +185,10 @@ export function referenceIssues(markdown, root, repository, directory) {
                 directory,
                 decodeURIComponent(match[1].split(/[?#]/)[0]),
             );
-            if (!target.startsWith(resolve(root) + sep) || !existsSync(target))
+            if (
+                !target.startsWith(resolve(root) + separator) ||
+                !existsSync(target)
+            )
                 issues.push(`Missing relative reference: ${match[1]}`);
         } catch {
             issues.push(`Invalid relative reference: ${match[1]}`);

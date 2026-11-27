@@ -1,5 +1,5 @@
 import { resolveMeetingSurface } from "./reuse/meeting-surface.js";
-import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
+import { ALONE_PROMPT_GRACE_PERIOD_MS as ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
 import {
     syncMeetingWhiteboardComponent,
@@ -43,9 +43,9 @@ export function createMountUtilities({ root, state }) {
     }
 
     function deferAloneParticipantPrompt(
-        delayMs = ALONE_PROMPT_GRACE_PERIOD_MS,
+        delayMilliseconds = ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS,
     ) {
-        state.alonePromptBlockedUntil = Date.now() + delayMs;
+        state.alonePromptBlockedUntil = Date.now() + delayMilliseconds;
     }
 
     function selectedUsernames() {
@@ -67,31 +67,31 @@ export function createMountUtilities({ root, state }) {
 
     function updatePreflightIndicator() {
         const { query } = resolveMeetingSurface(root, state);
-        const loadingEl = query("#jitsi-loading");
-        const indicatorEl = query("#jitsi-loading-indicator");
-        const loadingTextEl = query("#jitsi-loading-text");
+        const loadingElement = query("#jitsi-loading");
+        const indicatorElement = query("#jitsi-loading-indicator");
+        const loadingTextElement = query("#jitsi-loading-text");
         if (
-            !(loadingEl instanceof HTMLElement) ||
-            !(indicatorEl instanceof HTMLElement) ||
-            !(loadingTextEl instanceof HTMLElement)
+            !(loadingElement instanceof HTMLElement) ||
+            !(indicatorElement instanceof HTMLElement) ||
+            !(loadingTextElement instanceof HTMLElement)
         ) {
             return;
         }
         const showIndicator = state.preflightStatus !== "idle";
-        loadingEl.hidden = !showIndicator;
-        indicatorEl.classList.remove(
+        loadingElement.hidden = !showIndicator;
+        indicatorElement.classList.remove(
             "jitsi-spinner",
             "jitsi-tick",
             "jitsi-cross",
         );
         if (state.preflightStatus === "running") {
-            indicatorEl.classList.add("jitsi-spinner");
+            indicatorElement.classList.add("jitsi-spinner");
         } else if (state.preflightStatus === "passed") {
-            indicatorEl.classList.add("jitsi-tick");
+            indicatorElement.classList.add("jitsi-tick");
         } else if (state.preflightStatus === "failed") {
-            indicatorEl.classList.add("jitsi-cross");
+            indicatorElement.classList.add("jitsi-cross");
         }
-        loadingTextEl.textContent = state.preflightMessage;
+        loadingTextElement.textContent = state.preflightMessage;
     }
 
     function setPreflightStatus(status, message) {
@@ -142,47 +142,53 @@ export function createMountUtilities({ root, state }) {
         const reclaimButton = query("#jitsi-reclaim-btn");
         const leaveAloneButton = query("#jitsi-leave-alone-btn");
         const remainAloneButton = query("#jitsi-remain-alone-btn");
-        const messageEl = query("#jitsi-overlay-message");
-        const loadingEl = query("#jitsi-loading");
-        const indicatorEl = query("#jitsi-loading-indicator");
-        const loadingTextEl = query("#jitsi-loading-text");
+        const messageElement = query("#jitsi-overlay-message");
+        const loadingElement = query("#jitsi-loading");
+        const indicatorElement = query("#jitsi-loading-indicator");
+        const loadingTextElement = query("#jitsi-loading-text");
 
-        if (messageEl instanceof HTMLElement && typeof message === "string") {
-            messageEl.textContent = message;
+        if (
+            messageElement instanceof HTMLElement &&
+            typeof message === "string"
+        ) {
+            messageElement.textContent = message;
         }
         if (overlay instanceof HTMLElement) {
             overlay.hidden = !visible;
             overlay.dataset.alonePrompt = String(showAlonePrompt);
         }
-        if (loadingEl instanceof HTMLElement) {
-            loadingEl.hidden =
+        if (loadingElement instanceof HTMLElement) {
+            loadingElement.hidden =
                 !loading &&
                 state.preflightStatus !== "running" &&
                 state.preflightStatus !== "passed" &&
                 state.preflightStatus !== "failed";
         }
-        if (indicatorEl instanceof HTMLElement) {
+        if (indicatorElement instanceof HTMLElement) {
             if (state.preflightStatus === "failed") {
-                indicatorEl.classList.remove("jitsi-spinner", "jitsi-tick");
-                indicatorEl.classList.add("jitsi-cross");
+                indicatorElement.classList.remove(
+                    "jitsi-spinner",
+                    "jitsi-tick",
+                );
+                indicatorElement.classList.add("jitsi-cross");
             } else if (state.preflightStatus === "passed" || probed) {
-                indicatorEl.classList.remove("jitsi-spinner");
-                indicatorEl.classList.remove("jitsi-cross");
-                indicatorEl.classList.add("jitsi-tick");
+                indicatorElement.classList.remove("jitsi-spinner");
+                indicatorElement.classList.remove("jitsi-cross");
+                indicatorElement.classList.add("jitsi-tick");
             } else {
-                indicatorEl.classList.remove("jitsi-tick");
-                indicatorEl.classList.remove("jitsi-cross");
-                indicatorEl.classList.add("jitsi-spinner");
+                indicatorElement.classList.remove("jitsi-tick");
+                indicatorElement.classList.remove("jitsi-cross");
+                indicatorElement.classList.add("jitsi-spinner");
             }
         }
         if (
-            loadingTextEl instanceof HTMLElement &&
+            loadingTextElement instanceof HTMLElement &&
             typeof message === "string"
         ) {
             if (loading || probed) {
-                loadingTextEl.textContent = message;
+                loadingTextElement.textContent = message;
             } else if (state.preflightMessage) {
-                loadingTextEl.textContent = state.preflightMessage;
+                loadingTextElement.textContent = state.preflightMessage;
             }
         }
         if (startButton instanceof HTMLButtonElement) {

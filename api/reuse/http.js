@@ -4,8 +4,8 @@ export function hasMinRole(role, minRole) {
     return (ROLE_RANK[role] ?? -1) >= (ROLE_RANK[minRole] ?? Number.MAX_VALUE);
 }
 
-export async function readJson(req) {
+export async function readJson(request) {
     const chunks = [];
-    for await (const chunk of req) chunks.push(Buffer.from(chunk));
+    for await (const chunk of request) chunks.push(Buffer.from(chunk));
     return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
 }

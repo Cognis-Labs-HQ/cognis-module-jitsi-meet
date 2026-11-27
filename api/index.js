@@ -36,16 +36,16 @@ import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
 import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
 
-const LIVELINESS_TIMEOUT_MS = 5000;
+const LIVELINESS_TIMEOUT_MILLISECONDS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
 
-function sendJson(res, status, payload) {
-    res.writeHead(status, { "content-type": "application/json" });
-    res.end(JSON.stringify(payload));
+function sendJson(response, status, payload) {
+    response.writeHead(status, { "content-type": "application/json" });
+    response.end(JSON.stringify(payload));
 }
 
-function sendError(res, status, code, message) {
-    sendJson(res, status, {
+function sendError(response, status, code, message) {
+    sendJson(response, status, {
         error: {
             code,
             message,
@@ -150,7 +150,7 @@ export function registerApiRoutes(router, ctx) {
     if (typeof requireAuth !== "function") {
         throw new Error("Jitsi Meet requires the auth:requireAuth capability.");
     }
-    const dbExecutor = ctx.getCapability("db:executor");
+    const databaseExecutor = ctx.getCapability("db:executor");
     const generatePassphrase = ctx.getCapability("reuse:generatePassphrase");
     const requestShareApproval = ctx.getCapability("share:requestApproval");
     if (typeof requestShareApproval !== "function") {
@@ -203,14 +203,14 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
-    const fetchBoardData = (...args) => {
+    const fetchBoardData = (...argumentsList) => {
         const providerFetchBoardData = ctx.getCapability(
             "whiteboard:fetchBoardData",
         );
         if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
         }
-        return providerFetchBoardData(...args);
+        return providerFetchBoardData(...argumentsList);
     };
     const isWhiteboardProviderAvailable = () =>
         typeof ctx.getCapability("whiteboard:fetchBoardData") === "function" &&
@@ -280,55 +280,58 @@ export function registerApiRoutes(router, ctx) {
     }
 
     if (
-        !dbExecutor ||
+        !databaseExecutor ||
         !profileStore ||
         typeof generatePassphrase !== "function"
     ) {
-        const unavailablePayload = (res) =>
+        const unavailablePayload = (response) =>
             sendError(
-                res,
+                response,
                 503,
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
-            async (_req, res) => {
-                unavailablePayload(res);
+            async (_request, response) => {
+                unavailablePayload(response);
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings/upcoming",
-            async (_req, res) => {
-                unavailablePayload(res);
+            async (_request, response) => {
+                unavailablePayload(response);
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/participants",
-            async (_req, res) => {
-                sendJson(res, 200, { data: [] });
+            async (_request, response) => {
+                sendJson(response, 200, { data: [] });
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/meetings/active",
-            async (_req, res) => {
-                sendJson(res, 200, { data: [] });
+            async (_request, response) => {
+                sendJson(response, 200, { data: [] });
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/meetings/persisted",
-            async (_req, res) => {
-                sendJson(res, 200, { data: [] });
+            async (_request, response) => {
+                sendJson(response, 200, { data: [] });
             },
         );
-        router.get("/api/v1/modules/jitsi-meet/ping", async (_req, res) => {
-            sendJson(res, 200, {
-                data: {
-                    ready: false,
-                    reason: "required_capabilities_missing",
-                },
-            });
-        });
+        router.get(
+            "/api/v1/modules/jitsi-meet/ping",
+            async (_request, response) => {
+                sendJson(response, 200, {
+                    data: {
+                        ready: false,
+                        reason: "required_capabilities_missing",
+                    },
+                });
+            },
+        );
         registerJitsiUiResourcesRoute({
             requireAuth,
             router,
@@ -352,8 +355,8 @@ export function registerApiRoutes(router, ctx) {
             "/api/v1/modules/jitsi-meet/meetings/auth-complete",
             "/api/v1/modules/jitsi-meet/meetings/state",
         ]) {
-            router.post(routePath, async (_req, res) => {
-                unavailablePayload(res);
+            router.post(routePath, async (_request, response) => {
+                unavailablePayload(response);
             });
         }
         return;
@@ -820,7 +823,7 @@ export function registerApiRoutes(router, ctx) {
         listCalendarEvents,
         listPersistedMeetings: () =>
             listPersistedMeetings({
-                db: dbExecutor,
+                db: databaseExecutor,
                 getMeetingById: (id) => store.getMeetingById(id),
                 listParticipants: (id) => store.listParticipants(id),
                 listOriginalParticipants: (id) =>
@@ -849,13 +852,13 @@ export function registerApiRoutes(router, ctx) {
         sendError,
         log,
         checkHttpLiveness,
-        LIVELINESS_TIMEOUT_MS,
+        LIVELINESS_TIMEOUT_MS: LIVELINESS_TIMEOUT_MILLISECONDS,
         resolveShareGuestMeetingAccess,
     });
 
     registerAdminMeetingRoutes({
         router,
-        maintenance: registerMeetingMaintenance(ctx, dbExecutor),
+        maintenance: registerMeetingMaintenance(ctx, databaseExecutor),
         log,
         readJson,
         sendError,

@@ -47,14 +47,14 @@ export function registerMeetingLifecycleRoutes({
     });
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/voip-call",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const roomId = String(body.roomId ?? "").trim();
             if (!roomId || roomId.length > 200) {
-                sendError(res, 400, "bad_request", "Invalid VoIP call.");
+                sendError(response, 400, "bad_request", "Invalid VoIP call.");
                 return;
             }
             const membership = await resolveRoomMembership({
@@ -77,7 +77,7 @@ export function registerMeetingLifecycleRoutes({
                 accountIds.length > 100 ||
                 !accountIds.includes(String(claims.sub))
             ) {
-                sendError(res, 403, "forbidden", "VoIP call unavailable.");
+                sendError(response, 403, "forbidden", "VoIP call unavailable.");
                 return;
             }
             const profiles = await Promise.all(
@@ -86,7 +86,12 @@ export function registerMeetingLifecycleRoutes({
                 ),
             );
             if (profiles.some((profile) => !profile?.handle)) {
-                sendError(res, 400, "bad_request", "Invalid chat members.");
+                sendError(
+                    response,
+                    400,
+                    "bad_request",
+                    "Invalid chat members.",
+                );
                 return;
             }
             const requesterUsername = await resolveRequesterUsername(
@@ -108,14 +113,14 @@ export function registerMeetingLifecycleRoutes({
                 });
                 if (!authorized) {
                     sendError(
-                        res,
+                        response,
                         403,
                         "forbidden",
                         "The chatroom meeting is not available.",
                     );
                     return;
                 }
-                sendJson(res, 200, {
+                sendJson(response, 200, {
                     data: {
                         id: existingMeeting.id,
                         action: existingMeeting.disposable
@@ -128,7 +133,7 @@ export function registerMeetingLifecycleRoutes({
             const config = await store.getConfig();
             if (!config.instanceUrl) {
                 sendError(
-                    res,
+                    response,
                     409,
                     "config_required",
                     "Jitsi is not configured.",
@@ -185,7 +190,7 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: meeting.id,
                 roomId,
             });
-            sendJson(res, 200, {
+            sendJson(response, 200, {
                 data: { ...payload, action: "component" },
             });
         },
@@ -193,14 +198,14 @@ export function registerMeetingLifecycleRoutes({
     );
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/create",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             if (body.disposable !== undefined && body.disposable !== false) {
                 sendError(
-                    res,
+                    response,
                     400,
                     "bad_request",
                     "Disposable meetings must be created through a conversation call.",
@@ -211,7 +216,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 claims.sub,
             ).catch((error) => {
-                sendError(res, 409, "profile_required", error.message);
+                sendError(response, 409, "profile_required", error.message);
                 return null;
             });
             if (!requesterUsername) return;
@@ -227,7 +232,7 @@ export function registerMeetingLifecycleRoutes({
             });
             if (normalizedInput.participantUsernames.length < 1) {
                 sendError(
-                    res,
+                    response,
                     400,
                     "bad_request",
                     "At least one valid meeting participant is required.",
@@ -237,7 +242,7 @@ export function registerMeetingLifecycleRoutes({
             const config = await store.getConfig();
             if (!config.instanceUrl) {
                 sendError(
-                    res,
+                    response,
                     409,
                     "config_required",
                     "The Jitsi instance URL must be configured before meetings can be created.",
@@ -273,7 +278,7 @@ export function registerMeetingLifecycleRoutes({
                         errorCode: error.code,
                     },
                 );
-                sendError(res, error.status, error.code, error.message);
+                sendError(response, error.status, error.code, error.message);
                 return;
             }
             const participants = await store.listParticipants(meeting.id);
@@ -339,7 +344,7 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: meeting.id,
                 organizerUsername: meeting.createdBy,
             });
-            sendJson(res, 200, {
+            sendJson(response, 200, {
                 data: {
                     ...payload,
                     reused: Boolean(meeting.reused),
@@ -350,17 +355,17 @@ export function registerMeetingLifecycleRoutes({
     );
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/password/acknowledge",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const resolved = await resolveMeetingPayload({
                 body,
                 profileStore,
                 store,
                 claims,
-                res,
+                res: response,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
@@ -369,7 +374,7 @@ export function registerMeetingLifecycleRoutes({
                 resolved.meeting.id,
                 resolved.requesterUsername,
             );
-            sendJson(res, 204, {});
+            sendJson(response, 204, {});
         },
         { access: { minRole: "user" } },
     );
@@ -397,14 +402,19 @@ export function registerMeetingLifecycleRoutes({
     });
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/participants/kicked",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const meetingId = String(body.meetingId ?? "").trim();
             if (!meetingId) {
-                sendError(res, 400, "bad_request", "meetingId is required.");
+                sendError(
+                    response,
+                    400,
+                    "bad_request",
+                    "meetingId is required.",
+                );
                 return;
             }
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
@@ -415,7 +425,7 @@ export function registerMeetingLifecycleRoutes({
             if (shareGuestAccess.isGuest) {
                 if (!shareGuestAccess.allowed) {
                     sendError(
-                        res,
+                        response,
                         403,
                         "forbidden",
                         "Guest access is not valid.",
@@ -428,7 +438,7 @@ export function registerMeetingLifecycleRoutes({
                 });
                 if (!revoked) {
                     sendError(
-                        res,
+                        response,
                         503,
                         "share_unavailable",
                         "Guest link invalidation failed.",
@@ -448,7 +458,7 @@ export function registerMeetingLifecycleRoutes({
                     operation: "invalidate_kicked_guest_link",
                     meetingId,
                 });
-                sendJson(res, 200, { data: { removed: true } });
+                sendJson(response, 200, { data: { removed: true } });
                 return;
             }
             const resolved = await resolveMeetingPayload({
@@ -456,7 +466,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: response,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
@@ -490,7 +500,7 @@ export function registerMeetingLifecycleRoutes({
                     });
                 if (!chatMemberRemoved) {
                     sendError(
-                        res,
+                        response,
                         503,
                         "chat_membership_unavailable",
                         "The existing meeting chat membership could not be updated.",
@@ -504,7 +514,7 @@ export function registerMeetingLifecycleRoutes({
                     meeting: resolved.meeting,
                     state: resolved.state,
                     userAccountId: claims.sub,
-                    response: res,
+                    response: response,
                     logOperation:
                         "remove_kicked_meeting_participant_whiteboard",
                 }))
@@ -524,17 +534,17 @@ export function registerMeetingLifecycleRoutes({
                 meetingId: resolved.meeting.id,
                 username: resolved.requesterUsername,
             });
-            sendJson(res, 200, { data: { removed: true } });
+            sendJson(response, 200, { data: { removed: true } });
         },
         { access: { minRole: "user" } },
     );
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/join",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const includeChat = body.includeChat !== false;
             const meetingId = String(body.meetingId ?? "").trim();
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
@@ -545,7 +555,7 @@ export function registerMeetingLifecycleRoutes({
             if (shareGuestAccess.isGuest) {
                 if (!meetingId) {
                     sendError(
-                        res,
+                        response,
                         400,
                         "bad_request",
                         "meetingId is required.",
@@ -554,7 +564,7 @@ export function registerMeetingLifecycleRoutes({
                 }
                 if (!shareGuestAccess.allowed) {
                     sendError(
-                        res,
+                        response,
                         403,
                         "forbidden",
                         "Share guest access is not allowed for this meeting.",
@@ -563,7 +573,7 @@ export function registerMeetingLifecycleRoutes({
                 }
                 const meeting = await store.getMeetingById(meetingId);
                 if (!meeting) {
-                    sendError(res, 404, "not_found", "Meeting not found.");
+                    sendError(response, 404, "not_found", "Meeting not found.");
                     return;
                 }
                 const [participants, state] = await Promise.all([
@@ -584,7 +594,7 @@ export function registerMeetingLifecycleRoutes({
                     requiresReclaim: false,
                     meetingPassword: meeting.meetingPassword,
                 });
-                sendJson(res, 200, {
+                sendJson(response, 200, {
                     data: {
                         ...payload,
                         readOnly: true,
@@ -597,14 +607,19 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: response,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
             const sessionId = String(body.sessionId ?? "").trim();
             if (!sessionId) {
-                sendError(res, 400, "bad_request", "sessionId is required.");
+                sendError(
+                    response,
+                    400,
+                    "bad_request",
+                    "sessionId is required.",
+                );
                 return;
             }
             try {
@@ -618,7 +633,7 @@ export function registerMeetingLifecycleRoutes({
                 }
             } catch {
                 sendError(
-                    res,
+                    response,
                     503,
                     "chat_membership_unavailable",
                     "Meeting chat access could not be restored.",
@@ -633,7 +648,7 @@ export function registerMeetingLifecycleRoutes({
                     meeting: resolved.meeting,
                     state: resolved.state,
                     userAccountId: claims.sub,
-                    response: res,
+                    response: response,
                     logOperation: "restore_joining_participant_whiteboard",
                 }))
             )
@@ -753,7 +768,7 @@ export function registerMeetingLifecycleRoutes({
                     excludeUsernames: [resolved.requesterUsername],
                 },
             );
-            sendJson(res, 200, {
+            sendJson(response, 200, {
                 data: payload,
             });
         },
@@ -773,11 +788,11 @@ export function registerMeetingLifecycleRoutes({
     });
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/presence",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const shareGuestAccess = await resolveShareGuestMeetingAccess({
                 claims,
                 meetingId: String(body.meetingId ?? "").trim(),
@@ -786,7 +801,7 @@ export function registerMeetingLifecycleRoutes({
             if (shareGuestAccess.isGuest) {
                 if (!shareGuestAccess.allowed) {
                     sendError(
-                        res,
+                        response,
                         403,
                         "forbidden",
                         "Share guest access is not allowed for this meeting.",
@@ -805,7 +820,7 @@ export function registerMeetingLifecycleRoutes({
                         body.active !== false,
                     );
                 }
-                sendJson(res, 200, {
+                sendJson(response, 200, {
                     data: {
                         ok: true,
                         meetingClosed: false,
@@ -818,14 +833,19 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: response,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
             const sessionId = String(body.sessionId ?? "").trim();
             if (!sessionId) {
-                sendError(res, 400, "bad_request", "sessionId is required.");
+                sendError(
+                    response,
+                    400,
+                    "bad_request",
+                    "sessionId is required.",
+                );
                 return;
             }
             const previousPresenceEntries = await store.listPresence(
@@ -928,7 +948,7 @@ export function registerMeetingLifecycleRoutes({
                     }
                 }
             }
-            sendJson(res, 200, {
+            sendJson(response, 200, {
                 data: {
                     ok: true,
                     meetingClosed:

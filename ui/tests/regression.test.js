@@ -9,16 +9,16 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function readJitsiUiBundle() {
-    const uiDir = resolve(ROOT, "ui");
-    const rootSources = readdirSync(uiDir)
+    const uiDirectory = resolve(ROOT, "ui");
+    const rootSources = readdirSync(uiDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(uiDir, entry), "utf8"));
-    const appDir = resolve(uiDir, "app");
-    const appSources = readdirSync(appDir)
+        .map((entry) => readFileSync(join(uiDirectory, entry), "utf8"));
+    const appDirectory = resolve(uiDirectory, "app");
+    const appSources = readdirSync(appDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(appDir, entry), "utf8"));
+        .map((entry) => readFileSync(join(appDirectory, entry), "utf8"));
     return [...rootSources, ...appSources].join("\n");
 }
 
@@ -487,23 +487,23 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     assert.match(source, /"avatarUrl",[\s\S]*state\.currentProfile\.avatarUrl/);
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.disableDeepLinking", "true"\)/,
+        /hashParameters\.set\("config\.disableDeepLinking", "true"\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("userInfo\.avatarUrl", profile\.avatarUrl\)/,
+        /hashParameters\.set\("userInfo\.avatarUrl", profile\.avatarUrl\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.subject", meetingSubject\)/,
+        /hashParameters\.set\("config\.subject", meetingSubject\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.preferredTheme", themeMode\)/,
+        /hashParameters\.set\("config\.preferredTheme", themeMode\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\([\s\S]*"interfaceConfig\.DEFAULT_BACKGROUND",[\s\S]*resolveJitsiDefaultBackground\(themeMode\)/,
+        /hashParameters\.set\([\s\S]*"interfaceConfig\.DEFAULT_BACKGROUND",[\s\S]*resolveJitsiDefaultBackground\(themeMode\)/,
     );
     assert.match(source, /"password",[\s\S]*meetingPassword/);
     assert.match(
@@ -581,7 +581,7 @@ test("active meetings are locked while the user is joined to a meeting", () => {
     );
     assert.match(
         source,
-        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(isMeetingSelectionLocked\(state\)\) return/,
+        /activeMeetingsElement\.addEventListener\([\s\S]*?if \(isMeetingSelectionLocked\(state\)\) return/,
     );
     assert.match(
         source,
@@ -674,7 +674,10 @@ test("local Jitsi kick events remove account participants or invalidate guest li
 test("meeting participant surfaces and chat refresh membership in real time", () => {
     const source = readJitsiUiBundle();
     const cssSource = readModuleStyles();
-    assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
+    assert.match(
+        source,
+        /ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS = 5_000/,
+    );
     assert.match(source, /async function refreshAvailableParticipants\(\)/);
     assert.match(
         source,

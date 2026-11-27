@@ -19,8 +19,8 @@ function requireCapability(capabilityName) {
     return capability;
 }
 
-export const logUi = (level, message, meta = {}) =>
-    requireCapability("ui:log")(level, message, meta);
+export const logUi = (level, message, metadata = {}) =>
+    requireCapability("ui:log")(level, message, metadata);
 export const showToast = (message, options = {}) =>
     requireCapability("ui:showToast")(message, options);
 export const openErrorPopup = (options = {}) =>

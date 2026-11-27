@@ -160,10 +160,10 @@ test("VoIP call creation derives participants from authorized room membership", 
             },
         },
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
-        readJson: async (req) => req.body,
-        sendJson: (res, status, body) => {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
+        readJson: async (request) => request.body,
+        sendJson: (currentResponse, status, body) => {
+            currentResponse.writeHead(status);
+            currentResponse.end(JSON.stringify(body));
         },
         sendError: () => assert.fail("authorized VoIP call was rejected"),
         profileStore: {
@@ -281,10 +281,10 @@ test("meeting creation provisions a share-ready participant-free chat", async ()
         router: { post: (path, handler) => handlers.set(path, handler) },
         store,
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
-        readJson: async (req) => req.body ?? { participants: [] },
-        sendJson: (res, status, body) => {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
+        readJson: async (request) => request.body ?? { participants: [] },
+        sendJson: (response, status, body) => {
+            response.writeHead(status);
+            response.end(JSON.stringify(body));
         },
         sendError: () => assert.fail("meeting lifecycle returned an error"),
         profileStore: {},
@@ -379,14 +379,14 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             },
         },
         requireAuth: () => ({ sub: "account-alice", role: "user" }),
-        readJson: async (req) => req.body,
-        sendJson: (res, status, body) => {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
+        readJson: async (request) => request.body,
+        sendJson: (currentResponse, status, body) => {
+            currentResponse.writeHead(status);
+            currentResponse.end(JSON.stringify(body));
         },
-        sendError: (res, status, code, message) => {
-            res.writeHead(status);
-            res.end(JSON.stringify({ error: { code, message } }));
+        sendError: (currentResponse, status, code, message) => {
+            currentResponse.writeHead(status);
+            currentResponse.end(JSON.stringify({ error: { code, message } }));
         },
         profileStore: {
             async getProfileByHandle(handle) {
@@ -440,8 +440,8 @@ test("active non-disposable meetings invite a newly dropped participant", async 
             meetingPassword: "",
             chatUrl: input.chatUrl,
         }),
-        dispatchMeetingNotifications: async (...args) =>
-            notifications.push(args),
+        dispatchMeetingNotifications: async (...argumentsList) =>
+            notifications.push(argumentsList),
         requestParticipantAdditionApproval: async (input) => {
             approvals.push(input);
             return { approved: approvalApproved };
@@ -566,10 +566,10 @@ test("a kicked account participant leaves only module-owned meeting resources", 
             },
         },
         requireAuth: () => ({ sub: "account-bob", role: "user" }),
-        readJson: async (req) => req.body,
-        sendJson: (res, status, body) => {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
+        readJson: async (request) => request.body,
+        sendJson: (currentResponse, status, body) => {
+            currentResponse.writeHead(status);
+            currentResponse.end(JSON.stringify(body));
         },
         sendError: () => assert.fail("kick report was rejected"),
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
@@ -660,10 +660,10 @@ test("a kicked guest invalidates the share link used to join", async () => {
             },
         },
         requireAuth: () => ({ sub: "share:link-1:guest-1", role: "user" }),
-        readJson: async (req) => req.body,
-        sendJson: (res, status, body) => {
-            res.writeHead(status);
-            res.end(JSON.stringify(body));
+        readJson: async (request) => request.body,
+        sendJson: (currentResponse, status, body) => {
+            currentResponse.writeHead(status);
+            currentResponse.end(JSON.stringify(body));
         },
         sendError: () => assert.fail("guest kick report was rejected"),
         resolveShareGuestMeetingAccess: async () => ({
@@ -743,9 +743,9 @@ for (const providerAvailable of [true, false]) {
                 ...input.meeting,
                 state: input.state,
             }),
-            sendJson: (res, status, payload) => {
-                res.writeHead(status);
-                res.end(JSON.stringify(payload));
+            sendJson: (response, status, payload) => {
+                response.writeHead(status);
+                response.end(JSON.stringify(payload));
             },
             sendError: () =>
                 assert.fail(

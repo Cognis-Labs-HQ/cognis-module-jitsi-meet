@@ -5,7 +5,7 @@ import { checkHttpLiveness } from "./http-liveness.js";
 import { resolveStore } from "./store-runtime.js";
 import { normalizeHttpUrl } from "./url-parts.js";
 
-const LIVELINESS_TIMEOUT_MS = 5000;
+const LIVELINESS_TIMEOUT_MILLISECONDS = 5000;
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 
 function sendJson(response, status, payload) {
@@ -52,11 +52,11 @@ export function registerJitsiConfigurationApi(
     ctx,
     { enabled = false } = {},
 ) {
-    const dbExecutor = ctx.getCapability("db:executor");
+    const databaseExecutor = ctx.getCapability("db:executor");
     const requireAuth = ctx.getCapability("auth:requireAuth");
     const profileIdentity = ctx.getCapability("social:profile:identity");
     const dependenciesAvailable =
-        dbExecutor &&
+        databaseExecutor &&
         typeof requireAuth === "function" &&
         typeof profileIdentity?.normalizeHandleKey === "function" &&
         typeof profileIdentity?.normalizeHandleKeys === "function";
@@ -85,7 +85,7 @@ export function registerJitsiConfigurationApi(
 
     const log = ctx.getCapability("logging:log") ?? ctx.log;
     const rawStore = resolveStore(
-        dbExecutor,
+        databaseExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         profileIdentity,
@@ -103,7 +103,7 @@ export function registerJitsiConfigurationApi(
             };
         }
         const liveness = await checkHttpLiveness(config.instanceUrl, {
-            timeoutMs: LIVELINESS_TIMEOUT_MS,
+            timeoutMs: LIVELINESS_TIMEOUT_MILLISECONDS,
         });
         return {
             ok: Boolean(liveness.alive),

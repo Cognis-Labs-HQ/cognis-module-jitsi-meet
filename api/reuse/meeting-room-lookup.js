@@ -1,10 +1,10 @@
 export async function findMeetingByChatRoomReference({
-    db,
+    db: database,
     chatRoomId,
     getMeetingById,
 }) {
     if (!chatRoomId) return null;
-    const call = await db.executeCommand({
+    const call = await database.executeCommand({
         option: "SELECT",
         table: "jitsi_chat_calls",
         where: [{ column: "chat_room_id", value: chatRoomId }],
@@ -12,7 +12,7 @@ export async function findMeetingByChatRoomReference({
     });
     if (call.rows?.[0]?.meeting_id)
         return getMeetingById(call.rows[0].meeting_id);
-    const result = await db.executeCommand({
+    const result = await database.executeCommand({
         option: "SELECT",
         table: "jitsi_meetings",
         where: [{ column: "chat_room_id", value: chatRoomId }],

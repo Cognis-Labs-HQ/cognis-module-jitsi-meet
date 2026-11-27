@@ -38,19 +38,19 @@ export function registerAdminMeetingRoutes({
 
     router.get(
         "/api/v1/modules/jitsi-meet/admin/meetings",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "admin");
+        async (request, response) => {
+            const claims = requireAuth(request, response, "admin");
             if (!claims) return;
             const meetings = await maintenance.list();
-            sendJson(res, 200, { data: meetings });
+            sendJson(response, 200, { data: meetings });
         },
         { access: { minRole: "admin" } },
     );
 
     router.get(
         "/api/v1/modules/jitsi-meet/admin/meetings/upcoming",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "admin");
+        async (request, response) => {
+            const claims = requireAuth(request, response, "admin");
             if (!claims) return;
             const meetings = await withCreatorProfiles(
                 (await maintenance.list()).filter(
@@ -61,17 +61,17 @@ export function registerAdminMeetingRoutes({
                         new Date(meeting.scheduledAt).getTime() > Date.now(),
                 ),
             );
-            sendJson(res, 200, { data: meetings });
+            sendJson(response, 200, { data: meetings });
         },
         { access: { minRole: "admin" } },
     );
     for (const action of ["terminate", "delete"]) {
         router.post(
             `/api/v1/modules/jitsi-meet/admin/meetings/${action}`,
-            async (req, res) => {
-                const claims = requireAuth(req, res, "admin");
+            async (request, response) => {
+                const claims = requireAuth(request, response, "admin");
                 if (!claims) return;
-                const body = await readJson(req);
+                const body = await readJson(request);
                 const meetingId =
                     typeof body?.meetingId === "string"
                         ? body.meetingId.trim()
@@ -81,7 +81,7 @@ export function registerAdminMeetingRoutes({
                 );
                 if (!meeting) {
                     sendError(
-                        res,
+                        response,
                         404,
                         "meeting_not_found",
                         "Meeting not found.",
@@ -90,7 +90,7 @@ export function registerAdminMeetingRoutes({
                 }
                 if (action === "delete" && meeting.active) {
                     sendError(
-                        res,
+                        response,
                         409,
                         "meeting_active",
                         "Terminate the meeting before deleting it.",
@@ -98,7 +98,7 @@ export function registerAdminMeetingRoutes({
                     return;
                 }
                 await maintenance[action]({ meetingId, accountId: claims.sub });
-                sendJson(res, 200, { data: { completed: true } });
+                sendJson(response, 200, { data: { completed: true } });
             },
             { access: { minRole: "admin" } },
         );

@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm as remove } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -31,7 +31,7 @@ export async function openChromium() {
             process.kill();
             await exited;
         }
-        await rm(profile, { recursive: true, force: true });
+        await remove(profile, { recursive: true, force: true });
     };
     try {
         let port;
@@ -71,11 +71,11 @@ export async function openChromium() {
             if (message.error) request.reject(new Error(message.error.message));
             else request.resolve(message.result);
         });
-        const command = (method, params) =>
+        const command = (method, parameters) =>
             new Promise((resolve, reject) => {
                 const id = ++sequence;
                 pending.set(id, { resolve, reject });
-                socket.send(JSON.stringify({ id, method, params }));
+                socket.send(JSON.stringify({ id, method, params: parameters }));
             });
         const evaluate = async (operation, input) => {
             const result = await command("Runtime.evaluate", {

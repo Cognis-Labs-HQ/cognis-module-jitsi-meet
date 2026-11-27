@@ -1,11 +1,11 @@
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
-import { execFileSync } from "node:child_process";
+import { execFileSync as executeFileSync } from "node:child_process";
 import { format, resolveConfig } from "prettier";
 
 const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
-const paths = execFileSync(
+const paths = executeFileSync(
     "git",
     ["ls-files", "--cached", "--others", "--exclude-standard"],
     { encoding: "utf8" },

@@ -9,7 +9,7 @@ const { createCollapsibleSectionComposer } = await importReuseModule(
 import { logUi, showToast } from "./reuse/feedback.js";
 import { createMeetingAdminTemplates } from "./templates/admin-meetings.js";
 
-const REFRESH_INTERVAL_MS = 2500;
+const REFRESH_INTERVAL_MILLISECONDS = 2500;
 
 /**
  * Creates the Jitsi Meetings administration section contribution rendered in
@@ -209,7 +209,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
         if (refreshTimer !== null) return;
         refreshTimer = setInterval(() => {
             void refresh().catch(reportFailure);
-        }, REFRESH_INTERVAL_MS);
+        }, REFRESH_INTERVAL_MILLISECONDS);
     }
 
     function stopPolling() {
@@ -222,7 +222,7 @@ export function createAdminSection({ i18n, escapeHtml }) {
         if (upcomingRefreshTimer !== null) return;
         upcomingRefreshTimer = setInterval(() => {
             void refreshUpcoming().catch(reportFailure);
-        }, REFRESH_INTERVAL_MS);
+        }, REFRESH_INTERVAL_MILLISECONDS);
     }
 
     function stopUpcomingPolling() {

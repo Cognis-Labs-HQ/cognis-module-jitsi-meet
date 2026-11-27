@@ -12,8 +12,8 @@ for (const automaticOpen of [true, false]) {
         const response = { ok: true };
         const signal = new AbortController().signal;
         const returned = await synchronizeWhiteboardOpen(
-            async (...args) => {
-                requests.push(args);
+            async (...argumentsList) => {
+                requests.push(argumentsList);
                 return response;
             },
             {

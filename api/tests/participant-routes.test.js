@@ -44,7 +44,7 @@ test("meeting participant search preserves follow filtering and omits the curren
                 return [];
             },
         },
-        sendJson: (_res, status, payload) => {
+        sendJson: (_response, status, payload) => {
             assert.equal(status, 200);
             assert.deepEqual(payload.data, [
                 {
@@ -98,7 +98,7 @@ test("participant search hides users active in another meeting", async () => {
                 return ["alice"];
             },
         },
-        sendJson: (_res, status, payload) => {
+        sendJson: (_response, status, payload) => {
             assert.equal(status, 200);
             assert.deepEqual(payload.data, [
                 {
@@ -144,7 +144,7 @@ test("participant search does not exclude an unauthorized meeting", async () => 
                 return [];
             },
         },
-        sendJson: (_res, status) => assert.equal(status, 200),
+        sendJson: (_response, status) => assert.equal(status, 200),
         sendError: () => assert.fail("participant search should not fail"),
         hasMinRole: () => false,
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),
@@ -188,7 +188,7 @@ test("participant search excludes an authorized meeting using the requester Prof
                 return [];
             },
         },
-        sendJson: (_res, status) => assert.equal(status, 200),
+        sendJson: (_response, status) => assert.equal(status, 200),
         sendError: () => assert.fail("participant search should not fail"),
         hasMinRole: () => false,
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),

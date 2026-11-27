@@ -16,10 +16,10 @@ export function registerMeetingParticipantRoutes({
 }) {
     router.get(
         "/api/v1/modules/jitsi-meet/participants",
-        async (req, res) => {
-            const claims = requireAuth(req, res, "user");
+        async (request, response) => {
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const requestUrl = new URL(req.url, "http://localhost");
+            const requestUrl = new URL(request.url, "http://localhost");
             const meetingId = String(
                 requestUrl.searchParams.get("meetingId") ?? "",
             ).trim();
@@ -30,19 +30,19 @@ export function registerMeetingParticipantRoutes({
             });
             if (shareGuestAccess.isGuest) {
                 if (!meetingId) {
-                    sendJson(res, 200, { data: [] });
+                    sendJson(response, 200, { data: [] });
                     return;
                 }
                 if (!shareGuestAccess.allowed) {
                     sendError(
-                        res,
+                        response,
                         403,
                         "forbidden",
                         "Share guest access is not allowed for participants.",
                     );
                     return;
                 }
-                sendJson(res, 200, { data: [] });
+                sendJson(response, 200, { data: [] });
                 return;
             }
             const query = (requestUrl.searchParams.get("q") ?? "").trim();
@@ -94,7 +94,7 @@ export function registerMeetingParticipantRoutes({
                     displayName: profile.displayName ?? profile.handle,
                     avatarKey: profile.avatarKey ?? null,
                 }));
-            sendJson(res, 200, { data: results });
+            sendJson(response, 200, { data: results });
         },
         { access: { minRole: "user" } },
     );

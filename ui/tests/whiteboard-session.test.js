@@ -120,9 +120,9 @@ test("automatic whiteboard opening tolerates delayed component windows", async (
                 return spawnRequests.length < 5 ? null : componentWindow;
             },
         },
-        async waitForComponentWindowRetry(signal, delayMs) {
+        async waitForComponentWindowRetry(signal, delayMilliseconds) {
             assert.equal(signal.aborted, false);
-            retryDelays.push(delayMs);
+            retryDelays.push(delayMilliseconds);
         },
     };
 

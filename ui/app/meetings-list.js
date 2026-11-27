@@ -11,7 +11,7 @@ import { recoverDeletedMeeting } from "./reuse/meeting-recovery.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-control.js";
-import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS } from "../constants.js";
+import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS as ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {
     buildProfileAvatarMarkup,
@@ -131,25 +131,25 @@ export function createMeetingHandlers({
     }
 
     function renderPersistedMeetings() {
-        const persistedMeetingsEl = root.querySelector(
+        const persistedMeetingsElement = root.querySelector(
             "#jitsi-persisted-meetings",
         );
-        if (!(persistedMeetingsEl instanceof HTMLElement)) return;
+        if (!(persistedMeetingsElement instanceof HTMLElement)) return;
         const persistedMeetingsLocked = isMeetingSelectionLocked(state);
-        persistedMeetingsEl.classList.toggle(
+        persistedMeetingsElement.classList.toggle(
             "jitsi-persisted-meetings-disabled",
             persistedMeetingsLocked,
         );
-        persistedMeetingsEl.setAttribute(
+        persistedMeetingsElement.setAttribute(
             "aria-disabled",
             String(persistedMeetingsLocked),
         );
 
         if (!state.persistedMeetings.length) {
-            persistedMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi.meet.participants.persisted.none"))}</p>`;
+            persistedMeetingsElement.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(i18n.t("module.jitsi.meet.participants.persisted.none"))}</p>`;
             return;
         }
-        persistedMeetingsEl.replaceChildren(
+        persistedMeetingsElement.replaceChildren(
             ...state.persistedMeetings.map((meeting) => {
                 const card = document.createElement("article");
                 card.className = "jitsi-persisted-meeting-card";
@@ -246,7 +246,7 @@ export function createMeetingHandlers({
             }),
         );
         if (persistedMeetingsLocked) return;
-        void hydrateProfileAvatars(persistedMeetingsEl).catch((error) =>
+        void hydrateProfileAvatars(persistedMeetingsElement).catch((error) =>
             logUi("error", "Persisted meeting avatar hydration failed.", {
                 component: "module:jitsi-meet",
                 operation: "hydrate_persisted_meeting_avatars",
@@ -256,22 +256,24 @@ export function createMeetingHandlers({
     }
 
     function renderActiveMeetings({ loading = false } = {}) {
-        const activeMeetingsEl = root.querySelector("#jitsi-active-meetings");
-        if (!(activeMeetingsEl instanceof HTMLElement)) {
+        const activeMeetingsElement = root.querySelector(
+            "#jitsi-active-meetings",
+        );
+        if (!(activeMeetingsElement instanceof HTMLElement)) {
             return;
         }
         const activeMeetingsLocked = Boolean(isMeetingSelectionLocked(state));
-        const activeMeetingsSection = activeMeetingsEl.closest(
+        const activeMeetingsSection = activeMeetingsElement.closest(
             ".jitsi-overlay-active-meetings",
         );
         if (activeMeetingsSection instanceof HTMLElement) {
             activeMeetingsSection.hidden = activeMeetingsLocked;
         }
-        activeMeetingsEl.classList.toggle(
+        activeMeetingsElement.classList.toggle(
             "jitsi-active-meetings-disabled",
             activeMeetingsLocked,
         );
-        activeMeetingsEl.setAttribute(
+        activeMeetingsElement.setAttribute(
             "aria-disabled",
             String(activeMeetingsLocked),
         );
@@ -282,10 +284,10 @@ export function createMeetingHandlers({
             const emptyMessage = loading
                 ? i18n.t("module.jitsi.meet.participants.active.loading")
                 : i18n.t("module.jitsi.meet.participants.active.none");
-            activeMeetingsEl.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(emptyMessage)}</p>`;
+            activeMeetingsElement.innerHTML = `<p class="jitsi-active-meetings-empty">${escapeHtml(emptyMessage)}</p>`;
             return;
         }
-        activeMeetingsEl.replaceChildren(
+        activeMeetingsElement.replaceChildren(
             ...state.activeMeetings.map((meeting) => {
                 const meetingId = normalizeMeetingId(meeting?.id);
                 const startedByDisplayName = String(
@@ -712,7 +714,7 @@ export function createMeetingHandlers({
                 () => loadActiveMeetings({ resolveRequested: false }),
                 stopActiveMeetingsPolling,
             );
-        }, ACTIVE_MEETINGS_REFRESH_INTERVAL_MS);
+        }, ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS);
     }
 
     function closeMeetingEmbed() {

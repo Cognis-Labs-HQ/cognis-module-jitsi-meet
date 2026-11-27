@@ -25,24 +25,24 @@ export function registerActiveMeetingParticipantRoute({
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/participants/add",
-        async (req, res) => {
+        async (request, response) => {
             await store.ensureSchema();
-            const claims = requireAuth(req, res, "user");
+            const claims = requireAuth(request, response, "user");
             if (!claims) return;
-            const body = await readJson(req);
+            const body = await readJson(request);
             const resolved = await resolveMeetingPayload({
                 body,
                 profileStore,
                 store,
                 claims,
-                res,
+                res: response,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
             if (!resolved) return;
             if (resolved.meeting.disposable) {
                 sendError(
-                    res,
+                    response,
                     403,
                     "participant_locked",
                     "Disposable meetings cannot modify participants.",
@@ -57,7 +57,7 @@ export function registerActiveMeetingParticipantRoute({
                 )
             ) {
                 sendError(
-                    res,
+                    response,
                     409,
                     "meeting_not_extendable",
                     "Only active non-disposable meetings can receive participants.",
@@ -72,7 +72,7 @@ export function registerActiveMeetingParticipantRoute({
             const username = requestedParticipants[0];
             if (!username) {
                 sendError(
-                    res,
+                    response,
                     400,
                     "bad_request",
                     "A valid username is required.",
@@ -85,7 +85,7 @@ export function registerActiveMeetingParticipantRoute({
                 );
             if (reservedUsernames.includes(username)) {
                 sendError(
-                    res,
+                    response,
                     409,
                     "participant_unavailable",
                     "The participant is active in another meeting.",
@@ -93,7 +93,7 @@ export function registerActiveMeetingParticipantRoute({
                 return;
             }
             if (resolved.participants.includes(username)) {
-                sendJson(res, 200, {
+                sendJson(response, 200, {
                     data: await createMeetingPayload({
                         store,
                         meeting: resolved.meeting,
@@ -123,7 +123,7 @@ export function registerActiveMeetingParticipantRoute({
             });
             if (approval?.approved === false) {
                 sendError(
-                    res,
+                    response,
                     409,
                     "participant_addition_declined",
                     "Current meeting participants declined the invitation.",
@@ -168,7 +168,7 @@ export function registerActiveMeetingParticipantRoute({
             }
             if (!chatRoom?.roomId) {
                 sendError(
-                    res,
+                    response,
                     503,
                     "chat_unavailable",
                     "Chat access could not be provisioned.",
@@ -179,7 +179,7 @@ export function registerActiveMeetingParticipantRoute({
                 await profileStore.getProfileByHandle(username);
             if (!participantProfile?.accountId) {
                 sendError(
-                    res,
+                    response,
                     404,
                     "participant_not_found",
                     "The participant profile could not be resolved.",
@@ -209,7 +209,7 @@ export function registerActiveMeetingParticipantRoute({
                 });
             if (!chatMemberAdded) {
                 sendError(
-                    res,
+                    response,
                     503,
                     "chat_membership_unavailable",
                     "The existing meeting chat membership could not be updated.",
@@ -222,7 +222,7 @@ export function registerActiveMeetingParticipantRoute({
                     meeting: resolved.meeting,
                     state: resolved.state,
                     userAccountId: participantProfile.accountId,
-                    response: res,
+                    response: response,
                     logOperation: "add_active_meeting_participant_whiteboard",
                 }))
             ) {
@@ -275,7 +275,7 @@ export function registerActiveMeetingParticipantRoute({
                         error instanceof Error ? error.message : String(error),
                 });
                 sendError(
-                    res,
+                    response,
                     503,
                     "meeting_update_unavailable",
                     "The meeting participant could not be added.",
@@ -300,7 +300,7 @@ export function registerActiveMeetingParticipantRoute({
                 username,
                 requestedBy: resolved.requesterUsername,
             });
-            sendJson(res, 200, {
+            sendJson(response, 200, {
                 data: await createMeetingPayload({
                     store,
                     meeting,

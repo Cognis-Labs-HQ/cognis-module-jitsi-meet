@@ -215,7 +215,7 @@ test("upcoming administration lists only valid future schedules before resolving
                 return { displayName: "Alice" };
             },
         },
-        sendJson(_res, _status, body) {
+        sendJson(_response, _status, body) {
             result = body.data;
         },
     });

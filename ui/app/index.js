@@ -435,8 +435,8 @@ export async function mount(
         requireAccountSession: !limitedShareView,
         persistLayoutPreferences: !limitedShareView && !focusState,
         frameless: Boolean(focusState),
-        onRender: (...args) => {
-            bindInteractiveHandlers(...args);
+        onRender: (...argumentsList) => {
+            bindInteractiveHandlers(...argumentsList);
             if (!inShareView) {
                 bindShareButton({
                     root,

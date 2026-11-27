@@ -19,7 +19,7 @@ function createProfileStoreWithoutHandle() {
     };
 }
 
-function createInMemoryJitsiDb() {
+function createInMemoryJitsiDatabase() {
     const rows = { jitsi_meetings: [], jitsi_meeting_state: [] };
     return {
         async ensureTable() {},
@@ -46,7 +46,7 @@ function createInMemoryJitsiDb() {
 
 test("resolveMeetingPayloadOrReject reports profile_required instead of throwing when the caller has no visible profile handle", async () => {
     const sendErrorCalls = [];
-    const sendError = (res, status, code, message) => {
+    const sendError = (response, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
 
@@ -56,7 +56,7 @@ test("resolveMeetingPayloadOrReject reports profile_required instead of throwing
         profileStore: createProfileStoreWithoutHandle(),
         store: new JitsiMeetStore({
             profileIdentity: profileIdentityFake,
-            db: createInMemoryJitsiDb(),
+            db: createInMemoryJitsiDatabase(),
         }),
         claims: { sub: "account-without-profile" },
         sendError,
@@ -110,7 +110,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
             return [];
         },
     };
-    const sendError = (res, status, code, message) => {
+    const sendError = (response, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
 
@@ -170,11 +170,11 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
         filterUsernamesForGuestVisibility: async (usernames) => usernames,
         requireAuth: () => ({ sub: "account-without-profile", role: "user" }),
         readJson: async () => ({}),
-        sendJson: (res, status, payload) => {
+        sendJson: (response, status, payload) => {
             sendJsonCalls.push({ status, payload });
         },
         sendError,
-        log: (...args) => logCalls.push(args),
+        log: (...argumentsList) => logCalls.push(argumentsList),
         checkHttpLiveness: async () => true,
         LIVELINESS_TIMEOUT_MS: 5000,
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),

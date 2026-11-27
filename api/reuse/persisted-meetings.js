@@ -1,10 +1,10 @@
 export async function listPersistedMeetings({
-    db,
+    db: database,
     getMeetingById,
     listParticipants,
     listOriginalParticipants,
 }) {
-    const result = await db.executeCommand({
+    const result = await database.executeCommand({
         option: "SELECT",
         table: "jitsi_meetings",
         orderBy: [{ column: "updated_at", direction: "DESC" }],

@@ -1,6 +1,7 @@
+import { sourceFiles } from "../../tooling/reuse/source-files.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { parsers } from "prettier/plugins/babel";
 
@@ -35,35 +36,24 @@ function nativeConsoleNodes(source) {
     return found;
 }
 
-function sources(directory) {
-    return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-        if (
-            [
+test("module JavaScript routes diagnostics through host capabilities and command reports through terminal streams", () => {
+    assert.deepEqual(
+        sourceFiles(root, {
+            excludeDirectories: [
                 "node_modules",
                 ".git",
                 "tests",
                 "fixtures",
                 "data",
                 "assets",
-            ].includes(entry.name)
-        )
-            return [];
-        const path = resolve(directory, entry.name);
-        return entry.isDirectory()
-            ? sources(path)
-            : /\.(?:js|mjs|cjs)$/.test(entry.name)
-              ? [path]
-              : [];
-    });
-}
-
-test("module JavaScript routes diagnostics through host capabilities and command reports through terminal streams", () => {
-    assert.deepEqual(
-        sources(root).flatMap((path) =>
-            nativeConsoleNodes(readFileSync(path, "utf8")).map(
-                (offset) => `${relative(root, path)}:${offset}`,
+            ],
+        })
+            .filter((file) => /\.(?:js|mjs|cjs)$/.test(file))
+            .flatMap((path) =>
+                nativeConsoleNodes(readFileSync(path, "utf8")).map(
+                    (offset) => `${relative(root, path)}:${offset}`,
+                ),
             ),
-        ),
         [],
     );
 });

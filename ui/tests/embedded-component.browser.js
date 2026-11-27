@@ -217,13 +217,13 @@ try {
             });
             const aloneButtons = visibleButtons();
             const afterStyle = styleValues();
-            const frameRect = frame.getBoundingClientRect();
-            const overlayRect = overlay.getBoundingClientRect();
+            const frameRectangle = frame.getBoundingClientRect();
+            const overlayRectangle = overlay.getBoundingClientRect();
             const coversFrame =
-                Math.abs(overlayRect.height - frame.clientHeight) <= 1 &&
-                Math.abs(overlayRect.width - frame.clientWidth) <= 1 &&
-                overlayRect.top >= frameRect.top &&
-                overlayRect.left >= frameRect.left;
+                Math.abs(overlayRectangle.height - frame.clientHeight) <= 1 &&
+                Math.abs(overlayRectangle.width - frame.clientWidth) <= 1 &&
+                overlayRectangle.top >= frameRectangle.top &&
+                overlayRectangle.left >= frameRectangle.left;
             const overflow = overlay.scrollHeight - overlay.clientHeight;
             const initialContentHidden = [
                 ...overlay.querySelectorAll(

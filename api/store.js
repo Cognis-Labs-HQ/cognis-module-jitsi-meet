@@ -10,7 +10,7 @@ import {
 } from "./reuse/url-parts.js";
 import { buildMeetingName } from "./meeting-values.js";
 import { generateMeetingName } from "./meeting-name.js";
-import { readDbTimestampValue } from "./reuse/timestamp.js";
+import { readDbTimestampValue as readDatabaseTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
     deriveScopedKey,
@@ -29,12 +29,12 @@ import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
 import { removeDeletedAccountFromMeetings } from "./reuse/deleted-account-meetings.js";
 
-const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
-const ACTIVE_PRESENCE_WINDOW_MS = 35 * 1000;
+const AUTH_WAIT_TIMEOUT_MILLISECONDS = 2 * 60 * 1000;
+const ACTIVE_PRESENCE_WINDOW_MILLISECONDS = 35 * 1000;
 
 export class JitsiMeetStore {
-    constructor({ db, log, generatePassphrase, profileIdentity }) {
-        this.db = db;
+    constructor({ db: database, log, generatePassphrase, profileIdentity }) {
+        this.db = database;
         this.log = log;
         this.generatePassphrase = generatePassphrase;
         this.normalizeHandleKey =
@@ -61,7 +61,7 @@ export class JitsiMeetStore {
         const row = result.rows?.[0];
         return {
             instanceUrl: row?.instance_url ? String(row.instance_url) : "",
-            updatedAt: readDbTimestampValue(row?.updated_at),
+            updatedAt: readDatabaseTimestampValue(row?.updated_at),
         };
     }
 
@@ -158,10 +158,10 @@ export class JitsiMeetStore {
             classroomId: row.classroom_id ? String(row.classroom_id) : null,
             createdBy: row.created_by ? String(row.created_by) : "",
             scheduledAt:
-                readDbTimestampValue(row.scheduled_at) ??
-                readDbTimestampValue(row.created_at),
-            createdAt: readDbTimestampValue(row.created_at),
-            updatedAt: readDbTimestampValue(row.updated_at),
+                readDatabaseTimestampValue(row.scheduled_at) ??
+                readDatabaseTimestampValue(row.created_at),
+            createdAt: readDatabaseTimestampValue(row.created_at),
+            updatedAt: readDatabaseTimestampValue(row.updated_at),
         };
     }
 
@@ -594,7 +594,7 @@ export class JitsiMeetStore {
                 set: {
                     instance_id: instanceId,
                     updated_at: row.updated_at
-                        ? readDbTimestampValue(row.updated_at)
+                        ? readDatabaseTimestampValue(row.updated_at)
                         : new Date().toISOString(),
                 },
                 where: [{ column: "meeting_id", value: meetingId }],
@@ -606,16 +606,16 @@ export class JitsiMeetStore {
             firstJoinedBy: row.first_joined_by
                 ? String(row.first_joined_by)
                 : null,
-            firstJoinedAt: readDbTimestampValue(row.first_joined_at),
+            firstJoinedAt: readDatabaseTimestampValue(row.first_joined_at),
             authRequired: Number(row.auth_required ?? 0) === 1,
             authStartedBy: row.auth_started_by
                 ? String(row.auth_started_by)
                 : null,
-            authStartedAt: readDbTimestampValue(row.auth_started_at),
-            authCompletedAt: readDbTimestampValue(row.auth_completed_at),
-            updatedAt: readDbTimestampValue(row.updated_at),
+            authStartedAt: readDatabaseTimestampValue(row.auth_started_at),
+            authCompletedAt: readDatabaseTimestampValue(row.auth_completed_at),
+            updatedAt: readDatabaseTimestampValue(row.updated_at),
             endedBy: row.ended_by ? String(row.ended_by) : null,
-            endedAt: readDbTimestampValue(row.ended_at),
+            endedAt: readDatabaseTimestampValue(row.ended_at),
             whiteboardId: row.whiteboard_id ? String(row.whiteboard_id) : null,
             whiteboardDisposable:
                 row.whiteboard_disposable == null
@@ -750,7 +750,7 @@ export class JitsiMeetStore {
             username: String(row.username),
             sessionId: String(row.session_id),
             active: Number(row.active ?? 0) === 1,
-            lastSeenAt: readDbTimestampValue(row.last_seen_at),
+            lastSeenAt: readDatabaseTimestampValue(row.last_seen_at),
         }));
     }
 
@@ -758,7 +758,7 @@ export class JitsiMeetStore {
         if (!entry?.active) return false;
         const seenAt = Date.parse(entry.lastSeenAt);
         return Number.isFinite(seenAt)
-            ? seenAt >= referenceTime - ACTIVE_PRESENCE_WINDOW_MS
+            ? seenAt >= referenceTime - ACTIVE_PRESENCE_WINDOW_MILLISECONDS
             : false;
     }
 
@@ -798,10 +798,10 @@ export class JitsiMeetStore {
                         : null,
                     createdBy: String(row.created_by),
                     scheduledAt:
-                        readDbTimestampValue(row.scheduled_at) ??
-                        readDbTimestampValue(row.created_at),
-                    createdAt: readDbTimestampValue(row.created_at),
-                    updatedAt: readDbTimestampValue(row.updated_at),
+                        readDatabaseTimestampValue(row.scheduled_at) ??
+                        readDatabaseTimestampValue(row.created_at),
+                    createdAt: readDatabaseTimestampValue(row.created_at),
+                    updatedAt: readDatabaseTimestampValue(row.updated_at),
                 };
                 const [presence, participants, state] = await Promise.all([
                     this.listPresence(meeting.id),
@@ -853,14 +853,16 @@ export class JitsiMeetStore {
         if (!state.authStartedBy) {
             if (!state.firstJoinedAt) return true;
             if (state.firstJoinedBy === currentUsername) return true;
-            const firstJoinAtMs = Date.parse(state.firstJoinedAt);
-            if (!Number.isFinite(firstJoinAtMs)) return true;
-            return now - firstJoinAtMs >= AUTH_WAIT_TIMEOUT_MS;
+            const firstJoinAtMilliseconds = Date.parse(state.firstJoinedAt);
+            if (!Number.isFinite(firstJoinAtMilliseconds)) return true;
+            return (
+                now - firstJoinAtMilliseconds >= AUTH_WAIT_TIMEOUT_MILLISECONDS
+            );
         }
         if (state.authStartedBy === currentUsername) return true;
-        const authStartMs = Date.parse(state.authStartedAt ?? "");
-        if (!Number.isFinite(authStartMs)) return false;
-        return now - authStartMs >= AUTH_WAIT_TIMEOUT_MS;
+        const authStartMilliseconds = Date.parse(state.authStartedAt ?? "");
+        if (!Number.isFinite(authStartMilliseconds)) return false;
+        return now - authStartMilliseconds >= AUTH_WAIT_TIMEOUT_MILLISECONDS;
     }
 
     buildMeetingPayload(meeting, participants, state, extra = {}) {
@@ -922,9 +924,9 @@ export class JitsiMeetStore {
                     meetingName: buildMeetingName(row.meeting_name),
                     createdBy: String(row.created_by),
                     scheduledAt:
-                        readDbTimestampValue(row.scheduled_at) ??
-                        readDbTimestampValue(row.created_at),
-                    createdAt: readDbTimestampValue(row.created_at),
+                        readDatabaseTimestampValue(row.scheduled_at) ??
+                        readDatabaseTimestampValue(row.created_at),
+                    createdAt: readDatabaseTimestampValue(row.created_at),
                 };
                 const [presence, participants, state] = await Promise.all([
                     this.listPresence(meeting.id),

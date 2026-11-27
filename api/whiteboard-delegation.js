@@ -79,7 +79,7 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
     if (!ctx.flow.exists("resolve-share-delegated-access")) return false;
     const resolveDelegation = createMeetingWhiteboardDelegationResolver({
         store,
-        fetchBoardData: (...args) => {
+        fetchBoardData: (...argumentsList) => {
             const providerFetchBoardData = ctx.getCapability(
                 "whiteboard:fetchBoardData",
             );
@@ -88,7 +88,7 @@ export function registerMeetingWhiteboardDelegationHook(ctx, { store }) {
                     "Whiteboard provider verification is unavailable.",
                 );
             }
-            return providerFetchBoardData(...args);
+            return providerFetchBoardData(...argumentsList);
         },
         log: ctx.log,
     });
