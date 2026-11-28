@@ -39,7 +39,7 @@ const logs = [];
 capabilities.set("ui:reuse", {
     importModule: () => assert.fail("No host imports expected"),
 });
-capabilities.set("ui:log", (...argumentsList) => logs.push(argumentsList));
+capabilities.set("ui:log", (...args) => logs.push(args));
 globalThis[Symbol.for("cognis.uiCtx")] = {
     capabilities: { get: (name) => capabilities.get(name) },
 };
@@ -241,9 +241,7 @@ test("rebinding a recovered provider clears its previous failure explanation", a
 
 test("failed Whiteboard preparation sends safe diagnostics through the host gateway and retains localized feedback", async () => {
     const toasts = [];
-    capabilities.set("ui:showToast", (...argumentsList) =>
-        toasts.push(argumentsList),
-    );
+    capabilities.set("ui:showToast", (...args) => toasts.push(args));
     publishGateway({
         createCanvas() {},
         requestCanvasPage() {

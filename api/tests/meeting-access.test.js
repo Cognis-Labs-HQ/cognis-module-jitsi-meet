@@ -46,7 +46,7 @@ function createInMemoryJitsiDatabase() {
 
 test("resolveMeetingPayloadOrReject reports profile_required instead of throwing when the caller has no visible profile handle", async () => {
     const sendErrorCalls = [];
-    const sendError = (response, status, code, message) => {
+    const sendError = (res, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
 
@@ -110,7 +110,7 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
             return [];
         },
     };
-    const sendError = (response, status, code, message) => {
+    const sendError = (res, status, code, message) => {
         sendErrorCalls.push({ status, code, message });
     };
 
@@ -170,11 +170,11 @@ test("jitsi meetings active endpoint uses account identity when the caller has n
         filterUsernamesForGuestVisibility: async (usernames) => usernames,
         requireAuth: () => ({ sub: "account-without-profile", role: "user" }),
         readJson: async () => ({}),
-        sendJson: (response, status, payload) => {
+        sendJson: (res, status, payload) => {
             sendJsonCalls.push({ status, payload });
         },
         sendError,
-        log: (...argumentsList) => logCalls.push(argumentsList),
+        log: (...args) => logCalls.push(args),
         checkHttpLiveness: async () => true,
         LIVELINESS_TIMEOUT_MS: 5000,
         resolveShareGuestMeetingAccess: async () => ({ isGuest: false }),

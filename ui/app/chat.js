@@ -5,7 +5,7 @@ import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
 import {
     TEXT_ENCODER,
-    CHAT_REFRESH_INTERVAL_MS as CHAT_REFRESH_INTERVAL_MILLISECONDS,
+    CHAT_REFRESH_INTERVAL_MILLISECONDS,
 } from "../constants.js";
 
 import {

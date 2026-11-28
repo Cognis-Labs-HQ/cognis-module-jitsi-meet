@@ -39,13 +39,13 @@ import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
 const LIVELINESS_TIMEOUT_MILLISECONDS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
 
-function sendJson(response, status, payload) {
-    response.writeHead(status, { "content-type": "application/json" });
-    response.end(JSON.stringify(payload));
+function sendJson(res, status, payload) {
+    res.writeHead(status, { "content-type": "application/json" });
+    res.end(JSON.stringify(payload));
 }
 
-function sendError(response, status, code, message) {
-    sendJson(response, status, {
+function sendError(res, status, code, message) {
+    sendJson(res, status, {
         error: {
             code,
             message,
@@ -203,14 +203,14 @@ export function registerApiRoutes(router, ctx) {
     const listCalendarsByOwner = ctx.getCapability("calendar:listCalendars");
     const listCalendarEvents = ctx.getCapability("calendar:listEvents");
     const log = ctx.getCapability("logging:log");
-    const fetchBoardData = (...argumentsList) => {
+    const fetchBoardData = (...args) => {
         const providerFetchBoardData = ctx.getCapability(
             "whiteboard:fetchBoardData",
         );
         if (typeof providerFetchBoardData !== "function") {
             throw new Error("Whiteboard provider verification is unavailable.");
         }
-        return providerFetchBoardData(...argumentsList);
+        return providerFetchBoardData(...args);
     };
     const isWhiteboardProviderAvailable = () =>
         typeof ctx.getCapability("whiteboard:fetchBoardData") === "function" &&
@@ -284,54 +284,51 @@ export function registerApiRoutes(router, ctx) {
         !profileStore ||
         typeof generatePassphrase !== "function"
     ) {
-        const unavailablePayload = (response) =>
+        const unavailablePayload = (res) =>
             sendError(
-                response,
+                res,
                 503,
                 "service_unavailable",
                 "Jitsi Meet dependencies are unavailable.",
             );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings",
-            async (_request, response) => {
-                unavailablePayload(response);
+            async (_request, res) => {
+                unavailablePayload(res);
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/admin/meetings/upcoming",
-            async (_request, response) => {
-                unavailablePayload(response);
+            async (_request, res) => {
+                unavailablePayload(res);
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/participants",
-            async (_request, response) => {
-                sendJson(response, 200, { data: [] });
+            async (_request, res) => {
+                sendJson(res, 200, { data: [] });
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/meetings/active",
-            async (_request, response) => {
-                sendJson(response, 200, { data: [] });
+            async (_request, res) => {
+                sendJson(res, 200, { data: [] });
             },
         );
         router.get(
             "/api/v1/modules/jitsi-meet/meetings/persisted",
-            async (_request, response) => {
-                sendJson(response, 200, { data: [] });
+            async (_request, res) => {
+                sendJson(res, 200, { data: [] });
             },
         );
-        router.get(
-            "/api/v1/modules/jitsi-meet/ping",
-            async (_request, response) => {
-                sendJson(response, 200, {
-                    data: {
-                        ready: false,
-                        reason: "required_capabilities_missing",
-                    },
-                });
-            },
-        );
+        router.get("/api/v1/modules/jitsi-meet/ping", async (_request, res) => {
+            sendJson(res, 200, {
+                data: {
+                    ready: false,
+                    reason: "required_capabilities_missing",
+                },
+            });
+        });
         registerJitsiUiResourcesRoute({
             requireAuth,
             router,
@@ -355,8 +352,8 @@ export function registerApiRoutes(router, ctx) {
             "/api/v1/modules/jitsi-meet/meetings/auth-complete",
             "/api/v1/modules/jitsi-meet/meetings/state",
         ]) {
-            router.post(routePath, async (_request, response) => {
-                unavailablePayload(response);
+            router.post(routePath, async (_request, res) => {
+                unavailablePayload(res);
             });
         }
         return;

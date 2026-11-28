@@ -1,5 +1,5 @@
-export async function listMeetingOriginalParticipants(database, meetingId) {
-    const result = await database.executeCommand({
+export async function listMeetingOriginalParticipants(db, meetingId) {
+    const result = await db.executeCommand({
         option: "SELECT",
         table: "jitsi_meeting_original_participants",
         where: [{ column: "meeting_id", value: meetingId }],
@@ -31,16 +31,16 @@ export async function meetingMatchesParticipantSet({
 }
 
 export async function ensureMeetingOriginalParticipants({
-    db: database,
+    db: db,
     meetingId,
     listParticipants,
 }) {
-    const existing = await listMeetingOriginalParticipants(database, meetingId);
+    const existing = await listMeetingOriginalParticipants(db, meetingId);
     if (existing.length) return existing;
     const participants = await listParticipants(meetingId);
     const recordedAt = new Date().toISOString();
     for (const username of participants) {
-        await database.executeCommand({
+        await db.executeCommand({
             option: "INSERT",
             table: "jitsi_meeting_original_participants",
             values: {

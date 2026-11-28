@@ -150,8 +150,7 @@ for (const ownership of ["deleted", "bob", "departed"]) {
             store: {
                 ensureSchema: async () => {},
                 listActiveMeetings: async () => [],
-                removeMeetingParticipant: async (...argumentsList) =>
-                    removed.push(argumentsList),
+                removeMeetingParticipant: async (...args) => removed.push(args),
             },
             profileStore: {
                 getProfileByHandle: async (handle) =>
@@ -172,11 +171,11 @@ for (const ownership of ["deleted", "bob", "departed"]) {
                 participants: ["alice", "bob"],
             }),
             groupChatMembership: { remove: async () => {} },
-            sendJson: (currentResponse, status) => {
-                currentResponse.status = status;
+            sendJson: (res, status) => {
+                res.status = status;
             },
-            sendError: (currentResponse, status, code) => {
-                Object.assign(currentResponse, { status, code });
+            sendError: (res, status, code) => {
+                Object.assign(res, { status, code });
             },
         });
         const response = {};

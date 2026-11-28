@@ -216,7 +216,7 @@ function createParticipantAvatarElement({ username, displayName, avatarKey }) {
     wrapper.appendChild(label);
     return wrapper;
 }
-export { createParticipantAvatarElement as createParticipantAvatarEl };
+export { createParticipantAvatarElement };
 
 export function createChatParticipantAvatarButton({
     username,

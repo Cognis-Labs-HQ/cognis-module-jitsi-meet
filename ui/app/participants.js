@@ -6,12 +6,12 @@ import {
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
-    HEARTBEAT_INTERVAL_MS as HEARTBEAT_INTERVAL_MILLISECONDS,
+    HEARTBEAT_INTERVAL_MILLISECONDS,
     MEETING_DESTROYED_TEXT,
     MEETING_TERMINATED_TEXT,
-    STATE_REFRESH_INTERVAL_MS as STATE_REFRESH_INTERVAL_MILLISECONDS,
+    STATE_REFRESH_INTERVAL_MILLISECONDS,
 } from "../constants.js";
-import { createParticipantAvatarEl as createParticipantAvatarElement } from "../jitsi-helpers.js";
+import { createParticipantAvatarElement } from "../jitsi-helpers.js";
 import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
 
@@ -701,11 +701,7 @@ export function createPreflightHandlers({
         );
     }
 
-    function executeJitsiCommandIfSupported(
-        apiInstance,
-        command,
-        ...argumentsList
-    ) {
+    function executeJitsiCommandIfSupported(apiInstance, command, ...args) {
         if (!apiInstance || typeof apiInstance.executeCommand !== "function") {
             return;
         }
@@ -718,7 +714,7 @@ export function createPreflightHandlers({
                 return;
             }
         }
-        apiInstance.executeCommand(command, ...argumentsList);
+        apiInstance.executeCommand(command, ...args);
     }
 
     function isMeetingTerminatedNotice(event) {

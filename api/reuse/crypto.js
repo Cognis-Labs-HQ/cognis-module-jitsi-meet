@@ -146,10 +146,10 @@ export async function encryptPayload(key, plaintext) {
  * @returns The decrypted UTF-8 string.
  * @throws If the key, IV, or ciphertext does not match (authentication failure).
  */
-export async function decryptPayload(key, initializationVector, ciphertext) {
+export async function decryptPayload(key, iv, ciphertext) {
     const subtle = globalThis.crypto.subtle;
     const decrypted = await subtle.decrypt(
-        { name: ENCRYPT_ALG, iv: Buffer.from(initializationVector, "hex") },
+        { name: ENCRYPT_ALG, iv: Buffer.from(iv, "hex") },
         key,
         Buffer.from(ciphertext, "hex"),
     );

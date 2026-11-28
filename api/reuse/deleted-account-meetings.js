@@ -21,7 +21,7 @@ export async function removeDeletedAccountFromMeetings(
     username,
     { beforeDeleteMeeting } = {},
 ) {
-    const { db: database } = store;
+    const { db: db } = store;
     const normalizeHandleKey = (handle) => store.normalizeHandleKey(handle);
     const normalizeHandleKeys = (handles) => store.normalizeHandleKeys(handles);
     const normalizedUsername = normalizeHandleKey(username);
@@ -29,7 +29,7 @@ export async function removeDeletedAccountFromMeetings(
         return { updatedMeetingIds: [], deletedMeetingIds: [] };
     }
 
-    return database.transaction(async (executor) => {
+    return db.transaction(async (executor) => {
         const affectedMeetingIds = new Set();
         const ownedMeetings = await executor.executeCommand({
             option: "SELECT",

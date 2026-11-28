@@ -76,10 +76,10 @@ export async function deleteMeetingRows(executor, meetingId) {
     }
 }
 
-export async function ensureJitsiStoreSchema({ db: database }) {
-    await ensureJitsiAuxiliaryTable(database, CONFIG_TABLE);
+export async function ensureJitsiStoreSchema({ db: db }) {
+    await ensureJitsiAuxiliaryTable(db, CONFIG_TABLE);
 
-    await database.ensureTable({
+    await db.ensureTable({
         name: "jitsi_meetings",
         columns: [
             { name: "id", type: "text", primaryKey: true },
@@ -129,7 +129,7 @@ export async function ensureJitsiStoreSchema({ db: database }) {
         ],
     });
 
-    await database.ensureTable({
+    await db.ensureTable({
         name: "jitsi_chat_calls",
         columns: [
             { name: "chat_room_id", type: "text", primaryKey: true },
@@ -147,7 +147,7 @@ export async function ensureJitsiStoreSchema({ db: database }) {
         ],
     });
 
-    await database.ensureTable({
+    await db.ensureTable({
         name: "jitsi_meeting_participants",
         columns: [
             { name: "meeting_id", type: "text", notNull: true },
@@ -163,9 +163,9 @@ export async function ensureJitsiStoreSchema({ db: database }) {
         primaryKey: ["meeting_id", "username"],
     });
 
-    await ensureJitsiAuxiliaryTable(database, ORIGINAL_PARTICIPANTS_TABLE);
+    await ensureJitsiAuxiliaryTable(db, ORIGINAL_PARTICIPANTS_TABLE);
 
-    await database.ensureTable({
+    await db.ensureTable({
         name: "jitsi_meeting_state",
         columns: [
             { name: "meeting_id", type: "text", primaryKey: true },
@@ -207,7 +207,7 @@ export async function ensureJitsiStoreSchema({ db: database }) {
         ],
     });
 
-    await database.ensureTable({
+    await db.ensureTable({
         name: "jitsi_meeting_presence",
         columns: [
             { name: "meeting_id", type: "text", notNull: true },
@@ -224,7 +224,7 @@ export async function ensureJitsiStoreSchema({ db: database }) {
         primaryKey: ["meeting_id", "username", "session_id"],
     });
 
-    const meetings = await database.executeCommand({
+    const meetings = await db.executeCommand({
         option: "SELECT",
         table: "jitsi_meetings",
         columns: [
@@ -250,7 +250,7 @@ export async function ensureJitsiStoreSchema({ db: database }) {
             wrapper,
             String(meeting.meeting_password),
         );
-        await database.executeCommand({
+        await db.executeCommand({
             option: "UPDATE",
             table: "jitsi_meetings",
             set: {
@@ -264,25 +264,23 @@ export async function ensureJitsiStoreSchema({ db: database }) {
 
 const schemaInitializationByExecutor = new WeakMap();
 
-export async function ensureJitsiStoreSchemaOnce(database) {
-    const existing = schemaInitializationByExecutor.get(database);
+export async function ensureJitsiStoreSchemaOnce(db) {
+    const existing = schemaInitializationByExecutor.get(db);
     if (existing) return existing;
-    const initialization = ensureJitsiStoreSchema({ db: database }).catch(
-        (error) => {
-            // Retrying a uniqueness violation cannot repair existing data.
-            if (
-                error?.code !== "23505" &&
-                schemaInitializationByExecutor.get(database) === initialization
-            ) {
-                schemaInitializationByExecutor.delete(database);
-            }
-            throw error;
-        },
-    );
-    schemaInitializationByExecutor.set(database, initialization);
+    const initialization = ensureJitsiStoreSchema({ db: db }).catch((error) => {
+        // Retrying a uniqueness violation cannot repair existing data.
+        if (
+            error?.code !== "23505" &&
+            schemaInitializationByExecutor.get(db) === initialization
+        ) {
+            schemaInitializationByExecutor.delete(db);
+        }
+        throw error;
+    });
+    schemaInitializationByExecutor.set(db, initialization);
     return initialization;
 }
 
-export function resetJitsiStoreSchema(database) {
-    schemaInitializationByExecutor.delete(database);
+export function resetJitsiStoreSchema(db) {
+    schemaInitializationByExecutor.delete(db);
 }

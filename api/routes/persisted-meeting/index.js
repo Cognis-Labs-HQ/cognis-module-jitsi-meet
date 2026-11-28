@@ -20,16 +20,16 @@ export function registerPersistedMeetingRoutes({
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/persisted/leave",
-        async (request, response) => {
+        async (req, res) => {
             await store.ensureSchema();
-            const claims = requireAuth(request, response, "user");
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const resolved = await resolveMeetingPayload({
-                body: await readJson(request),
+                body: await readJson(req),
                 profileStore,
                 store,
                 claims,
-                res: response,
+                res: res,
             });
             if (!resolved) return;
             const activeMeetingIds = new Set(
@@ -37,7 +37,7 @@ export function registerPersistedMeetingRoutes({
             );
             if (activeMeetingIds.has(resolved.meeting.id)) {
                 sendError(
-                    response,
+                    res,
                     409,
                     "meeting_active",
                     "An active meeting cannot be removed.",
@@ -49,7 +49,7 @@ export function registerPersistedMeetingRoutes({
             );
             if (!ownerProfile?.accountId) {
                 sendError(
-                    response,
+                    res,
                     503,
                     "profile_unavailable",
                     "Meeting owner unavailable.",
@@ -138,7 +138,7 @@ export function registerPersistedMeetingRoutes({
                         error instanceof Error ? error.message : String(error),
                 });
                 sendError(
-                    response,
+                    res,
                     503,
                     "meeting_removal_unavailable",
                     "The meeting could not be removed.",
@@ -152,7 +152,7 @@ export function registerPersistedMeetingRoutes({
                 accountId: claims.sub,
                 deleted: remainingParticipants.length === 0,
             });
-            sendJson(response, 200, { data: { removed: true } });
+            sendJson(res, 200, { data: { removed: true } });
         },
         { access: { minRole: "user" } },
     );

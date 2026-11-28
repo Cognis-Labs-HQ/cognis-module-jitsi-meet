@@ -10,7 +10,7 @@ import {
 } from "./reuse/url-parts.js";
 import { buildMeetingName } from "./meeting-values.js";
 import { generateMeetingName } from "./meeting-name.js";
-import { readDbTimestampValue as readDatabaseTimestampValue } from "./reuse/timestamp.js";
+import { readDatabaseTimestampValue } from "./reuse/timestamp.js";
 import {
     decryptPayload,
     deriveScopedKey,
@@ -33,8 +33,8 @@ const AUTH_WAIT_TIMEOUT_MILLISECONDS = 2 * 60 * 1000;
 const ACTIVE_PRESENCE_WINDOW_MILLISECONDS = 35 * 1000;
 
 export class JitsiMeetStore {
-    constructor({ db: database, log, generatePassphrase, profileIdentity }) {
-        this.db = database;
+    constructor({ db: db, log, generatePassphrase, profileIdentity }) {
+        this.db = db;
         this.log = log;
         this.generatePassphrase = generatePassphrase;
         this.normalizeHandleKey =

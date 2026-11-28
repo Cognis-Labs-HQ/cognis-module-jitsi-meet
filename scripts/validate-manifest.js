@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { existsSync, lstatSync, realpathSync } from "node:fs";
-import { execFileSync as executeFileSync } from "node:child_process";
-import { isAbsolute, resolve, sep as separator } from "node:path";
+import { execFileSync } from "node:child_process";
+import { isAbsolute, resolve, sep } from "node:path";
 
 const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
 const packageJson = JSON.parse(await readFile("package.json", "utf8"));
@@ -36,7 +36,7 @@ for (const path of [...Object.values(manifest.entrypoints), ...assetPaths]) {
     assert.equal(typeof path, "string", "packaged target must be a path");
     const target = resolve(root, path);
     assert.ok(
-        !isAbsolute(path) && target.startsWith(`${root}${separator}`),
+        !isAbsolute(path) && target.startsWith(`${root}${sep}`),
         `packaged target escapes repository: ${path}`,
     );
     assert.ok(
@@ -44,11 +44,11 @@ for (const path of [...Object.values(manifest.entrypoints), ...assetPaths]) {
         `packaged target must be a regular file: ${path}`,
     );
     assert.ok(
-        realpathSync(target).startsWith(`${root}${separator}`),
+        realpathSync(target).startsWith(`${root}${sep}`),
         `packaged target escapes repository: ${path}`,
     );
 }
-const expectedPaths = executeFileSync(
+const expectedPaths = execFileSync(
     "git",
     ["ls-files", "--cached", "--others", "--exclude-standard"],
     { encoding: "utf8" },

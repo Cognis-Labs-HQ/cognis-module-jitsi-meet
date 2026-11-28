@@ -22,8 +22,8 @@ function createMeetingStateSerializer() {
 }
 
 async function resolveAuthorizedMeeting({
-    req: request,
-    res: response,
+    req: req,
+    res: res,
     body,
     store,
     profileStore,
@@ -35,17 +35,17 @@ async function resolveAuthorizedMeeting({
     resolveShareGuestPresenceUsername,
     listClassroomParticipantHandles,
 }) {
-    const claims = requireAuth(request, response, "user");
+    const claims = requireAuth(req, res, "user");
     if (!claims) return null;
     const meetingId = String(body.meetingId ?? "").trim();
     if (!meetingId) {
-        sendError(response, 400, "bad_request", "meetingId is required.");
+        sendError(res, 400, "bad_request", "meetingId is required.");
         return null;
     }
     await store.ensureSchema();
     const meeting = await store.getMeetingById(meetingId);
     if (!meeting) {
-        sendError(response, 404, "not_found", "Meeting not found.");
+        sendError(res, 404, "not_found", "Meeting not found.");
         return null;
     }
     const shareGuestAccess = await resolveShareGuestMeetingAccess({
@@ -54,7 +54,7 @@ async function resolveAuthorizedMeeting({
         requiredCapability: "meeting:join",
     });
     if (shareGuestAccess.isGuest && !shareGuestAccess.allowed) {
-        sendError(response, 403, "forbidden", "Meeting access denied.");
+        sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
     }
     const requesterUsername = shareGuestAccess.isGuest
@@ -64,7 +64,7 @@ async function resolveAuthorizedMeeting({
               profileIdentity,
               claims.sub,
           ).catch((error) => {
-              sendError(response, 409, "profile_required", error.message);
+              sendError(res, 409, "profile_required", error.message);
               return null;
           });
     if (!requesterUsername) return null;
@@ -79,7 +79,7 @@ async function resolveAuthorizedMeeting({
             requesterAccountId: claims.sub,
         }));
     if (!authorized) {
-        sendError(response, 403, "forbidden", "Meeting access denied.");
+        sendError(res, 403, "forbidden", "Meeting access denied.");
         return null;
     }
     return {
@@ -118,8 +118,8 @@ export function registerMeetingWhiteboardRoutes({
     });
     router.get(
         "/api/v1/modules/jitsi-meet/whiteboard/availability",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             const providerAssurance = await ctx
                 .getModuleAssurance?.("nextcloud-whiteboard")
@@ -138,8 +138,8 @@ export function registerMeetingWhiteboardRoutes({
                     );
                     return null;
                 });
-            response.setHeader?.("cache-control", "no-store");
-            sendJson(response, 200, {
+            res.setHeader?.("cache-control", "no-store");
+            sendJson(res, 200, {
                 data: {
                     available: isWhiteboardProviderAvailable?.() === true,
                     requiredCapability: "whiteboard:fetchBoardData",
@@ -161,11 +161,11 @@ export function registerMeetingWhiteboardRoutes({
 
     router.post(
         "/api/v1/modules/jitsi-meet/screen-sharing",
-        async (request, response) => {
-            const body = await readJson(request);
+        async (req, res) => {
+            const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
-                req: request,
-                res: response,
+                req: req,
+                res: res,
                 body,
                 store,
                 profileStore,
@@ -179,12 +179,7 @@ export function registerMeetingWhiteboardRoutes({
             });
             if (!resolved) return;
             if (typeof body.active !== "boolean") {
-                sendError(
-                    response,
-                    400,
-                    "bad_request",
-                    "active must be a boolean.",
-                );
+                sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
             }
             const updates = {
@@ -204,18 +199,18 @@ export function registerMeetingWhiteboardRoutes({
                 active: body.active,
                 requestedBy: resolved.requesterUsername,
             });
-            sendJson(response, 200, { data: updates });
+            sendJson(res, 200, { data: updates });
         },
         { access: { minRole: "user" } },
     );
 
     router.post(
         "/api/v1/modules/jitsi-meet/whiteboard/state",
-        async (request, response) => {
-            const body = await readJson(request);
+        async (req, res) => {
+            const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
-                req: request,
-                res: response,
+                req: req,
+                res: res,
                 body,
                 store,
                 profileStore,
@@ -229,12 +224,7 @@ export function registerMeetingWhiteboardRoutes({
             });
             if (!resolved) return;
             if (typeof body.active !== "boolean") {
-                sendError(
-                    response,
-                    400,
-                    "bad_request",
-                    "active must be a boolean.",
-                );
+                sendError(res, 400, "bad_request", "active must be a boolean.");
                 return;
             }
             if (
@@ -243,7 +233,7 @@ export function registerMeetingWhiteboardRoutes({
                     (body.followExisting && body.active !== true))
             ) {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "followExisting requires an active Whiteboard.",
@@ -255,7 +245,7 @@ export function registerMeetingWhiteboardRoutes({
             const whiteboardDisposable = body.disposable;
             if (active && !whiteboardId) {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "whiteboardId is required when activating a whiteboard.",
@@ -264,7 +254,7 @@ export function registerMeetingWhiteboardRoutes({
             }
             if (active && typeof whiteboardDisposable !== "boolean") {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "disposable is required when activating a whiteboard.",
@@ -278,7 +268,7 @@ export function registerMeetingWhiteboardRoutes({
                         whiteboardId,
                         disposable: whiteboardDisposable,
                     });
-                    sendJson(response, 200, { data });
+                    sendJson(res, 200, { data });
                 } catch (error) {
                     const stateChanged =
                         error.code === "whiteboard_state_changed";
@@ -294,7 +284,7 @@ export function registerMeetingWhiteboardRoutes({
                         },
                     );
                     sendError(
-                        response,
+                        res,
                         stateChanged || sourceConflict ? 409 : 503,
                         stateChanged || sourceConflict
                             ? error.code
@@ -309,7 +299,7 @@ export function registerMeetingWhiteboardRoutes({
             let currentState = await store.getMeetingState(resolved.meeting.id);
             if (active && currentState.screenSharingActive) {
                 sendError(
-                    response,
+                    res,
                     409,
                     "screen_sharing_active",
                     "Whiteboard cannot open while screen sharing is active.",
@@ -323,7 +313,7 @@ export function registerMeetingWhiteboardRoutes({
                     whiteboardDisposable !== currentState.whiteboardDisposable)
             ) {
                 sendError(
-                    response,
+                    res,
                     403,
                     "forbidden",
                     "Share guests may only update the mapped whiteboard.",
@@ -371,7 +361,7 @@ export function registerMeetingWhiteboardRoutes({
                         },
                     );
                     sendError(
-                        response,
+                        res,
                         503,
                         "service_unavailable",
                         "Whiteboard verification is unavailable.",
@@ -380,7 +370,7 @@ export function registerMeetingWhiteboardRoutes({
                 }
                 if (!verified) {
                     sendError(
-                        response,
+                        res,
                         403,
                         "forbidden",
                         "Whiteboard does not belong to this meeting.",
@@ -430,7 +420,7 @@ export function registerMeetingWhiteboardRoutes({
             }
             if (approvalRequested && !consensusApproved) {
                 sendError(
-                    response,
+                    res,
                     409,
                     "whiteboard_open_declined",
                     "Current meeting participants declined the Whiteboard request.",
@@ -580,7 +570,7 @@ export function registerMeetingWhiteboardRoutes({
                     errorName: error?.name,
                 });
                 sendError(
-                    response,
+                    res,
                     error?.status === 409 ? 409 : 503,
                     error?.code === "source_conflict"
                         ? "source_conflict"
@@ -593,7 +583,7 @@ export function registerMeetingWhiteboardRoutes({
             }
             if (result.screenSharingActive) {
                 sendError(
-                    response,
+                    res,
                     409,
                     "screen_sharing_active",
                     "Whiteboard cannot open while screen sharing is active.",
@@ -610,7 +600,7 @@ export function registerMeetingWhiteboardRoutes({
                 active: active && whiteboardOpen,
                 requesterUsername: resolved.requesterUsername,
             });
-            sendJson(response, 200, {
+            sendJson(res, 200, {
                 data: {
                     whiteboardId: whiteboardId || null,
                     whiteboardDisposable:

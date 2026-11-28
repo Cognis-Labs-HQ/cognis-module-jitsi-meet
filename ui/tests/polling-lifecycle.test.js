@@ -29,7 +29,7 @@ globalThis[Symbol.for("cognis.uiCtx")] = {
                         },
                     }
                   : capabilityId === "ui:log" || capabilityId === "ui:showToast"
-                    ? (...argumentsList) => feedback.push(argumentsList)
+                    ? (...args) => feedback.push(args)
                     : undefined,
     },
 };
@@ -373,8 +373,8 @@ test("an available-meeting join cannot accept a different ID or start a replacem
                 joins += 1;
             },
         },
-        apiFetch: async (url, requestOptions) => {
-            requests.push({ url, input: JSON.parse(requestOptions.body) });
+        apiFetch: async (url, init) => {
+            requests.push({ url, input: JSON.parse(init.body) });
             return {
                 ok: true,
                 json: async () => ({ data: { id: "different-meeting" } }),
@@ -600,8 +600,7 @@ test("a preflight failure arriving after page disposal cannot show feedback", as
         callbacks: {},
         i18n: { t: (key) => key },
         utils: {
-            setPreflightStatus: (...argumentsList) =>
-                presentations.push(argumentsList),
+            setPreflightStatus: (...args) => presentations.push(args),
         },
         apiFetch: () => pending.promise,
     });

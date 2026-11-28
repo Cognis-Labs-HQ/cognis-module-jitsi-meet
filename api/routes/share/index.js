@@ -2,13 +2,13 @@ import { readJson } from "../../reuse/http.js";
 import { resolveRequesterUsername } from "../../reuse/requester.js";
 import { resolveStore } from "../../reuse/store-runtime.js";
 
-function sendJson(response, status, payload) {
-    response.writeHead(status, { "content-type": "application/json" });
-    response.end(JSON.stringify(payload));
+function sendJson(res, status, payload) {
+    res.writeHead(status, { "content-type": "application/json" });
+    res.end(JSON.stringify(payload));
 }
 
-function sendError(response, status, code, message) {
-    sendJson(response, status, { error: { code, message } });
+function sendError(res, status, code, message) {
+    sendJson(res, status, { error: { code, message } });
 }
 
 /**
@@ -43,16 +43,16 @@ async function requireOwnedMeeting({
     profileStore,
     profileIdentity,
     store,
-    res: response,
+    res: res,
 }) {
     const meeting = await store.getMeetingById(meetingId);
     if (!meeting) {
-        sendError(response, 404, "not_found", "Meeting not found.");
+        sendError(res, 404, "not_found", "Meeting not found.");
         return null;
     }
     if (meeting.disposable) {
         sendError(
-            response,
+            res,
             403,
             "sharing_disabled",
             "Disposable meetings cannot be shared.",
@@ -73,7 +73,7 @@ async function requireOwnedMeeting({
             participantUsernames.includes(requesterUsername));
     if (!hasMeetingAccess) {
         sendError(
-            response,
+            res,
             403,
             "forbidden",
             "Only current meeting participants may share this meeting.",
@@ -100,9 +100,9 @@ export function registerMeetingShareRoutes({
     ) {
         router.get(
             "/api/v1/modules/jitsi-meet/share",
-            async (_request, response) => {
+            async (_request, res) => {
                 sendError(
-                    response,
+                    res,
                     503,
                     "service_unavailable",
                     "Share capabilities are unavailable.",
@@ -112,9 +112,9 @@ export function registerMeetingShareRoutes({
         );
         router.post(
             "/api/v1/modules/jitsi-meet/share",
-            async (_request, response) => {
+            async (_request, res) => {
                 sendError(
-                    response,
+                    res,
                     503,
                     "service_unavailable",
                     "Share capabilities are unavailable.",
@@ -124,9 +124,9 @@ export function registerMeetingShareRoutes({
         );
         router.post(
             "/api/v1/modules/jitsi-meet/share/delete",
-            async (_request, response) => {
+            async (_request, res) => {
                 sendError(
-                    response,
+                    res,
                     503,
                     "service_unavailable",
                     "Share capabilities are unavailable.",
@@ -146,21 +146,16 @@ export function registerMeetingShareRoutes({
 
     router.get(
         "/api/v1/modules/jitsi-meet/share",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             await store.ensureSchema();
-            const url = new URL(request.url, "http://localhost");
+            const url = new URL(req.url, "http://localhost");
             const meetingId = String(
                 url.searchParams.get("meetingId") ?? "",
             ).trim();
             if (!meetingId) {
-                sendError(
-                    response,
-                    400,
-                    "bad_request",
-                    "meetingId is required.",
-                );
+                sendError(res, 400, "bad_request", "meetingId is required.");
                 return;
             }
             const meeting = await requireOwnedMeeting({
@@ -169,33 +164,28 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res: response,
+                res: res,
             });
             if (!meeting) return;
             const shares = await listSharesByResource({
                 resourceType: "meeting",
                 resourceId: meeting.id,
             });
-            sendJson(response, 200, { data: shares });
+            sendJson(res, 200, { data: shares });
         },
         { access: { minRole: "user" } },
     );
 
     router.post(
         "/api/v1/modules/jitsi-meet/share",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             await store.ensureSchema();
-            const body = await readJson(request);
+            const body = await readJson(req);
             const meetingId = String(body.meetingId ?? "").trim();
             if (!meetingId) {
-                sendError(
-                    response,
-                    400,
-                    "bad_request",
-                    "meetingId is required.",
-                );
+                sendError(res, 400, "bad_request", "meetingId is required.");
                 return;
             }
             const meeting = await requireOwnedMeeting({
@@ -204,13 +194,13 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res: response,
+                res: res,
             });
             if (!meeting) return;
             const expiresAt = resolveExpiry(body.expiresInHours);
             if (expiresAt === null) {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "expiresInHours must be a positive number.",
@@ -234,30 +224,30 @@ export function registerMeetingShareRoutes({
             const issued = flowResult.stageResults["issue-token"]?.[0];
             if (!issued?.minted) {
                 sendError(
-                    response,
+                    res,
                     403,
                     "forbidden",
                     "Share token could not be created.",
                 );
                 return;
             }
-            sendJson(response, 200, { data: issued.shareRecord ?? null });
+            sendJson(res, 200, { data: issued.shareRecord ?? null });
         },
         { access: { minRole: "user" } },
     );
 
     router.post(
         "/api/v1/modules/jitsi-meet/share/delete",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             await store.ensureSchema();
-            const body = await readJson(request);
+            const body = await readJson(req);
             const meetingId = String(body.meetingId ?? "").trim();
             const shareId = String(body.shareId ?? "").trim();
             if (!meetingId || !shareId) {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "meetingId and shareId are required.",
@@ -270,7 +260,7 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res: response,
+                res: res,
             });
             if (!meeting) return;
             const flowResult = await ctx.flow.run("revoke-share-token", {
@@ -283,14 +273,14 @@ export function registerMeetingShareRoutes({
             const deleted = flowResult.stageResults["delete-token"]?.[0];
             if (!deleted?.revoked) {
                 sendError(
-                    response,
+                    res,
                     403,
                     "forbidden",
                     "Share token could not be revoked.",
                 );
                 return;
             }
-            sendJson(response, 200, { data: { deleted: true } });
+            sendJson(res, 200, { data: { deleted: true } });
         },
         { access: { minRole: "user" } },
     );

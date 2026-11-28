@@ -5,4 +5,4 @@ function readDatabaseTimestampValue(value) {
     }
     return String(value);
 }
-export { readDatabaseTimestampValue as readDbTimestampValue };
+export { readDatabaseTimestampValue };

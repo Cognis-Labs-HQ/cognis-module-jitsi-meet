@@ -12,27 +12,27 @@ export function registerMeetingConfigRoutes({
 }) {
     router.get(
         "/api/v1/modules/jitsi-meet/config",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
             await store.ensureConfigurationSchema();
             const config = await store.getConfig();
-            sendJson(response, 200, { data: config });
+            sendJson(res, 200, { data: config });
         },
         { access: { minRole: "user" }, allowWhenDisabled: true },
     );
 
     router.put(
         "/api/v1/modules/jitsi-meet/config",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "admin");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "admin");
             if (!claims) return;
             await store.ensureConfigurationSchema();
-            const body = await readJson(request);
+            const body = await readJson(req);
             const instanceUrl = normalizeHttpUrl(body.instanceUrl);
             if (!instanceUrl) {
                 sendError(
-                    response,
+                    res,
                     400,
                     "bad_request",
                     "A valid http(s) Jitsi instance URL is required.",
@@ -49,7 +49,7 @@ export function registerMeetingConfigRoutes({
                 operation: "save_config",
                 hasInstanceUrl: Boolean(saved.instanceUrl),
             });
-            sendJson(response, 200, {
+            sendJson(res, 200, {
                 data: saved,
             });
         },
@@ -58,8 +58,8 @@ export function registerMeetingConfigRoutes({
 
     router.delete(
         "/api/v1/modules/jitsi-meet/config",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "admin");
+        async (req, res) => {
+            const claims = requireAuth(req, res, "admin");
             if (!claims) return;
             await store.ensureConfigurationSchema();
             await store.deleteConfig();
@@ -69,8 +69,8 @@ export function registerMeetingConfigRoutes({
                 operation: "delete_config",
                 deletedBy: claims.sub,
             });
-            response.writeHead(204);
-            response.end();
+            res.writeHead(204);
+            res.end();
         },
         { access: { minRole: "admin" }, allowWhenDisabled: true },
     );
@@ -79,10 +79,10 @@ export function registerMeetingConfigRoutes({
 export function registerMeetingPingRoute({ router, store, sendJson }) {
     router.get(
         "/api/v1/modules/jitsi-meet/ping",
-        async (_request, response) => {
+        async (_request, res) => {
             await store.ensureConfigurationSchema();
             const config = await store.getConfig();
-            sendJson(response, 200, {
+            sendJson(res, 200, {
                 data: {
                     ready: true,
                     configComplete: Boolean(config.instanceUrl),

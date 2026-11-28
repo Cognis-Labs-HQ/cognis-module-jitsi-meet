@@ -40,11 +40,11 @@ export function registerJitsiActionStore(ctx, store) {
             description: `Execute Jitsi Meet ${method}.`,
             stages: ["initialize-store", "execute-action"],
         });
-        actions[method] = async (...argumentsList) => {
+        actions[method] = async (...args) => {
             try {
                 const result = await ctx.flow.run(
                     flowId,
-                    { parameters: argumentsList },
+                    { parameters: args },
                     {
                         handlers: {
                             "initialize-store": () =>

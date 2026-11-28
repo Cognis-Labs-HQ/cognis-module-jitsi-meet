@@ -11,7 +11,7 @@ import { recoverDeletedMeeting } from "./reuse/meeting-recovery.js";
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import { closeMeetingWhiteboard } from "../whiteboard-control.js";
-import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MS as ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS } from "../constants.js";
+import { ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS } from "../constants.js";
 import { normalizeMeetingId } from "../jitsi-helpers.js";
 import {
     buildProfileAvatarMarkup,

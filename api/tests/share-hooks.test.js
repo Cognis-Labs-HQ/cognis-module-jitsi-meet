@@ -195,8 +195,8 @@ function createRouterHarness({
                 return capabilities.get(capabilityId);
             },
         },
-        requireAuth(request) {
-            return request.claims ?? null;
+        requireAuth(req) {
+            return req.claims ?? null;
         },
         profileStore,
     });

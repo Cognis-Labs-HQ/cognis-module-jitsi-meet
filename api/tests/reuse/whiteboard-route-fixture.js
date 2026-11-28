@@ -117,15 +117,15 @@ export function createRoutes({
             },
         },
         profileIdentity: profileIdentityFake,
-        requireAuth: (request) => request.claims ?? claims,
-        readJson: async (request) => request.body,
-        sendJson(response, status, body) {
-            response.writeHead(status);
-            response.end(JSON.stringify(body));
+        requireAuth: (req) => req.claims ?? claims,
+        readJson: async (req) => req.body,
+        sendJson(res, status, body) {
+            res.writeHead(status);
+            res.end(JSON.stringify(body));
         },
-        sendError(response, status, code, message) {
-            response.writeHead(status);
-            response.end(JSON.stringify({ error: { code, message } }));
+        sendError(res, status, code, message) {
+            res.writeHead(status);
+            res.end(JSON.stringify({ error: { code, message } }));
         },
         canAccessMeeting: async () => authorized,
         resolveShareGuestMeetingAccess: async () => ({

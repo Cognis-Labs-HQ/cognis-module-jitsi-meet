@@ -71,31 +71,27 @@ export function registerJitsiUiResourcesRoute({
     messagesUiResources = null,
     unavailable = false,
 }) {
-    router.get(
-        "/api/v1/modules/jitsi-meet/ui-resources",
-        async (request, response) => {
-            const claims = requireAuth(request, response, "user");
-            if (!claims) return;
-            try {
-                sendJson(response, 200, {
-                    data: unavailable
-                        ? buildUnavailableJitsiUiResourcesPayload()
-                        : buildJitsiUiResourcesPayload(messagesUiResources),
-                });
-            } catch (error) {
-                log?.("error", "Failed to build Jitsi UI resources payload.", {
-                    component: "module:jitsi-meet",
-                    operation: "build_ui_resources_payload",
-                    error:
-                        error instanceof Error ? error.message : String(error),
-                });
-                sendJson(response, 500, {
-                    error: {
-                        code: "ui_resources_unavailable",
-                        message: "Failed to build UI resources payload.",
-                    },
-                });
-            }
-        },
-    );
+    router.get("/api/v1/modules/jitsi-meet/ui-resources", async (req, res) => {
+        const claims = requireAuth(req, res, "user");
+        if (!claims) return;
+        try {
+            sendJson(res, 200, {
+                data: unavailable
+                    ? buildUnavailableJitsiUiResourcesPayload()
+                    : buildJitsiUiResourcesPayload(messagesUiResources),
+            });
+        } catch (error) {
+            log?.("error", "Failed to build Jitsi UI resources payload.", {
+                component: "module:jitsi-meet",
+                operation: "build_ui_resources_payload",
+                error: error instanceof Error ? error.message : String(error),
+            });
+            sendJson(res, 500, {
+                error: {
+                    code: "ui_resources_unavailable",
+                    message: "Failed to build UI resources payload.",
+                },
+            });
+        }
+    });
 }

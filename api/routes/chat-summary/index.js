@@ -12,32 +12,27 @@ export function registerMeetingChatSummaryRoute({
 }) {
     router.post(
         "/api/v1/modules/jitsi-meet/meetings/chat-room-summary",
-        async (request, response) => {
+        async (req, res) => {
             await store.ensureSchema();
-            const claims = requireAuth(request, response, "user");
+            const claims = requireAuth(req, res, "user");
             if (!claims) return;
-            const body = await readJson(request);
+            const body = await readJson(req);
             const chatRoomId = String(body.chatRoomId ?? "").trim();
             if (!chatRoomId) {
-                sendError(
-                    response,
-                    400,
-                    "bad_request",
-                    "chatRoomId is required.",
-                );
+                sendError(res, 400, "bad_request", "chatRoomId is required.");
                 return;
             }
             const requesterUsername = await resolveRequesterUsername(
                 profileStore,
                 claims.sub,
             ).catch((error) => {
-                sendError(response, 409, "profile_required", error.message);
+                sendError(res, 409, "profile_required", error.message);
                 return null;
             });
             if (!requesterUsername) return;
             const meeting = await store.getMeetingByChatRoomId(chatRoomId);
             if (!meeting) {
-                sendError(response, 404, "not_found", "Meeting not found.");
+                sendError(res, 404, "not_found", "Meeting not found.");
                 return;
             }
             const authorized = await canAccessMeeting({
@@ -50,7 +45,7 @@ export function registerMeetingChatSummaryRoute({
             });
             if (!authorized) {
                 sendError(
-                    response,
+                    res,
                     403,
                     "forbidden",
                     "You are not listed as an allowed meeting participant.",
@@ -81,7 +76,7 @@ export function registerMeetingChatSummaryRoute({
                     };
                 }),
             );
-            sendJson(response, 200, {
+            sendJson(res, 200, {
                 data: {
                     meetingId: meeting.id,
                     meetingName: meeting.meetingName,

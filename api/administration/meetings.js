@@ -7,7 +7,7 @@ import {
     deleteMeetingRows,
     resetJitsiStoreSchema,
 } from "../reuse/store-schema.js";
-import { readDbTimestampValue as readDatabaseTimestampValue } from "../reuse/timestamp.js";
+import { readDatabaseTimestampValue } from "../reuse/timestamp.js";
 
 /** Inspect existing records even when a new uniqueness constraint cannot initialize. */
 export function registerMeetingMaintenance(ctx, databaseExecutor) {

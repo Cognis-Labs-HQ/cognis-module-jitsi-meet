@@ -2,7 +2,7 @@ import { readModuleStyles } from "./styles.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { execFileSync as executeFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,7 +14,7 @@ function readJitsiUiBundle() {
 
 test("meeting whiteboards use ctx discovery and synchronized component windows", () => {
     assert.doesNotThrow(() =>
-        executeFileSync(process.execPath, [
+        execFileSync(process.execPath, [
             "--check",
             resolve(ROOT, "ui/whiteboard-control.js"),
         ]),

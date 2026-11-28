@@ -1,12 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-    mkdtemp,
-    mkdir,
-    writeFile,
-    rm as remove,
-    readFile,
-} from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { validateModuleStructure } from "../../scripts/module-structure.js";
@@ -20,7 +14,7 @@ test("module layout follows the template concern paths", async () => {
 
 test("structure validation rejects misplaced CSS and flat route handlers", async (context) => {
     const root = await mkdtemp(join(tmpdir(), "module-structure-"));
-    context.after(() => remove(root, { recursive: true, force: true }));
+    context.after(() => rm(root, { recursive: true, force: true }));
     for (const file of [
         "manifest.json",
         "package.json",

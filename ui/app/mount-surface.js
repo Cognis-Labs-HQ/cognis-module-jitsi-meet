@@ -1,5 +1,5 @@
 import { resolveMeetingSurface } from "./reuse/meeting-surface.js";
-import { ALONE_PROMPT_GRACE_PERIOD_MS as ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS } from "../constants.js";
+import { ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
 import {
     syncMeetingWhiteboardComponent,
