@@ -5,7 +5,7 @@ import { checkHttpLiveness } from "./http-liveness.js";
 import { resolveStore } from "./store-runtime.js";
 import { normalizeHttpUrl } from "./url-parts.js";
 
-const LIVELINESS_TIMEOUT_MILLISECONDS = 5000;
+const LIVELINESS_TIMEOUT_MS = 5000;
 const PAGE_SCRIPT_ORIGIN_OWNER_ID = "module:jitsi-meet";
 
 function sendJson(response, status, payload) {
@@ -103,7 +103,7 @@ export function registerJitsiConfigurationApi(
             };
         }
         const liveness = await checkHttpLiveness(config.instanceUrl, {
-            timeoutMs: LIVELINESS_TIMEOUT_MILLISECONDS,
+            timeoutMs: LIVELINESS_TIMEOUT_MS,
         });
         return {
             ok: Boolean(liveness.alive),

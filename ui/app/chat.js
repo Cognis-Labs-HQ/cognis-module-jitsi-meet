@@ -3,10 +3,7 @@ import { messagesClient } from "../reuse/gateway-clients.js";
 import { deactivateMeetingChatState } from "./chat-state.js";
 import { showToast } from "../reuse/feedback.js";
 import { importReuseModule, uiCtx } from "../reuse/resources.js";
-import {
-    TEXT_ENCODER,
-    CHAT_REFRESH_INTERVAL_MILLISECONDS,
-} from "../constants.js";
+import { TEXT_ENCODER, CHAT_REFRESH_INTERVAL_MS } from "../constants.js";
 
 import {
     createChatParticipantAvatarButton,
@@ -305,7 +302,7 @@ export function createChatHandlers({
         if (!state.chatRoomId || state.chatRefreshTimer !== null) return;
         state.chatRefreshTimer = setInterval(() => {
             void refreshCognisChat();
-        }, CHAT_REFRESH_INTERVAL_MILLISECONDS);
+        }, CHAT_REFRESH_INTERVAL_MS);
     }
 
     function handleKeyringAccessState(event) {

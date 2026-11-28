@@ -674,10 +674,7 @@ test("local Jitsi kick events remove account participants or invalidate guest li
 test("meeting participant surfaces and chat refresh membership in real time", () => {
     const source = readJitsiUiBundle();
     const cssSource = readModuleStyles();
-    assert.match(
-        source,
-        /ACTIVE_MEETINGS_REFRESH_INTERVAL_MILLISECONDS = 5_000/,
-    );
+    assert.match(source, /ACTIVE_MEETINGS_REFRESH_INTERVAL_MS = 5_000/);
     assert.match(source, /async function refreshAvailableParticipants\(\)/);
     assert.match(
         source,

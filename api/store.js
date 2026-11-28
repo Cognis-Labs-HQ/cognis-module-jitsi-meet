@@ -29,8 +29,8 @@ import { buildParticipantKey } from "./reuse/meeting-participant-key.js";
 import * as originals from "./reuse/original-participants.js";
 import { removeDeletedAccountFromMeetings } from "./reuse/deleted-account-meetings.js";
 
-const AUTH_WAIT_TIMEOUT_MILLISECONDS = 2 * 60 * 1000;
-const ACTIVE_PRESENCE_WINDOW_MILLISECONDS = 35 * 1000;
+const AUTH_WAIT_TIMEOUT_MS = 2 * 60 * 1000;
+const ACTIVE_PRESENCE_WINDOW_MS = 35 * 1000;
 
 export class JitsiMeetStore {
     constructor({ db: db, log, generatePassphrase, profileIdentity }) {
@@ -758,7 +758,7 @@ export class JitsiMeetStore {
         if (!entry?.active) return false;
         const seenAt = Date.parse(entry.lastSeenAt);
         return Number.isFinite(seenAt)
-            ? seenAt >= referenceTime - ACTIVE_PRESENCE_WINDOW_MILLISECONDS
+            ? seenAt >= referenceTime - ACTIVE_PRESENCE_WINDOW_MS
             : false;
     }
 
@@ -853,16 +853,14 @@ export class JitsiMeetStore {
         if (!state.authStartedBy) {
             if (!state.firstJoinedAt) return true;
             if (state.firstJoinedBy === currentUsername) return true;
-            const firstJoinAtMilliseconds = Date.parse(state.firstJoinedAt);
-            if (!Number.isFinite(firstJoinAtMilliseconds)) return true;
-            return (
-                now - firstJoinAtMilliseconds >= AUTH_WAIT_TIMEOUT_MILLISECONDS
-            );
+            const firstJoinAtMs = Date.parse(state.firstJoinedAt);
+            if (!Number.isFinite(firstJoinAtMs)) return true;
+            return now - firstJoinAtMs >= AUTH_WAIT_TIMEOUT_MS;
         }
         if (state.authStartedBy === currentUsername) return true;
-        const authStartMilliseconds = Date.parse(state.authStartedAt ?? "");
-        if (!Number.isFinite(authStartMilliseconds)) return false;
-        return now - authStartMilliseconds >= AUTH_WAIT_TIMEOUT_MILLISECONDS;
+        const authStartMs = Date.parse(state.authStartedAt ?? "");
+        if (!Number.isFinite(authStartMs)) return false;
+        return now - authStartMs >= AUTH_WAIT_TIMEOUT_MS;
     }
 
     buildMeetingPayload(meeting, participants, state, extra = {}) {

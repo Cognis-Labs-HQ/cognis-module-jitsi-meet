@@ -36,7 +36,7 @@ import { createGetMeetingChatCapability } from "./meeting-chat-capability.js";
 import { registerJitsiConfigurationApi } from "./reuse/configuration-api.js";
 import { deleteMeetingResources } from "./reuse/meeting-resource-cleanup.js";
 
-const LIVELINESS_TIMEOUT_MILLISECONDS = 5000;
+const LIVELINESS_TIMEOUT_MS = 5000;
 const JITSI_PIP_MINIMUM_SIZE = Object.freeze({ width: 400, height: 225 });
 
 function sendJson(res, status, payload) {
@@ -849,7 +849,7 @@ export function registerApiRoutes(router, ctx) {
         sendError,
         log,
         checkHttpLiveness,
-        LIVELINESS_TIMEOUT_MS: LIVELINESS_TIMEOUT_MILLISECONDS,
+        LIVELINESS_TIMEOUT_MS: LIVELINESS_TIMEOUT_MS,
         resolveShareGuestMeetingAccess,
     });
 

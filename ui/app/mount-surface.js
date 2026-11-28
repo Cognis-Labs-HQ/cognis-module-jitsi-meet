@@ -1,5 +1,5 @@
 import { resolveMeetingSurface } from "./reuse/meeting-surface.js";
-import { ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS } from "../constants.js";
+import { ALONE_PROMPT_GRACE_PERIOD_MS } from "../constants.js";
 import { syncShareButtonAvailability as syncMountedShareButtonAvailability } from "../share-button.js";
 import {
     syncMeetingWhiteboardComponent,
@@ -43,9 +43,9 @@ export function createMountUtilities({ root, state }) {
     }
 
     function deferAloneParticipantPrompt(
-        delayMilliseconds = ALONE_PROMPT_GRACE_PERIOD_MILLISECONDS,
+        delayMs = ALONE_PROMPT_GRACE_PERIOD_MS,
     ) {
-        state.alonePromptBlockedUntil = Date.now() + delayMilliseconds;
+        state.alonePromptBlockedUntil = Date.now() + delayMs;
     }
 
     function selectedUsernames() {

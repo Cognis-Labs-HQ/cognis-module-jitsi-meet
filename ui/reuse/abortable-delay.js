@@ -1,4 +1,4 @@
-export function waitForRetry(signal, delayMilliseconds) {
+export function waitForRetry(signal, delayMs) {
     return new Promise((resolve) => {
         if (signal?.aborted) return resolve();
         const finish = () => {
@@ -6,7 +6,7 @@ export function waitForRetry(signal, delayMilliseconds) {
             signal?.removeEventListener("abort", finish);
             resolve();
         };
-        const timeoutId = setTimeout(finish, delayMilliseconds);
+        const timeoutId = setTimeout(finish, delayMs);
         signal?.addEventListener("abort", finish, { once: true });
     });
 }

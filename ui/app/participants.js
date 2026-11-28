@@ -6,10 +6,10 @@ import {
 import { logUi, showToast } from "../reuse/feedback.js";
 import { importReuseModule } from "../reuse/resources.js";
 import {
-    HEARTBEAT_INTERVAL_MILLISECONDS,
+    HEARTBEAT_INTERVAL_MS,
     MEETING_DESTROYED_TEXT,
     MEETING_TERMINATED_TEXT,
-    STATE_REFRESH_INTERVAL_MILLISECONDS,
+    STATE_REFRESH_INTERVAL_MS,
 } from "../constants.js";
 import { createParticipantAvatarElement } from "../jitsi-helpers.js";
 import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
@@ -665,10 +665,10 @@ export function createPreflightHandlers({
             pollCurrentMeeting("pollMeetingPresence", () =>
                 keepPresenceAlive(true),
             );
-        }, HEARTBEAT_INTERVAL_MILLISECONDS);
+        }, HEARTBEAT_INTERVAL_MS);
         state.stateRefreshTimer = setInterval(() => {
             pollCurrentMeeting("pollMeetingState", loadMeetingState);
-        }, STATE_REFRESH_INTERVAL_MILLISECONDS);
+        }, STATE_REFRESH_INTERVAL_MS);
     }
 
     function getParticipantId(candidate) {

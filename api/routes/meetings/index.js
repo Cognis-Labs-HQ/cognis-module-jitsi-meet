@@ -19,7 +19,7 @@ export function registerMeetingRoutes({
     sendError,
     log,
     checkHttpLiveness,
-    LIVELINESS_TIMEOUT_MS: LIVELINESS_TIMEOUT_MILLISECONDS,
+    LIVELINESS_TIMEOUT_MS: LIVELINESS_TIMEOUT_MS,
     resolveShareGuestMeetingAccess,
 }) {
     const parseDateTime = (value) => {
@@ -554,7 +554,7 @@ export function registerMeetingRoutes({
                 return;
             }
             const liveness = await checkHttpLiveness(config.instanceUrl, {
-                timeoutMs: LIVELINESS_TIMEOUT_MILLISECONDS,
+                timeoutMs: LIVELINESS_TIMEOUT_MS,
             });
             sendJson(res, 200, {
                 data: {
@@ -589,7 +589,7 @@ export function registerMeetingRoutes({
             const liveness = await checkHttpLiveness(
                 resolved.meeting.meetingUrl,
                 {
-                    timeoutMs: LIVELINESS_TIMEOUT_MILLISECONDS,
+                    timeoutMs: LIVELINESS_TIMEOUT_MS,
                 },
             );
             sendJson(res, 200, {
