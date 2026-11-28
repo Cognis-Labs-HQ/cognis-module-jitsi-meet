@@ -2,7 +2,7 @@
     "id": "jitsi-meet",
     "uuid": "f055f2e5-227a-5fb4-b934-5397ec32cf2d",
     "name": "module.jitsi.meet.name",
-    "version": "1.6.18",
+    "version": "1.6.19",
     "class": "extension",
     "coreApiVersion": "v1",
     "capabilities": [
@@ -94,7 +94,7 @@
     "files": [
         {
             "path": ".github/copilot-instructions.md",
-            "sha256": "c3404423e0a70831dca6a1028f5e762e29a05cc2869ddf1c29e2937ca146e6e8"
+            "sha256": "665ebb550b50d8d6c4136e0608b4fe6f4ffe30602e7d9ca490fa3fe24c70f47e"
         },
         {
             "path": ".github/documentation/README.de.md",
@@ -198,7 +198,7 @@
         },
         {
             "path": "api/index.js",
-            "sha256": "2c42621348f2a81d2546fd36c8ae3fc5e68291e6f869c8776bdfa9e1aedbd281"
+            "sha256": "22ed3419712553e0bb8c488e285592745dd8eca6dfb7f2f985f575447df055b3"
         },
         {
             "path": "api/meeting-chat-capability.js",
@@ -230,7 +230,7 @@
         },
         {
             "path": "api/reuse/crypto.js",
-            "sha256": "1d4eb171223ca237912fc833d9ecb6bf0c9d0e83b213e1a0362ac2befa7f1442"
+            "sha256": "005c8f6b2fde55dfd2b8bbe371df4fdea4491370bfbaf5d43d9162a00f49c480"
         },
         {
             "path": "api/reuse/deleted-account-meetings.js",
@@ -370,7 +370,7 @@
         },
         {
             "path": "api/tests/bootstrap.test.js",
-            "sha256": "879933eec712e3ead1d2742fb6ade1a53742bd42f4c26c7da12b60a51860a27c"
+            "sha256": "ea967de24e112ad8fb196cc29b179dcc7652cfbd119f650610dba8ff07a2e3a0"
         },
         {
             "path": "api/tests/chat-call-room.test.js",
@@ -546,19 +546,19 @@
         },
         {
             "path": "docs/TECHNICAL.de.md",
-            "sha256": "b6c7c0800965c6d86b5991238aab8bbcf29938e50293e84a9ceb5237a42f9c18"
+            "sha256": "83f6b546c45767da895e71c074c2a0c4fd45695c9acfed97e924f41139028acc"
         },
         {
             "path": "docs/TECHNICAL.en.md",
-            "sha256": "ad7f1152b3c31f23d5570f4a6f66d93f2e23bd4419dee6c694c6109531ebd8bb"
+            "sha256": "23d201dfd4f82c932c3010a80565fdbc782744b73f91dc4709d3bc79426b5b75"
         },
         {
             "path": "docs/TECHNICAL.id.md",
-            "sha256": "4ac1950a4344f219feb10b5399a3e7ac89870307519e6362ac1b6d21f020c2f3"
+            "sha256": "653e3b9335e2231c499723c74b6cdbae56227ee536131ce228f873a6352c5d33"
         },
         {
             "path": "docs/TECHNICAL.ja.md",
-            "sha256": "aa45fac343e5a9704ad65d89417bedf328f67de25f31f69f76ec862577d82948"
+            "sha256": "d73bedc10ebb54f76953190e679d6766bdb1b7fdd1b9e8b39f0c772c7f993ed2"
         },
         {
             "path": "docs/USAGE.de.md",
@@ -578,11 +578,11 @@
         },
         {
             "path": "package-lock.json",
-            "sha256": "0014dc5745fdc60c073677b18f98f5b7b91fe6a03f565940e45d2f1ea99c66f2"
+            "sha256": "d3d179876dc8808d146e83570bd2bf53b1d66b39df7b83e7d26d3322cebdbd77"
         },
         {
             "path": "package.json",
-            "sha256": "792f69ebf5407811eea35731d58cfad5ff175ce4a359b49078ebe481cff16d6a"
+            "sha256": "46badba974db1a8ca5dd97c854fc1b2a68665053d8cdf512e35a008046a13e5b"
         },
         {
             "path": "routes.json",
@@ -622,11 +622,11 @@
         },
         {
             "path": "tooling/reuse/ambiguous-name-words.json",
-            "sha256": "6497157b3318484b935fdb74cc29ca2ece8986de2f6b67af9b916eab2eb6bb02"
+            "sha256": "4b021010dde8a029186cc4d4e9bcaf5e3ac2484c38d27733ece49c53916cf212"
         },
         {
             "path": "tooling/reuse/ambiguous-names.js",
-            "sha256": "ff528f440cf36bbaf6dea37effb017c54cdc971cac948e91e02a8a5286ddf6aa"
+            "sha256": "428bed8de094747472e17de6795aee6e0d5fc939538afc02b8d2aeba0cb72423"
         },
         {
             "path": "tooling/reuse/source-files.js",
@@ -634,7 +634,7 @@
         },
         {
             "path": "tooling/scripts/lint-placeholder.mjs",
-            "sha256": "699215ed82fd9070f816f7ad140021e6368afb538e50d9671028337222d0e731"
+            "sha256": "c869f4af45abd4f82500f836d5e50af93b9988a56283477ae45bd0aa45f47fd1"
         },
         {
             "path": "tooling/scripts/lint-readable.mjs",
@@ -654,7 +654,7 @@
         },
         {
             "path": "ui/app/chat.js",
-            "sha256": "b845f00ab0cc2c76e4b2022550bf8f56eefb5ed62fa442a5804d058f42755171"
+            "sha256": "eb9a561a71885428bfc42b7f8bae1fb9808e42ba7e8e33c63163bbcf6368167e"
         },
         {
             "path": "ui/app/index.js",
@@ -838,7 +838,7 @@
         },
         {
             "path": "ui/tests/fixtures/naming-cases.json",
-            "sha256": "cb41869e22a818b508240726cf22dc5b3a072092d2631edb0273bbf31e0d28a5"
+            "sha256": "dcb3f32c6d28e24f2442687bd241379b7779d95db9a22f3cd574b460c42b3ef2"
         },
         {
             "path": "ui/tests/fixtures/scoped-provider-host.js",

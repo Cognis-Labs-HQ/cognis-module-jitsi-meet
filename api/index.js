@@ -88,7 +88,7 @@ export function registerUi(ctx) {
         providesCapabilities: ["jitsi-meet:tutorials"],
     });
     const moduleUiRoot = path.join(ctx.moduleRoot, "ui");
-    ctx.registerStaticDir("", moduleUiRoot);
+    ctx.registerStaticDirectory("", moduleUiRoot);
     ctx.registerNavbarPlugin({
         scriptUrl: "/static/modules/jitsi-meet/navbar.js",
         access: { minRole: "user" },

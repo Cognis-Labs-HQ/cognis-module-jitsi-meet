@@ -162,4 +162,4 @@ Jitsi はミーティングの UUID を `resourceId`、`meeting` を `resourceTy
 
 ### 名前の検証
 
-`npm test` はローカルの構文木検出器で、bootstrap、スクリプト、テスト、フィクスチャを含むバインディング名を検証します。構文解析エラーがある場合、検証は失敗します。回帰検証用フィクスチャは、宣言、引数、プライベートメンバー、TypeScript の型アサーション、有効な型専用名を検証します。共通方針は[ホストの命名標準](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.ja.md#バインディング名)を参照してください。 `args`、`db`、LDAP の `dn` などの一般用語は使用でき、所有する API の宣言、エクスポート、呼び出し元は同じ正規名に統一します。名前を変えるだけのエクスポート別名は検証に失敗します。
+`npm test` はローカルの構文木検出器で、bootstrap、スクリプト、テスト、フィクスチャを含むバインディング名を検証します。構文解析エラーがある場合、検証は失敗します。回帰検証用フィクスチャは、宣言、引数、プライベートメンバー、TypeScript の型アサーション、有効な型専用名を検証します。共通方針は[ホストの命名標準](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.ja.md#バインディング名)を参照してください。 `args`、`db`、LDAP の `dn` などの一般用語は独立した名前に使用できます。上流の型やメソッドを含む複合名では `DatabaseExecutor`、`createDatabaseExecutor`、`baseDistinguishedName` などと省略語を展開し、所有する API の宣言、エクスポート、呼び出し元は同じ正規名に統一します。名前を変えるだけのエクスポート別名は検証に失敗します。

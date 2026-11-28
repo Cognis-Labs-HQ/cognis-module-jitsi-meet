@@ -53,13 +53,13 @@ export function createChatHandlers({
 
     async function decryptChatMessage(message, key) {
         if (!key) return null;
-        const initVectorHex = String(message?.iv ?? "").trim();
+        const initializationVectorHex = String(message?.iv ?? "").trim();
         const cipherHex = String(message?.ciphertext ?? "").trim();
         const authTag = String(message?.authTag ?? "").trim();
-        if (!initVectorHex || !cipherHex) return null;
+        if (!initializationVectorHex || !cipherHex) return null;
         try {
             const decrypted = await crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: hexToBytes(initVectorHex) },
+                { name: "AES-GCM", iv: hexToBytes(initializationVectorHex) },
                 key,
                 hexToBytes(`${cipherHex}${authTag}`),
             );
@@ -70,14 +70,14 @@ export function createChatHandlers({
     }
 
     async function encryptChatMessage(text, key) {
-        const initVector = crypto.getRandomValues(new Uint8Array(12));
+        const initializationVector = crypto.getRandomValues(new Uint8Array(12));
         const encrypted = await crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: initVector },
+            { name: "AES-GCM", iv: initializationVector },
             key,
             TEXT_ENCODER.encode(text),
         );
         return {
-            iv: bytesToHex(initVector),
+            iv: bytesToHex(initializationVector),
             ciphertext: bytesToHex(new Uint8Array(encrypted)),
         };
     }

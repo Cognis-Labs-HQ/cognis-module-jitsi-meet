@@ -123,16 +123,16 @@ export async function deriveScopedKey(scope, serverSecret) {
  */
 export async function encryptPayload(key, plaintext) {
     const subtle = globalThis.crypto.subtle;
-    const initVector = globalThis.crypto.getRandomValues(
+    const iv = globalThis.crypto.getRandomValues(
         new Uint8Array(INITIALIZATION_VECTOR_BYTES),
     );
     const encrypted = await subtle.encrypt(
-        { name: ENCRYPT_ALG, iv: initVector },
+        { name: ENCRYPT_ALG, iv: iv },
         key,
         new TextEncoder().encode(plaintext),
     );
     return {
-        iv: Buffer.from(initVector).toString("hex"),
+        iv: Buffer.from(iv).toString("hex"),
         ciphertext: Buffer.from(encrypted).toString("hex"),
     };
 }
