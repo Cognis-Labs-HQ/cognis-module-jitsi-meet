@@ -35,7 +35,7 @@ export function registerActiveMeetingParticipantRoute({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });

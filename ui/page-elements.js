@@ -28,8 +28,9 @@ export function createMeetingPageElements(
         label: i18n.t("module.jitsi.meet.overlay.title"),
         pinned: true,
         gridSize: {
-            default: [includeChat ? 8 : 12, 5],
+            default: [includeChat ? 6 : 12, 5],
             min: [includeChat ? 6 : 8, 4],
+            ...(includeChat ? {} : { max: "full" }),
         },
         render: () => buildStageMarkup(i18n),
     });
@@ -39,7 +40,7 @@ export function createMeetingPageElements(
             label: i18n.t("module.jitsi.meet.chat.heading"),
             pinned: true,
             gridSize: {
-                default: [4, 5],
+                default: [3, 5],
                 min: [3, 4],
             },
             render: () => buildChatMarkup(i18n),

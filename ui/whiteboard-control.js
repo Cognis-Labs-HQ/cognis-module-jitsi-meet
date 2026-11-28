@@ -74,7 +74,7 @@ async function discardComponentWindow(trigger) {
             component: "module:jitsi-meet",
             operation: "close_meeting_whiteboard_window",
             whiteboardId: trigger?.whiteboardId,
-            error: error instanceof Error ? error.message : String(error),
+            errorName: error instanceof Error ? error.name : "Error",
         });
     }
 }
@@ -114,13 +114,8 @@ async function handleWhiteboardLoadError(
         stage: stageKey,
         meetingId: state.meeting?.id,
         whiteboardId: state.meeting?.state?.whiteboardId,
-        error: error instanceof Error ? error.message : String(error),
+        errorName: error instanceof Error ? error.name : "Error",
     };
-    globalThis.console?.error?.(
-        "[jitsi-meet] Meeting Whiteboard loading failed.",
-        metadata,
-        error,
-    );
     await logUi("error", "Meeting whiteboard loading failed.", metadata);
     showToast(
         trigger.i18n
@@ -355,7 +350,7 @@ export async function bindWhiteboardButton({
         await logUi("error", "Whiteboard UI providers could not load.", {
             component: "module:jitsi-meet",
             operation: "load_whiteboard_ui_providers",
-            error: error instanceof Error ? error.message : String(error),
+            errorName: error instanceof Error ? error.name : "Error",
         });
         return;
     }
@@ -461,10 +456,10 @@ export async function bindWhiteboardButton({
                                 component: "module:jitsi-meet",
                                 operation: "close_meeting_whiteboard",
                                 meetingId: state.meeting?.id,
-                                error:
+                                errorName:
                                     error instanceof Error
-                                        ? error.message
-                                        : String(error),
+                                        ? error.name
+                                        : "Error",
                             },
                         );
                         showToast(

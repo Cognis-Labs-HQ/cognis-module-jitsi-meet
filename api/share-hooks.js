@@ -23,14 +23,14 @@ async function requesterHasDirectMeetingAccess(
     requesterClaims,
     meetingId,
 ) {
-    const dbExecutor = ctx.getCapability("db:executor");
+    const databaseExecutor = ctx.getCapability("db:executor");
     const profileStore = ctx.getCapability("social:profileStore");
     const log = ctx.getCapability("logging:log");
-    if (!dbExecutor || !profileStore || !meetingId) {
+    if (!databaseExecutor || !profileStore || !meetingId) {
         return false;
     }
     const store = resolveStore(
-        dbExecutor,
+        databaseExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         ctx.getCapability("social:profile:identity"),
@@ -100,14 +100,14 @@ export function registerShareFlowHooks(ctx) {
                 if (String(input.resourceType ?? "") !== "meeting") {
                     return null;
                 }
-                const dbExecutor = ctx.getCapability("db:executor");
+                const databaseExecutor = ctx.getCapability("db:executor");
                 const profileStore = ctx.getCapability("social:profileStore");
                 const log = ctx.getCapability("logging:log");
-                if (!dbExecutor || !profileStore) {
+                if (!databaseExecutor || !profileStore) {
                     return { targetAccountIds: [] };
                 }
                 const store = resolveStore(
-                    dbExecutor,
+                    databaseExecutor,
                     log,
                     ctx.getCapability("reuse:generatePassphrase"),
                     ctx.getCapability("social:profile:identity"),
@@ -169,14 +169,14 @@ export function registerShareFlowHooks(ctx) {
             if (String(input.resourceType ?? "") !== "meeting") {
                 return { valid: false, reason: "unsupported_resource_type" };
             }
-            const dbExecutor = ctx.getCapability("db:executor");
+            const databaseExecutor = ctx.getCapability("db:executor");
             const profileStore = ctx.getCapability("social:profileStore");
             const log = ctx.getCapability("logging:log");
-            if (!dbExecutor || !profileStore) {
+            if (!databaseExecutor || !profileStore) {
                 return { valid: false, reason: "dependencies_unavailable" };
             }
             const store = resolveStore(
-                dbExecutor,
+                databaseExecutor,
                 log,
                 ctx.getCapability("reuse:generatePassphrase"),
                 ctx.getCapability("social:profile:identity"),
@@ -255,14 +255,14 @@ export function registerShareFlowHooks(ctx) {
             ) {
                 return { resolved: false, reason: "unsupported_resource_type" };
             }
-            const dbExecutor = ctx.getCapability("db:executor");
+            const databaseExecutor = ctx.getCapability("db:executor");
             const profileStore = ctx.getCapability("social:profileStore");
             const log = ctx.getCapability("logging:log");
-            if (!dbExecutor || !profileStore) {
+            if (!databaseExecutor || !profileStore) {
                 return { resolved: false, reason: "dependencies_unavailable" };
             }
             const store = resolveStore(
-                dbExecutor,
+                databaseExecutor,
                 log,
                 ctx.getCapability("reuse:generatePassphrase"),
                 ctx.getCapability("social:profile:identity"),
@@ -379,17 +379,17 @@ export function registerShareFlowHooks(ctx) {
                         reason: "unsupported_resource_type",
                     };
                 }
-                const dbExecutor = ctx.getCapability("db:executor");
+                const databaseExecutor = ctx.getCapability("db:executor");
                 const profileStore = ctx.getCapability("social:profileStore");
                 const log = ctx.getCapability("logging:log");
-                if (!dbExecutor || !profileStore) {
+                if (!databaseExecutor || !profileStore) {
                     return {
                         authorized: false,
                         reason: "dependencies_unavailable",
                     };
                 }
                 const store = resolveStore(
-                    dbExecutor,
+                    databaseExecutor,
                     log,
                     ctx.getCapability("reuse:generatePassphrase"),
                     ctx.getCapability("social:profile:identity"),

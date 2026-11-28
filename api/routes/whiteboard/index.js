@@ -22,8 +22,8 @@ function createMeetingStateSerializer() {
 }
 
 async function resolveAuthorizedMeeting({
-    req,
-    res,
+    req: req,
+    res: res,
     body,
     store,
     profileStore,
@@ -164,8 +164,8 @@ export function registerMeetingWhiteboardRoutes({
         async (req, res) => {
             const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
-                req,
-                res,
+                req: req,
+                res: res,
                 body,
                 store,
                 profileStore,
@@ -209,8 +209,8 @@ export function registerMeetingWhiteboardRoutes({
         async (req, res) => {
             const body = await readJson(req);
             const resolved = await resolveAuthorizedMeeting({
-                req,
-                res,
+                req: req,
+                res: res,
                 body,
                 store,
                 profileStore,

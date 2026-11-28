@@ -75,7 +75,7 @@ export function createInteractiveHandlersBinder({
         const chatThread = query("#jitsi-chat-thread");
         const chatParticipantStrip = query("#jitsi-chat-participant-strip");
         const chatReturnButton = query("#jitsi-chat-return-btn");
-        const activeMeetingsEl = query("#jitsi-active-meetings");
+        const activeMeetingsElement = query("#jitsi-active-meetings");
         if (findButton instanceof HTMLButtonElement) {
             findButton.addEventListener(
                 "click",
@@ -238,8 +238,8 @@ export function createInteractiveHandlersBinder({
                 { signal: bindSignal },
             );
         }
-        if (activeMeetingsEl instanceof HTMLElement) {
-            activeMeetingsEl.addEventListener(
+        if (activeMeetingsElement instanceof HTMLElement) {
+            activeMeetingsElement.addEventListener(
                 "click",
                 (event) => {
                     if (isMeetingSelectionLocked(state)) return;
@@ -470,11 +470,14 @@ export function createInteractiveHandlersBinder({
                 if (!isMeetingActive() || canNavigateDuringMeeting()) return;
                 const target = event.target;
                 if (!(target instanceof Element)) return;
-                const linkEl = target.closest("a[href]");
-                if (!(linkEl instanceof HTMLAnchorElement)) return;
-                const href = String(linkEl.getAttribute("href") ?? "");
+                const linkElement = target.closest("a[href]");
+                if (!(linkElement instanceof HTMLAnchorElement)) return;
+                const href = String(linkElement.getAttribute("href") ?? "");
                 if (!href || href.startsWith("#")) return;
-                const targetUrl = new URL(linkEl.href, window.location.origin);
+                const targetUrl = new URL(
+                    linkElement.href,
+                    window.location.origin,
+                );
                 if (targetUrl.origin !== window.location.origin) return;
                 const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
                 const nextPath = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;

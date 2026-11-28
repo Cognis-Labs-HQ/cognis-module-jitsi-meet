@@ -10,16 +10,16 @@ import { deactivateMeetingChatState } from "../app/chat-state.js";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function readJitsiUiBundle() {
-    const uiDir = resolve(ROOT, "ui");
-    const rootSources = readdirSync(uiDir)
+    const uiDirectory = resolve(ROOT, "ui");
+    const rootSources = readdirSync(uiDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(uiDir, entry), "utf8"));
-    const appDir = resolve(uiDir, "app");
-    const appSources = readdirSync(appDir)
+        .map((entry) => readFileSync(join(uiDirectory, entry), "utf8"));
+    const appDirectory = resolve(uiDirectory, "app");
+    const appSources = readdirSync(appDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(appDir, entry), "utf8"));
+        .map((entry) => readFileSync(join(appDirectory, entry), "utf8"));
     return [...rootSources, ...appSources].join("\n");
 }
 

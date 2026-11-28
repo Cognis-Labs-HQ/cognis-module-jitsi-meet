@@ -54,7 +54,7 @@ test("reserved participants include only active presence in other meetings", asy
     );
 });
 
-function createMockJitsiDb({
+function createMockJitsiDatabase({
     meetingRows = [],
     participantRows = [],
     originalParticipantRows = [],
@@ -285,7 +285,7 @@ test("active whiteboard mappings resolve only to an existing open meeting", asyn
     };
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: createMockJitsiDb({
+        db: createMockJitsiDatabase({
             meetingRows: [meetingRow],
             stateRows: [activeState],
         }),
@@ -366,11 +366,11 @@ test("schema initialization can retry after a failed create", async () => {
 });
 
 test("jitsi store meeting creation uses the modern column set", async () => {
-    const mockDb = createMockJitsiDb();
+    const mockDatabase = createMockJitsiDatabase();
     const passphraseRequests = [];
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
         generatePassphrase(options) {
             passphraseRequests.push(options);
             return "Amber-Cedar-Otter-Willow";
@@ -387,16 +387,16 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         scheduledAt: "2026-08-01T09:30:00.000Z",
     });
 
-    assert.equal(mockDb.insertedMeetingRows.length, 1);
-    assert.ok(mockDb.insertedMeetingRows[0].participant_key);
-    assert.ok(mockDb.insertedMeetingRows[0].meeting_url);
-    assert.ok(mockDb.insertedMeetingRows[0].meeting_password_iv);
+    assert.equal(mockDatabase.insertedMeetingRows.length, 1);
+    assert.ok(mockDatabase.insertedMeetingRows[0].participant_key);
+    assert.ok(mockDatabase.insertedMeetingRows[0].meeting_url);
+    assert.ok(mockDatabase.insertedMeetingRows[0].meeting_password_iv);
     assert.notEqual(
-        mockDb.insertedMeetingRows[0].meeting_password,
+        mockDatabase.insertedMeetingRows[0].meeting_password,
         createdMeeting?.meetingPassword,
     );
     assert.equal(
-        mockDb.insertedMeetingRows[0].scheduled_at,
+        mockDatabase.insertedMeetingRows[0].scheduled_at,
         "2026-08-01T09:30:00.000Z",
     );
     assert.equal(createdMeeting?.scheduledAt, "2026-08-01T09:30:00.000Z");
@@ -408,15 +408,15 @@ test("jitsi store meeting creation uses the modern column set", async () => {
         },
     ]);
     assert.equal(
-        mockDb.insertedMeetingRows[0].meeting_name,
+        mockDatabase.insertedMeetingRows[0].meeting_name,
         "Amber-Cedar-Otter-Willow",
     );
     assert.equal(
-        mockDb.insertedMeetingRows[0].room_slug,
+        mockDatabase.insertedMeetingRows[0].room_slug,
         "Amber-Cedar-Otter-Willow",
     );
     assert.equal(
-        mockDb.insertedMeetingRows[0].meeting_url,
+        mockDatabase.insertedMeetingRows[0].meeting_url,
         "https://meet.example.com/Amber-Cedar-Otter-Willow",
     );
     assert.equal(createdMeeting?.reused, false);
@@ -436,11 +436,11 @@ test("jitsi store meeting creation uses the modern column set", async () => {
 });
 
 test("jitsi store gives generated meetings unique database URLs", async () => {
-    const mockDb = createMockJitsiDb();
+    const mockDatabase = createMockJitsiDatabase();
     let passphraseIndex = 0;
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
         generatePassphrase: () =>
             ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
                 passphraseIndex++
@@ -464,11 +464,11 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
     });
 
     assert.equal(
-        mockDb.insertedMeetingRows[0].room_slug,
+        mockDatabase.insertedMeetingRows[0].room_slug,
         "Amber-Cedar-Otter-Willow",
     );
     assert.equal(
-        mockDb.insertedMeetingRows[1].room_slug,
+        mockDatabase.insertedMeetingRows[1].room_slug,
         "Bamboo-Cloud-Finch-River",
     );
     assert.notEqual(firstMeeting.meetingUrl, secondMeeting.meetingUrl);
@@ -483,12 +483,12 @@ test("jitsi store gives generated meetings unique database URLs", async () => {
 });
 
 test("persistent meetings reuse their stored identity after store reconstruction", async () => {
-    const mockDb = createMockJitsiDb();
+    const mockDatabase = createMockJitsiDatabase();
     let generatedNames = 0;
     const createStore = () =>
         new JitsiMeetStore({
             profileIdentity: profileIdentityFake,
-            db: mockDb,
+            db: mockDatabase,
             generatePassphrase: () =>
                 generatedNames++ === 0
                     ? "Amber-Cedar-Otter-Willow"
@@ -513,7 +513,7 @@ test("persistent meetings reuse their stored identity after store reconstruction
         chatRoomId: null,
     });
 
-    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(mockDatabase.insertedMeetingRows.length, 1);
     assert.equal(generatedNames, 1);
     assert.equal(reusedMeeting.id, firstMeeting.id);
     assert.equal(reusedMeeting.meetingName, firstMeeting.meetingName);
@@ -528,18 +528,18 @@ test("persistent meetings reuse their stored identity after store reconstruction
         chatRoomId: null,
         forceNew: true,
     });
-    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(mockDatabase.insertedMeetingRows.length, 1);
     assert.equal(freshMeeting.id, firstMeeting.id);
     assert.equal(freshMeeting.meetingName, firstMeeting.meetingName);
     assert.equal(freshMeeting.reused, true);
 });
 
 test("solo meetings reuse their participant identity", async () => {
-    const mockDb = createMockJitsiDb();
+    const mockDatabase = createMockJitsiDatabase();
     let generatedNames = 0;
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
         generatePassphrase: () =>
             ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
                 generatedNames++
@@ -556,7 +556,7 @@ test("solo meetings reuse their participant identity", async () => {
     const firstMeeting = await store.createMeeting(input);
     const secondMeeting = await store.createMeeting(input);
 
-    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(mockDatabase.insertedMeetingRows.length, 1);
     assert.equal(secondMeeting.id, firstMeeting.id);
     assert.equal(secondMeeting.meetingName, firstMeeting.meetingName);
     assert.equal(secondMeeting.meetingUrl, firstMeeting.meetingUrl);
@@ -579,7 +579,7 @@ test("schema initialization preserves the persisted meeting identity", async () 
     };
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: createMockJitsiDb({ meetingRows: [meetingRow] }),
+        db: createMockJitsiDatabase({ meetingRows: [meetingRow] }),
         generatePassphrase: () => "Unused-Meeting-Name-Here",
     });
 
@@ -595,7 +595,7 @@ test("schema initialization preserves the persisted meeting identity", async () 
 
 test("jitsi store meeting state backfill writes an ISO timestamp when the driver returns Date objects", async () => {
     const updateCommands = [];
-    const mockDb = {
+    const mockDatabase = {
         async ensureTable() {},
         async transaction(callback) {
             return callback(this);
@@ -626,7 +626,7 @@ test("jitsi store meeting state backfill writes an ISO timestamp when the driver
     };
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
     });
 
     await store.getMeetingState("meeting-1");
@@ -638,7 +638,7 @@ test("jitsi store meeting state backfill writes an ISO timestamp when the driver
 
 test("jitsi store config change invalidates existing meeting rows", async () => {
     const commands = [];
-    const mockDb = {
+    const mockDatabase = {
         async ensureTable() {},
         async transaction(callback) {
             return callback(this);
@@ -663,7 +663,7 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
     };
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
     });
 
     const saved = await store.saveConfig({
@@ -688,7 +688,7 @@ test("jitsi store config change invalidates existing meeting rows", async () => 
 
 test("jitsi active meeting summaries report invited and active participants separately", async () => {
     const now = new Date().toISOString();
-    const mockDb = createMockJitsiDb({
+    const mockDatabase = createMockJitsiDatabase({
         meetingRows: [
             {
                 id: "meeting-1",
@@ -732,7 +732,7 @@ test("jitsi active meeting summaries report invited and active participants sepa
     });
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
     });
 
     const meetings = await store.listActiveMeetings();
@@ -747,7 +747,7 @@ test("ended meetings ignore presence rows that have not expired yet", async () =
     const now = new Date().toISOString();
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: createMockJitsiDb({
+        db: createMockJitsiDatabase({
             meetingRows: [
                 {
                     id: "ended-meeting",
@@ -797,7 +797,7 @@ test("active membership changes preserve the original participant identity", asy
     };
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: createMockJitsiDb({
+        db: createMockJitsiDatabase({
             meetingRows: [meetingRow],
             participantRows: [
                 { meeting_id: "meeting-1", username: "alice" },
@@ -820,11 +820,11 @@ test("active membership changes preserve the original participant identity", asy
 });
 
 test("morphed meetings reuse their original participant-set chat history", async () => {
-    const mockDb = createMockJitsiDb();
+    const mockDatabase = createMockJitsiDatabase();
     let generatedNames = 0;
     const store = new JitsiMeetStore({
         profileIdentity: profileIdentityFake,
-        db: mockDb,
+        db: mockDatabase,
         generatePassphrase: () =>
             ["Amber-Cedar-Otter-Willow", "Bamboo-Cloud-Finch-River"][
                 generatedNames++
@@ -847,7 +847,7 @@ test("morphed meetings reuse their original participant-set chat history", async
     assert.equal(reusedMeeting.id, originalMeeting.id);
     assert.equal(reusedMeeting.chatRoomId, "history-room");
     assert.equal(reusedMeeting.reused, true);
-    assert.equal(mockDb.insertedMeetingRows.length, 1);
+    assert.equal(mockDatabase.insertedMeetingRows.length, 1);
 });
 
 test("keyring reset clears delivery receipts and preserves the meeting", async () => {
@@ -893,7 +893,7 @@ test("schema uniqueness failures do not repeat ALTER on every request", async ()
 });
 
 test("concurrent creation and forceNew cannot split a participant set across meeting IDs", async () => {
-    const database = createMockJitsiDb();
+    const database = createMockJitsiDatabase();
     const makeStore = () =>
         new JitsiMeetStore({
             db: database,
@@ -938,7 +938,7 @@ test("legacy participant matches beyond the former cutoff prefer the active meet
         meeting_url: "https://meet.example.test/active",
         meeting_password: "password",
     });
-    const database = createMockJitsiDb({
+    const database = createMockJitsiDatabase({
         meetingRows: rows,
         originalParticipantRows: ["inactive", "active"].flatMap((id) =>
             ["alice", "bob"].map((username) => ({ meeting_id: id, username })),

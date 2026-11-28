@@ -47,27 +47,29 @@ export function buildMeetingJoinUrl(
 ) {
     try {
         const parsed = new URL(meetingUrl);
-        const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ""));
-        hashParams.set("config.prejoinConfig.enabled", "false");
-        hashParams.set("config.requireDisplayName", "false");
-        hashParams.set("config.disableDeepLinking", "true");
-        hashParams.set("config.subject", meetingSubject);
+        const hashParameters = new URLSearchParams(
+            parsed.hash.replace(/^#/, ""),
+        );
+        hashParameters.set("config.prejoinConfig.enabled", "false");
+        hashParameters.set("config.requireDisplayName", "false");
+        hashParameters.set("config.disableDeepLinking", "true");
+        hashParameters.set("config.subject", meetingSubject);
         const themeMode = resolveThemeMode();
-        hashParams.set("config.preferredTheme", themeMode);
-        hashParams.set(
+        hashParameters.set("config.preferredTheme", themeMode);
+        hashParameters.set(
             "interfaceConfig.DEFAULT_BACKGROUND",
             resolveJitsiDefaultBackground(themeMode),
         );
-        hashParams.set(
+        hashParameters.set(
             "config.toolbarButtons",
             JSON.stringify(JITSI_TOOLBAR_BUTTONS),
         );
         if (profile?.displayName)
-            hashParams.set("userInfo.displayName", profile.displayName);
-        if (profile?.email) hashParams.set("userInfo.email", profile.email);
+            hashParameters.set("userInfo.displayName", profile.displayName);
+        if (profile?.email) hashParameters.set("userInfo.email", profile.email);
         if (profile?.avatarUrl)
-            hashParams.set("userInfo.avatarUrl", profile.avatarUrl);
-        parsed.hash = hashParams.toString();
+            hashParameters.set("userInfo.avatarUrl", profile.avatarUrl);
+        parsed.hash = hashParameters.toString();
         return parsed.toString();
     } catch {
         return meetingUrl;

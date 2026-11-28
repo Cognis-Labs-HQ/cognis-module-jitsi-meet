@@ -360,7 +360,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
@@ -456,7 +456,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
@@ -597,7 +597,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });
@@ -818,7 +818,7 @@ export function registerMeetingLifecycleRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
                 listClassroomParticipantHandles,
                 requesterAccountId: claims.sub,
             });

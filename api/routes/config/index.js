@@ -79,7 +79,7 @@ export function registerMeetingConfigRoutes({
 export function registerMeetingPingRoute({ router, store, sendJson }) {
     router.get(
         "/api/v1/modules/jitsi-meet/ping",
-        async (_req, res) => {
+        async (_request, res) => {
             await store.ensureConfigurationSchema();
             const config = await store.getConfig();
             sendJson(res, 200, {

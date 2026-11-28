@@ -1,23 +1,19 @@
-# Modul Jitsi Meet
+# Jitsi Meet
 
-[English](README.en.md) · [Deutsch](README.de.md) · **Bahasa Indonesia** · [日本語](README.ja.md)
+Ikuti atau selenggarakan rapat video dari Cognis.
 
-Repositori ini berisi modul eksternal Jitsi Meet untuk Cognis. Modul ini menyediakan pembuatan dan akses rapat video, moderasi, pengelolaan peserta, integrasi obrolan rapat, serta berbagi akses tamu dengan cakupan terbatas.
+## Yang Dapat Anda Lakukan
 
-## Instalasi
+Mulai rapat, undang peserta, bagikan tautan, dan gunakan obrolan. Integrasi Whiteboard yang dikonfigurasi menambahkan kanvas bersama.
 
-Tambahkan repositori ini melalui **Modul → Sumber Modul** di Cognis, pasang modul, tinjau kapabilitas dan dependensi yang diminta, lalu aktifkan secara terpisah. Aktivasi mendaftarkan rute aplikasi `/meetings` dan `/meeting`, entri navigasi Rapat, bagian administrasi, aset peramban statis, API, kapabilitas, dan hook flow. Penonaktifan menghapus kontribusi bercakupan tersebut. Atur URL instans Jitsi melalui popup Pengaturan modul yang terpasang. Cognis merender bidang yang dideklarasikan dalam manifest, sedangkan modul ini memvalidasi dan menyimpan perubahan melalui endpoint konfigurasi GET dan PUT.
+## Sebelum Memulai
 
-## Kapabilitas dan dependensi
+Administrator harus mengonfigurasi server Jitsi yang dapat dijangkau dan mengaktifkan Meetings. Izinkan kamera serta mikrofon bila diperlukan. Tautan berbagi mengikuti aturan akses dan kata sandinya.
 
-Modul menerbitkan `meeting:video`, `meeting:chat`, dan `meeting:moderation`. Integrasi runtime diselesaikan melalui kapabilitas dan flow `ctx` Cognis. Manifest mendeklarasikan dependensi berbasis UUID pada gateway Sosial, adaptor Profil, gateway Berbagi, dan adaptor Pesan, beserta kebutuhan kapabilitas runtime yang lebih sempit. Nextcloud Whiteboard dideklarasikan sebagai dependensi lunak opsional agar Cognis dapat menawarkannya saat pemasangan tanpa memblokir Rapat ketika modul itu tidak tersedia. Tidak diperlukan impor paket internal atau pohon sumber Cognis.
+## Langkah Awal
 
-## Pengembangan
+Buka Meetings, pilih peserta bila diperlukan, lalu tunggu pemeriksaan koneksi. Pilih Start untuk masuk, kemudian gunakan kontrol berbagi untuk mengundang orang lain.
 
-Jalankan `npm install`, lalu `npm test`. Pengujian dan kode runtime hanya memakai jalur modul relatif terhadap repositori sehingga rangkaian pengujian dapat berjalan di luar monorepo Cognis. Manifest menerbitkan `ui.stringsBaseUrl` agar Cognis dapat menyelesaikan metadata modul yang dilokalkan sebelum UI perambannya dimuat.
+## Pelajari Lebih Lanjut
 
-## Keamanan
-
-Gunakan penerapan Jitsi HTTPS yang tepercaya. Akses API rapat diautentikasi, catatan rapat dibatasi untuk peserta, kata sandi dibuat untuk setiap rapat, dan akses tamu dibatasi oleh kapabilitas berbagi bercakupan. Tinjau repositori dan digest berkas yang dideklarasikan sebelum mengaktifkannya.
-
-Jalankan skrip lokal di checkout atau gunakan `npm --prefix <checkout> test`; ini bukan perintah Cognis global. Operasi terpasang memakai `cognisctl modules:jitsi-meet:ping`. Uji browser memakai Chromium terpasang: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Lihat [kontrak integrasi](docs/index.id.md) dan AGENTS.md turunan templat.
+[Penggunaan](docs/USAGE.id.md) menyediakan prosedur. [Teknis](docs/TECHNICAL.id.md) menjelaskan kontrak dan konfigurasi.

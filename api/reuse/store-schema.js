@@ -76,7 +76,7 @@ export async function deleteMeetingRows(executor, meetingId) {
     }
 }
 
-export async function ensureJitsiStoreSchema({ db }) {
+export async function ensureJitsiStoreSchema({ db: db }) {
     await ensureJitsiAuxiliaryTable(db, CONFIG_TABLE);
 
     await db.ensureTable({
@@ -267,7 +267,7 @@ const schemaInitializationByExecutor = new WeakMap();
 export async function ensureJitsiStoreSchemaOnce(db) {
     const existing = schemaInitializationByExecutor.get(db);
     if (existing) return existing;
-    const initialization = ensureJitsiStoreSchema({ db }).catch((error) => {
+    const initialization = ensureJitsiStoreSchema({ db: db }).catch((error) => {
         // Retrying a uniqueness violation cannot repair existing data.
         if (
             error?.code !== "23505" &&

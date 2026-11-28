@@ -75,7 +75,7 @@ export async function openChromium() {
             new Promise((resolve, reject) => {
                 const id = ++sequence;
                 pending.set(id, { resolve, reject });
-                socket.send(JSON.stringify({ id, method, params }));
+                socket.send(JSON.stringify({ id, method, params: params }));
             });
         const evaluate = async (operation, input) => {
             const result = await command("Runtime.evaluate", {

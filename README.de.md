@@ -1,23 +1,19 @@
-# Jitsi-Meet-Modul
+# Jitsi Meet
 
-[English](README.en.md) · **Deutsch** · [Bahasa Indonesia](README.id.md) · [日本語](README.ja.md)
+Nehmen Sie in Cognis an Videokonferenzen teil oder veranstalten Sie eigene.
 
-Dieses Repository enthält das externe Jitsi-Meet-Modul für Cognis. Es ermöglicht das Erstellen und Beitreten von Videokonferenzen, Moderation, Teilnehmerverwaltung, integrierten Besprechungschat und freigegebene Gastzugänge mit begrenztem Umfang.
+## Möglichkeiten
 
-## Installation
+Starten Sie eine Konferenz, laden Sie Teilnehmer ein, teilen Sie ihren Link und nutzen Sie den Chat. Eine eingerichtete Whiteboard-Integration ergänzt eine gemeinsame Zeichenfläche.
 
-Füge dieses Repository in Cognis über **Module → Modulquellen** hinzu, installiere das Modul, prüfe die angeforderten Fähigkeiten und Abhängigkeiten und aktiviere es anschließend separat. Beim Aktivieren werden die Anwendungsrouten `/meetings` und `/meeting`, der Navigationseintrag „Besprechungen“, der Administrationsbereich, statische Browserressourcen, APIs, Fähigkeiten und Flow-Hooks registriert. Beim Deaktivieren werden diese bereichsgebundenen Beiträge entfernt. Konfiguriere die URL der Jitsi-Instanz im Einstellungsdialog des installierten Moduls. Cognis rendert die im Manifest deklarierten Felder; dieses Modul validiert und speichert Änderungen über seinen GET- und PUT-Konfigurationsendpunkt.
+## Vor dem Start
 
-## Fähigkeiten und Abhängigkeiten
+Ein Administrator muss einen erreichbaren Jitsi-Server einrichten und Meetings aktivieren. Erlauben Sie bei Bedarf Kamera und Mikrofon. Geteilte Links unterliegen ihren Zugriffs- und Passwortregeln.
 
-Das Modul veröffentlicht `meeting:video`, `meeting:chat` und `meeting:moderation`. Laufzeitintegrationen werden über Cognis-`ctx`-Fähigkeiten und Flows aufgelöst. Das Manifest deklariert UUID-basierte Abhängigkeiten vom Social-Gateway, Profiladapter, Freigabe-Gateway und Nachrichtenadapter sowie eng begrenzte Laufzeitfähigkeiten. Nextcloud Whiteboard ist als optionale weiche Abhängigkeit deklariert, damit Cognis es bei der Installation anbieten kann, ohne Besprechungen zu blockieren, wenn es nicht verfügbar ist. Es werden keine internen Cognis-Pakete oder Quellbaumimporte benötigt.
+## Erste Schritte
 
-## Entwicklung
+Öffnen Sie Meetings, wählen Sie optional Teilnehmer und warten Sie auf die Verbindungsprüfung. Wählen Sie Start und laden Sie anschließend weitere Personen über die Freigabe ein.
 
-Führe `npm install` und anschließend `npm test` aus. Tests und Laufzeitcode verwenden ausschließlich repository-relative Modulpfade, sodass die Testsuite außerhalb des Cognis-Monorepos läuft. Das Manifest veröffentlicht `ui.stringsBaseUrl`, damit Cognis die lokalisierten Metadaten des Moduls bereits vor dem Laden seiner Browseroberfläche auflösen kann.
+## Weitere Informationen
 
-## Sicherheit
-
-Verwende eine vertrauenswürdige Jitsi-Bereitstellung mit HTTPS. Der Zugriff auf die Besprechungs-API ist authentifiziert, Besprechungsdatensätze sind auf Teilnehmer beschränkt, Passwörter werden pro Besprechung erzeugt und Gastzugriffe sind durch bereichsgebundene Freigabefähigkeiten eingeschränkt. Prüfe das Repository und die deklarierten Datei-Digests vor der Aktivierung.
-
-Lokale Skripte im Checkout oder mit `npm --prefix <checkout> test` ausführen; sie sind keine globalen Cognis-Befehle. Installierte Operationen nutzen `cognisctl modules:jitsi-meet:ping`. Der Browsertest verwendet ein installiertes Chromium: `CHROMIUM_EXECUTABLE_PATH=/path/to/chromium npm --prefix <checkout> run test:browser`. Siehe [Integrationsverträge](docs/index.de.md) und die vorlagenbasierte AGENTS.md.
+[Anwendung](docs/USAGE.de.md) beschreibt Abläufe. [Technik](docs/TECHNICAL.de.md) erklärt Verträge und Konfiguration.

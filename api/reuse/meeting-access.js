@@ -145,7 +145,7 @@ export async function resolveMeetingPayloadOrReject({
     store,
     claims,
     sendError,
-    res,
+    res: res,
     listClassroomParticipantHandles,
     resolveShareUserAccess = null,
 }) {

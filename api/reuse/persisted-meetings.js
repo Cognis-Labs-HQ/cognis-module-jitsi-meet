@@ -1,5 +1,5 @@
 export async function listPersistedMeetings({
-    db,
+    db: db,
     getMeetingById,
     listParticipants,
     listOriginalParticipants,

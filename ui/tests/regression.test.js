@@ -9,16 +9,16 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 function readJitsiUiBundle() {
-    const uiDir = resolve(ROOT, "ui");
-    const rootSources = readdirSync(uiDir)
+    const uiDirectory = resolve(ROOT, "ui");
+    const rootSources = readdirSync(uiDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(uiDir, entry), "utf8"));
-    const appDir = resolve(uiDir, "app");
-    const appSources = readdirSync(appDir)
+        .map((entry) => readFileSync(join(uiDirectory, entry), "utf8"));
+    const appDirectory = resolve(uiDirectory, "app");
+    const appSources = readdirSync(appDirectory)
         .filter((entry) => entry.endsWith(".js"))
         .sort()
-        .map((entry) => readFileSync(join(appDir, entry), "utf8"));
+        .map((entry) => readFileSync(join(appDirectory, entry), "utf8"));
     return [...rootSources, ...appSources].join("\n");
 }
 
@@ -487,23 +487,23 @@ test("jitsi meetings embed gates privileged settings by local moderator role and
     assert.match(source, /"avatarUrl",[\s\S]*state\.currentProfile\.avatarUrl/);
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.disableDeepLinking", "true"\)/,
+        /hashParameters\.set\("config\.disableDeepLinking", "true"\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("userInfo\.avatarUrl", profile\.avatarUrl\)/,
+        /hashParameters\.set\("userInfo\.avatarUrl", profile\.avatarUrl\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.subject", meetingSubject\)/,
+        /hashParameters\.set\("config\.subject", meetingSubject\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\("config\.preferredTheme", themeMode\)/,
+        /hashParameters\.set\("config\.preferredTheme", themeMode\)/,
     );
     assert.match(
         embedSource,
-        /hashParams\.set\([\s\S]*"interfaceConfig\.DEFAULT_BACKGROUND",[\s\S]*resolveJitsiDefaultBackground\(themeMode\)/,
+        /hashParameters\.set\([\s\S]*"interfaceConfig\.DEFAULT_BACKGROUND",[\s\S]*resolveJitsiDefaultBackground\(themeMode\)/,
     );
     assert.match(source, /"password",[\s\S]*meetingPassword/);
     assert.match(
@@ -581,7 +581,7 @@ test("active meetings are locked while the user is joined to a meeting", () => {
     );
     assert.match(
         source,
-        /activeMeetingsEl\.addEventListener\([\s\S]*?if \(isMeetingSelectionLocked\(state\)\) return/,
+        /activeMeetingsElement\.addEventListener\([\s\S]*?if \(isMeetingSelectionLocked\(state\)\) return/,
     );
     assert.match(
         source,
@@ -721,25 +721,8 @@ test("jitsi meetings reset participant state and disable mini chat until ready",
     assert.match(cssSource, /pointer-events: none;/);
 });
 
-test("meetings page defaults stage and chat across the full composer row", () => {
-    const source = readJitsiUiBundle();
-    assert.match(
-        source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[includeChat \? 8 : 12,\s*5\][\s\S]*min:\s*\[includeChat \? 6 : 8,\s*4\]/,
-    );
-    assert.match(
-        source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*default:\s*\[4,\s*5\][\s\S]*min:\s*\[3,\s*4\]/,
-    );
-    assert.doesNotMatch(
-        source,
-        /id:\s*"jitsi-stage"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
-    );
-    assert.doesNotMatch(
-        source,
-        /id:\s*"jitsi-chat"[\s\S]*gridSize:\s*\{[\s\S]*max:\s*"full"/,
-    );
-    assert.match(source, /if \(includeChat\) \{[\s\S]*id: "jitsi-chat"/);
+test("meetings page asks Composer to stack its panes through tablet widths", () => {
+    assert.match(readJitsiUiBundle(), /stackAt:\s*"medium"/);
 });
 
 test("meetings UI recovers a live session after composer edit rerenders the iframe", () => {

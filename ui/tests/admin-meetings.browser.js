@@ -41,7 +41,7 @@ const rows = templates.renderRows([
         issues: ["duplicateParticipants", "sharedChatroom"],
     },
 ]);
-const server = createServer((_req, res) =>
+const server = createServer((_request, res) =>
     res.end("<!doctype html><title>Administration fixture</title>"),
 );
 await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));

@@ -1,5 +1,5 @@
 export async function findMeetingByChatRoomReference({
-    db,
+    db: db,
     chatRoomId,
     getMeetingById,
 }) {

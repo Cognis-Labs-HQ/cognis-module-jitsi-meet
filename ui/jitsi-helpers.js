@@ -192,11 +192,7 @@ async function fetchShareGuestProfile() {
     };
 }
 
-export function createParticipantAvatarEl({
-    username,
-    displayName,
-    avatarKey,
-}) {
+function createParticipantAvatarElement({ username, displayName, avatarKey }) {
     const wrapper = document.createElement("div");
     wrapper.className = "jitsi-participant-avatar";
     wrapper.setAttribute("draggable", "true");
@@ -220,6 +216,7 @@ export function createParticipantAvatarEl({
     wrapper.appendChild(label);
     return wrapper;
 }
+export { createParticipantAvatarElement };
 
 export function createChatParticipantAvatarButton({
     username,

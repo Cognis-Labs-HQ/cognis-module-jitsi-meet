@@ -1,29 +1,34 @@
-# Jitsi Meet Module
+# Technical Reference
+
+Public interfaces, configuration and lifecycle of Jitsi Meet.
+
+## Interfaces
 
 Jitsi Meet provides Cognis meeting rooms with participant selection, Messages chat, session reclaim, scoped sharing and an optional synchronized Whiteboard. External services are resolved through ctx; the module owns its API, browser resources and storage.
 
-## Usage Examples
+### Provider-owned Meeting Creation
 
-- In Administration → Modules, configure an HTTP(S) Jitsi instance URL, run the enablement test and enable Jitsi Meet. Administration → Meetings lists active and upcoming meetings.
-- Open Meetings, select participants and start or join a room. A visible profile handle is required for profile-dependent operations. Existing active membership remains discoverable through the authenticated account identity if its profile handle becomes unavailable.
-- Drop an available participant into a running meeting to request Share approval. A decline restores the participant to the available list and shows a toast.
-- Select Whiteboard to open the meeting canvas, or Close Whiteboard to close it. Screen sharing disables that control with an explanatory tooltip. Link-share guests follow the organizer’s state without a visible control.
+The browser capability `meetings:createMeeting({ participants, scheduledAt, signal })` returns `{ meetingId, navigationUrl }`. Its provider owns the HTTP request and destination, and executes `jitsi-meet:creation:create` through the host `ui:scopedActions` contract. Consumers discover this optional capability instead of constructing module endpoints. Authentication and validation remain at the existing API boundary. Aborted or removed providers cannot perform further actions.
 
-Browser callers obtain the module’s VoIP integration from the host-initialized context:
+## Configuration
 
-```js
-const startCall = uiCtx.capabilities.get("voip:startCall");
-const action = await startCall({
-    source: "messages",
-    room: { id: roomId, kind: "group" },
-    users: members,
-    supportedActions: ["component"],
-});
-```
+The module manifest declares its supported settings and dependencies. Configure only the owning module or its declared authentication adapter through Administration; enabled and disabled entrypoints follow the manifest.
 
-The returned action describes a Meetings component; the caller launches it through the host component-page contract.
+### Configuration and API Access
 
-## Technical Specification
+All endpoints use `/api/v1/modules/jitsi-meet`. Configuration `GET` requires a user; `PUT`, `DELETE` and `/admin/enable-test` require an administrator and remain available while disabled. Configuration validates an HTTP(S) instance URL. The enablement test requires configured service liveness. The configured origin is supplied to the host CSP origin capability. Changing an existing instance clears module-owned meeting data through a database transaction.
+
+Meeting creation, joins, presence, state, password claims, session reclaim, participant changes, chat summaries, persisted departures and Whiteboard changes require authenticated access and meeting authorization. Administration discovery requires an administrator. Profile identities and Messages, Share, notification and calendar data use host capabilities. Share guests must hold the exact resource capability required by the operation; permission denial is never retried without that capability. User shares and block relationships are checked through the host access contracts. Guest mounts do not query account-profile or participant-search endpoints.
+
+### Declared administrator fields
+
+| Key           | Type     |
+| ------------- | -------- |
+| `instanceUrl` | `string` |
+
+## Behavior
+
+The default stage and chat use a 6:3 grid-width ratio so they fit together at the first regular-width layout. `stackAt: "medium"` asks the host Composer to stack full-width panes at content widths up to 900 CSS pixels. Without chat, the stage declares `max: "full"` and occupies the available row. Participants retain their own full-width row. Saved customization remains under the existing preference key.
 
 ### Integration and Action Flows
 
@@ -32,12 +37,6 @@ The returned action describes a Meetings component; the caller launches it throu
 Enabled asynchronous store operations execute module-owned `jitsi-meet:*` flows with `initialize-store` and `execute-action` stages. Routed authorization and validation remain at the API boundary; owner handlers perform the actual operation, and internal store calls preserve transaction boundaries. Missing execution results are errors. Tests verify the complete asynchronous action catalog, real owner-stage execution and failure propagation using public-contract fakes.
 
 The restricted `api/disabled.js` entrypoint registers configuration and enable-test endpoints without feature routes or UI. Cognis does not register disabled module flows, so this lifecycle configuration uses the same injected store directly. Uninstall removes configuration and optionally saved module data. Host-scoped route, capability, flow and hook registrations are removed by Cognis when the module is disabled.
-
-### Configuration and API Access
-
-All endpoints use `/api/v1/modules/jitsi-meet`. Configuration `GET` requires a user; `PUT`, `DELETE` and `/admin/enable-test` require an administrator and remain available while disabled. Configuration validates an HTTP(S) instance URL. The enablement test requires configured service liveness. The configured origin is supplied to the host CSP origin capability. Changing an existing instance clears module-owned meeting data through a database transaction.
-
-Meeting creation, joins, presence, state, password claims, session reclaim, participant changes, chat summaries, persisted departures and Whiteboard changes require authenticated access and meeting authorization. Administration discovery requires an administrator. Profile identities and Messages, Share, notification and calendar data use host capabilities. Share guests must hold the exact resource capability required by the operation; permission denial is never retried without that capability. User shares and block relationships are checked through the host access contracts. Guest mounts do not query account-profile or participant-search endpoints.
 
 ### Meeting Identity and Persistence
 
@@ -91,33 +90,67 @@ The browser regression uses an installed Chromium executable through CDP, withou
 
 The marketplace banner combines Cognis branding with the provider identity in a central crop-safe layout; the existing provider icon is retained.
 
-## Meeting administration and recovery
+### Meeting administration and recovery
 
 Administration → Meetings offers Active, All meetings and Issues pill filters. The admin-only listing reads existing meeting records without requiring schema initialization, flags duplicate participant sets and URLs plus shared chat-room/canvas references, and never exposes passwords. Terminate ends Cognis presence and closes the meeting for connected Cognis clients; it does not claim to administer an independently joined Jitsi conference. Active meetings must be terminated before deletion. Delete removes meeting-owned records and shares, deleting a chat room or canvas only when no other meeting references it. Cleanup failures retain the meeting record for retry; already absent resources permit cleanup to continue. Deleting duplicate references clears cached uniqueness failures so ordinary schema initialization can retry. Non-admin routes retain normal schema enforcement. Meeting discovery stops automatic polling on a failed response and reports the failure instead of repeatedly retrying it.
 
-## Exclusive integration source bindings
+### Exclusive integration source bindings
 
 Meeting chats declare `source: {sourceType: "meeting", sourceId: meeting.id}` through the Messages resolver. Canvas activation claims the same identity through `whiteboard:sourceBinding`. Provider-owned claims reject competing meeting bindings; Jitsi never edits their binding columns. Administration deletion releases only the deleted meeting’s binding when another historical reference survives. Messages-initiated call cleanup releases its source claim while retaining the source conversation. Creating a new call rolls back its meeting record if chat binding fails. Messages source binding is required; Whiteboard remains optional and is available only when its source-binding contract exists.
 
 Configuration and enablement initialize only the configuration table, so meeting integrity failures do not prevent enabling the module and opening administration recovery. Administration initializes only the auxiliary participant-history table needed for inspection; it preserves meeting constraints.
 
-## Readable meeting administration
+### Readable meeting administration
 
 Meeting lists share one panel with space between Active and Upcoming sections. Meeting names, IDs and expandable chat/canvas references stay together; compact issue pills leave room for participants, activity and actions. Filter buttons use the host neutral control without positional hover movement. Upcoming lists only inactive, unended meetings with a valid future schedule; elapsed, missing and invalid schedules remain available in All meetings.
 
-## Stable meeting canvas identifiers
+### Stable meeting canvas identifiers
 
 Jitsi supplies the meeting UUID as `resourceId` and `meeting` as `resourceType`; the display name is only the title. Reopening the same meeting requests the same generic provider reference, even after its name changes. Whiteboard owns persistence, access checks and concurrent reference resolution without knowledge of Jitsi internals.
 
-## Alone-in-meeting prompt after confirmed entry
+### Alone-in-meeting prompt after confirmed entry
 
 The alone-in-meeting prompt follows a confirmed local Jitsi conference and current presence, rather than the invitation or membership count. It still observes the existing join/authentication grace period and Remain dismissal, and returns after another participant joins and later leaves. Pending authentication does not show an alone prompt. Once Jitsi confirms entry, stale authentication status cannot replace the live prompt. Full-window and PiP appearance and placement remain unchanged.
 
-## One meeting identity per participant set
+### One meeting identity per participant set
 
-Creation reuses a database meeting with the same normalized current or original participant set, regardless of the caller’s context. There is no forceNew option. Creation uses a stable participant key and an atomic conflict-ignore insert; concurrent requests return the same ID. Membership changes preserve the creation key, and lookup and discovery no longer stop after a fixed record count. Historical matches prefer the single active meeting; multiple active matches require administrator recovery. Reuse restores the requested membership and cannot replace an existing chat association. Authentication waiters retain presence and poll the existing meeting; when authentication completes, they join that same ID. Confirmed Jitsi entry starts recurring presence tracking even if authentication flags are stale. The Meeting List remains blocked during joins and conferences, with a not-allowed cursor and inert cards.
+Creation reuses a database meeting with the same normalized current or original participant set, regardless of the caller’s context. There is no forceNew option. Creation uses a stable participant key and an atomic conflict-ignore insert; concurrent requests return the same ID. Membership changes preserve the creation key, and lookup and discovery does not stop after a fixed record count. Historical matches prefer the single active meeting; multiple active matches require administrator recovery. Reuse restores the requested membership and cannot replace an existing chat association. Authentication waiters retain presence and poll the existing meeting; when authentication completes, they join that same ID. Confirmed Jitsi entry starts recurring presence tracking even if authentication flags are stale. The Meeting List remains blocked during joins and conferences, with a not-allowed cursor and inert cards.
 
-## Recovery of deleted meeting and canvas references
+### Handle connection loss during discovery
+
+Meeting discovery stops polling after a network failure and catches timer rejections. Offline and cancelled requests do not open discovery error toasts or clear the last meeting lists. The module uses the optional host offline-state capability and keeps cleanup tied to the page signal. Active-meeting presence and state polling follow the same lifecycle and stop together after a failed background request.
+
+### Keep Current Meeting Polling
+
+Presence and state timer callbacks belong to a tracking generation and meeting identity. Switching meetings or restarting tracking for the same meeting retires the previous generation. Late failures and already queued callbacks from retired generations cannot stop the current heartbeat or state timers or send requests for the new session. A failure from the current generation still stops both timers, and page/offline cleanup invalidates its generation.
+
+Provider tests check the public contract, all four translations, availability rules, rollback and rejection of unsupported host versions.
+
+Coverage includes meeting preparation, live call/chat/sharing controls, and administrator-only inspection and termination/deletion review.
+
+Meeting lifecycle explanations highlight the displayed Terminate or Delete control. The first usable target is selected inside the tutorial section and the step is skipped when no matching control is available.
+
+The shared host provides queued floating actions. First visits offer Next/Finish without Cancel or Skip; replays offer Skip before the last visible step. Restart Tutorial appears after the first visible step. Completion survives content updates. Explicit highlightNext flags enable only a breathing animation for explanatory steps; reduced motion disables it. Each stage highlights a distinct rendered control in UI order. Guides stay bound to the current view, handle empty and optional states, and release their resources on navigation or owner removal.
+
+The meeting guide highlights the full Participants panel first and the Available Participants section at its participant-selection stage.
+
+The meeting-chat stage is omitted from the path and count while chat is unavailable.
+
+The preparation guide is available only while the lobby is rendered and no meeting embed is active. Direct meeting links do not offer lobby-only targets. Leaving the call restores the lobby guide. The live guide uses the module route root as its shared boundary, with a separate visible-meeting condition, so the frame wrapper, sharing actions and optional chat remain reachable. Disabled or hidden chat is excluded from the path and count.
+
+An empty participant directory must not block a standalone meeting. Keep the participant finder mounted when the directory is empty so repeated renders can update the Start button after preflight. A successful preflight permits creation without selected participants; failed preflight still prevents starting. The preparation tutorial explains choosing Start without participants and sharing the link after joining.
+
+## Security
+
+Meeting operations retain authenticated account and stored participant checks. Shared meetings retain their token/password requirements; a browser control never grants meeting authority. Configuration and administrative recovery retain administrator guards. Logs omit room passwords, authentication tokens and private chat payloads.
+
+## Reference
+
+- [manifest.json](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/manifest.json)
+- [bootstrap.js](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/bootstrap.js)
+- [Cognis](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/modules/external/TECHNICAL.en.md)
+
+### Recovery of deleted meeting and canvas references
 
 An explicit canvas open refreshes its generic provider reference instead of trusting a prepared canvas ID. Missing canvases are recreated through the provider and mapped back to the meeting. An already-approved open canvas can be replaced without another consensus request only when the provider confirms that the previous canvas is absent and the replacement has the exact resource type and identifier. Explicit launch of a deleted meeting uses its loaded participant metadata and normal canonical creation, preserving its disposable setting and joining the returned replacement ID. Unknown references, guests and permission/service failures are not used to infer new resources. Deleted content is not restored; recovery creates a fresh item, with success notifications and bounded attempts.
 
@@ -127,18 +160,6 @@ References use the host’s collapsible section composer, matching Components. E
 
 Canvas source claims occur only after approval and inside the serialized state update. Membership or persistence failures release newly claimed canvases while preserving existing mapped claims. General meeting creation cannot provision disposable calls; recovery of conversation calls uses the existing conversation’s VoIP route. Superseded upcoming polls are ignored. Direct pages consume the host lifecycle signal instead of creating independent controllers.
 
-## Handle connection loss during discovery
+### Naming validation
 
-Meeting discovery stops polling after a network failure and catches timer rejections. Offline and cancelled requests do not open discovery error toasts or clear the last meeting lists. The module uses the optional host offline-state capability and keeps cleanup tied to the page signal. Active-meeting presence and state polling follow the same lifecycle and stop together after a failed background request.
-
-## Keep Current Meeting Polling
-
-Presence and state timer callbacks belong to a tracking generation and meeting identity. Switching meetings or restarting tracking for the same meeting retires the previous generation. Late failures and already queued callbacks from retired generations cannot stop the current heartbeat or state timers or send requests for the new session. A failure from the current generation still stops both timers, and page/offline cleanup invalidates its generation.
-
-## Provider-owned Meeting Creation
-
-The browser capability `meetings:createMeeting({ participants, scheduledAt, signal })` returns `{ meetingId, navigationUrl }`. Its provider owns the HTTP request and destination, and executes `jitsi-meet:creation:create` through the host `ui:scopedActions` contract. Consumers discover this optional capability instead of constructing module endpoints. Authentication and validation remain at the existing API boundary. Aborted or removed providers cannot perform further actions.
-
-## Guided tutorial
-
-[Guided tutorial](tutorials.en.md)
+`npm test` checks binding names with the local syntax-tree detector, including bootstrap, scripts, tests and fixtures. Parsing errors fail validation. The detector regression fixtures cover declarations, parameters, private members, TypeScript assertions and legitimate type-only names. See the [host naming standard](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.en.md#binding-names) for the shared policy. Conventional vocabulary such as `args`, `db` and LDAP `dn` is accepted as standalone names. Composite identifiers, including upstream types and methods, use expanded words such as `DatabaseExecutor`, `createDatabaseExecutor` and `baseDistinguishedName`; owned APIs use one canonical name across declarations, exports and callers. Naming-only export aliases fail validation. Measurement-unit tokens (`ms`, `sec`, `px`, `rad`, `deg`) stay abbreviated within composites, such as `INVITE_EXPIRY_MS` and `widthPx`; other composite abbreviations still expand.

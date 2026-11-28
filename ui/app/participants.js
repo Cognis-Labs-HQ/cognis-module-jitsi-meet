@@ -11,7 +11,7 @@ import {
     MEETING_TERMINATED_TEXT,
     STATE_REFRESH_INTERVAL_MS,
 } from "../constants.js";
-import { createParticipantAvatarEl } from "../jitsi-helpers.js";
+import { createParticipantAvatarElement } from "../jitsi-helpers.js";
 import { placeMeetingOverlayForActiveWindow } from "../whiteboard-control.js";
 import { hydrateProfileAvatars } from "./profile-avatars.js";
 
@@ -137,7 +137,7 @@ export function createPreflightHandlers({
             availablePool.replaceChildren(
                 findButton,
                 ...state.availableParticipants.map((entry) =>
-                    createParticipantAvatarEl(entry),
+                    createParticipantAvatarElement(entry),
                 ),
             );
         }
@@ -155,7 +155,7 @@ export function createPreflightHandlers({
         if (updateStage) {
             stagedArea.replaceChildren(
                 ...stagedEntries.map((entry) =>
-                    createParticipantAvatarEl(entry),
+                    createParticipantAvatarElement(entry),
                 ),
             );
             void hydrateProfileAvatars(stagedArea).catch((error) =>

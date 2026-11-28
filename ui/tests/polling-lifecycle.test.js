@@ -599,7 +599,9 @@ test("a preflight failure arriving after page disposal cannot show feedback", as
         state,
         callbacks: {},
         i18n: { t: (key) => key },
-        utils: { setPreflightStatus: (...args) => presentations.push(args) },
+        utils: {
+            setPreflightStatus: (...args) => presentations.push(args),
+        },
         apiFetch: () => pending.promise,
     });
     const running = handlers.runPreflightCheck({ showErrors: true });

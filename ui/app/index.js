@@ -420,6 +420,7 @@ export async function mount(
     const composer = createPageComposer(root, {
         allowCustomization: !limitedShareView && !focusState,
         enableDomParking: true,
+        stackAt: "medium",
         elements,
         preferenceKey: "meetings-layout-v4",
         i18n,

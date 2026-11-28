@@ -1,29 +1,30 @@
-# Jitsi-Meet-Modul
+# Technische Referenz
+
+Öffentliche Schnittstellen, Konfiguration und Lebenszyklus von Jitsi Meet.
+
+## Schnittstellen
 
 Jitsi Meet bietet Cognis-Meetingräume mit Teilnehmerauswahl, Messages-Chat, Sitzungsübernahme, eingeschränkten Freigaben und einem optionalen synchronisierten Whiteboard. Externe Dienste werden über ctx aufgelöst; API, Browserressourcen und Speicherung gehören dem Modul.
 
-## Anwendungsbeispiele
+## Konfiguration
 
-- Unter Administration → Module eine HTTP(S)-Jitsi-Instanz konfigurieren, den Aktivierungstest ausführen und Jitsi Meet aktivieren. Administration → Meetings zeigt aktive und bevorstehende Meetings.
-- Meetings öffnen, Teilnehmer auswählen und einen Raum starten oder betreten. Profilabhängige Operationen benötigen einen sichtbaren Profilnamen. Bestehende aktive Mitgliedschaft bleibt über die authentifizierte Kontoidentität auffindbar, wenn der Profilname nicht verfügbar ist.
-- Einen verfügbaren Teilnehmer in ein laufendes Meeting ziehen, um Share-Zustimmung anzufordern. Eine Ablehnung stellt den Teilnehmer in der verfügbaren Liste wieder her und zeigt einen Toast.
-- Whiteboard öffnet die Meeting-Canvas; Whiteboard schließen schließt sie. Bildschirmfreigabe deaktiviert den Schalter mit erklärendem Tooltip. Link-Gäste folgen dem Zustand des Organisators ohne sichtbaren Schalter.
+Das Modulmanifest deklariert Einstellungen und Abhängigkeiten. Konfigurieren Sie nur das zuständige Modul oder seinen deklarierten Authentifizierungsadapter über die Administration. Aktivierte und deaktivierte Einstiegspunkte folgen dem Manifest.
 
-Browser-Aufrufer beziehen die VoIP-Integration über den vom Host initialisierten Kontext:
+### Konfiguration und API-Zugriff
 
-```js
-const startCall = uiCtx.capabilities.get("voip:startCall");
-const action = await startCall({
-    source: "messages",
-    room: { id: roomId, kind: "group" },
-    users: members,
-    supportedActions: ["component"],
-});
-```
+Alle Endpunkte verwenden `/api/v1/modules/jitsi-meet`. Konfiguration per `GET` benötigt einen Benutzer; `PUT`, `DELETE` und `/admin/enable-test` benötigen einen Administrator und bleiben im deaktivierten Zustand verfügbar. Die Konfiguration validiert eine HTTP(S)-Instanz-URL. Der Aktivierungstest setzt eine konfigurierte, erreichbare Instanz voraus. Der konfigurierte Ursprung wird der CSP-Origin-Capability des Hosts übergeben. Der Wechsel einer bestehenden Instanz löscht moduleigene Meetingdaten in einer Datenbanktransaktion.
 
-Die zurückgegebene Aktion beschreibt eine Meetings-Komponente, die der Aufrufer über den Component-Page-Vertrag des Hosts startet.
+Meeting-Erstellung, Beitritt, Präsenz, Zustand, Passwortanforderungen, Sitzungsübernahme, Teilnehmeränderungen, Chat-Zusammenfassungen, persistente Austritte und Whiteboard-Änderungen benötigen authentifizierten Zugriff und Meeting-Autorisierung. Administrative Listen benötigen Administratorrechte. Profilidentitäten sowie Messages-, Share-, Benachrichtigungs- und Kalenderdaten verwenden Host-Capabilities. Share-Gäste benötigen die konkrete Ressource-Capability der Operation; eine Ablehnung wird niemals ohne diese Capability erneut geprüft. Benutzerfreigaben und Blockierungen werden über Host-Zugriffsverträge geprüft. Gast-Mounts rufen keine Konto-Profile oder Teilnehmersuche ab.
 
-## Technische Spezifikation
+### Deklarierte Administratorfelder
+
+| Schlüssel     | Typ      |
+| ------------- | -------- |
+| `instanceUrl` | `string` |
+
+## Verhalten
+
+Bühne und Chat verwenden standardmäßig ein Rasterbreitenverhältnis von 6:3, damit sie bereits in der ersten regulären Darstellung nebeneinander passen. `stackAt: "medium"` lässt den Host-Composer die Bereiche bis 900 CSS-Pixel Inhaltsbreite in voller Breite untereinander anordnen. Ohne Chat nutzt die Bühne mit `max: "full"` die verfügbare Zeile. Teilnehmer behalten ihre eigene Zeile in voller Breite. Gespeicherte Anpassungen bleiben unter dem bestehenden Einstellungsschlüssel.
 
 ### Integration und Aktions-Flows
 
@@ -32,12 +33,6 @@ Die zurückgegebene Aktion beschreibt eine Meetings-Komponente, die der Aufrufer
 Asynchrone Speicheroperationen des aktivierten Moduls führen moduleigene `jitsi-meet:*`-Flows mit `initialize-store` und `execute-action` aus. Autorisierung und Validierung bleiben an der API-Grenze; Owner-Handler führen die Operation aus, interne Speicheraufrufe erhalten ihre Transaktionsgrenzen. Fehlende Ausführungsergebnisse sind Fehler. Tests prüfen den vollständigen asynchronen Aktionskatalog, die tatsächliche Ausführung der Owner-Stufen und die Fehlerweitergabe mit Fakes der öffentlichen Verträge.
 
 Der eingeschränkte Einstieg `api/disabled.js` registriert Konfiguration und Aktivierungstest ohne Feature-Routen oder UI. Cognis registriert keine Flows deaktivierter Module; diese Lifecycle-Konfiguration verwendet deshalb denselben injizierten Store direkt. Die Deinstallation entfernt Konfiguration und optional gespeicherte Moduldaten. Cognis entfernt seine lebenszyklusgebundenen Routen-, Capability-, Flow- und Hook-Registrierungen bei der Deaktivierung.
-
-### Konfiguration und API-Zugriff
-
-Alle Endpunkte verwenden `/api/v1/modules/jitsi-meet`. Konfiguration per `GET` benötigt einen Benutzer; `PUT`, `DELETE` und `/admin/enable-test` benötigen einen Administrator und bleiben im deaktivierten Zustand verfügbar. Die Konfiguration validiert eine HTTP(S)-Instanz-URL. Der Aktivierungstest setzt eine konfigurierte, erreichbare Instanz voraus. Der konfigurierte Ursprung wird der CSP-Origin-Capability des Hosts übergeben. Der Wechsel einer bestehenden Instanz löscht moduleigene Meetingdaten in einer Datenbanktransaktion.
-
-Meeting-Erstellung, Beitritt, Präsenz, Zustand, Passwortanforderungen, Sitzungsübernahme, Teilnehmeränderungen, Chat-Zusammenfassungen, persistente Austritte und Whiteboard-Änderungen benötigen authentifizierten Zugriff und Meeting-Autorisierung. Administrative Listen benötigen Administratorrechte. Profilidentitäten sowie Messages-, Share-, Benachrichtigungs- und Kalenderdaten verwenden Host-Capabilities. Share-Gäste benötigen die konkrete Ressource-Capability der Operation; eine Ablehnung wird niemals ohne diese Capability erneut geprüft. Benutzerfreigaben und Blockierungen werden über Host-Zugriffsverträge geprüft. Gast-Mounts rufen keine Konto-Profile oder Teilnehmersuche ab.
 
 ### Meeting-Identität und Speicherung
 
@@ -91,33 +86,33 @@ Der Browsertest nutzt ein installiertes Chromium über CDP ohne Playwright: `CHR
 
 Das Marketplace-Banner kombiniert Cognis mit der Anbieteridentität in einem mittigen, gegen Beschneiden geschützten Layout; das vorhandene Anbieter-Icon bleibt erhalten.
 
-## Meeting-Verwaltung und Wiederherstellung
+### Meeting-Verwaltung und Wiederherstellung
 
 Administration → Meetings bietet die Filter Aktiv, Alle Meetings und Probleme. Die ausschließlich für Administratoren verfügbare Liste liest bestehende Datensätze ohne Schema-Initialisierung und markiert doppelte Teilnehmergruppen und URLs sowie gemeinsam referenzierte Chaträume und Zeichenflächen. Passwörter werden nicht ausgegeben. Beenden setzt die Cognis-Präsenz zurück und schließt das Meeting für verbundene Cognis-Clients; unabhängig verbundene Jitsi-Konferenzen werden nicht administriert. Aktive Meetings müssen vor dem Löschen beendet werden. Löschen entfernt Meeting-Datensätze und Freigaben sowie Chaträume oder Zeichenflächen, wenn kein anderes Meeting darauf verweist. Bei Bereinigungsfehlern bleibt der Datensatz für einen erneuten Versuch erhalten; bereits fehlende Ressourcen verhindern die Bereinigung nicht. Das Löschen doppelter Referenzen leert zwischengespeicherte Eindeutigkeitsfehler, damit die normale Schema-Initialisierung erneut erfolgen kann. Andere Routen erzwingen weiterhin das reguläre Schema. Bei fehlgeschlagener Meeting-Abfrage wird die automatische Aktualisierung mit einer Fehlermeldung angehalten.
 
-## Exklusive Quellzuordnung für Integrationen
+### Exklusive Quellzuordnung für Integrationen
 
 Meeting-Chats deklarieren `source: {sourceType: "meeting", sourceId: meeting.id}` über die Messages-Auflösung. Zeichenflächen werden mit derselben Identität über `whiteboard:sourceBinding` zugeordnet. Die Anbieter weisen konkurrierende Zuordnungen zurück; Jitsi ändert keine fremden Zuordnungsspalten. Administratives Löschen gibt nur die Zuordnung des gelöschten Meetings frei, wenn eine historische Referenz bestehen bleibt. Die Bereinigung von Messages-Anrufen gibt die Zuordnung frei und erhält das ursprüngliche Gespräch. Scheitert die Chat-Zuordnung eines neuen Anrufs, wird dessen Meeting-Datensatz zurückgesetzt. Messages-Quellzuordnung ist erforderlich; Whiteboard bleibt optional und benötigt seinen Zuordnungsvertrag.
 
 Konfiguration und Aktivierung initialisieren ausschließlich die Konfigurationstabelle. Fehler der Meeting-Integrität verhindern daher nicht die Aktivierung und den Zugriff auf die administrative Wiederherstellung. Die Verwaltung initialisiert nur die zur Prüfung benötigte Hilfstabelle für Teilnehmerhistorie und erhält die Meeting-Constraints.
 
-## Übersichtliche Meeting-Verwaltung
+### Übersichtliche Meeting-Verwaltung
 
 Die Meeting-Listen teilen sich ein Panel mit Abstand zwischen den Bereichen für aktive und bevorstehende Meetings. Namen, IDs und aufklappbare Chat- und Zeichenflächen-Verknüpfungen bleiben zusammen; kompakte Problem-Pills schaffen Platz für Teilnehmer, Aktivität und Aktionen. Filter verwenden neutrale Host-Steuerelemente ohne Positionsänderung beim Überfahren. Bevorstehende Meetings sind inaktiv, nicht beendet und haben einen gültigen zukünftigen Termin. Vergangene, fehlende und ungültige Termine bleiben unter Alle Meetings zugänglich.
 
-## Stabile Canvas-Kennungen für Meetings
+### Stabile Canvas-Kennungen für Meetings
 
 Jitsi übergibt die Meeting-UUID als `resourceId` und `meeting` als `resourceType`; der Anzeigename dient nur als Titel. Erneutes Öffnen fordert dieselbe allgemeine Anbieter-Verknüpfung an, auch nach einer Namensänderung. Whiteboard verwaltet Persistenz, Zugriff und gleichzeitige Auflösung ohne Kenntnis der Jitsi-Interna.
 
-## Allein-im-Meeting-Hinweis nach bestätigtem Beitritt
+### Allein-im-Meeting-Hinweis nach bestätigtem Beitritt
 
 Der Hinweis folgt einer bestätigten lokalen Jitsi-Konferenz und der aktuellen Anwesenheit statt der Zahl der Einladungen oder Mitgliedschaften. Die bestehende Wartezeit nach Beitritt oder Anmeldung sowie das Ausblenden durch Bleiben gelten weiter. Der Hinweis kehrt zurück, wenn eine weitere Person beitritt und später geht. Während einer ausstehenden Anmeldung erscheint er nicht. Nach bestätigtem Jitsi-Beitritt kann ein veralteter Anmeldestatus den aktuellen Hinweis nicht ersetzen. Darstellung und Position im Hauptfenster und PiP bleiben unverändert.
 
-## Eine Meeting-Identität pro Teilnehmergruppe
+### Eine Meeting-Identität pro Teilnehmergruppe
 
 Die Erstellung verwendet ein Datenbank-Meeting mit derselben normalisierten aktuellen oder ursprünglichen Teilnehmergruppe unabhängig vom Kontext erneut. Es gibt keine forceNew-Option. Ein stabiler Teilnehmerschlüssel und atomisches Einfügen mit Konfliktbehandlung sorgen dafür, dass gleichzeitige Anfragen dieselbe ID erhalten. Mitgliedschaftsänderungen erhalten den Erstellungsschlüssel; Suche und Erkennung haben keine feste Datensatzgrenze mehr. Bei historischen Treffern wird das einzige aktive Meeting bevorzugt; mehrere aktive Treffer benötigen Administrator-Reparatur. Wiederverwendung stellt angeforderte Mitgliedschaften wieder her und ersetzt keine vorhandene Chat-Zuordnung. Während der Anmeldung bleiben Anwesenheit und Abfragen für dasselbe Meeting aktiv; nach Abschluss wird dieselbe ID betreten. Bestätigter Jitsi-Beitritt startet fortlaufende Anwesenheit auch bei veraltetem Anmeldestatus. Die Meeting-Liste bleibt während Beitritt und Konferenz gesperrt, mit Nicht-erlaubt-Cursor und inaktiven Karten.
 
-## Wiederherstellung gelöschter Meeting- und Canvas-Verknüpfungen
+### Wiederherstellung gelöschter Meeting- und Canvas-Verknüpfungen
 
 Explizites Öffnen aktualisiert die allgemeine Anbieter-Verknüpfung statt einer vorbereiteten Canvas-ID zu vertrauen. Fehlende Zeichenflächen werden über den Anbieter neu erstellt und dem Meeting zugeordnet. Eine bereits genehmigte offene Zeichenfläche darf ohne erneute Abstimmung ersetzt werden, wenn der Anbieter das Fehlen der vorherigen Fläche und den exakten Ressourcentyp sowie die Kennung des Ersatzes bestätigt. Das explizite Starten eines gelöschten Meetings verwendet geladene Teilnehmerdaten und die normale kanonische Erstellung, erhält den Kurzlebigkeitsmodus und betritt die zurückgegebene Ersatz-ID. Unbekannte Verweise, Gäste sowie Berechtigungs- und Dienstfehler dienen nicht zur Ableitung neuer Ressourcen. Gelöschte Inhalte werden nicht wiederhergestellt; begrenzte Versuche erzeugen ein neues Element mit Erfolgsmeldung.
 
@@ -127,18 +122,46 @@ Verweise verwenden den aufklappbaren Abschnittskomponisten des Hosts wie Compone
 
 Quellzuordnungen von Zeichenflächen erfolgen erst nach Zustimmung innerhalb der serialisierten Zustandsänderung. Fehler beim Teilnehmerabgleich oder Speichern geben neue Zuordnungen frei und erhalten bestehende Verknüpfungen. Allgemeine Meeting-Erstellung erzeugt keine kurzlebigen Anrufe; deren Wiederherstellung nutzt die VoIP-Route des vorhandenen Gesprächs. Überholte Abfragen bevorstehender Meetings werden verworfen. Direkte Seiten verwenden das Lebenszyklussignal des Hosts statt unabhängiger Controller.
 
-## Verbindungsverlust bei der Raumsuche behandeln
+### Verbindungsverlust bei der Raumsuche behandeln
 
 Die Raumsuche stoppt nach einem Netzwerkfehler ihre Abfragen und fängt abgelehnte Timer-Anfragen ab. Offline- und abgebrochene Anfragen öffnen keine Fehlermeldungen zur Suche und löschen die letzten Raumlisten nicht. Das Modul nutzt die optionale Offline-Status-Fähigkeit des Hosts; die Bereinigung bleibt an das Seitensignal gebunden. Die Präsenz- und Statusabfragen laufender Meetings folgen demselben Lebenszyklus und stoppen gemeinsam nach einer fehlgeschlagenen Hintergrundanfrage.
 
-## Aktuelle Abfrage beibehalten
+### Aktuelle Abfrage beibehalten
 
 Timer für Anwesenheit und Status gehören zu einer Tracking-Generation und einer Meeting-Identität. Ein Meeting-Wechsel oder der Neustart des Trackings für dasselbe Meeting beendet die vorherige Generation. Verspätete Fehler und bereits eingeplante Rückrufe alter Generationen können die aktuellen Anwesenheits- und Statustimer weder stoppen noch Anfragen für die neue Sitzung senden. Fehler der aktuellen Generation stoppen weiterhin beide Timer; Seiten- und Offline-Bereinigung machen diese Generation ungültig.
 
-## Besprechungserstellung beim Anbieter
+### Besprechungserstellung beim Anbieter
 
 Die Browser-Capability `meetings:createMeeting({ participants, scheduledAt, signal })` liefert `{ meetingId, navigationUrl }`. Ihr Anbieter besitzt HTTP-Anfrage und Ziel und führt `jitsi-meet:creation:create` über den Hostvertrag `ui:scopedActions` aus. Verbraucher erkennen diese optionale Capability, statt Modul-Endpunkte zusammenzusetzen. Authentifizierung und Validierung bleiben an der bestehenden API-Grenze. Abgebrochene oder entfernte Anbieter können keine weiteren Aktionen ausführen.
 
-## Geführtes Tutorial
+### Geführtes Tutorial
 
-[Geführtes Tutorial](tutorials.de.md)
+Anbietertests prüfen den öffentlichen Vertrag, alle vier Übersetzungen, Verfügbarkeitsregeln, Fehlerbereinigung und die Ablehnung nicht unterstützter Host-Versionen.
+
+Die Abdeckung umfasst Vorbereitung, Anruf-, Chat- und Freigabesteuerung sowie administrative Prüfung von Besprechungen, Beenden und Löschen.
+
+Erklärungen zum Besprechungslebenszyklus heben die angezeigte Beenden- oder Löschen-Schaltfläche hervor. Der erste nutzbare Treffer wird im Tutorial-Abschnitt gewählt; ohne passenden Treffer wird der Schritt übersprungen.
+
+Der gemeinsame Host stellt schwebende Aktionen über seine Warteschlange bereit. Erstbesuche bieten Weiter/Fertig ohne Abbrechen oder Überspringen; Wiederholungen bieten Überspringen vor dem letzten sichtbaren Schritt. Neustart erscheint nach dem ersten sichtbaren Schritt. Abschlüsse bleiben nach Inhaltsänderungen gültig. Ausdrückliche highlightNext-Angaben aktivieren nur die Atemanimation für Erklärungen; reduzierte Bewegung deaktiviert sie. Jeder Schritt hebt ein anderes reales Bedienelement in UI-Reihenfolge hervor. Anleitungen bleiben an die aktuelle Ansicht gebunden, behandeln leere und optionale Zustände und räumen bei Navigation oder Besitzerentfernung auf.
+
+Die Besprechungsanleitung hebt zuerst den gesamten Teilnehmerbereich und bei der Auswahl den Abschnitt verfügbare Teilnehmer hervor.
+
+Der Besprechungschat entfällt aus Ablauf und Schrittzahl, solange er nicht verfügbar ist.
+
+Die Vorbereitungsanleitung ist nur bei sichtbarer Lobby ohne aktiven Besprechungsrahmen verfügbar. Direkte Besprechungslinks bieten keine reinen Lobbyziele an. Nach Verlassen des Anrufs ist die Lobbyanleitung wieder verfügbar. Die Anrufanleitung verwendet den Routenbereich des Moduls als gemeinsame Grenze und prüft die Sichtbarkeit der Besprechung getrennt. Dadurch bleiben Rahmen, Freigabeaktionen und optionaler Chat erreichbar. Deaktivierter oder ausgeblendeter Chat entfällt aus Ablauf und Schrittzahl.
+
+Ein leeres Teilnehmerverzeichnis darf eine eigenständige Besprechung nicht blockieren. Die Teilnehmersuche bleibt auch bei leerem Verzeichnis eingebunden, damit erneute Darstellungen die Startschaltfläche nach der Vorprüfung aktualisieren können. Eine erfolgreiche Vorprüfung erlaubt das Erstellen ohne ausgewählte Teilnehmer; eine fehlgeschlagene verhindert den Start weiterhin. Die Vorbereitungsanleitung erklärt das Starten ohne Teilnehmer und das Teilen des Links nach dem Beitritt.
+
+## Sicherheit
+
+Konferenzaktionen bewahren authentifizierte Konto- und gespeicherte Teilnehmerprüfungen. Geteilte Konferenzen behalten Token- und Passwortregeln; eine Browserschaltfläche erteilt keine Zugriffsrechte. Konfiguration und Wiederherstellung behalten Administratorprüfungen. Raumkennwörter, Tokens und private Chatdaten gehören nicht in Protokolle.
+
+## Referenz
+
+- [manifest.json](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/manifest.json)
+- [bootstrap.js](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/bootstrap.js)
+- [Cognis](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/modules/external/TECHNICAL.en.md)
+
+### Namensprüfung
+
+`npm test` prüft Bindungsnamen mit dem lokalen Syntaxbaumdetektor einschließlich Bootstrap, Skripten, Tests und Testdaten. Syntaxfehler lassen die Prüfung fehlschlagen. Die Regressionstestfälle decken Deklarationen, Parameter, private Mitglieder, TypeScript-Typzusicherungen und zulässige reine Typnamen ab. Die gemeinsamen Regeln beschreibt der [Namensstandard des Hosts](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.de.md#bindungsnamen). Übliche Begriffe wie `args`, `db` und LDAP-`dn` sind als eigenständige Namen zulässig. Zusammengesetzte Bezeichner einschließlich übernommener Typen und Methoden schreiben Wörter aus, etwa `DatabaseExecutor`, `createDatabaseExecutor` und `baseDistinguishedName`; eigene APIs verwenden denselben kanonischen Namen in Deklarationen, Exporten und Aufrufern. Reine Umbenennungsaliase für Exporte lassen die Prüfung fehlschlagen. Maßeinheiten (`ms`, `sec`, `px`, `rad`, `deg`) bleiben in zusammengesetzten Namen wie `INVITE_EXPIRY_MS` und `widthPx` abgekürzt; andere Kurzformen werden weiterhin ausgeschrieben.

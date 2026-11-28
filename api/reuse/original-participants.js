@@ -31,7 +31,7 @@ export async function meetingMatchesParticipantSet({
 }
 
 export async function ensureMeetingOriginalParticipants({
-    db,
+    db: db,
     meetingId,
     listParticipants,
 }) {

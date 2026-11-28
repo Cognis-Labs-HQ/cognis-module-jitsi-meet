@@ -86,7 +86,7 @@ function createScopedRuntime() {
                 delete: (path, handler, options) =>
                     registerRoute("DELETE", path, handler, options),
             },
-            registerStaticDir: (prefix, directory) =>
+            registerStaticDirectory: (prefix, directory) =>
                 registerUiContribution("static", { prefix, directory }),
             registerNavbarPlugin: (plugin) =>
                 registerUiContribution("navbar", plugin),

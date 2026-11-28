@@ -52,11 +52,11 @@ export function registerJitsiConfigurationApi(
     ctx,
     { enabled = false } = {},
 ) {
-    const dbExecutor = ctx.getCapability("db:executor");
+    const databaseExecutor = ctx.getCapability("db:executor");
     const requireAuth = ctx.getCapability("auth:requireAuth");
     const profileIdentity = ctx.getCapability("social:profile:identity");
     const dependenciesAvailable =
-        dbExecutor &&
+        databaseExecutor &&
         typeof requireAuth === "function" &&
         typeof profileIdentity?.normalizeHandleKey === "function" &&
         typeof profileIdentity?.normalizeHandleKeys === "function";
@@ -85,7 +85,7 @@ export function registerJitsiConfigurationApi(
 
     const log = ctx.getCapability("logging:log") ?? ctx.log;
     const rawStore = resolveStore(
-        dbExecutor,
+        databaseExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         profileIdentity,

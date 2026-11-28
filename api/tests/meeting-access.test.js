@@ -19,7 +19,7 @@ function createProfileStoreWithoutHandle() {
     };
 }
 
-function createInMemoryJitsiDb() {
+function createInMemoryJitsiDatabase() {
     const rows = { jitsi_meetings: [], jitsi_meeting_state: [] };
     return {
         async ensureTable() {},
@@ -56,7 +56,7 @@ test("resolveMeetingPayloadOrReject reports profile_required instead of throwing
         profileStore: createProfileStoreWithoutHandle(),
         store: new JitsiMeetStore({
             profileIdentity: profileIdentityFake,
-            db: createInMemoryJitsiDb(),
+            db: createInMemoryJitsiDatabase(),
         }),
         claims: { sub: "account-without-profile" },
         sendError,

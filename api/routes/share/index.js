@@ -43,7 +43,7 @@ async function requireOwnedMeeting({
     profileStore,
     profileIdentity,
     store,
-    res,
+    res: res,
 }) {
     const meeting = await store.getMeetingById(meetingId);
     if (!meeting) {
@@ -89,18 +89,18 @@ export function registerMeetingShareRoutes({
     requireAuth,
     profileStore,
 }) {
-    const dbExecutor = ctx.getCapability("db:executor");
+    const databaseExecutor = ctx.getCapability("db:executor");
     const log = ctx.getCapability("logging:log");
     const listSharesByResource = ctx.getCapability("share:listByResource");
     if (
-        !dbExecutor ||
+        !databaseExecutor ||
         !profileStore ||
         !ctx.flow ||
         typeof listSharesByResource !== "function"
     ) {
         router.get(
             "/api/v1/modules/jitsi-meet/share",
-            async (_req, res) => {
+            async (_request, res) => {
                 sendError(
                     res,
                     503,
@@ -112,7 +112,7 @@ export function registerMeetingShareRoutes({
         );
         router.post(
             "/api/v1/modules/jitsi-meet/share",
-            async (_req, res) => {
+            async (_request, res) => {
                 sendError(
                     res,
                     503,
@@ -124,7 +124,7 @@ export function registerMeetingShareRoutes({
         );
         router.post(
             "/api/v1/modules/jitsi-meet/share/delete",
-            async (_req, res) => {
+            async (_request, res) => {
                 sendError(
                     res,
                     503,
@@ -138,7 +138,7 @@ export function registerMeetingShareRoutes({
     }
 
     const store = resolveStore(
-        dbExecutor,
+        databaseExecutor,
         log,
         ctx.getCapability("reuse:generatePassphrase"),
         ctx.getCapability("social:profile:identity"),
@@ -164,7 +164,7 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res,
+                res: res,
             });
             if (!meeting) return;
             const shares = await listSharesByResource({
@@ -194,7 +194,7 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res,
+                res: res,
             });
             if (!meeting) return;
             const expiresAt = resolveExpiry(body.expiresInHours);
@@ -260,7 +260,7 @@ export function registerMeetingShareRoutes({
                 profileStore,
                 profileIdentity: ctx.getCapability("social:profile:identity"),
                 store,
-                res,
+                res: res,
             });
             if (!meeting) return;
             const flowResult = await ctx.flow.run("revoke-share-token", {

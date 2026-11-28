@@ -1,29 +1,30 @@
-# Modul Jitsi Meet
+# Referensi Teknis
+
+Antarmuka publik, konfigurasi, dan siklus hidup Jitsi Meet.
+
+## Antarmuka
 
 Jitsi Meet menyediakan ruang rapat Cognis dengan pemilihan peserta, chat Messages, pengambilalihan sesi, berbagi terbatas dan Whiteboard opsional yang tersinkron. Layanan eksternal diselesaikan melalui ctx; modul memiliki API, sumber daya browser dan penyimpanannya.
 
-## Contoh Penggunaan
+## Konfigurasi
 
-- Di Administrasi → Modul, konfigurasikan URL instans Jitsi HTTP(S), jalankan uji aktivasi dan aktifkan Jitsi Meet. Administrasi → Meetings menampilkan rapat aktif dan mendatang.
-- Buka Meetings, pilih peserta dan mulai atau gabung ke ruang. Operasi yang bergantung profil memerlukan nama profil yang terlihat. Keanggotaan aktif yang ada tetap dapat ditemukan melalui identitas akun terautentikasi jika nama profil tidak tersedia.
-- Tarik peserta yang tersedia ke rapat berjalan untuk meminta persetujuan Share. Penolakan mengembalikan peserta ke daftar tersedia dan menampilkan toast.
-- Pilih Whiteboard untuk membuka kanvas rapat, atau Tutup Whiteboard untuk menutupnya. Berbagi layar menonaktifkan kontrol dengan tooltip penjelasan. Tamu tautan mengikuti keadaan penyelenggara tanpa kontrol terlihat.
+Manifes modul mendeklarasikan pengaturan dan dependensi yang didukung. Konfigurasikan hanya modul pemilik atau adapter autentikasi yang dideklarasikan melalui Administration; titik masuk aktif dan nonaktif mengikuti manifes.
 
-Pemanggil browser memperoleh integrasi VoIP dari konteks yang telah diinisialisasi host:
+### Konfigurasi dan Akses API
 
-```js
-const startCall = uiCtx.capabilities.get("voip:startCall");
-const action = await startCall({
-    source: "messages",
-    room: { id: roomId, kind: "group" },
-    users: members,
-    supportedActions: ["component"],
-});
-```
+Semua endpoint memakai `/api/v1/modules/jitsi-meet`. Konfigurasi `GET` memerlukan pengguna; `PUT`, `DELETE` dan `/admin/enable-test` memerlukan administrator dan tetap tersedia saat nonaktif. Konfigurasi memvalidasi URL instans HTTP(S). Uji aktivasi memerlukan layanan terkonfigurasi yang merespons. Origin yang dikonfigurasi diberikan ke kapabilitas origin CSP host. Mengubah instans yang sudah ada menghapus data rapat milik modul melalui transaksi database.
 
-Tindakan yang dikembalikan menjelaskan komponen Meetings; pemanggil membukanya melalui kontrak halaman komponen host.
+Pembuatan rapat, bergabung, kehadiran, keadaan, klaim kata sandi, pengambilalihan sesi, perubahan peserta, ringkasan chat, keberangkatan persisten dan perubahan Whiteboard memerlukan akses terautentikasi dan otorisasi rapat. Daftar administrasi memerlukan administrator. Identitas profil serta data Messages, Share, notifikasi dan kalender memakai kapabilitas host. Tamu Share harus memiliki kapabilitas sumber daya tepat yang diperlukan operasi; izin yang ditolak tidak pernah dicoba ulang tanpa kapabilitas itu. Berbagi pengguna dan hubungan blokir diperiksa melalui kontrak akses host. Mount tamu tidak meminta profil akun atau endpoint pencarian peserta.
 
-## Spesifikasi Teknis
+### Bidang administrator yang dideklarasikan
+
+| Kunci         | Jenis    |
+| ------------- | -------- |
+| `instanceUrl` | `string` |
+
+## Perilaku
+
+Secara bawaan, panggung dan chat memakai rasio lebar grid 6:3 agar keduanya muat pada tata letak reguler terkecil. `stackAt: "medium"` meminta Composer host menumpuk panel selebar penuh pada lebar konten hingga 900 piksel CSS. Tanpa chat, panggung mendeklarasikan `max: "full"` untuk mengisi baris yang tersedia. Peserta tetap memiliki baris selebar penuh. Penyesuaian tersimpan tetap memakai kunci preferensi yang ada.
 
 ### Integrasi dan Alur Tindakan
 
@@ -32,12 +33,6 @@ Tindakan yang dikembalikan menjelaskan komponen Meetings; pemanggil membukanya m
 Operasi penyimpanan asinkron modul aktif menjalankan alur milik modul `jitsi-meet:*` dengan tahap `initialize-store` dan `execute-action`. Otorisasi dan validasi rute tetap pada batas API; penangan milik operasi menjalankan pekerjaan nyata, dan panggilan penyimpanan internal mempertahankan batas transaksi. Hasil eksekusi yang hilang merupakan kesalahan. Pengujian memeriksa katalog lengkap tindakan asinkron, eksekusi tahap nyata dan penerusan kesalahan memakai tiruan kontrak publik.
 
 Titik masuk terbatas `api/disabled.js` mendaftarkan konfigurasi dan uji aktivasi tanpa rute fitur atau UI. Cognis tidak mendaftarkan alur modul nonaktif, sehingga konfigurasi siklus hidup ini memakai penyimpanan terinjeksi yang sama secara langsung. Penghapusan instalasi menghapus konfigurasi dan secara opsional data modul tersimpan. Cognis melepas pendaftaran rute, kapabilitas, alur dan kait yang dibatasi siklus hidup ketika modul dinonaktifkan.
-
-### Konfigurasi dan Akses API
-
-Semua endpoint memakai `/api/v1/modules/jitsi-meet`. Konfigurasi `GET` memerlukan pengguna; `PUT`, `DELETE` dan `/admin/enable-test` memerlukan administrator dan tetap tersedia saat nonaktif. Konfigurasi memvalidasi URL instans HTTP(S). Uji aktivasi memerlukan layanan terkonfigurasi yang merespons. Origin yang dikonfigurasi diberikan ke kapabilitas origin CSP host. Mengubah instans yang sudah ada menghapus data rapat milik modul melalui transaksi database.
-
-Pembuatan rapat, bergabung, kehadiran, keadaan, klaim kata sandi, pengambilalihan sesi, perubahan peserta, ringkasan chat, keberangkatan persisten dan perubahan Whiteboard memerlukan akses terautentikasi dan otorisasi rapat. Daftar administrasi memerlukan administrator. Identitas profil serta data Messages, Share, notifikasi dan kalender memakai kapabilitas host. Tamu Share harus memiliki kapabilitas sumber daya tepat yang diperlukan operasi; izin yang ditolak tidak pernah dicoba ulang tanpa kapabilitas itu. Berbagi pengguna dan hubungan blokir diperiksa melalui kontrak akses host. Mount tamu tidak meminta profil akun atau endpoint pencarian peserta.
 
 ### Identitas Rapat dan Penyimpanan
 
@@ -91,33 +86,75 @@ Uji browser memakai Chromium terpasang melalui CDP tanpa Playwright: `CHROMIUM_E
 
 Banner Marketplace memadukan merek Cognis dan identitas penyedia dalam tata letak tengah yang aman dari pemotongan; ikon penyedia yang ada dipertahankan.
 
-## Administrasi dan pemulihan rapat
+### Administrasi dan pemulihan rapat
 
 Administrasi → Rapat menyediakan filter Aktif, Semua rapat, dan Masalah. Daftar khusus administrator membaca catatan yang ada tanpa inisialisasi skema, menandai kelompok peserta dan URL duplikat serta referensi ruang obrolan/kanvas bersama, dan tidak menampilkan kata sandi. Akhiri mengakhiri kehadiran Cognis dan menutup rapat bagi klien Cognis yang terhubung; tindakan ini tidak mengelola konferensi Jitsi yang diikuti secara mandiri. Rapat aktif harus diakhiri sebelum dihapus. Hapus menghapus catatan dan berbagi rapat, serta ruang obrolan atau kanvas hanya jika tidak dirujuk rapat lain. Kegagalan pembersihan mempertahankan catatan untuk percobaan ulang; sumber daya yang sudah tidak ada tidak menghalangi pembersihan. Penghapusan referensi duplikat membersihkan kegagalan keunikan yang tersimpan agar inisialisasi skema normal dapat dicoba lagi. Rute nonadministrator tetap menerapkan skema normal. Penemuan rapat menghentikan penyegaran otomatis dan melaporkan kegagalan ketika respons gagal.
 
-## Pengikatan sumber integrasi eksklusif
+### Pengikatan sumber integrasi eksklusif
 
 Obrolan rapat menyatakan `source: {sourceType: "meeting", sourceId: meeting.id}` melalui resolver Messages. Aktivasi kanvas mengklaim identitas yang sama melalui `whiteboard:sourceBinding`. Penyedia menolak pengikatan rapat yang bersaing; Jitsi tidak mengubah kolom pengikatan penyedia. Penghapusan administrator hanya melepaskan pengikatan rapat yang dihapus jika referensi lama lain masih ada. Pembersihan panggilan Messages melepaskan klaim sumber sambil mempertahankan percakapan asal. Catatan rapat panggilan baru dibatalkan jika pengikatan obrolan gagal. Pengikatan sumber Messages diwajibkan; Whiteboard tetap opsional dan hanya tersedia jika kontrak pengikatannya ada.
 
 Konfigurasi dan pengaktifan hanya menginisialisasi tabel konfigurasi, sehingga kegagalan integritas rapat tidak mencegah pengaktifan modul dan akses pemulihan administrasi. Administrasi hanya menginisialisasi tabel tambahan riwayat peserta yang diperlukan untuk pemeriksaan dan mempertahankan batasan rapat.
 
-## Administrasi rapat yang mudah dibaca
+### Administrasi rapat yang mudah dibaca
 
 Daftar rapat berbagi satu panel dengan jarak antara bagian Aktif dan Mendatang. Nama, ID, serta referensi obrolan dan kanvas yang dapat dibuka tetap bersama; pil masalah yang ringkas memberi ruang untuk peserta, aktivitas, dan tindakan. Filter memakai kontrol netral host tanpa bergerak saat diarahkan penunjuk. Daftar Mendatang hanya memuat rapat tidak aktif yang belum berakhir dengan jadwal mendatang yang valid. Jadwal lampau, kosong, dan tidak valid tetap tersedia di Semua rapat.
 
-## Pengenal kanvas rapat yang stabil
+### Pengenal kanvas rapat yang stabil
 
 Jitsi mengirim UUID rapat sebagai `resourceId` dan `meeting` sebagai `resourceType`; nama tampilan hanya menjadi judul. Membuka rapat yang sama meminta referensi penyedia generik yang sama, meskipun namanya berubah. Whiteboard mengelola persistensi, pemeriksaan akses, dan penyelesaian referensi bersamaan tanpa mengetahui mekanisme internal Jitsi.
 
-## Pesan sendirian setelah masuk rapat dikonfirmasi
+### Pesan sendirian setelah masuk rapat dikonfirmasi
 
 Pesan sendirian mengikuti konfirmasi masuk konferensi Jitsi lokal dan kehadiran terkini, bukan jumlah undangan atau keanggotaan. Masa tunggu setelah masuk atau autentikasi dan penutupan melalui Tetap berlaku seperti sebelumnya. Pesan muncul lagi setelah peserta lain masuk lalu keluar. Autentikasi yang masih menunggu tidak menampilkan pesan sendirian. Setelah Jitsi mengonfirmasi masuk, status autentikasi lama tidak dapat menggantikan pesan aktif. Tampilan dan posisi pada jendela utama dan PiP tetap sama.
 
-## Satu identitas rapat per kelompok peserta
+### Satu identitas rapat per kelompok peserta
 
 Pembuatan memakai kembali rapat basis data dengan kelompok peserta terkini atau asli yang sama setelah normalisasi, terlepas dari konteks pemanggil. Opsi forceNew dihapus. Kunci peserta stabil dan penyisipan atomik dengan pengabaian konflik membuat permintaan bersamaan menerima ID yang sama. Perubahan keanggotaan mempertahankan kunci awal; pencarian dan penemuan tidak lagi berhenti pada jumlah catatan tetap. Kecocokan historis memilih satu rapat aktif; beberapa rapat aktif yang cocok memerlukan pemulihan administrator. Penggunaan kembali memulihkan anggota yang diminta dan tidak mengganti hubungan obrolan yang ada. Peserta yang menunggu autentikasi mempertahankan kehadiran dan memeriksa rapat yang sama; setelah autentikasi selesai mereka masuk ke ID tersebut. Konfirmasi masuk Jitsi memulai pelacakan kehadiran berkala meskipun penanda autentikasi lama masih ada. Daftar Rapat tetap terkunci selama masuk dan konferensi, dengan kursor tidak diizinkan dan kartu noninteraktif.
 
-## Pemulihan referensi rapat dan kanvas yang dihapus
+### Tangani koneksi terputus saat pencarian ruang
+
+Pencarian ruang menghentikan polling setelah kegagalan jaringan dan menangani penolakan promise pewaktu. Permintaan luring dan yang dibatalkan tidak memunculkan toast kesalahan pencarian atau menghapus daftar ruang terakhir. Modul menggunakan kapabilitas status luring host yang opsional dan mengikat pembersihan pada sinyal halaman. Polling kehadiran dan status ruang aktif mengikuti siklus hidup yang sama dan berhenti bersama setelah permintaan latar belakang gagal.
+
+### Pertahankan Polling Aktif
+
+Callback timer kehadiran dan status terikat pada generasi pelacakan dan identitas rapat. Berpindah rapat atau memulai ulang pelacakan rapat yang sama menonaktifkan generasi sebelumnya. Kegagalan terlambat dan callback yang sudah dijadwalkan dari generasi lama tidak dapat menghentikan timer kehadiran atau status saat ini maupun mengirim permintaan untuk sesi baru. Kegagalan generasi aktif tetap menghentikan kedua timer, dan pembersihan halaman atau mode luring membatalkan generasinya.
+
+### Pembuatan Rapat Milik Penyedia
+
+Kapabilitas browser `meetings:createMeeting({ participants, scheduledAt, signal })` mengembalikan `{ meetingId, navigationUrl }`. Penyedianya memiliki permintaan HTTP serta tujuan navigasi dan menjalankan `jitsi-meet:creation:create` melalui kontrak host `ui:scopedActions`. Konsumen menemukan kapabilitas opsional ini alih-alih menyusun endpoint modul. Autentikasi dan validasi tetap berada pada batas API yang ada. Penyedia yang dibatalkan atau dihapus tidak dapat menjalankan aksi berikutnya.
+
+### Tutorial terpandu
+
+[Tutorial terpandu](TECHNICAL.id.md)
+
+Pengujian penyedia memeriksa kontrak publik, keempat terjemahan, aturan ketersediaan, pembersihan saat gagal, dan penolakan versi host yang tidak didukung.
+
+Cakupan meliputi persiapan pertemuan, kontrol panggilan, chat, dan berbagi, serta pemeriksaan dan tinjauan pengakhiran atau penghapusan khusus administrator.
+
+Penjelasan siklus rapat menyoroti kontrol Akhiri atau Hapus yang ditampilkan. Target pertama yang dapat digunakan dipilih dalam bagian tutorial; langkah dilewati jika tidak ada kontrol yang cocok.
+
+Host bersama menyediakan aksi mengambang melalui antreannya. Kunjungan awal menawarkan Berikutnya/Selesai tanpa Batal atau Lewati; pemutaran ulang menawarkan Lewati sebelum tahap terlihat terakhir. Mulai Ulang Tutorial muncul setelah tahap terlihat pertama. Penyelesaian tetap berlaku setelah pembaruan konten. Flag highlightNext hanya mengaktifkan animasi berdenyut untuk penjelasan; pengurangan gerakan menonaktifkannya. Setiap tahap menyorot kontrol nyata berbeda sesuai urutan UI. Panduan tetap terikat ke tampilan aktif, menangani keadaan kosong dan opsional, serta membersihkan sumber daya saat navigasi atau pelepasan pemilik.
+
+Panduan rapat menyorot seluruh panel peserta terlebih dahulu dan bagian peserta tersedia pada tahap pemilihan peserta.
+
+Langkah chat rapat dihilangkan dari alur dan jumlah langkah selama chat tidak tersedia.
+
+Panduan persiapan hanya tersedia saat lobi terlihat dan sematan rapat tidak aktif. Tautan langsung ke rapat tidak menawarkan target khusus lobi. Setelah meninggalkan panggilan, panduan lobi tersedia kembali. Panduan panggilan memakai akar rute modul sebagai batas bersama dan memeriksa visibilitas rapat secara terpisah, sehingga bingkai, aksi berbagi, dan obrolan opsional tetap terjangkau. Obrolan yang dinonaktifkan atau disembunyikan dikeluarkan dari alur dan jumlah langkah.
+
+Direktori peserta kosong tidak boleh menghalangi rapat mandiri. Pencari peserta tetap terpasang saat direktori kosong agar render berulang dapat memperbarui tombol Mulai setelah pemeriksaan awal. Pemeriksaan berhasil mengizinkan pembuatan tanpa peserta terpilih; pemeriksaan gagal tetap mencegah mulai. Panduan persiapan menjelaskan Mulai tanpa peserta dan membagikan tautan setelah bergabung.
+
+## Keamanan
+
+Operasi rapat mempertahankan pemeriksaan akun terautentikasi dan peserta tersimpan. Rapat berbagi tetap mengikuti token serta kata sandi; kontrol peramban tidak memberi otoritas. Konfigurasi dan pemulihan administratif tetap dilindungi administrator. Log tidak memuat kata sandi ruang, token, atau obrolan pribadi.
+
+## Referensi
+
+- [manifest.json](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/manifest.json)
+- [bootstrap.js](https://github.com/Cognis-Labs-HQ/cognis-module-jitsi-meet/blob/HEAD/bootstrap.js)
+- [Cognis](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/modules/external/TECHNICAL.en.md)
+
+### Pemulihan referensi rapat dan kanvas yang dihapus
 
 Pembukaan kanvas secara eksplisit memperbarui referensi penyedia generik, bukan mempercayai ID kanvas tersiapkan. Kanvas yang hilang dibuat lagi melalui penyedia dan dipetakan ke rapat. Kanvas terbuka yang sudah disetujui dapat diganti tanpa permintaan persetujuan baru hanya jika penyedia memastikan kanvas lama tidak ada dan penggantinya memiliki jenis serta pengenal sumber daya yang sama persis. Peluncuran eksplisit rapat yang dihapus memakai metadata peserta yang sudah dimuat dan pembuatan kanonis normal, mempertahankan sifat sementara dan masuk ke ID pengganti. Referensi tidak dikenal, tamu, serta kegagalan izin atau layanan tidak dipakai untuk menebak sumber daya baru. Konten terhapus tidak dipulihkan; percobaan terbatas membuat item baru dengan notifikasi keberhasilan.
 
@@ -127,18 +164,6 @@ Referensi menggunakan komposer bagian yang dapat dibuka dari host, sama seperti 
 
 Klaim sumber kanvas hanya dilakukan setelah persetujuan, di dalam pembaruan status berseri. Kegagalan sinkronisasi anggota atau penyimpanan melepas klaim baru dan mempertahankan klaim yang sudah dipetakan. Pembuatan rapat umum tidak membuat panggilan sementara; pemulihan panggilan percakapan memakai rute VoIP percakapan yang ada. Polling rapat mendatang yang sudah tergantikan diabaikan. Halaman langsung memakai sinyal siklus hidup host, bukan controller mandiri.
 
-## Tangani koneksi terputus saat pencarian ruang
+### Validasi nama
 
-Pencarian ruang menghentikan polling setelah kegagalan jaringan dan menangani penolakan promise pewaktu. Permintaan luring dan yang dibatalkan tidak memunculkan toast kesalahan pencarian atau menghapus daftar ruang terakhir. Modul menggunakan kapabilitas status luring host yang opsional dan mengikat pembersihan pada sinyal halaman. Polling kehadiran dan status ruang aktif mengikuti siklus hidup yang sama dan berhenti bersama setelah permintaan latar belakang gagal.
-
-## Pertahankan Polling Aktif
-
-Callback timer kehadiran dan status terikat pada generasi pelacakan dan identitas rapat. Berpindah rapat atau memulai ulang pelacakan rapat yang sama menonaktifkan generasi sebelumnya. Kegagalan terlambat dan callback yang sudah dijadwalkan dari generasi lama tidak dapat menghentikan timer kehadiran atau status saat ini maupun mengirim permintaan untuk sesi baru. Kegagalan generasi aktif tetap menghentikan kedua timer, dan pembersihan halaman atau mode luring membatalkan generasinya.
-
-## Pembuatan Rapat Milik Penyedia
-
-Kapabilitas browser `meetings:createMeeting({ participants, scheduledAt, signal })` mengembalikan `{ meetingId, navigationUrl }`. Penyedianya memiliki permintaan HTTP serta tujuan navigasi dan menjalankan `jitsi-meet:creation:create` melalui kontrak host `ui:scopedActions`. Konsumen menemukan kapabilitas opsional ini alih-alih menyusun endpoint modul. Autentikasi dan validasi tetap berada pada batas API yang ada. Penyedia yang dibatalkan atau dihapus tidak dapat menjalankan aksi berikutnya.
-
-## Tutorial terpandu
-
-[Tutorial terpandu](tutorials.id.md)
+`npm test` memeriksa nama binding dengan detektor pohon sintaks lokal, termasuk bootstrap, skrip, pengujian, dan fixture. Kesalahan penguraian menggagalkan validasi. Fixture regresi mencakup deklarasi, parameter, anggota privat, penegasan tipe TypeScript, dan nama khusus tipe yang sah. Lihat [standar penamaan host](https://github.com/Cognis-Labs-HQ/Cognis/blob/HEAD/src/docs/standard/TECHNICAL.id.md#nama-binding) untuk kebijakan bersama. Istilah lazim seperti `args`, `db`, dan LDAP `dn` diperbolehkan sebagai nama mandiri. Nama gabungan, termasuk tipe dan metode upstream, memakai kata lengkap seperti `DatabaseExecutor`, `createDatabaseExecutor`, dan `baseDistinguishedName`; API milik komponen memakai satu nama kanonis pada deklarasi, ekspor, dan pemanggil. Alias ekspor yang hanya mengganti nama menggagalkan validasi. Token satuan ukuran (`ms`, `sec`, `px`, `rad`, `deg`) tetap disingkat dalam nama gabungan seperti `INVITE_EXPIRY_MS` dan `widthPx`; singkatan gabungan lainnya tetap diperluas.

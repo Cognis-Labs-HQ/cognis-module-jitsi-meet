@@ -21,7 +21,7 @@ export async function removeDeletedAccountFromMeetings(
     username,
     { beforeDeleteMeeting } = {},
 ) {
-    const { db } = store;
+    const { db: db } = store;
     const normalizeHandleKey = (handle) => store.normalizeHandleKey(handle);
     const normalizeHandleKeys = (handles) => store.normalizeHandleKeys(handles);
     const normalizedUsername = normalizeHandleKey(username);

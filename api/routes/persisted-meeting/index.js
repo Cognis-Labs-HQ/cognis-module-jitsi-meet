@@ -29,7 +29,7 @@ export function registerPersistedMeetingRoutes({
                 profileStore,
                 store,
                 claims,
-                res,
+                res: res,
             });
             if (!resolved) return;
             const activeMeetingIds = new Set(

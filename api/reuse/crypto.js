@@ -26,7 +26,7 @@
 import { createHash, randomBytes } from "node:crypto";
 
 const ENCRYPT_ALG = "AES-GCM";
-const IV_BYTES = 12;
+const INITIALIZATION_VECTOR_BYTES = 12;
 const KEY_BITS = 256;
 const HKDF_SALT = new TextEncoder().encode("cognis-data-v1");
 
@@ -87,10 +87,10 @@ export function getDataEncryptionKey() {
  */
 export async function deriveScopedKey(scope, serverSecret) {
     const subtle = globalThis.crypto.subtle;
-    const enc = new TextEncoder();
+    const textEncoder = new TextEncoder();
     const effectiveSecret =
         serverSecret.length > 0 ? serverSecret : getOrCreateFallbackSecret();
-    const keyMaterial = enc.encode(effectiveSecret);
+    const keyMaterial = textEncoder.encode(effectiveSecret);
 
     const baseKey = await subtle.importKey(
         "raw",
@@ -105,7 +105,7 @@ export async function deriveScopedKey(scope, serverSecret) {
             name: "HKDF",
             hash: "SHA-256",
             salt: HKDF_SALT,
-            info: enc.encode(scope),
+            info: textEncoder.encode(scope),
         },
         baseKey,
         { name: ENCRYPT_ALG, length: KEY_BITS },
@@ -123,16 +123,16 @@ export async function deriveScopedKey(scope, serverSecret) {
  */
 export async function encryptPayload(key, plaintext) {
     const subtle = globalThis.crypto.subtle;
-    const initVector = globalThis.crypto.getRandomValues(
-        new Uint8Array(IV_BYTES),
+    const iv = globalThis.crypto.getRandomValues(
+        new Uint8Array(INITIALIZATION_VECTOR_BYTES),
     );
     const encrypted = await subtle.encrypt(
-        { name: ENCRYPT_ALG, iv: initVector },
+        { name: ENCRYPT_ALG, iv: iv },
         key,
         new TextEncoder().encode(plaintext),
     );
     return {
-        iv: Buffer.from(initVector).toString("hex"),
+        iv: Buffer.from(iv).toString("hex"),
         ciphertext: Buffer.from(encrypted).toString("hex"),
     };
 }
@@ -141,7 +141,7 @@ export async function encryptPayload(key, plaintext) {
  * Decrypts AES-256-GCM ciphertext using the provided key.
  *
  * @param key - The CryptoKey used to encrypt (derived from deriveScopedKey()).
- * @param iv - Hex-encoded IV returned by encryptPayload().
+ * @param initializationVector - Hex-encoded IV returned by encryptPayload().
  * @param ciphertext - Hex-encoded ciphertext returned by encryptPayload().
  * @returns The decrypted UTF-8 string.
  * @throws If the key, IV, or ciphertext does not match (authentication failure).

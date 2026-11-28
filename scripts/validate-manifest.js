@@ -77,4 +77,6 @@ for (const file of manifest.files) {
         .digest("hex");
     assert.equal(digest, file.sha256, `digest mismatch: ${file.path}`);
 }
-console.log(`Validated ${manifest.files.length} packaged files.`);
+process.stdout.write(
+    `Validated ${manifest.files.length} packaged files.` + "\n",
+);

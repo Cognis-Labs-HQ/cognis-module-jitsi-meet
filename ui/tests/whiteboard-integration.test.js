@@ -212,7 +212,10 @@ test("meeting whiteboards use ctx discovery and synchronized component windows",
         buttonSource,
         /screen\.sharing\.locked\.tooltip[\s\S]*?trigger\.button\.title = screenSharingTooltip[\s\S]*?trigger\.slot\.title = screenSharingTooltip/,
     );
-    assert.match(buttonSource, /globalThis\.console\?\.error/);
+    assert.match(
+        buttonSource,
+        /await logUi\("error", "Meeting whiteboard loading failed\.", metadata\)/,
+    );
     assert.match(buttonSource, /load\.failed\.detailed/);
     assert.match(buttonSource, /stage: stageKey/);
     assert.match(

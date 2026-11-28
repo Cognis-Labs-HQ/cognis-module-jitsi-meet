@@ -1,4 +1,4 @@
-function requireArgs(args, names, usage) {
+function requireArguments(args, names, usage) {
     const missing = names.filter((_, index) => !args[index]);
     if (missing.length === 0) return;
     throw new Error(
@@ -63,10 +63,10 @@ export function registerCommands({ register, apiGet }) {
 
     register(
         "modules:jitsi-meet:participants",
-        async ({ args, apiBaseUrl, getApiToken }) => {
+        async ({ args: args, apiBaseUrl, getApiToken }) => {
             const usage =
                 "cognisctl modules:jitsi-meet:participants <meeting-id>";
-            requireArgs(args, ["meeting-id"], usage);
+            requireArguments(args, ["meeting-id"], usage);
             return apiGet(
                 apiBaseUrl,
                 `/api/v1/modules/jitsi-meet/participants${queryString({ meetingId: args[0] })}`,
